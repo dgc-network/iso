@@ -316,7 +316,7 @@ if (!class_exists('iot_messages')) {
                         <th><?php echo __( 'Time', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Device', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Sensor', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Vlue', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Value', 'your-text-domain' );?></th>
                         <th></th>
                         <th></th>
                     </thead>

@@ -147,18 +147,18 @@ if (!class_exists('sub_items')) {
                 'meta_query'     => array(
                     'relation' => 'OR',
                     array(
-                        'key'     => 'is_privated',
+                        'key'     => 'is_private',
                         'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
                     ),
                     array(
-                        'key'     => 'is_privated',
+                        'key'     => 'is_private',
                         'value'   => '0',
                         'compare' => '=' // Condition to check if the meta value is 0
                     ),
                     array(
                         'relation' => 'AND',
                         array(
-                            'key'     => 'is_privated',
+                            'key'     => 'is_private',
                             'value'   => '1',
                             'compare' => '='
                         ),
@@ -219,8 +219,10 @@ if (!class_exists('sub_items')) {
             $embedded_code = get_post_meta($embedded_id, 'embedded_code', true);
             $iso_category = get_post_meta($embedded_id, 'iso_category', true);
             $embedded_site = get_post_meta($embedded_id, 'site_id', true);
-            $is_privated = get_post_meta($embedded_id, 'is_privated', true);
-            $is_checked = ($is_privated==1) ? 'checked' : '';
+            $is_private = get_post_meta($embedded_id, 'is_private', true);
+            $is_private_checked = ($is_private==1) ? 'checked' : '';
+            $is_system = get_post_meta($embedded_id, 'is_system', true);
+            $is_system_checked = ($is_system==1) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
@@ -237,8 +239,12 @@ if (!class_exists('sub_items')) {
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
                 <?php if ($embedded_site==$site_id || current_user_can('administrator')) {?>
                     <div>
-                    <input type="checkbox" id="is-privated" <?php echo $is_checked;?> /> 
-                    <label for="is-privated"><?php echo __( 'Is privated', 'your-text-domain' );?></label>
+                        <input type="checkbox" id="is-private" <?php echo $is_private_checked;?> /> 
+                        <label for="is-private"><?php echo __( 'Is private', 'your-text-domain' );?></label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="is-system" <?php echo $is_system_checked;?> /> 
+                        <label for="is-system"><?php echo __( 'Is system', 'your-text-domain' );?></label>
                     </div>
                 <?php }?>
             </fieldset>
@@ -248,34 +254,39 @@ if (!class_exists('sub_items')) {
 
         function get_embedded_dialog_data() {
             $response = array();
-            $embedded_id = sanitize_text_field($_POST['_embedded_id']);
-            $response['html_contain'] = $this->display_embedded_dialog($embedded_id);
+            if( isset($_POST['_embedded_id']) ) {
+                $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : '';
+                $response['html_contain'] = $this->display_embedded_dialog($embedded_id);
+            }
             wp_send_json($response);
         }
 
         function set_embedded_dialog_data() {
             if( isset($_POST['_embedded_id']) ) {
-                $embedded_id = sanitize_text_field($_POST['_embedded_id']);
-                $embedded_code = sanitize_text_field($_POST['_embedded_code']);
-                $iso_category = sanitize_text_field($_POST['_iso_category']);
-                $is_privated = sanitize_text_field($_POST['_is_privated']);
+                $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : '';
+                $embedded_code = (isset($_POST['_embedded_code'])) ? sanitize_text_field($_POST['_embedded_code']) : '';
+                $embedded_title = (isset($_POST['_embedded_title'])) ? sanitize_text_field($_POST['_embedded_title']) : '';
+                $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
+                $is_private = (isset($_POST['_is_private'])) ? sanitize_text_field($_POST['_is_private']) : 0;
+                $is_system = (isset($_POST['_is_system'])) ? sanitize_text_field($_POST['_is_system']) : 0;
                 $data = array(
                     'ID'           => $embedded_id,
-                    'post_title'   => sanitize_text_field($_POST['_embedded_title']),
+                    'post_title'   => $embedded_title,
                 );
                 wp_update_post( $data );
                 update_post_meta($embedded_id, 'embedded_code', $embedded_code);
                 update_post_meta($embedded_id, 'iso_category', $iso_category);
-                update_post_meta($embedded_id, 'is_privated', $is_privated);
+                update_post_meta($embedded_id, 'is_private', $is_private);
+                update_post_meta($embedded_id, 'is_system', $is_system);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
+                    'post_type'     => 'embedded',
                     'post_title'    => 'New embedded',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'embedded',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
@@ -295,22 +306,22 @@ if (!class_exists('sub_items')) {
             if( isset($_POST['_embedded_id']) ) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $embedded_id = sanitize_text_field($_POST['_embedded_id']);
-                $embedded_title = sanitize_text_field($_POST['_embedded_title']);
-                $embedded_code = sanitize_text_field($_POST['_embedded_code']);
-                $iso_category = sanitize_text_field($_POST['_iso_category']);
+                $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
+                $embedded_code = (isset($_POST['_embedded_code'])) ? sanitize_text_field($_POST['_embedded_code']) : '';
+                $embedded_title = (isset($_POST['_embedded_title'])) ? sanitize_text_field($_POST['_embedded_title']) : '';
+                $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
                 // Create the post
                 $new_post = array(
+                    'post_type'     => 'embedded',
                     'post_title'    => $embedded_title.'(Duplicated)',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'embedded',
                 );    
                 $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'embedded_code', time());
                 update_post_meta($post_id, 'iso_category', $iso_category);
-                update_post_meta($post_id, 'is_privated', 1);
-                update_post_meta($post_id, 'site_id', $site_id);
+                update_post_meta($post_id, 'is_private', 1);
 
                 $query = $this->retrieve_sub_item_list_data($embedded_id);
                 if ($query->have_posts()) {
@@ -320,11 +331,11 @@ if (!class_exists('sub_items')) {
                         $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         $new_sub_item = array(
+                            'post_type'     => 'sub-item',
                             'post_title'    => get_the_title(),
                             'post_content'  => get_the_content(),
                             'post_status'   => 'publish',
                             'post_author'   => $current_user_id,
-                            'post_type'     => 'sub-item',
                         );    
                         $sub_item_id = wp_insert_post($new_sub_item);
                         update_post_meta($sub_item_id, 'sub_item_type', $sub_item_type);
@@ -407,7 +418,6 @@ if (!class_exists('sub_items')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( '#', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Items', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Type', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Default', 'your-text-domain' );?></th>
@@ -432,7 +442,6 @@ if (!class_exists('sub_items')) {
                         }
                         ?>
                         <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
-                            <td style="text-align:center;"></td>
                             <td><?php echo $sub_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($sub_item_type);?></td>
                             <td style="text-align:center;"><?php echo esc_html($sub_item_default);?></td>

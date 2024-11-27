@@ -175,7 +175,7 @@ jQuery(document).ready(function($) {
                                         '_embedded_title': $("#embedded-title").val(),
                                         '_embedded_code': $("#embedded-code").val(),
                                         '_iso_category': $("#iso-category").val(),
-                                        '_is_privated': $("#is-privated").is(":checked") ? 1 : 0,
+                                        '_is_private': $("#is-private").is(":checked") ? 1 : 0,
                                     },
                                     success: function (response) {
                                         $("#embedded-dialog").dialog('close');
