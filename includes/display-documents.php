@@ -1756,12 +1756,10 @@ if (!class_exists('display_documents')) {
 
                         default:
                             if ($is_system_doc) {
-                                /*
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value);?></select>
+                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
                                 <?php
-                                */
                             } else {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
@@ -1920,14 +1918,14 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function select_system_doc_options($selected_option=0) {
-            $query = $this->retrieve_doc_report_list_data();
+        function select_system_doc_options($selected_option=0, $params=array()) {
+            $query = $this->retrieve_doc_report_list_data($params);
             $options = '<option value="">Select system document</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                $doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
+                //$doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                //$doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                //$doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
                 //$options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision) . '</option>';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
