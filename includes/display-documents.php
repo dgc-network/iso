@@ -411,7 +411,7 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
                         <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
-                        <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
+                        <label for="action-list"><?php echo __( '按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                     </div>
 
@@ -520,6 +520,58 @@ if (!class_exists('display_documents')) {
             $response = array();
             wp_delete_post($_POST['_doc_id'], true);
             wp_send_json($response);
+        }
+        
+        function get_system_doc_list_query() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'document', // Specify the post type
+                'posts_per_page' => -1, // Retrieve all matching posts
+                'meta_query'     => array(
+                    'relation' => 'AND', // Combine all conditions
+                    array(
+                        'relation' => 'OR', // Either the 'system_doc' is not empty OR does not exist
+                        array(
+                            'key'     => 'system_doc',
+                            'compare' => '!=', // 'system_doc' is not empty
+                            'value'   => '',
+                        ),
+                        array(
+                            'key'     => 'system_doc',
+                            'compare' => 'NOT EXISTS', // 'system_doc' does not exist
+                        ),
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id, // Match the 'site_id' meta value
+                        'compare' => '=', // Exact match
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+/*            
+            if ($query->have_posts()) {
+                $system_doc_list = array();
+            
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
+            
+                    // Add to the list if meta exists and is not empty
+                    if (!empty($system_doc)) {
+                        $system_doc_list[] = $system_doc;
+                    }
+                }
+            
+                wp_reset_postdata();
+            
+                // Output or use $system_doc_list as needed
+                print_r($system_doc_list); // Example output
+            } else {
+                echo 'No matching documents found.';
+            }
+*/
         }
         
         // doc-frame
@@ -1319,16 +1371,42 @@ if (!class_exists('display_documents')) {
                     <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
+                    <?php
+                    $query = $this->get_system_doc_list_query();
+                    if ($query->have_posts()) {
+                        //$system_doc_list = array();
+                    
+                        while ($query->have_posts()) {
+                            $query->the_post();
+                            $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
+                    
+                            // Add to the list if meta exists and is not empty
+                            if (!empty($system_doc)) {
+                                //$system_doc_list[] = $system_doc;
+                                ?>
+                                <option value="<?php echo $system_doc;?>" <?php echo ($field_type==$system_doc) ? 'selected' : ''?>><?php echo __( $system_doc, 'your-text-domain' );?></option>
+                                <?php
+                            }
+                        }
+                    
+                        wp_reset_postdata();
+                    
+                        // Output or use $system_doc_list as needed
+                        //print_r($system_doc_list); // Example output
+                    }
+        
+?>
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
                     <option value="_vendor" <?php echo ($field_type=='_vendor') ? 'selected' : ''?>><?php echo __( '_vendor', 'your-text-domain' );?></option>
                     <option value="_product" <?php echo ($field_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
                     <option value="_equipment" <?php echo ($field_type=='_equipment') ? 'selected' : ''?>><?php echo __( '_equipment', 'your-text-domain' );?></option>
                     <option value="_instrument" <?php echo ($field_type=='_instrument') ? 'selected' : ''?>><?php echo __( '_instrument', 'your-text-domain' );?></option>
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
-                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
                     <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
+
                     <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
                     <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
                     <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
