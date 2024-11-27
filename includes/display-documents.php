@@ -1074,6 +1074,16 @@ if (!class_exists('display_documents')) {
                 // Update the existing post
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $system_doc = get_post_meta($doc_id, 'system_doc', true);
+                if ($system_doc) {
+                    // Update the post
+                    $post_data = array(
+                        'ID'           => $report_id,
+                        'post_title'   => $_POST['_report_title'],
+                        'post_content' => $_POST['_report_content'],
+                    );        
+                    wp_update_post($post_data);
+                }
 
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
@@ -1442,9 +1452,14 @@ if (!class_exists('display_documents')) {
             $_array = array();
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
+                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                    $is_system_doc = $this->is_system_doc($field_type);
+                    $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                     $_list = array();
                     $_list["field_id"] = get_the_ID();
-                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
+                    $_list["field_type"] = $field_type;
+                    $_list["default_value"] = $default_value;
+                    if ($is_system_doc) $_list["is_system_doc"] = true;
                     array_push($_array, $_list);
                 endwhile;
                 wp_reset_postdata();
@@ -1776,6 +1791,7 @@ if (!class_exists('display_documents')) {
         function update_doc_field_contains($report_id=false, $field_id=false, $is_default=false, $user_id=false) {
             // standard fields
             $field_type = get_post_meta($field_id, 'field_type', true);
+            $is_system_doc = $this->is_system_doc($field_type);
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
                 $field_value = $this->get_field_default_value($field_id, $user_id);
