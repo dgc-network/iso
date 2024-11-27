@@ -1016,6 +1016,7 @@ if (!class_exists('display_documents')) {
                 $is_admin = isset($_POST['_is_admin']) ? sanitize_text_field($_POST['_is_admin']) : false;
 
                 // Retrieve meta data for report
+                $doc_id = get_post_meta($report_id, 'doc_id', true);
                 $todo_status = get_post_meta($report_id, 'todo_status', true);
                 $_document = get_post_meta($report_id, '_document', true);
 
@@ -1025,7 +1026,8 @@ if (!class_exists('display_documents')) {
                     // Switch structure for handling various document types
                     switch ($is_doc_report) {
                         case 1:
-                            $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $_document));
+                            //$response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $_document));
+                            $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $doc_id));
                             break;
                         case 'document-card':
                             $response['html_contain'] = $this->display_document_list();
@@ -1049,7 +1051,8 @@ if (!class_exists('display_documents')) {
                             $response['html_contain'] = $profiles_class->display_site_user_list();
                             break;
                         default:
-                            $response['html_contain'] = $this->display_doc_frame_contain($_document);
+                            //$response['html_contain'] = $this->display_doc_frame_contain($_document);
+                            $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                             break;
                     }
                 } else {
