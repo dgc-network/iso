@@ -1079,8 +1079,8 @@ if (!class_exists('display_documents')) {
                     // Update the post
                     $post_data = array(
                         'ID'           => $report_id,
-                        'post_title'   => $_POST['_report_title'],
-                        'post_content' => $_POST['_report_content'],
+                        'post_title'   => $_POST['_post_title'],
+                        'post_content' => $_POST['_post_content'],
                     );        
                     wp_update_post($post_data);
                 }

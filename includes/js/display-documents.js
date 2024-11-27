@@ -927,11 +927,11 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).val();
 
                     if (value.is_doc_report) {
-                        if (value.default_value === '_report_title') {
-                            ajaxData['_report_title'] = $(field_id_tag).val();
+                        if (value.default_value === '_post_title') {
+                            ajaxData['_post_title'] = $(field_id_tag).val();
                         }
-                        if (value.default_value === '_report_content') {
-                            ajaxData['_report_content'] = $(field_id_tag).val();
+                        if (value.default_value === '_post_content') {
+                            ajaxData['_post_content'] = $(field_id_tag).val();
                         }
                     }
 
