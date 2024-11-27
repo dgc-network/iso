@@ -585,7 +585,7 @@ jQuery(document).ready(function($) {
                     $("#doc-field-dialog").dialog('open');
                 },
                 error: function (error) {
-                    console.error(error);                
+                    console.error(error);
                     alert(error);
                 }
             });

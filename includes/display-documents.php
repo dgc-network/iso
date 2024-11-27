@@ -550,6 +550,7 @@ if (!class_exists('display_documents')) {
                 ),
             );
             $query = new WP_Query($args);
+            return $query;
 /*            
             if ($query->have_posts()) {
                 $system_doc_list = array();
@@ -1396,8 +1397,7 @@ if (!class_exists('display_documents')) {
                         // Output or use $system_doc_list as needed
                         //print_r($system_doc_list); // Example output
                     }
-        
-?>
+                    ?>
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
                     <option value="_vendor" <?php echo ($field_type=='_vendor') ? 'selected' : ''?>><?php echo __( '_vendor', 'your-text-domain' );?></option>
                     <option value="_product" <?php echo ($field_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
