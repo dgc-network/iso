@@ -207,21 +207,21 @@ jQuery(document).ready(function($) {
 
         if ($('#is-doc-report').val()==1) {
             $("#doc-report-div").show();
-            $("#doc-report-div1").show();
+            //$("#doc-report-div1").show();
             $("#doc-frame-div").hide();
         }
 
         //if ($('#is-doc-report').val()!=0 && $('#is-doc-report').val()!=1) {
         if ($('#is-doc-report').val()!=1) {
             //$("#system-report-div").show();
-            $("#mermaid-div").hide();
+            //$("#mermaid-div").hide();
             //$("#doc-frame-div").hide();
             $("#doc-frame-div").show();
         }    
 
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
-            $("#doc-report-div1").toggle();
+            //$("#doc-report-div1").toggle();
             $("#doc-frame-div").toggle();
             //const is_doc_report = 1;
             //$("#is-doc-report").val(is_doc_report)
@@ -230,10 +230,11 @@ jQuery(document).ready(function($) {
 
         $("#doc-field-label").on("click", function () {
             $("#doc-report-div").toggle();
-            $("#doc-report-div1").toggle();
-            $("#system-report-div").toggle();
-            $("#mermaid-div").toggle()
+            //$("#doc-report-div1").toggle();
+            //$("#system-report-div").toggle();
+            //$("#mermaid-div").toggle()
             //$("#is-doc-report").val(is_doc_report)
+            $("#doc-frame-div").toggle();
             $("#is-doc-report").val(0)
         });
 
