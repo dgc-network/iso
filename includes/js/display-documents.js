@@ -790,76 +790,77 @@ jQuery(document).ready(function($) {
     function activate_doc_report_dialog_data(response){
 
         const canvas = document.getElementById('signature-pad');
-        canvas.width = window.innerWidth-10;
+        if (canvas) {
+            canvas.width = window.innerWidth-10;
 
-        const context = canvas.getContext('2d');
-        let isDrawing = false;
-
-        // Set up drawing styles
-        context.strokeStyle = "#000000";
-        context.lineWidth = 2;
-
-        // Mouse Events for drawing
-        $('#signature-pad').mousedown(function(e) {
-            isDrawing = true;
-            context.beginPath();
-            context.moveTo(e.offsetX, e.offsetY);
-        });
-
-        $('#signature-pad').mousemove(function(e) {
-            if (isDrawing) {
-                context.lineTo(e.offsetX, e.offsetY);
-                context.stroke();
-            }
-        });
-
-        $(document).mouseup(function() {
-            isDrawing = false;
-        });
-
-        // Get canvas offset for touch position calculations
-        const getCanvasPosition = (touch) => {
-            const rect = canvas.getBoundingClientRect();
-            return {
-                x: touch.clientX - rect.left,
-                y: touch.clientY - rect.top
+            const context = canvas.getContext('2d');
+            let isDrawing = false;
+    
+            // Set up drawing styles
+            context.strokeStyle = "#000000";
+            context.lineWidth = 2;
+    
+            // Mouse Events for drawing
+            $('#signature-pad').mousedown(function(e) {
+                isDrawing = true;
+                context.beginPath();
+                context.moveTo(e.offsetX, e.offsetY);
+            });
+    
+            $('#signature-pad').mousemove(function(e) {
+                if (isDrawing) {
+                    context.lineTo(e.offsetX, e.offsetY);
+                    context.stroke();
+                }
+            });
+    
+            $(document).mouseup(function() {
+                isDrawing = false;
+            });
+    
+            // Get canvas offset for touch position calculations
+            const getCanvasPosition = (touch) => {
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: touch.clientX - rect.left,
+                    y: touch.clientY - rect.top
+                };
             };
-        };
-
-        // Touch start event
-        canvas.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            isDrawing = true;
-            const touchPosition = getCanvasPosition(e.touches[0]);
-            context.beginPath();
-            context.moveTo(touchPosition.x, touchPosition.y);
-        }, { passive: false });
-        
-        // Touch move event
-        canvas.addEventListener('touchmove', function(e) {
-            e.preventDefault();
-            if (isDrawing) {
+    
+            // Touch start event
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                isDrawing = true;
                 const touchPosition = getCanvasPosition(e.touches[0]);
-                context.lineTo(touchPosition.x, touchPosition.y);
-                context.stroke();
-            }
-        }, { passive: false });
-
-        $(document).on('touchend', function() {
-            isDrawing = false;
-        });
-
-        // Clear button functionality
-        $('#clear-signature').click(function() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-        });
-
-        // Redraw button functionality
-        $('#redraw-signature').click(function() {
-            $('#signature-pad-div').show();
-            $('#signature-image-div').hide();
-        });
-
+                context.beginPath();
+                context.moveTo(touchPosition.x, touchPosition.y);
+            }, { passive: false });
+            
+            // Touch move event
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                if (isDrawing) {
+                    const touchPosition = getCanvasPosition(e.touches[0]);
+                    context.lineTo(touchPosition.x, touchPosition.y);
+                    context.stroke();
+                }
+            }, { passive: false });
+    
+            $(document).on('touchend', function() {
+                isDrawing = false;
+            });
+    
+            // Clear button functionality
+            $('#clear-signature').click(function() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            });
+    
+            // Redraw button functionality
+            $('#redraw-signature').click(function() {
+                $('#signature-pad-div').show();
+                $('#signature-image-div').hide();
+            });
+        }
 
         $('[id^="doc-report-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(25);
