@@ -453,13 +453,13 @@ if (!class_exists('display_documents')) {
                 else { // General Users in site
                     if ($is_doc_report==0) $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                     elseif ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $doc_id));
-                    elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
-                    elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
-                    elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
-                    elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
-                    elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
-                    elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
-                    elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
+                    //elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
+                    //elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
+                    //elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
+                    //elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
+                    //elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
+                    //elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
+                    //elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
                     else $response['html_contain'] = $this->display_document_dialog($doc_id);
                 }
             }
@@ -520,59 +520,6 @@ if (!class_exists('display_documents')) {
             $response = array();
             wp_delete_post($_POST['_doc_id'], true);
             wp_send_json($response);
-        }
-        
-        function get_system_doc_list_query() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'document', // Specify the post type
-                'posts_per_page' => -1, // Retrieve all matching posts
-                'meta_query'     => array(
-                    'relation' => 'AND', // Combine all conditions
-                    array(
-                        'relation' => 'OR', // Either the 'system_doc' is not empty OR does not exist
-                        array(
-                            'key'     => 'system_doc',
-                            'compare' => '!=', // 'system_doc' is not empty
-                            'value'   => '',
-                        ),
-                        array(
-                            'key'     => 'system_doc',
-                            'compare' => 'NOT EXISTS', // 'system_doc' does not exist
-                        ),
-                    ),
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id, // Match the 'site_id' meta value
-                        'compare' => '=', // Exact match
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query;
-/*            
-            if ($query->have_posts()) {
-                $system_doc_list = array();
-            
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
-            
-                    // Add to the list if meta exists and is not empty
-                    if (!empty($system_doc)) {
-                        $system_doc_list[] = $system_doc;
-                    }
-                }
-            
-                wp_reset_postdata();
-            
-                // Output or use $system_doc_list as needed
-                print_r($system_doc_list); // Example output
-            } else {
-                echo 'No matching documents found.';
-            }
-*/
         }
         
         // doc-frame
@@ -755,6 +702,7 @@ if (!class_exists('display_documents')) {
                             if ($inner_query->have_posts()) {
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                                    $is_system_doc = $this->is_system_doc($field_type);
                                     $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                     $field_value = get_post_meta($report_id, get_the_ID(), true);
                                     $is_checked = ($field_value==1) ? 'checked' : '';
@@ -763,31 +711,6 @@ if (!class_exists('display_documents')) {
                                         if ($field_value==1) echo 'V';
                                     } elseif ($field_type=='radio') {
                                         if ($field_value==1) echo 'V';
-                                    } elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
-                                        echo esc_html(get_the_title($field_value));
-                                    } elseif ($field_type=='_document') {
-                                        $doc_title = get_post_meta($field_value, 'doc_title', true);
-                                        $doc_number = get_post_meta($field_value, 'doc_number', true);
-                                        $doc_revision = get_post_meta($field_value, 'doc_revision', true);
-                                        echo esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision);
-                                    } elseif ($field_type=='_customer') {
-                                        $customer_code = get_post_meta($field_value, 'customer_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$customer_code.')');
-                                    } elseif ($field_type=='_vendor') {
-                                        $vendor_code = get_post_meta($field_value, 'vendor_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$vendor_code.')');
-                                    } elseif ($field_type=='_product') {
-                                        $product_code = get_post_meta($field_value, 'product_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$product_code.')');
-                                    } elseif ($field_type=='_equipment') {
-                                        $equipment_code = get_post_meta($field_value, 'equipment_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$equipment_code.')');
-                                    } elseif ($field_type=='_instrument') {
-                                        $instrument_code = get_post_meta($field_value, 'instrument_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$instrument_code.')');
-                                    } elseif ($field_type=='_department') {
-                                        $instrument_code = get_post_meta($field_value, 'department_code', true);
-                                        echo esc_html(get_the_title($field_value));
                                     } elseif ($field_type=='_employees') {
                                         if (is_array($field_value)) {
                                             $user_names = array(); // Array to hold user display names
@@ -819,8 +742,39 @@ if (!class_exists('display_documents')) {
                                                 echo 'User not found for ID: ' . esc_html($field_value);
                                             }
                                         }
+                                    } elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                                        echo esc_html(get_the_title($field_value));
+                                    } elseif ($field_type=='_document') {
+                                        $doc_title = get_post_meta($field_value, 'doc_title', true);
+                                        $doc_number = get_post_meta($field_value, 'doc_number', true);
+                                        $doc_revision = get_post_meta($field_value, 'doc_revision', true);
+                                        echo esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision);
+/*
+                                    } elseif ($field_type=='_customer') {
+                                        $customer_code = get_post_meta($field_value, 'customer_code', true);
+                                        echo esc_html(get_the_title($field_value).'('.$customer_code.')');
+                                    } elseif ($field_type=='_vendor') {
+                                        $vendor_code = get_post_meta($field_value, 'vendor_code', true);
+                                        echo esc_html(get_the_title($field_value).'('.$vendor_code.')');
+                                    } elseif ($field_type=='_product') {
+                                        $product_code = get_post_meta($field_value, 'product_code', true);
+                                        echo esc_html(get_the_title($field_value).'('.$product_code.')');
+                                    } elseif ($field_type=='_equipment') {
+                                        $equipment_code = get_post_meta($field_value, 'equipment_code', true);
+                                        echo esc_html(get_the_title($field_value).'('.$equipment_code.')');
+                                    } elseif ($field_type=='_instrument') {
+                                        $instrument_code = get_post_meta($field_value, 'instrument_code', true);
+                                        echo esc_html(get_the_title($field_value).'('.$instrument_code.')');
+                                    } elseif ($field_type=='_department') {
+                                        $department_code = get_post_meta($field_value, 'department_code', true);
+                                        echo esc_html(get_the_title($field_value));
+*/
                                     } else {
-                                        echo esc_html($field_value);
+                                        if ($is_system_doc) {
+                                            echo esc_html(get_the_title($field_value).'('.get_the_ID().')');
+                                        } else {
+                                            echo esc_html($field_value);
+                                        }
                                     }
                                     echo '</td>';
                                 endwhile;                
@@ -1377,27 +1331,20 @@ if (!class_exists('display_documents')) {
                     <?php
                     $query = $this->get_system_doc_list_query();
                     if ($query->have_posts()) {
-                        //$system_doc_list = array();
-                    
                         while ($query->have_posts()) {
                             $query->the_post();
                             $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
-                    
                             // Add to the list if meta exists and is not empty
                             if (!empty($system_doc)) {
-                                //$system_doc_list[] = $system_doc;
                                 ?>
                                 <option value="<?php echo $system_doc;?>" <?php echo ($field_type==$system_doc) ? 'selected' : ''?>><?php echo __( $system_doc, 'your-text-domain' );?></option>
                                 <?php
                             }
                         }
-                    
                         wp_reset_postdata();
-                    
-                        // Output or use $system_doc_list as needed
-                        //print_r($system_doc_list); // Example output
                     }
                     ?>
+<?php /*                    
                     <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
                     <option value="_vendor" <?php echo ($field_type=='_vendor') ? 'selected' : ''?>><?php echo __( '_vendor', 'your-text-domain' );?></option>
                     <option value="_product" <?php echo ($field_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
@@ -1406,7 +1353,7 @@ if (!class_exists('display_documents')) {
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
                     <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
                     <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
-
+*/?>
                     <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
                     <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
                     <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
@@ -1544,6 +1491,7 @@ if (!class_exists('display_documents')) {
                     $field_title = get_post_meta($field_id, 'field_title', true);
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
+                    $is_system_doc = $this->is_system_doc($field_type);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
@@ -1663,7 +1611,7 @@ if (!class_exists('display_documents')) {
                                 <?php
                             }
                             break;
-
+/*
                         case ($field_type=='_document'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
@@ -1712,7 +1660,7 @@ if (!class_exists('display_documents')) {
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
                             <?php
                             break;
-
+*/
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_id).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
@@ -1805,10 +1753,17 @@ if (!class_exists('display_documents')) {
                             break;
 
                         default:
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <input type="text" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
-                            <?php
+                            if ($is_system_doc) {
+                                ?>
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value);?></select>
+                                <?php    
+                            } else {
+                                ?>
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                <input type="text" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                                <?php    
+                            }
                             break;
                     }
                 endwhile;
@@ -1899,6 +1854,83 @@ if (!class_exists('display_documents')) {
         }
         
         // document misc
+        function get_system_doc_list_query() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'document', // Specify the post type
+                'posts_per_page' => -1, // Retrieve all matching posts
+                'meta_query'     => array(
+                    'relation' => 'AND', // Combine all conditions
+                    array(
+                        'relation' => 'OR', // Either the 'system_doc' is not empty OR does not exist
+                        array(
+                            'key'     => 'system_doc',
+                            'compare' => '!=', // 'system_doc' is not empty
+                            'value'   => '',
+                        ),
+                        array(
+                            'key'     => 'system_doc',
+                            'compare' => 'NOT EXISTS', // 'system_doc' does not exist
+                        ),
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id, // Match the 'site_id' meta value
+                        'compare' => '=', // Exact match
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function is_system_doc($field_type=false) {
+            //$field_type = sanitize_text_field($field_type); // Ensure $field_type is sanitized
+
+            $args = array(
+                'post_type'      => 'document', // Specify the post type
+                'posts_per_page' => -1, // Retrieve all matching posts
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'system_doc', // The meta key to check
+                        'value'   => $field_type,  // The value to match
+                        'compare' => '=',          // Exact match
+                    ),
+                ),
+            );
+            
+            $query = new WP_Query($args);
+            
+            if ($query->have_posts()) {
+                //echo 'Matching posts found:<br>';
+                //while ($query->have_posts()) {
+                //    $query->the_post();
+                //    echo 'Post ID: ' . get_the_ID() . ' | Title: ' . get_the_title() . '<br>';
+                //}
+                //wp_reset_postdata();
+                return true;
+            } else {
+                //echo 'No matching posts found.';
+                return false;
+            }
+        }
+
+        function select_system_doc_options($selected_option=0) {
+            $query = $this->retrieve_doc_report_list_data();
+            $options = '<option value="">Select system document</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                $doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
+                //$options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision) . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
         function select_document_list_options($selected_option=0) {
             $query = $this->retrieve_document_list_data('not_doc_report');
             $options = '<option value="">Select document</option>';
