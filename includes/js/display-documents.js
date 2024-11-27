@@ -211,7 +211,8 @@ jQuery(document).ready(function($) {
             $("#doc-frame-div").hide();
         }
 
-        if ($('#is-doc-report').val()!=0 && $('#is-doc-report').val()!=1) {
+        //if ($('#is-doc-report').val()!=0 && $('#is-doc-report').val()!=1) {
+        if ($('#is-doc-report').val()!=1) {
             $("#system-report-div").show();
             $("#mermaid-div").hide();
             $("#doc-frame-div").hide();
@@ -288,6 +289,7 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_category'] = $("#doc-category").val();
             ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
+            ajaxData['_system_doc'] = $("#system-doc").val();
 
             $.ajax({
                 type: 'POST',
