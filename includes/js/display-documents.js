@@ -223,8 +223,9 @@ jQuery(document).ready(function($) {
             $("#doc-report-div").toggle();
             $("#doc-report-div1").toggle();
             $("#doc-frame-div").toggle();
-            const is_doc_report = 1;
-            $("#is-doc-report").val(is_doc_report)
+            //const is_doc_report = 1;
+            //$("#is-doc-report").val(is_doc_report)
+            $("#is-doc-report").val(1)
         });
 
         $("#doc-field-label").on("click", function () {
@@ -232,7 +233,8 @@ jQuery(document).ready(function($) {
             $("#doc-report-div1").toggle();
             $("#system-report-div").toggle();
             $("#mermaid-div").toggle()
-            $("#is-doc-report").val(is_doc_report)
+            //$("#is-doc-report").val(is_doc_report)
+            $("#is-doc-report").val(0)
         });
 
         $("#system-report-label").on("click", function () {

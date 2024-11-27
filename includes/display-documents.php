@@ -414,10 +414,10 @@ if (!class_exists('display_documents')) {
                         <label for="action-list"><?php echo __( '執行按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                     </div>
-                </div>
 
-                <label for="system-doc"><?php echo __( '系統文件', 'your-text-domain' );?></label>
-                <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
+                    <label for="system-doc"><?php echo __( '系統文件', 'your-text-domain' );?></label>
+                    <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
+                </div>
 
                 <?php
                     // transaction data vs card key/value
