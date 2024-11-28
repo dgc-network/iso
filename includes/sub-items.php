@@ -221,8 +221,6 @@ if (!class_exists('sub_items')) {
             $embedded_site = get_post_meta($embedded_id, 'site_id', true);
             $is_private = get_post_meta($embedded_id, 'is_private', true);
             $is_private_checked = ($is_private==1) ? 'checked' : '';
-            $is_system = get_post_meta($embedded_id, 'is_system', true);
-            $is_system_checked = ($is_system==1) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
@@ -241,10 +239,6 @@ if (!class_exists('sub_items')) {
                     <div>
                         <input type="checkbox" id="is-private" <?php echo $is_private_checked;?> /> 
                         <label for="is-private"><?php echo __( 'Is private', 'your-text-domain' );?></label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="is-system" <?php echo $is_system_checked;?> /> 
-                        <label for="is-system"><?php echo __( 'Is system', 'your-text-domain' );?></label>
                     </div>
                 <?php }?>
             </fieldset>
@@ -268,7 +262,6 @@ if (!class_exists('sub_items')) {
                 $embedded_title = (isset($_POST['_embedded_title'])) ? sanitize_text_field($_POST['_embedded_title']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
                 $is_private = (isset($_POST['_is_private'])) ? sanitize_text_field($_POST['_is_private']) : 0;
-                $is_system = (isset($_POST['_is_system'])) ? sanitize_text_field($_POST['_is_system']) : 0;
                 $data = array(
                     'ID'           => $embedded_id,
                     'post_title'   => $embedded_title,
@@ -277,7 +270,6 @@ if (!class_exists('sub_items')) {
                 update_post_meta($embedded_id, 'embedded_code', $embedded_code);
                 update_post_meta($embedded_id, 'iso_category', $iso_category);
                 update_post_meta($embedded_id, 'is_private', $is_private);
-                update_post_meta($embedded_id, 'is_system', $is_system);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);

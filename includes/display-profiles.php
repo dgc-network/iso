@@ -842,17 +842,17 @@ if (!class_exists('display_profiles')) {
                     <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                     <select id="select-site" class="text ui-widget-content ui-corner-all" >
                         <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-                    <?php
-                    $site_args = array(
-                        'post_type'      => 'site-profile',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);    
-                    foreach ($sites as $site) {
-                        $selected = ($current_site_id == $site->ID) ? 'selected' : '';
-                        echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-                    }
-                    ?>
+                        <?php
+                        $site_args = array(
+                            'post_type'      => 'site-profile',
+                            'posts_per_page' => -1,
+                        );
+                        $sites = get_posts($site_args);    
+                        foreach ($sites as $site) {
+                            $selected = ($current_site_id == $site->ID) ? 'selected' : '';
+                            echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+                        }
+                        ?>
                     </select>
                     <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
@@ -942,7 +942,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-
+/*
         function display_new_user_dialog($site_id=false) {
             ?>
             <div id="new-user-dialog" title="New user dialog" style="display:none;">
@@ -952,7 +952,7 @@ if (!class_exists('display_profiles')) {
             </div>
             <?php
         }
-
+*/
         function set_site_admin_data($user_id=false, $is_site_admin=false) {
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
@@ -1032,7 +1032,10 @@ if (!class_exists('display_profiles')) {
                         <th>#</th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+<?php /*                        
                         <th><?php echo __( 'Department', 'your-text-domain' );?></th>
+*/?>                        
+                        <th>#</th>
                     </thead>
                     <tbody>
                     <?php
@@ -1059,7 +1062,10 @@ if (!class_exists('display_profiles')) {
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
                                 <td width="70%"><?php echo esc_html($content);?></td>
+<?php /*
                                 <td style="text-align:center;"><?php echo get_the_title($department_id).$users_unassigned;?></td>
+*/?>                                
+                                <td style="text-align:center;"><?php echo $users_unassigned;?></td>
                             </tr>
                             <?php 
                         endwhile;
