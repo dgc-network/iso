@@ -1071,7 +1071,6 @@ if (!class_exists('display_documents')) {
 
         function set_doc_report_dialog_data() {
             $response = array();
-
             if (isset($_POST['_report_id'])) {
                 // Update the existing post
                 $report_id = sanitize_text_field($_POST['_report_id']);
@@ -1156,11 +1155,11 @@ if (!class_exists('display_documents')) {
         function duplicate_doc_report_data() {
             if( isset($_POST['_report_id']) ) {
                 // Create the post
-                $current_user_id = get_current_user_id();
+                //$current_user_id = get_current_user_id();
                 $new_post = array(
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
                     'post_type'     => 'doc-report',
+                    'post_status'   => 'publish',
+                    'post_author'   => get_current_user_id(),
                 );    
                 $post_id = wp_insert_post($new_post);
                 $report_id = sanitize_text_field($_POST['_report_id']);
@@ -1929,7 +1928,7 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'system_doc', // The meta key to check
                         'value'   => $field_type,  // The value to match
-                        'compare' => '=',          // Exact match
+                        'compare' => 'LIKE',
                     ),
                     array(
                         'key'     => 'site_id', // Check site_id meta key
@@ -2256,11 +2255,11 @@ if (!class_exists('display_documents')) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $new_post = array(
-                        'post_title'    => get_the_title($doc_id),
-                        'post_content'  => get_post_field('post_content', $doc_id),
+                        'post_type'     => 'action',
+                        'post_title'    => get_the_title(),
+                        'post_content'  => get_the_content(),
                         'post_status'   => 'publish',
                         'post_author'   => $current_user_id,
-                        'post_type'     => 'action',
                     );    
                     $new_action_id = wp_insert_post($new_post);
                     $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
