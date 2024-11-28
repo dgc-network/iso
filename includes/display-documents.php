@@ -1095,6 +1095,12 @@ if (!class_exists('display_documents')) {
                     wp_reset_postdata();
                 }
 
+                $system_doc = get_post_meta($doc_id, 'system_doc', true);
+                if (in_array(strtolower($system_doc), ['customer', 'vendor'])) {
+                    // Code to execute if $system_doc is 'customer' or 'vendor', case-insensitive
+                    $this->upsert_site_profile(get_the_title($report_id));
+                }
+
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $proceed_to_todo = isset($_POST['_proceed_to_todo']) ? sanitize_text_field($_POST['_proceed_to_todo']) : 0;
         
@@ -1155,7 +1161,6 @@ if (!class_exists('display_documents')) {
         function duplicate_doc_report_data() {
             if( isset($_POST['_report_id']) ) {
                 // Create the post
-                //$current_user_id = get_current_user_id();
                 $new_post = array(
                     'post_type'     => 'doc-report',
                     'post_status'   => 'publish',
@@ -1166,9 +1171,6 @@ if (!class_exists('display_documents')) {
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
                 update_post_meta($post_id, 'doc_id', $doc_id);
 
-                //$params = array(
-                //    'doc_id'     => $doc_id,
-                //);                
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
@@ -1181,6 +1183,44 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
+        function upsert_site_profile($_title) {
+            if (empty($_title)) {
+                return false; // Ensure the title is provided
+            }
+        
+            // Sanitize the input title
+            $sanitized_title = sanitize_text_field($_title);
+        
+            // Query to find a matching post
+            $args = array(
+                'post_type'      => 'site-profile',
+                'posts_per_page' => 1,
+                'title'          => $sanitized_title, // Match the current title
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                // If a matching post exists, update its title
+                $query->the_post();
+                $post_id = get_the_ID();
+                wp_update_post(array(
+                    'ID'         => $post_id,
+                    'post_title' => $sanitized_title, // Update with the sanitized title
+                ));
+                wp_reset_postdata();
+                return $post_id; // Return the updated post ID
+            } else {
+                // If no matching post exists, create a new post
+                $post_id = wp_insert_post(array(
+                    'post_title'  => $sanitized_title, // Insert with the sanitized title
+                    'post_type'   => 'site-profile',
+                    'post_status' => 'publish', // Set to published
+                ));
+                return $post_id; // Return the new post ID
+            }
+        }
+        
         function get_transactions_by_key_value_pair($key_value_pair = array()) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
