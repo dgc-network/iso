@@ -670,7 +670,7 @@ if (!class_exists('display_profiles')) {
                 <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
                 <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
 
-                <label for="site-jobs"><?php echo __( '組織工作：', 'your-text-domain' );?></label>
+                <label for="site-jobs"><?php echo __( '工作職掌：', 'your-text-domain' );?></label>
                 <?php echo $this->display_site_job_list();?>
 
             </fieldset>
