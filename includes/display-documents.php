@@ -702,7 +702,7 @@ if (!class_exists('display_documents')) {
                             if ($inner_query->have_posts()) {
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                                    $is_system_doc = $this->is_system_doc($field_type);
+                                    $get_system_doc_id = $this->get_system_doc_id($field_type);
                                     $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                     $field_value = get_post_meta($report_id, get_the_ID(), true);
                                     $is_checked = ($field_value==1) ? 'checked' : '';
@@ -770,8 +770,10 @@ if (!class_exists('display_documents')) {
                                         echo esc_html(get_the_title($field_value));
 */
                                     } else {
-                                        if ($is_system_doc) {
-                                            echo esc_html(get_the_title($field_value).'('.get_the_ID().')');
+                                        if ($get_system_doc_id) {
+                                            if ($field_value) {
+                                                echo esc_html(get_the_title($field_value).'('.get_the_ID().')');
+                                            }
                                         } else {
                                             echo esc_html($field_value);
                                         }
@@ -1453,13 +1455,13 @@ if (!class_exists('display_documents')) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    $is_system_doc = $this->is_system_doc($field_type);
+                    $get_system_doc_id = $this->get_system_doc_id($field_type);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                     $_list = array();
                     $_list["field_id"] = get_the_ID();
                     $_list["field_type"] = $field_type;
                     $_list["default_value"] = $default_value;
-                    $_list["is_system_doc"] = $is_system_doc;
+                    $_list["get_system_doc_id"] = $get_system_doc_id;
                     array_push($_array, $_list);
                 endwhile;
                 wp_reset_postdata();
@@ -1508,7 +1510,7 @@ if (!class_exists('display_documents')) {
                     $field_title = get_post_meta($field_id, 'field_title', true);
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
-                    $is_system_doc = $this->is_system_doc($field_type);
+                    $get_system_doc_id = $this->get_system_doc_id($field_type);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
@@ -1770,8 +1772,8 @@ if (!class_exists('display_documents')) {
                             break;
 
                         default:
-                            if ($is_system_doc) {
-                                $params['doc_id'] = $is_system_doc;
+                            if ($get_system_doc_id) {
+                                $params['doc_id'] = $get_system_doc_id;
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
@@ -1792,7 +1794,7 @@ if (!class_exists('display_documents')) {
         function update_doc_field_contains($report_id=false, $field_id=false, $is_default=false, $user_id=false) {
             // standard fields
             $field_type = get_post_meta($field_id, 'field_type', true);
-            $is_system_doc = $this->is_system_doc($field_type);
+            //$get_system_doc_id = $this->get_system_doc_id($field_type);
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
                 $field_value = $this->get_field_default_value($field_id, $user_id);
@@ -1904,7 +1906,7 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
-        function is_system_doc($field_type = false) {
+        function get_system_doc_id($field_type = false) {
             // Ensure $field_type is provided
             if (!$field_type) {
                 return false;
@@ -1951,7 +1953,7 @@ if (!class_exists('display_documents')) {
             }
         }
 /*        
-        function is_system_doc($field_type=false) {
+        function get_system_doc_id($field_type=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
