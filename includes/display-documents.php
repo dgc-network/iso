@@ -772,9 +772,7 @@ if (!class_exists('display_documents')) {
                                         $get_system_doc_id = $this->get_system_doc_id($field_type);
                                         if ($get_system_doc_id) {
                                             if ($field_value) {
-                                                echo esc_html(get_the_title($field_value).'('.get_the_ID().')');
-                                            } else {
-                                                echo 'I am here';
+                                                echo esc_html(get_the_title($field_value).'('.$field_value.')');
                                             }
                                         } else {
                                             echo esc_html($field_value);
@@ -1511,7 +1509,6 @@ if (!class_exists('display_documents')) {
                     $field_title = get_post_meta($field_id, 'field_title', true);
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
-                    $get_system_doc_id = $this->get_system_doc_id($field_type);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
@@ -1773,6 +1770,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         default:
+                            $get_system_doc_id = $this->get_system_doc_id($field_type);
                             if ($get_system_doc_id) {
                                 $params['doc_id'] = $get_system_doc_id;
                                 ?>
