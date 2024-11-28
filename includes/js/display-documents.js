@@ -934,6 +934,9 @@ jQuery(document).ready(function($) {
                         if (value.default_value === '_post_content') {
                             ajaxData['_post_content'] = $(field_id_tag).val();
                         }
+                        console.log("get_system_doc_id:",value.get_system_doc_id)
+                    } else {
+                        console.log("did not get_system_doc_id!")
                     }
 
                     if (value.field_type === 'canvas') {
