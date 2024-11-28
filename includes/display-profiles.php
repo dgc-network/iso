@@ -688,6 +688,9 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_site_id']) ) {
                 $site_id = isset($_POST['_site_id']) ? sanitize_text_field($_POST['_site_id']) : 0;
                 $site_title = isset($_POST['_site_title']) ? sanitize_text_field($_POST['_site_title']) : '';
+                $company_phone = isset($_POST['_company_phone']) ? sanitize_text_field($_POST['_company_phone']) : '';
+                $company_address = isset($_POST['_company_address']) ? sanitize_text_field($_POST['_company_address']) : '';
+                $unified_number = isset($_POST['_unified_number']) ? sanitize_text_field($_POST['_unified_number']) : '';
                 // Update the post
                 $post_data = array(
                     'ID'           => $site_id,
@@ -696,12 +699,9 @@ if (!class_exists('display_profiles')) {
                 );        
                 wp_update_post($post_data);
                 update_post_meta($site_id, 'image_url', $_POST['_image_url'] );
-                update_post_meta($site_id, 'company_phone', sanitize_text_field($_POST['_company_phone']) );
-                update_post_meta($site_id, 'company_address', sanitize_text_field($_POST['_company_address']) );
-                update_post_meta($site_id, 'unified_number', sanitize_text_field($_POST['_unified_number']) );
-                update_post_meta($site_id, 'validation_scope', sanitize_text_field($_POST['_validation_scope']) );
-                update_post_meta($site_id, 'verification_standards', sanitize_text_field($_POST['_verification_standards']) );
-                update_post_meta($site_id, 'contact_person', sanitize_text_field($_POST['_contact_person']) );
+                update_post_meta($site_id, 'company_phone', $company_phone);
+                update_post_meta($site_id, 'company_address', $company_address);
+                update_post_meta($site_id, 'unified_number', $unified_number);
                 $response = array('success' => true);
 
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
@@ -724,20 +724,21 @@ if (!class_exists('display_profiles')) {
                     // Handle the error case
                     $response = array('success' => false, 'message' => 'No key-value pairs found or invalid format');
                 }
-
+/*
             } else {
                 // Set up the new post data
                 $current_user_id = get_current_user_id();
                 $site_title = isset($_POST['_site_title']) ? sanitize_text_field($_POST['_site_title']) : 'New site';
                 $new_post = array(
                     'post_type'     => 'site-profile',
-                    'post_title'    => $site_title,
+                    'post_title'    => 'New site',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_user_meta( $current_user_id, 'site_id', $post_id );
+*/
             }
             wp_send_json($response);
         }
