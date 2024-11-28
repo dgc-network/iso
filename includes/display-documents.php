@@ -1459,7 +1459,7 @@ if (!class_exists('display_documents')) {
                     $_list["field_id"] = get_the_ID();
                     $_list["field_type"] = $field_type;
                     $_list["default_value"] = $default_value;
-                    if ($is_system_doc) $_list["is_system_doc"] = true;
+                    $_list["is_system_doc"] = $is_system_doc;
                     array_push($_array, $_list);
                 endwhile;
                 wp_reset_postdata();
@@ -1489,18 +1489,18 @@ if (!class_exists('display_documents')) {
             return $default_value;
         }
 
-        function get_doc_field_contains($args) {
+        function get_doc_field_contains($params=array()) {
             $items_class = new sub_items();
             $cards_class = new erp_cards();
-            $doc_id = isset($args['doc_id']) ? $args['doc_id'] : 0;
-            $report_id = isset($args['report_id']) ? $args['report_id'] : 0;
-            $prev_report_id = isset($args['prev_report_id']) ? $args['prev_report_id'] : 0;
-            $todo_id = isset($args['todo_id']) ? $args['todo_id'] : 0;
-            $is_todo = isset($args['is_todo']) ? $args['is_todo'] : 0;
+            $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
+            $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
+            $is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
 
-            $params = array(
-                'doc_id'     => $doc_id,
-            );                
+            //$params = array(
+            //    'doc_id'     => $doc_id,
+            //);                
             $query = $this->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
@@ -1771,6 +1771,7 @@ if (!class_exists('display_documents')) {
 
                         default:
                             if ($is_system_doc) {
+                                $params['doc_id'] = $is_system_doc;
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
@@ -1903,17 +1904,70 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
-        function is_system_doc($field_type=false) {
-            //$field_type = sanitize_text_field($field_type); // Ensure $field_type is sanitized
-
+        function is_system_doc($field_type = false) {
+            // Ensure $field_type is provided
+            if (!$field_type) {
+                return false;
+            }
+        
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+        
+            // If site_id is not set, return false early
+            if (!$site_id) {
+                return false;
+            }
+        
+            // Query arguments
             $args = array(
                 'post_type'      => 'document', // Specify the post type
-                'posts_per_page' => -1, // Retrieve all matching posts
+                'posts_per_page' => 1, // Only retrieve one post (to optimize performance)
                 'meta_query'     => array(
+                    'relation' => 'AND', // Combine all conditions
                     array(
                         'key'     => 'system_doc', // The meta key to check
                         'value'   => $field_type,  // The value to match
                         'compare' => '=',          // Exact match
+                    ),
+                    array(
+                        'key'     => 'site_id', // Check site_id meta key
+                        'value'   => $site_id, // Match the 'site_id' meta value
+                        'compare' => '=', // Exact match
+                    ),
+                ),
+            );
+        
+            // Perform the query
+            $query = new WP_Query($args);
+        
+            // Check if posts exist
+            if ($query->have_posts()) {
+                $query->the_post(); // Set up the post data
+                $post_id = get_the_ID(); // Retrieve the post ID
+                wp_reset_postdata(); // Reset the global post object
+                return $post_id; // Return the ID of the first matching post
+            } else {
+                return false; // No matches found
+            }
+        }
+/*        
+        function is_system_doc($field_type=false) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'document', // Specify the post type
+                'posts_per_page' => -1, // Retrieve all matching posts
+                'meta_query'     => array(
+                    'relation' => 'AND', // Combine all conditions
+                    array(
+                        'key'     => 'system_doc', // The meta key to check
+                        'value'   => $field_type,  // The value to match
+                        'compare' => '=',          // Exact match
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id, // Match the 'site_id' meta value
+                        'compare' => '=', // Exact match
                     ),
                 ),
             );
@@ -1921,19 +1975,16 @@ if (!class_exists('display_documents')) {
             $query = new WP_Query($args);
             
             if ($query->have_posts()) {
-                //echo 'Matching posts found:<br>';
-                //while ($query->have_posts()) {
-                //    $query->the_post();
-                //    echo 'Post ID: ' . get_the_ID() . ' | Title: ' . get_the_title() . '<br>';
-                //}
-                //wp_reset_postdata();
-                return true;
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    return get_the_ID();
+                }
+                wp_reset_postdata();
             } else {
-                //echo 'No matching posts found.';
                 return false;
             }
         }
-
+*/
         function select_system_doc_options($selected_option=0, $params=array()) {
             $query = $this->retrieve_doc_report_list_data($params);
             $options = '<option value="">Select system document</option>';
