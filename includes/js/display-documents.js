@@ -927,7 +927,7 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
 
-                    if (value.get_system_doc_id) {
+                    //if (value.get_system_doc_id) {
                         if (value.default_value === '_post_title') {
                             ajaxData['_post_title'] = $(field_id_tag).val();
                         }
@@ -938,7 +938,7 @@ jQuery(document).ready(function($) {
                     //} else {
                         //console.log("Cannot get_system_doc_id!")
                         //ajaxData['_post_title'] = $(field_id_tag).val();
-                    }
+                    //}
 
                     if (value.field_type === 'canvas') {
                         const dataURL = canvas.toDataURL('image/png');
