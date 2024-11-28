@@ -1085,10 +1085,16 @@ if (!class_exists('display_documents')) {
                     );        
                     wp_update_post($post_data);
 
+                    if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
+                        // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
+                        $this->upsert_site_profile(get_the_title($report_id));
+                    }
+/*                    
                     if (in_array(strtolower($system_doc), ['customer', 'vendor'])) {
                         // Code to execute if $system_doc is 'customer' or 'vendor', case-insensitive
                         $this->upsert_site_profile(get_the_title($report_id));
                     }
+*/                        
                 }
 
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
