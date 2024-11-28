@@ -702,7 +702,6 @@ if (!class_exists('display_documents')) {
                             if ($inner_query->have_posts()) {
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                                    $get_system_doc_id = $this->get_system_doc_id($field_type);
                                     $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                     $field_value = get_post_meta($report_id, get_the_ID(), true);
                                     $is_checked = ($field_value==1) ? 'checked' : '';
@@ -770,9 +769,12 @@ if (!class_exists('display_documents')) {
                                         echo esc_html(get_the_title($field_value));
 */
                                     } else {
+                                        $get_system_doc_id = $this->get_system_doc_id($field_type);
                                         if ($get_system_doc_id) {
                                             if ($field_value) {
                                                 echo esc_html(get_the_title($field_value).'('.get_the_ID().')');
+                                            } else {
+                                                echo 'I am here';
                                             }
                                         } else {
                                             echo esc_html($field_value);
@@ -1454,13 +1456,13 @@ if (!class_exists('display_documents')) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    $get_system_doc_id = $this->get_system_doc_id($field_type);
+                    //$get_system_doc_id = $this->get_system_doc_id($field_type);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                     $_list = array();
                     $_list["field_id"] = get_the_ID();
                     $_list["field_type"] = $field_type;
                     $_list["default_value"] = $default_value;
-                    $_list["get_system_doc_id"] = $get_system_doc_id;
+                    //$_list["get_system_doc_id"] = $get_system_doc_id;
                     array_push($_array, $_list);
                 endwhile;
                 wp_reset_postdata();
