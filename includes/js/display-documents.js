@@ -934,7 +934,7 @@ jQuery(document).ready(function($) {
                         if (value.default_value === '_post_content') {
                             ajaxData['_post_content'] = $(field_id_tag).val();
                         }
-                        console.log("get_system_doc_id:",value.get_system_doc_id)
+                        //console.log("get_system_doc_id:",value.get_system_doc_id)
                     //} else {
                         //console.log("Cannot get_system_doc_id!")
                         //ajaxData['_post_title'] = $(field_id_tag).val();
