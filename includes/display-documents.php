@@ -1167,10 +1167,10 @@ if (!class_exists('display_documents')) {
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
                 update_post_meta($post_id, 'doc_id', $doc_id);
 
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );                
-                $query = $this->retrieve_doc_field_data($params);
+                //$params = array(
+                //    'doc_id'     => $doc_id,
+                //);                
+                $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_value = sanitize_text_field($_POST[$field_id]);
