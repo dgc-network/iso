@@ -1084,6 +1084,11 @@ if (!class_exists('display_documents')) {
                         'post_content' => $_POST['_post_content'],
                     );        
                     wp_update_post($post_data);
+
+                    if (in_array(strtolower($system_doc), ['customer', 'vendor'])) {
+                        // Code to execute if $system_doc is 'customer' or 'vendor', case-insensitive
+                        $this->upsert_site_profile(get_the_title($report_id));
+                    }
                 }
 
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
@@ -1093,12 +1098,6 @@ if (!class_exists('display_documents')) {
                         $this->update_doc_field_contains($report_id, get_the_ID());
                     }
                     wp_reset_postdata();
-                }
-
-                $system_doc = get_post_meta($doc_id, 'system_doc', true);
-                if (in_array(strtolower($system_doc), ['customer', 'vendor'])) {
-                    // Code to execute if $system_doc is 'customer' or 'vendor', case-insensitive
-                    $this->upsert_site_profile(get_the_title($report_id));
                 }
 
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
