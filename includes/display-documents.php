@@ -501,7 +501,7 @@ if (!class_exists('display_documents')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
                     'post_type'     => 'document',
-                    'post_title'    => 'No title',
+                    'post_title'    => 'New job',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -2281,9 +2281,9 @@ if (!class_exists('display_documents')) {
                         $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         $new_post = array(
+                            'post_type'     => 'doc-field',
                             'post_status'   => 'publish',
                             'post_author'   => $current_user_id,
-                            'post_type'     => 'doc-field',
                         );    
                         $field_id = wp_insert_post($new_post);
                         update_post_meta($field_id, 'doc_id', $post_id);

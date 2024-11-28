@@ -680,11 +680,12 @@ if (!class_exists('display_profiles')) {
         function set_site_profile_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if( isset($_POST['_site_id']) ) {
-                $site_id = sanitize_text_field($_POST['_site_id']);
+                $site_id = isset($_POST['_site_id']) ? sanitize_text_field($_POST['_site_id']) : 0;
+                $site_title = isset($_POST['_site_title']) ? sanitize_text_field($_POST['_site_title']) : '';
                 // Update the post
                 $post_data = array(
                     'ID'           => $site_id,
-                    'post_title'   => sanitize_text_field($_POST['_site_title']),
+                    'post_title'   => $site_title,
                     'post_content' => $_POST['_site_content'],
                 );        
                 wp_update_post($post_data);
@@ -721,13 +722,13 @@ if (!class_exists('display_profiles')) {
             } else {
                 // Set up the new post data
                 $current_user_id = get_current_user_id();
-                $site_title = sanitize_text_field($_POST['_site_title']);
+                $site_title = isset($_POST['_site_title']) ? sanitize_text_field($_POST['_site_title']) : 'New site';
                 $new_post = array(
+                    'post_type'     => 'site-profile',
                     'post_title'    => $site_title,
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'site-profile',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_user_meta( $current_user_id, 'site_id', $post_id );
@@ -1193,23 +1194,25 @@ if (!class_exists('display_profiles')) {
 
         function set_site_job_dialog_data() {
             if( isset($_POST['_doc_id']) ) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $job_id = isset($_POST['_doc_id']) ? sanitize_text_field($_POST['_doc_id']) : 0;
+                $job_title = isset($_POST['_job_title']) ? sanitize_text_field($_POST['_job_title']) : '';
+                $job_number = isset($_POST['_job_number']) ? sanitize_text_field($_POST['_job_number']) : '';
+                $department_id = isset($_POST['_department_id']) ? sanitize_text_field($_POST['_department_id']) : 0;
+                $is_summary_job = isset($_POST['_is_summary_job']) ? sanitize_text_field($_POST['_is_summary_job']) : 0;
                 $data = array(
-                    'ID'           => $doc_id,
-                    'post_title'   => sanitize_text_field($_POST['_job_title']),
+                    'ID'           => $job_id,
+                    'post_title'   => $job_title,
                     'post_content' => $_POST['_job_content'],
                 );
                 wp_update_post( $data );
-                update_post_meta($doc_id, 'job_number', sanitize_text_field($_POST['_job_number']));
-                update_post_meta($doc_id, 'department_id', sanitize_text_field($_POST['_department_id']));
-                update_post_meta($doc_id, 'is_summary_job', sanitize_text_field($_POST['_is_summary_job']));
+                update_post_meta($job_id, 'job_number', $job_number);
+                update_post_meta($job_id, 'department_id', $department_id);
+                update_post_meta($job_id, 'is_summary_job', $is_summary_job);
 
-                // Sanitize the input from POST request
-                $job_number = sanitize_text_field($_POST['_job_number']);
                 // Check if job_number is null
                 if ($job_number == null || $job_number === '') {
                     // If null or empty, delete the meta key
-                    delete_post_meta($doc_id, 'job_number');
+                    delete_post_meta($job_id, 'job_number');
                 }
 
             } else {
@@ -1229,11 +1232,11 @@ if (!class_exists('display_profiles')) {
 
                 // new action
                 $new_post = array(
+                    'post_type'     => 'action',
                     'post_title'    => 'OK',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'action',
                 );    
                 $new_action_id = wp_insert_post($new_post);
                 update_post_meta($new_action_id, 'doc_id', $new_doc_id);
@@ -1424,24 +1427,28 @@ if (!class_exists('display_profiles')) {
         function set_doc_action_dialog_data() {
             $response = array();
             if( isset($_POST['_action_id']) ) {
+                $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
+                $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
+                $next_job = isset($_POST['_next_job']) ? sanitize_text_field($_POST['_next_job']) : 0;
+                $next_leadtime = isset($_POST['_next_leadtime']) ? sanitize_text_field($_POST['_next_leadtime']) : 86400;
                 $data = array(
-                    'ID'         => sanitize_text_field($_POST['_action_id']),
-                    'post_title' => sanitize_text_field($_POST['_action_title']),
+                    'ID'          => $action_id,
+                    'post_title'  => $action_title,
                     'post_content' => $_POST['_action_content'],
-                    'meta_input' => array(
-                        'next_job'   => sanitize_text_field($_POST['_next_job']),
-                        'next_leadtime' => sanitize_text_field($_POST['_next_leadtime']),
+                    'meta_input'  => array(
+                        'next_job'      => $next_job,
+                        'next_leadtime' => $next_leadtime,
                     )
                 );
                 wp_update_post( $data );
             } else {
                 $current_user_id = get_current_user_id();
                 $new_post = array(
+                    'post_type'     => 'action',
                     'post_title'    => 'New action',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'action',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']) );
