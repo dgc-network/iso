@@ -84,12 +84,14 @@ if (!class_exists('display_profiles')) {
             <select id="select-profile">
                 <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
                 <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
+<?php /*
                 <option value="site-job" <?php echo ($select_option=="site-job") ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
                 <option value="customer-card" <?php echo ($select_option=="customer-card") ? 'selected' : ''?>><?php echo __( '客戶資料', 'your-text-domain' );?></option>
                 <option value="vendor-card" <?php echo ($select_option=="vendor-card") ? 'selected' : ''?>><?php echo __( '廠商資料', 'your-text-domain' );?></option>
                 <option value="product-card" <?php echo ($select_option=="product-card") ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
                 <option value="equipment-card" <?php echo ($select_option=="equipment-card") ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
                 <option value="instrument-card" <?php echo ($select_option=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
+*/?>
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
                 <option value="embedded" <?php echo ($select_option=="embedded") ? 'selected' : ''?>><?php echo __( '嵌入項目', 'your-text-domain' );?></option>
@@ -667,6 +669,10 @@ if (!class_exists('display_profiles')) {
                 <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
                 <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
                 <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
+
+                <label for="site-jobs"><?php echo __( '組織工作：', 'your-text-domain' );?></label>
+                <?php echo $this->display_site_job_list();?>
+
             </fieldset>
             <?php
             return ob_get_clean();
@@ -741,47 +747,46 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             ?>
-                <fieldset style="margin-top:5px;">
-                    <table class="ui-widget" style="width:100%;">
-                        <thead>
-                            <th><?php echo __( 'Name', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Email', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
-                        </thead>
-                        <tbody>
-                        <?php        
-                        $users = get_users(); // Initialize with all users
-                        // If the current user is not an administrator, filter by site_id
-                        if (!current_user_can('administrator') || $paged==1) {
-                            $meta_query_args = array(
-                                array(
-                                    'key'     => 'site_id',
-                                    'value'   => $site_id,
-                                    'compare' => '=',
-                                ),
-                            );
-                            $users = get_users(array('meta_query' => $meta_query_args));
-                        }
-                        // Loop through the users
-                        foreach ($users as $user) {
-                            $user_site = get_user_meta($user->ID, 'site_id', true);
-                            if ($user_site) $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
-                            else $display_name = ($user_site == $site_id) ? $user->display_name : $user->display_name.'<span style="color:red;">***</span>';
-                            $is_admin_checked = (is_site_admin($user->ID, $site_id)) ? 'checked' : '';
-                            ?>
-                            <tr id="edit-site-user-<?php echo $user->ID; ?>">
-                                <td style="text-align:center;"><?php echo $display_name; ?></td>
-                                <td style="text-align:center;"><?php echo $user->user_email; ?></td>
-                                <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
-                            </tr>
-                            <?php
-                        }
+            <fieldset style="margin-top:5px;">
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Name', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php        
+                    $users = get_users(); // Initialize with all users
+                    // If the current user is not an administrator, filter by site_id
+                    if (!current_user_can('administrator') || $paged==1) {
+                        $meta_query_args = array(
+                            array(
+                                'key'     => 'site_id',
+                                'value'   => $site_id,
+                                'compare' => '=',
+                            ),
+                        );
+                        $users = get_users(array('meta_query' => $meta_query_args));
+                    }
+                    // Loop through the users
+                    foreach ($users as $user) {
+                        $user_site = get_user_meta($user->ID, 'site_id', true);
+                        if ($user_site) $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
+                        else $display_name = ($user_site == $site_id) ? $user->display_name : $user->display_name.'<span style="color:red;">***</span>';
+                        $is_admin_checked = (is_site_admin($user->ID, $site_id)) ? 'checked' : '';
                         ?>
-                        </tbody>
-                    </table>
-                </fieldset>
-                <?php //$this->display_new_user_dialog();?>
-                <div id="site-user-dialog" title="User dialog"></div>
+                        <tr id="edit-site-user-<?php echo $user->ID; ?>">
+                            <td style="text-align:center;"><?php echo $display_name; ?></td>
+                            <td style="text-align:center;"><?php echo $user->user_email; ?></td>
+                            <td style="text-align:center;"><input type="checkbox" <?php echo $is_admin_checked; ?>/></td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </fieldset>
+            <div id="site-user-dialog" title="User dialog"></div>
             <?php
             return ob_get_clean();
         }
@@ -1010,6 +1015,7 @@ if (!class_exists('display_profiles')) {
         function display_site_job_list() {
             ob_start();
             ?>
+<?php /*            
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
 
@@ -1019,7 +1025,7 @@ if (!class_exists('display_profiles')) {
                     <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
                 </div>
             </div>
-    
+*/?>    
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
