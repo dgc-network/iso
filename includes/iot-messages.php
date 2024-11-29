@@ -8,6 +8,7 @@ if (!class_exists('iot_messages')) {
 
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_iot_message_scripts' ) );
+            add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
 
@@ -36,6 +37,11 @@ if (!class_exists('iot_messages')) {
                 'nonce'    => wp_create_nonce('iot-messages-nonce'), // Generate nonce
             ));                
         }        
+
+        function add_mermaid_script() {
+            // Add Mermaid script
+            wp_enqueue_script('mermaid', 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js', array(), null, true);
+        }
 
         // iot-device post type
         function register_iot_device_post_type() {
@@ -180,6 +186,55 @@ if (!class_exists('iot_messages')) {
                 <input type="text" id="device-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
+
+                <div id="mermaid-div">
+                        <pre class="mermaid">
+                        ---
+config:
+    xyChart:
+        width: 900
+        height: 600
+    themeVariables:
+        xyChart:
+            titleColor: "#ff0000"
+---
+xychart-beta
+    title "Sales Revenue"
+    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
+    y-axis "Revenue (in $)" 4000 --> 11000
+    bar [5000, 6000, 7500, 8200, 9500, 10500, 11000, 10200, 9200, 8500, 7000, 6000]
+    line [5000, 6000, 7500, 8200, 9500, 10500, 11000, 10200, 9200, 8500, 7000, 6000]
+
+
+
+
+<?php /*                            
+                            graph TD 
+                            <?php                        
+                            $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
+                            if ($query->have_posts()) :
+                                while ($query->have_posts()) : $query->the_post();
+                                    $action_title = get_the_title();
+                                    $action_content = get_post_field('post_content', get_the_ID());
+                                    $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
+                                    $current_job_title = get_the_title($current_job);
+                                    $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                                    $next_job_title = get_the_title($next_job);
+                                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                                    if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
+                                    if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                                    ?>
+                                    <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
+                                    <?php
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;    
+                            ?>
+*/?>                            
+                        </pre>
+                    </div>
+
+
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id)?>
                 <?php
@@ -535,7 +590,9 @@ if (!class_exists('iot_messages')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+<?php /*                        
                         <th><?php echo __( 'Device', 'your-text-domain' );?></th>
+*/?>                        
                         <th><?php echo __( 'Sensor', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Value', 'your-text-domain' );?></th>
                         <th></th>
@@ -563,7 +620,9 @@ if (!class_exists('iot_messages')) {
                             ?>
                             <tr id="edit-iot-message-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
+<?php /*                                
                                 <td style="text-align:center;"><?php echo esc_html($device_number);?></td>
+*/?>                                
                                 <?php if ($temperature) {?>
                                     <td style="text-align:center;"><?php echo __( 'Temperature', 'your-text-domain' );?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
