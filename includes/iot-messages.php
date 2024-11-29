@@ -544,7 +544,8 @@ if (!class_exists('iot_messages')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_iot_message_data($paged, $device_id);
+                    $device_number = get_post_meta($device_id, 'device_number', true);
+                    $query = $this->retrieve_iot_message_data($paged, $device_number);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -609,10 +610,11 @@ if (!class_exists('iot_messages')) {
                 'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'AND',
-                    //array(
-                    //    'key'     => 'device_number',
-                    //    'compare' => $device_number,
-                    //),
+                    array(
+                        'key'     => 'deviceID',
+                        //'key'     => 'device_number',
+                        'compare' => $device_number,
+                    ),
                 ),
             );
             $query = new WP_Query($args);
