@@ -188,6 +188,29 @@ if (!class_exists('iot_messages')) {
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
 
                 <div id="mermaid-div">
+                <pre class="mermaid">
+xychart-beta
+    title "Temperature"
+    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
+    y-axis "Temperature (in ℃)" -30 --> 50
+    line [
+        <?php
+        $query = $this->retrieve_iot_message_data(0, $device_number);
+        if ($query->have_posts()) :
+            $data_points = [];
+            while ($query->have_posts()) : $query->the_post();
+                $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                if (!empty($temperature)) {
+                    $data_points[] = $temperature; // Collect temperature data points
+                }
+            endwhile;
+            echo implode(', ', $data_points); // Output the data points as a comma-separated list
+            wp_reset_postdata();
+        endif;
+        ?>
+    ]
+</pre>
+<?php /*
                         <pre class="mermaid">
                         xychart-beta
                             title "Temperature"
@@ -230,8 +253,8 @@ if (!class_exists('iot_messages')) {
                                 wp_reset_postdata();
                             endif;    
                             ?>
-*/?>                            
                         </pre>
+*/?>                            
                     </div>
 
 
