@@ -193,19 +193,18 @@ if (!class_exists('iot_messages')) {
                             title "Temperature"
                             x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
                             y-axis "Temperature (in ℃)" -30 --> 50
-                            line [
                                 <?php
                                 $query = $this->retrieve_iot_message_data(0, $device_number);
                                 if ($query->have_posts()) :
+                                    echo 'line [';
                                     while ($query->have_posts()) : $query->the_post();
                                         $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                                         echo $temperature.', ';
                                     endwhile;
-                                    echo '25';
+                                    echo '25]';
                                     wp_reset_postdata();
                                 endif;    
                                 ?>
-                                ]
 
 
 
