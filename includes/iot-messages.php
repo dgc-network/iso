@@ -201,6 +201,7 @@ if (!class_exists('iot_messages')) {
                                         $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                                         echo $temperature.', ';
                                     endwhile;
+                                    echo '25';
                                     wp_reset_postdata();
                                 endif;    
                                 ?>
