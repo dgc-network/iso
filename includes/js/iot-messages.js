@@ -94,7 +94,7 @@ jQuery(document).ready(function($) {
                                 });
                             },
                             "Delete": function () {
-                                if (window.confirm("Are you sure you want to delete this instrument?")) {
+                                if (window.confirm("Are you sure you want to delete this IoT device?")) {
                                     $.ajax({
                                         type: 'POST',
                                         url: ajax_object.ajax_url,

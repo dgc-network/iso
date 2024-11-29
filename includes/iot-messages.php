@@ -53,6 +53,7 @@ if (!class_exists('iot_messages')) {
             ob_start();
             $todo_class = new to_do_list();
             ?>
+            <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'IoT devices', 'your-text-domain' );?></h2>
 
@@ -103,9 +104,9 @@ if (!class_exists('iot_messages')) {
                     if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
                 </div>
-
             </fieldset>
-            <div id="iot-device-dialog" title="Instrument dialog"></div>
+            </div>
+            <div id="iot-device-dialog" title="IoT device dialog"></div>
             <?php
             return ob_get_clean();
         }
@@ -180,6 +181,7 @@ if (!class_exists('iot_messages')) {
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
+                <?php $this->display_iot_message_list($device_id)?>
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -511,7 +513,7 @@ if (!class_exists('iot_messages')) {
         }
 
         // iot message
-        function display_iot_message_list() {
+        function display_iot_message_list($device_id=false) {
             ob_start();
             $profiles_class = new display_profiles();
             $todo_class = new to_do_list();
@@ -520,7 +522,7 @@ if (!class_exists('iot_messages')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             ?>
-            <div class="ui-widget" id="result-container">
+<?php /*            
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
 
@@ -528,7 +530,7 @@ if (!class_exists('iot_messages')) {
                 <div><?php $todo_class->display_select_todo('iot-message');?></div>
                 <div style="text-align: right"></div>                        
             </div>
-
+*/?>
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
@@ -594,7 +596,6 @@ if (!class_exists('iot_messages')) {
                     ?>
                 </div>
             </fieldset>
-            </div>
             <?php
             return ob_get_clean();
         }
