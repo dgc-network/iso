@@ -68,6 +68,14 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#iot-device-dialog").html(response.html_contain);
+                    // Initialize Mermaid when the document is ready
+                    if (typeof mermaid !== 'undefined') {
+                        mermaid.initialize({ startOnLoad: true });
+                        mermaid.init(undefined, $('#result-container .mermaid'));
+                    } else {
+                        console.error('Mermaid is not loaded');
+                    }
+    
                     if ($("#is-site-admin").val() === "1") {
                         $("#iot-device-dialog").dialog("option", "buttons", {
                             "Save": function () {
