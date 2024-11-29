@@ -544,7 +544,7 @@ if (!class_exists('iot_messages')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_iot_message_data($paged);
+                    $query = $this->retrieve_iot_message_data($paged, $device_id);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -554,7 +554,7 @@ if (!class_exists('iot_messages')) {
                             $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
                             $topic = get_the_title();
                             $message = get_the_content();
-                            $deviceID = get_post_meta(get_the_ID(), 'deviceID', true);
+                            $device_number = get_post_meta(get_the_ID(), 'deviceID', true);
                             $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                             $humidity = get_post_meta(get_the_ID(), 'humidity', true);
                             $latitude = get_post_meta(get_the_ID(), 'latitude', true);
@@ -562,7 +562,7 @@ if (!class_exists('iot_messages')) {
                             ?>
                             <tr id="edit-iot-message-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($deviceID);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($device_number);?></td>
                                 <?php if ($temperature) {?>
                                     <td style="text-align:center;"><?php echo __( 'Temperature', 'your-text-domain' );?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
@@ -600,13 +600,20 @@ if (!class_exists('iot_messages')) {
             return ob_get_clean();
         }
         
-        function retrieve_iot_message_data($paged = 1) {
+        function retrieve_iot_message_data($paged=1, $device_number=false) {
             $args = array(
                 'post_type'      => 'iot-message',
                 'posts_per_page' => get_option('operation_row_counts'), // Show 20 records per page
                 'orderby'        => 'date',
                 'order'          => 'DESC',
                 'paged'          => $paged,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    //array(
+                    //    'key'     => 'device_number',
+                    //    'compare' => $device_number,
+                    //),
+                ),
             );
             $query = new WP_Query($args);
             return $query;
