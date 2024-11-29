@@ -71,9 +71,9 @@ jQuery(document).ready(function($) {
                     // Initialize Mermaid when the document is ready
                     if (typeof mermaid !== 'undefined') {
                         mermaid.initialize({ startOnLoad: true });
-                        mermaid.init(undefined, $('#result-container .mermaid'));
+                        mermaid.init(undefined, $('#iot-device-dialog .mermaid'));
                     } else {
-                        console.error('Mermaid is not loaded');
+                        console.log('Mermaid is not loaded');
                     }
     
                     if ($("#is-site-admin").val() === "1") {
