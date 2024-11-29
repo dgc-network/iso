@@ -181,7 +181,7 @@ if (!class_exists('iot_messages')) {
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
-                <?php $this->display_iot_message_list($device_id)?>
+                <?php echo $this->display_iot_message_list($device_id)?>
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
