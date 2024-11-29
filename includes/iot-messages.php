@@ -51,13 +51,13 @@ if (!class_exists('iot_messages')) {
 
         function display_iot_device_list() {
             ob_start();
-            $profiles_class = new display_profiles();
+            $todo_class = new to_do_list();
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'IoT devices', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile('iot-device');?></div>
+                <div><?php $todo_class->display_select_todo('iot-devices');?></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-device" style="display:inline" placeholder="Search..." />
                 </div>
