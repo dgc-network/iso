@@ -199,7 +199,7 @@ if (!class_exists('iot_messages')) {
                                 if ($query->have_posts()) :
                                     while ($query->have_posts()) : $query->the_post();
                                         $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                                        echo $temperature.',';
+                                        echo $temperature.', ';
                                     endwhile;
                                     wp_reset_postdata();
                                 endif;    
