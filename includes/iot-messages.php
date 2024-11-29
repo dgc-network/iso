@@ -59,7 +59,7 @@ if (!class_exists('iot_messages')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $profiles_class->display_select_profile('iot-device');?></div>
                 <div style="text-align:right; display:flex;">
-                    <input type="text" id="search-instrument" style="display:inline" placeholder="Search..." />
+                    <input type="text" id="search-device" style="display:inline" placeholder="Search..." />
                 </div>
             </div>
 
@@ -171,14 +171,14 @@ if (!class_exists('iot_messages')) {
             $device_content = get_post_field('post_content', $device_id);
             ?>
             <fieldset>
-                <input type="hidden" id="instrument-id" value="<?php echo esc_attr($device_id);?>" />
+                <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="instrument-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
-                <input type="text" id="instrument-code" value="<?php echo esc_attr($device_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="instrument-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
-                <input type="text" id="instrument-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="instrument-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
-                <textarea id="instrument-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
+                <label for="device-number"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
+                <input type="text" id="device-number" value="<?php echo esc_attr($device_number);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="device-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <input type="text" id="device-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
                 <?php
                 // transaction data vs card key/value
