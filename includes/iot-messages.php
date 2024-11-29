@@ -193,8 +193,9 @@ if (!class_exists('iot_messages')) {
         if ($query->have_posts()) :
             while ($query->have_posts()) : $query->the_post();
                 $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
                 if (is_numeric($temperature)) { // Ensure the temperature is a valid number
-                    $x_axis[] = 'C';
+                    $x_axis[] = $post_time;
                     $data_points[] = $temperature;
                 }
             endwhile;
@@ -202,6 +203,8 @@ if (!class_exists('iot_messages')) {
         endif;
         
          // Output data as a comma-separated list
+        if ($data_points!=array() && $x_axis!=array()) {
+
         ?>
 
                 <div id="mermaid-div">
@@ -212,75 +215,8 @@ xychart-beta
     y-axis "Temperature (in ℃)" -30 --> 50
     line [<?php echo implode(', ', $data_points);?>]
 </pre>
-<?php /*
-                <pre class="mermaid">
-xychart-beta
-    title "Temperature"
-    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
-    y-axis "Temperature (in ℃)" -30 --> 50
-    line [
-        <?php
-        $query = $this->retrieve_iot_message_data(0, $device_number);
-        if ($query->have_posts()) :
-            $data_points = [];
-            while ($query->have_posts()) : $query->the_post();
-                $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                if (!empty($temperature)) {
-                    $data_points[] = $temperature; // Collect temperature data points
-                }
-            endwhile;
-            echo implode(', ', $data_points); // Output the data points as a comma-separated list
-            wp_reset_postdata();
-        endif;
-        ?>
-    ]
-</pre>
-<?php /*
-                        <pre class="mermaid">
-                        xychart-beta
-                            title "Temperature"
-                            x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
-                            y-axis "Temperature (in ℃)" -30 --> 50
-                                <?php
-                                $query = $this->retrieve_iot_message_data(0, $device_number);
-                                if ($query->have_posts()) :
-                                    echo 'line [';
-                                    while ($query->have_posts()) : $query->the_post();
-                                        $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                                        echo $temperature.', ';
-                                    endwhile;
-                                    echo '25]';
-                                    wp_reset_postdata();
-                                endif;    
-                                ?>
-
-
-
-<?php /*                            
-                            graph TD 
-                            <?php                        
-                            $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
-                            if ($query->have_posts()) :
-                                while ($query->have_posts()) : $query->the_post();
-                                    $action_title = get_the_title();
-                                    $action_content = get_post_field('post_content', get_the_ID());
-                                    $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
-                                    $current_job_title = get_the_title($current_job);
-                                    $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                                    $next_job_title = get_the_title($next_job);
-                                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                                    if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
-                                    if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
-                                    ?>
-                                    <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
-                                    <?php
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;    
-                            ?>
-                        </pre>
-*/?>                            
                     </div>
+<?php                }?>
 
 
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
