@@ -190,11 +190,21 @@ if (!class_exists('iot_messages')) {
                 <div id="mermaid-div">
                         <pre class="mermaid">
                         xychart-beta
-                            title "Sales Revenue"
+                            title "Temperature"
                             x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
-                            y-axis "Revenue (in $)" 4000 --> 11000
-                            bar [5000, 6000, 7500, 8200, 9500, 10500, 11000, 10200, 9200, 8500, 7000, 6000]
-                            line [5000, 6000, 7500, 8200, 9500, 10500, 11000, 10200, 9200, 8500, 7000, 6000]
+                            y-axis "Temperature (in ℃)" -30 --> 50
+                            line [
+                                <?php
+                                $query = $this->retrieve_iot_message_data(0, $device_number);
+                                if ($query->have_posts()) :
+                                    while ($query->have_posts()) : $query->the_post();
+                                        $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                                        echo $temperature.',';
+                                    endwhile;
+                                    wp_reset_postdata();
+                                endif;    
+                                ?>
+                                ]
 
 
 
@@ -667,6 +677,7 @@ if (!class_exists('iot_messages')) {
                     ),
                 ),
             );
+            if ($paged==0) $args['posts_per_page']=-1;
             $query = new WP_Query($args);
             return $query;
         }
