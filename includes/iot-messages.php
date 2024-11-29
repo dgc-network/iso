@@ -11,6 +11,13 @@ if (!class_exists('iot_messages')) {
             add_action( 'init', array( $this, 'register_iot_message_meta' ) );
             add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
 
+            add_action( 'wp_ajax_get_iot_device_dialog_data', array( $this, 'get_iot_device_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_iot_device_dialog_data', array( $this, 'get_iot_device_dialog_data' ) );
+            add_action( 'wp_ajax_set_iot_device_dialog_data', array( $this, 'set_iot_device_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_iot_device_dialog_data', array( $this, 'set_iot_device_dialog_data' ) );
+            add_action( 'wp_ajax_del_iot_device_dialog_data', array( $this, 'del_iot_device_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_iot_device_dialog_data', array( $this, 'del_iot_device_dialog_data' ) );
+
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
                 wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
@@ -29,6 +36,218 @@ if (!class_exists('iot_messages')) {
                 'nonce'    => wp_create_nonce('iot-messages-nonce'), // Generate nonce
             ));                
         }        
+
+        // iot-device post type
+        function register_iot_device_post_type() {
+            $labels = array(
+                'menu_name'     => _x('IoT devices', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+            );
+            register_post_type( 'iot-device', $args );
+        }
+
+        function display_iot_device_list() {
+            ob_start();
+            $profiles_class = new display_profiles();
+            ?>
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( 'IoT devices', 'your-text-domain' );?></h2>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $profiles_class->display_select_profile('iot-device');?></div>
+                <div style="text-align:right; display:flex;">
+                    <input type="text" id="search-instrument" style="display:inline" placeholder="Search..." />
+                </div>
+            </div>
+
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Number', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Title', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_iot_device_data($paged);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $device_number = get_post_meta(get_the_ID(), 'device_number', true);
+                            ?>
+                            <tr id="edit-iot-device-<?php the_ID();?>">
+                                <td style="text-align:center;"><?php echo $device_number;?></td>
+                                <td><?php the_title();?></td>
+                                <td><?php the_content();?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <?php if (is_site_admin()) {?>
+                    <div id="new-iot-device" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php }?>
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    ?>
+                </div>
+
+            </fieldset>
+            <div id="iot-device-dialog" title="Instrument dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_iot_device_data($paged = 1) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            
+            $args = array(
+                'post_type'      => 'iot-device',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+                'meta_key'       => 'device_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+        
+            // Sanitize and handle search query
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
+            if (!empty($search_query)) {
+                $args['paged'] = 1;
+                $args['s'] = $search_query;
+            }
+        
+            $query = new WP_Query($args);
+        
+            // Check if query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('iot-device');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+            }
+        
+            return $query;
+        }
+
+        function display_iot_device_dialog($device_id=false) {
+            ob_start();
+            $device_number = get_post_meta($device_id, 'device_number', true);
+            $device_title = get_the_title($device_id);
+            $device_content = get_post_field('post_content', $device_id);
+            ?>
+            <fieldset>
+                <input type="hidden" id="instrument-id" value="<?php echo esc_attr($device_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
+                <label for="instrument-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
+                <input type="text" id="instrument-code" value="<?php echo esc_attr($device_number);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="instrument-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <input type="text" id="instrument-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="instrument-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <textarea id="instrument-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
+                <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
+                <?php
+                // transaction data vs card key/value
+                $key_value_pair = array(
+                    '_iot_device'   => $device_id,
+                );
+                $documents_class = new display_documents();
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
+                ?>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_iot_device_dialog_data() {
+            if( isset($_POST['_device_id']) ) {
+                $device_id = sanitize_text_field($_POST['_device_id']);
+                $response = array('html_contain' => $this->display_iot_device_dialog($device_id));
+            }
+            wp_send_json($response);
+        }
+
+        function set_iot_device_dialog_data() {
+            if( isset($_POST['_device_id']) ) {
+                $device_id = sanitize_text_field($_POST['_device_id']);
+                $device_number = (isset($_POST['_device_number'])) ? sanitize_text_field($_POST['_device_number']) : '';
+                $device_title = (isset($_POST['_device_title'])) ? sanitize_text_field($_POST['_device_title']) : '';
+                $data = array(
+                    'ID'           => $device_id,
+                    'post_title'   => $device_title,
+                    'post_content' => $_POST['_device_content'],
+                );
+                wp_update_post( $data );
+                update_post_meta($device_id, 'device_number', $device_number);
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $new_post = array(
+                    'post_type'     => 'iot-device',
+                    'post_title'    => 'New device',
+                    'post_content'  => 'Your post content goes here.',
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'site_id', $site_id);
+                update_post_meta($post_id, 'device_number', time());
+            }
+            $response = array('html_contain' => $this->display_iot_device_list());
+            wp_send_json($response);
+        }
+
+        function del_iot_device_dialog_data() {
+            wp_delete_post($_POST['_device_id'], true);
+            $response = array('html_contain' => $this->display_iot_device_list());
+            wp_send_json($response);
+        }
+
+        function select_iot_device_options($selected_option=0) {
+            $query = $this->retrieve_iot_device_data(0);
+            $options = '<option value="">Select device</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
 
         // iot-message operation
         function register_iot_message_post_type() {
@@ -84,19 +303,19 @@ if (!class_exists('iot_messages')) {
 
             if ($iot_query->have_posts()) {
                 // Collect all instrument codes to minimize database queries
-                $instrument_codes = array();
+                $device_numbers = array();
                 while ($iot_query->have_posts()) {
                     $iot_query->the_post();
-                    $instrument_codes[get_the_ID()] = get_post_meta(get_the_ID(), 'deviceID', true);
+                    $device_numbers[get_the_ID()] = get_post_meta(get_the_ID(), 'deviceID', true);
                 }
 
-                // Query 'instrument-card' posts that match any of the collected instrument codes
+                // Query 'iot-device' posts that match any of the collected instrument codes
                 $inner_args = array(
-                    'post_type' => 'instrument-card',
+                    'post_type' => 'iot-device',
                     'meta_query' => array(
                         array(
-                            'key'     => 'instrument_code',
-                            'value'   => array_values($instrument_codes),
+                            'key'     => 'device_number',
+                            'value'   => array_values($device_numbers),
                             'compare' => 'IN',
                         )
                     ),
@@ -107,9 +326,9 @@ if (!class_exists('iot_messages')) {
                 if ($inner_query->have_posts()) {
                     while ($inner_query->have_posts()) {
                         $inner_query->the_post();
-                        $instrument_code = get_post_meta(get_the_ID(), 'instrument_code', true);
+                        $device_number = get_post_meta(get_the_ID(), 'device_number', true);
                         // Find the corresponding iot-message post
-                        $iot_post_id = array_search($instrument_code, $instrument_codes);
+                        $iot_post_id = array_search($device_number, $device_numbers);
                         if ($iot_post_id !== false) {
                             $temperature = get_post_meta($iot_post_id, 'temperature', true);
                             $humidity = get_post_meta($iot_post_id, 'humidity', true);
@@ -178,10 +397,10 @@ if (!class_exists('iot_messages')) {
             return $accumulated_post_ids;
         }
 
-        function create_exception_notification_events($instrument_id=false, $iot_sensor=false, $sensor_value=false) {
-            $instrument_code = get_post_meta($instrument_id, 'instrument_code', true);
+        function create_exception_notification_events($device_id=false, $iot_sensor=false, $sensor_value=false) {
+            $device_number = get_post_meta($device_id, 'device_number', true);
             //$documents_class = new display_documents();
-            $query = $this->get_doc_reports_by_doc_field('_instrument', $instrument_id);
+            $query = $this->get_doc_reports_by_doc_field('_instrument', $device_id);
 
             if ($query->have_posts()) {
                 foreach ($query->posts as $report_id) {
@@ -196,30 +415,30 @@ if (!class_exists('iot_messages')) {
                     foreach ($employee_ids as $employee_id) {
                         if ($max_value && $sensor_value>$max_value) {
                             if ($iot_sensor=='temperature') {
-                                $text_message = '#'.$instrument_code.' '.get_the_title($instrument_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經大於設定的'.$max_value.'°C了。';
+                                $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經大於設定的'.$max_value.'°C了。';
                             }
                             if ($iot_sensor=='humidity') {
-                                $text_message = '#'.$instrument_code.' '.get_the_title($instrument_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經大於設定的'.$max_value.'%了。';
+                                $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經大於設定的'.$max_value.'%了。';
                             }
                         }
                         if ($min_value && $sensor_value<$min_value) {
                             if ($iot_sensor=='temperature') {
-                                $text_message = '#'.$instrument_code.' '.get_the_title($instrument_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經小於設定的'.$min_value.'°C了。';
+                                $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經小於設定的'.$min_value.'°C了。';
                             }
                             if ($iot_sensor=='humidity') {
-                                $text_message = '#'.$instrument_code.' '.get_the_title($instrument_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經小於設定的'.$min_value.'%了。';
+                                $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經小於設定的'.$min_value.'%了。';
                             }
                         }
-                        $this->prepare_exception_notification_event($instrument_id, $employee_id, $text_message);
+                        $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
                     }
                 }
                 return $query->posts; // Return the array of post IDs
             }
         }
 
-        function prepare_exception_notification_event($instrument_id=false, $user_id=false, $text_message=false) {
+        function prepare_exception_notification_event($device_id=false, $user_id=false, $text_message=false) {
             // Check if a notification has been sent today
-            $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $instrument_id, true);
+            $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
             $today = wp_date('Y-m-d');
 
             if ($last_notification_time && wp_date('Y-m-d', $last_notification_time) === $today) {
@@ -237,7 +456,7 @@ if (!class_exists('iot_messages')) {
             wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
 
             // Update the last notification time
-            update_user_meta($user_id, 'last_notification_time_' . $instrument_id, time());
+            update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
         }
 
         function send_delayed_notification_handler($params) {

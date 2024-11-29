@@ -51,7 +51,7 @@ if (!class_exists('to_do_list')) {
                 <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
                 <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'your-text-domain' );?></option>
                 <option value="signature" <?php echo ($select_option=="signature") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
-                <option value="iot-message" <?php echo ($select_option=="iot-message") ? 'selected' : ''?>><?php echo __( 'IoT Messages', 'your-text-domain' );?></option>
+                <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'your-text-domain' );?></option>
                 <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
                 </select>
             <?php
@@ -101,7 +101,7 @@ if (!class_exists('to_do_list')) {
                 }
 
                 $iot_messages = new iot_messages();
-                if ($_GET['_select_todo']=='iot-message') echo $iot_messages->display_iot_message_list();
+                if ($_GET['_select_todo']=='iot-devices') echo $iot_messages->display_iot_device_list();
             }
         }
 
