@@ -189,11 +189,12 @@ if (!class_exists('iot_messages')) {
                 <?php
         $query = $this->retrieve_iot_message_data(0, $device_number);
         $data_points = []; // Initialize an array to hold valid temperature values
-        
+        $x_axis = [];
         if ($query->have_posts()) :
             while ($query->have_posts()) : $query->the_post();
                 $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                 if (is_numeric($temperature)) { // Ensure the temperature is a valid number
+                    $x_axis[] = 'C';
                     $data_points[] = $temperature;
                 }
             endwhile;
@@ -207,7 +208,7 @@ if (!class_exists('iot_messages')) {
                 <pre class="mermaid">
 xychart-beta
     title "Temperature"
-    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
+    x-axis [<?php echo implode(', ', $x_axis);?>]
     y-axis "Temperature (in ℃)" -30 --> 50
     line [<?php echo implode(', ', $data_points);?>]
 </pre>
