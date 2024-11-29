@@ -186,15 +186,7 @@ if (!class_exists('iot_messages')) {
                 <input type="text" id="device-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
-
-                <div id="mermaid-div">
-                <pre class="mermaid">
-xychart-beta
-    title "Temperature"
-    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
-    y-axis "Temperature (in ℃)" -30 --> 50
-    line [
-        <?php
+                <?php
         $query = $this->retrieve_iot_message_data(0, $device_number);
         $data_points = []; // Initialize an array to hold valid temperature values
         
@@ -208,9 +200,16 @@ xychart-beta
             wp_reset_postdata();
         endif;
         
-        echo implode(', ', $data_points); // Output data as a comma-separated list
+         // Output data as a comma-separated list
         ?>
-    ]
+
+                <div id="mermaid-div">
+                <pre class="mermaid">
+xychart-beta
+    title "Temperature"
+    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
+    y-axis "Temperature (in ℃)" -30 --> 50
+    line [<?php echo implode(', ', $data_points);?>]
 </pre>
 <?php /*
                 <pre class="mermaid">
