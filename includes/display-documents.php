@@ -764,15 +764,16 @@ if (!class_exists('display_documents')) {
                                     } elseif ($field_type=='_instrument') {
                                         $instrument_code = get_post_meta($field_value, 'instrument_code', true);
                                         echo esc_html(get_the_title($field_value).'('.$instrument_code.')');
+*/                                        
                                     } elseif ($field_type=='_department') {
                                         $department_code = get_post_meta($field_value, 'department_code', true);
                                         echo esc_html(get_the_title($field_value));
-*/
                                     } else {
                                         $get_system_doc_id = $this->get_system_doc_id($field_type);
                                         if ($get_system_doc_id) {
                                             if ($field_value) {
-                                                echo esc_html(get_the_title($field_value).'('.$field_value.')');
+                                                //echo esc_html(get_the_title($field_value).'('.$field_value.')');
+                                                echo esc_html(get_the_title($field_value));
                                             }
                                         } else {
                                             echo esc_html($field_value);
@@ -1028,7 +1029,6 @@ if (!class_exists('display_documents')) {
                     switch ($is_doc_report) {
                         case 1:
                             $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $_document));
-                            //$response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $doc_id));
                             break;
                         case 'document-card':
                             $response['html_contain'] = $this->display_document_list();
@@ -1053,7 +1053,6 @@ if (!class_exists('display_documents')) {
                             break;
                         default:
                             $response['html_contain'] = $this->display_doc_frame_contain($_document);
-                            //$response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                             break;
                     }
                 } else {
@@ -1087,14 +1086,13 @@ if (!class_exists('display_documents')) {
 
                     if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
                         // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
-                        $this->upsert_site_profile(get_the_title($report_id));
+                        $this->upsert_site_profile($report_id);
                     }
-/*                    
-                    if (in_array(strtolower($system_doc), ['customer', 'vendor'])) {
-                        // Code to execute if $system_doc is 'customer' or 'vendor', case-insensitive
-                        $this->upsert_site_profile(get_the_title($report_id));
+
+                    if (stripos($system_doc, 'employee') !== false) {
+                        $this->update_user_employee_id($report_id);
                     }
-*/                        
+
                 }
 
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
@@ -1188,11 +1186,17 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
-        function upsert_site_profile($_title) {
-            if (empty($_title)) {
-                return false; // Ensure the title is provided
+        function upsert_site_profile($_id=false) {
+            if (empty($_id)) {
+                return false; // Ensure the ID is provided
             }
-        
+
+            // Get the title of the post
+            $_title = get_the_title($_id);
+            if (empty($_title)) {
+                return false; // Ensure the title is valid
+            }
+
             // Sanitize the input title
             $sanitized_title = sanitize_text_field($_title);
         
@@ -1224,6 +1228,58 @@ if (!class_exists('display_documents')) {
                 ));
                 return $post_id; // Return the new post ID
             }
+        }
+        
+        function update_user_employee_id($_id=false) {
+            if (empty($_id)) {
+                return false; // Ensure the ID is provided
+            }
+
+            // Get the title of the post
+            $_title = get_the_title($_id);
+            if (empty($_title)) {
+                return false; // Ensure the title is valid
+            }
+
+            // Sanitize the input title
+            $sanitized_title = sanitize_text_field($_title);
+        
+            // Get the current user's site_id
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            if (empty($site_id)) {
+                return false; // Ensure the site_id is valid
+            }
+        
+            // Query users with the matching site_id
+            $users = get_users(array(
+                'meta_query' => array(
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=', // Exact match
+                    ),
+                ),
+            ));
+        
+            // Check if the sanitized title matches any user's display_name
+            foreach ($users as $user) {
+                // Partial match using stripos
+                if (stripos($user->display_name, $sanitized_title) !== false) {
+                    update_user_meta($user->ID, 'employee_id', $_id);
+                    return true; // Return true on success
+                }
+        
+                // Or use fuzzy matching with similar_text
+                // $similarity = 0;
+                // similar_text($user->display_name, $sanitized_title, $similarity);
+                // if ($similarity >= 80) {
+                //     update_user_meta($user->ID, 'employee_id', $_id);
+                //     return true; // Return true on success
+                // }
+            }
+        
+            return false; // No match found
         }
         
         function get_transactions_by_key_value_pair($key_value_pair = array()) {
@@ -1499,13 +1555,11 @@ if (!class_exists('display_documents')) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    //$get_system_doc_id = $this->get_system_doc_id($field_type);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                     $_list = array();
                     $_list["field_id"] = get_the_ID();
                     $_list["field_type"] = $field_type;
                     $_list["default_value"] = $default_value;
-                    //$_list["get_system_doc_id"] = $get_system_doc_id;
                     array_push($_array, $_list);
                 endwhile;
                 wp_reset_postdata();
@@ -1544,9 +1598,6 @@ if (!class_exists('display_documents')) {
             $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
             $is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
 
-            //$params = array(
-            //    'doc_id'     => $doc_id,
-            //);                
             $query = $this->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
@@ -1673,14 +1724,14 @@ if (!class_exists('display_documents')) {
                                 <?php
                             }
                             break;
-/*
+
                         case ($field_type=='_document'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value);?></select>
                             <?php
                             break;
-
+/*
                         case ($field_type=='_customer'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
@@ -1715,14 +1766,14 @@ if (!class_exists('display_documents')) {
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
                             <?php
                             break;
-
+*/
                         case ($field_type=='_department'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
                             <?php
                             break;
-*/
+
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_id).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
@@ -1955,15 +2006,15 @@ if (!class_exists('display_documents')) {
             if (!$field_type) {
                 return false;
             }
-        
+
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-        
+
             // If site_id is not set, return false early
             if (!$site_id) {
                 return false;
             }
-        
+
             // Query arguments
             $args = array(
                 'post_type'      => 'document', // Specify the post type
@@ -1982,10 +2033,9 @@ if (!class_exists('display_documents')) {
                     ),
                 ),
             );
-        
             // Perform the query
             $query = new WP_Query($args);
-        
+
             // Check if posts exist
             if ($query->have_posts()) {
                 $query->the_post(); // Set up the post data
@@ -1996,50 +2046,12 @@ if (!class_exists('display_documents')) {
                 return false; // No matches found
             }
         }
-/*        
-        function get_system_doc_id($field_type=false) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'document', // Specify the post type
-                'posts_per_page' => -1, // Retrieve all matching posts
-                'meta_query'     => array(
-                    'relation' => 'AND', // Combine all conditions
-                    array(
-                        'key'     => 'system_doc', // The meta key to check
-                        'value'   => $field_type,  // The value to match
-                        'compare' => '=',          // Exact match
-                    ),
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id, // Match the 'site_id' meta value
-                        'compare' => '=', // Exact match
-                    ),
-                ),
-            );
-            
-            $query = new WP_Query($args);
-            
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    return get_the_ID();
-                }
-                wp_reset_postdata();
-            } else {
-                return false;
-            }
-        }
-*/
+
         function select_system_doc_options($selected_option=0, $params=array()) {
             $query = $this->retrieve_doc_report_list_data($params);
-            $options = '<option value="">Select system document</option>';
+            $options = '<option value="">Select an option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                //$doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                //$doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                //$doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
-                //$options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision) . '</option>';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
