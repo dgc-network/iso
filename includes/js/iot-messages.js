@@ -72,9 +72,9 @@ jQuery(document).ready(function($) {
                     if (typeof mermaid !== 'undefined') {
                         mermaid.initialize({ 
                             startOnLoad: true,
-                            themeVariables: {
-                                lineColor: red, // Replace with your desired color
-                            }
+                            //themeVariables: {
+                                //lineColor: red, // Replace with your desired color
+                            //}
                         });
                         mermaid.init(undefined, $('#iot-device-dialog .mermaid'));
                     } else {
