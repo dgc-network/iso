@@ -187,7 +187,8 @@ if (!class_exists('iot_messages')) {
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <?php
-                $query = $this->retrieve_iot_message_data(1, $device_number);
+                $paged = max(1, get_query_var('paged')); // Get the current page number
+                $query = $this->retrieve_iot_message_data($paged, $device_number);
                 $data_points = []; // Initialize an array to hold valid temperature values
                 $x_axis = [];
                 if ($query->have_posts()) :
@@ -202,8 +203,10 @@ if (!class_exists('iot_messages')) {
                     endwhile;
                     wp_reset_postdata();
                 endif;
-                
-                 // Output data as a comma-separated list
+                $max_temperature = !empty($data_points) ? max($data_points) : null;
+                $min_temperature = !empty($data_points) ? min($data_points) : null;
+
+                // Output data as a comma-separated list
                 if ($data_points!=array() && $x_axis!=array()) {        
                 ?>
                 <div id="mermaid-div">
@@ -211,7 +214,7 @@ if (!class_exists('iot_messages')) {
                         xychart-beta
                             title "Temperature"
                             x-axis [<?php echo implode(', ', $x_axis);?>]
-                            y-axis "Temperature (in ℃)" -30 --> 50
+                            y-axis "Temperature (in ℃)" <?php echo $min_temperature;?> --> <?php echo $max_temperature;?>
                             line [<?php echo implode(', ', $data_points);?>]
                     </pre>
                 </div>
