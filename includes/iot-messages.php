@@ -187,7 +187,7 @@ if (!class_exists('iot_messages')) {
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <?php
-        $query = $this->retrieve_iot_message_data(0, $device_number);
+        $query = $this->retrieve_iot_message_data(1, $device_number);
         $data_points = []; // Initialize an array to hold valid temperature values
         $x_axis = [];
         if ($query->have_posts()) :
