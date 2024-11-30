@@ -203,8 +203,8 @@ if (!class_exists('iot_messages')) {
                     endwhile;
                     wp_reset_postdata();
                 endif;
-                $max_temperature = !empty($data_points) ? max($data_points)+10 : null;
-                $min_temperature = !empty($data_points) ? min($data_points)-10 : null;
+                $max_temperature = !empty($data_points) ? max($data_points)+1 : null;
+                $min_temperature = !empty($data_points) ? min($data_points)-1 : null;
 
                 // Output data as a comma-separated list
                 if ($data_points!=array() && $x_axis!=array()) {        
