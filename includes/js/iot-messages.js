@@ -70,7 +70,12 @@ jQuery(document).ready(function($) {
                     $("#iot-device-dialog").html(response.html_contain);
                     // Initialize Mermaid when the document is ready
                     if (typeof mermaid !== 'undefined') {
-                        mermaid.initialize({ startOnLoad: true });
+                        mermaid.initialize({ 
+                            startOnLoad: true,
+                            themeVariables: {
+                                lineColor: "#FF0000", // Replace with your desired color
+                            }
+                        });
                         mermaid.init(undefined, $('#iot-device-dialog .mermaid'));
                     } else {
                         console.log('Mermaid is not loaded');
