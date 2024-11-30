@@ -217,7 +217,13 @@ if (!class_exists('iot_messages')) {
                             y-axis "Temperature (in ℃)" <?php echo $min_temperature;?> --> <?php echo $max_temperature;?>
                             line [<?php echo implode(', ', $data_points);?>]
                     </pre>
-                </div>
+                    <style>
+                        /* Example: Change line color in Mermaid chart */
+                        .mermaid .line {
+                            stroke: #FF0000 !important; /* Change to your desired color */
+                        }
+                    </style>
+                </div>                
                 <?php }?>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id)?>
