@@ -187,39 +187,35 @@ if (!class_exists('iot_messages')) {
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <?php
-        $query = $this->retrieve_iot_message_data(1, $device_number);
-        $data_points = []; // Initialize an array to hold valid temperature values
-        $x_axis = [];
-        if ($query->have_posts()) :
-            while ($query->have_posts()) : $query->the_post();
-                $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                //$post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
-                $post_time = get_post_time('Hi', false, get_the_ID());
-                if (is_numeric($temperature)) { // Ensure the temperature is a valid number
-                    $x_axis[] = $post_time;
-                    $data_points[] = $temperature;
-                }
-            endwhile;
-            wp_reset_postdata();
-        endif;
-        
-         // Output data as a comma-separated list
-        if ($data_points!=array() && $x_axis!=array()) {
-
-        ?>
-
+                $query = $this->retrieve_iot_message_data(1, $device_number);
+                $data_points = []; // Initialize an array to hold valid temperature values
+                $x_axis = [];
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                        //$post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
+                        $post_time = get_post_time('Hi', false, get_the_ID());
+                        if (is_numeric($temperature)) { // Ensure the temperature is a valid number
+                            $x_axis[] = $post_time;
+                            $data_points[] = $temperature;
+                        }
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+                
+                 // Output data as a comma-separated list
+                if ($data_points!=array() && $x_axis!=array()) {        
+                ?>
                 <div id="mermaid-div">
-                <pre class="mermaid">
-xychart-beta
-    title "Temperature"
-    x-axis [<?php echo implode(', ', $x_axis);?>]
-    y-axis "Temperature (in ℃)" -30 --> 50
-    line [<?php echo implode(', ', $data_points);?>]
-</pre>
-                    </div>
-<?php                }?>
-
-
+                    <pre class="mermaid">
+                        xychart-beta
+                            title "Temperature"
+                            x-axis [<?php echo implode(', ', $x_axis);?>]
+                            y-axis "Temperature (in ℃)" -30 --> 50
+                            line [<?php echo implode(', ', $data_points);?>]
+                    </pre>
+                </div>
+                <?php }?>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id)?>
                 <?php
