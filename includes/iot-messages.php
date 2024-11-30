@@ -215,7 +215,7 @@ if (!class_exists('iot_messages')) {
                             title "Temperature"
                             x-axis [<?php echo implode(', ', $x_axis);?>]
                             y-axis "Temperature (in ℃)" <?php echo $min_temperature;?> --> <?php echo $max_temperature;?>
-                            line [<?php echo implode(', ', $data_points);?>]::stroke=#FF0000
+                            line [<?php echo implode(', ', $data_points);?>]
                     </pre>
                 </div>                
                 <?php }?>
