@@ -195,7 +195,7 @@ if (!class_exists('iot_messages')) {
                     while ($query->have_posts()) : $query->the_post();
                         $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                         //$post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
-                        $post_time = get_post_time('Hi', false, get_the_ID());
+                        $post_time = get_post_time('H.i', false, get_the_ID());
                         if (is_numeric($temperature)) { // Ensure the temperature is a valid number
                             $x_axis[] = $post_time;
                             $data_points[] = $temperature;
