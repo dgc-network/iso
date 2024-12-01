@@ -441,7 +441,7 @@ if (!class_exists('iot_messages')) {
         function create_exception_notification_events($device_id=false, $iot_sensor=false, $sensor_value=false) {
             $device_number = get_post_meta($device_id, 'device_number', true);
             //$documents_class = new display_documents();
-            $query = $this->get_doc_reports_by_doc_field('_instrument', $device_id);
+            $query = $this->get_doc_reports_by_doc_field('_iot_device', $device_id);
 
             if ($query->have_posts()) {
                 foreach ($query->posts as $report_id) {

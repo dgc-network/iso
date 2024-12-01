@@ -748,6 +748,12 @@ if (!class_exists('display_documents')) {
                                         $doc_number = get_post_meta($field_value, 'doc_number', true);
                                         $doc_revision = get_post_meta($field_value, 'doc_revision', true);
                                         echo esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision);
+                                    } elseif ($field_type=='_department') {
+                                        $department_code = get_post_meta($field_value, 'department_code', true);
+                                        echo esc_html(get_the_title($field_value));
+                                    } elseif ($field_type=='_iot_device') {
+                                        $iot_device = get_post_meta($field_value, 'iot_device', true);
+                                        echo esc_html(get_the_title($field_value));
 /*
                                     } elseif ($field_type=='_customer') {
                                         $customer_code = get_post_meta($field_value, 'customer_code', true);
@@ -765,9 +771,6 @@ if (!class_exists('display_documents')) {
                                         $instrument_code = get_post_meta($field_value, 'instrument_code', true);
                                         echo esc_html(get_the_title($field_value).'('.$instrument_code.')');
 */                                        
-                                    } elseif ($field_type=='_department') {
-                                        $department_code = get_post_meta($field_value, 'department_code', true);
-                                        echo esc_html(get_the_title($field_value));
                                     } else {
                                         $get_system_doc_id = $this->get_system_doc_id($field_type);
                                         if ($get_system_doc_id) {
@@ -1442,6 +1445,7 @@ if (!class_exists('display_documents')) {
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
+                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
                     <?php
                     $query = $this->get_system_doc_list_query();
                     if ($query->have_posts()) {
@@ -1464,10 +1468,10 @@ if (!class_exists('display_documents')) {
                     <option value="_product" <?php echo ($field_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
                     <option value="_equipment" <?php echo ($field_type=='_equipment') ? 'selected' : ''?>><?php echo __( '_equipment', 'your-text-domain' );?></option>
                     <option value="_instrument" <?php echo ($field_type=='_instrument') ? 'selected' : ''?>><?php echo __( '_instrument', 'your-text-domain' );?></option>
+*/?>                    
+                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( '_iot_device', 'your-text-domain' );?></option>
                     <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
                     <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
-*/?>
-                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
                     <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
                     <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
                     <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
@@ -1731,6 +1735,23 @@ if (!class_exists('display_documents')) {
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value);?></select>
                             <?php
                             break;
+
+                        case ($field_type=='_department'):
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
+                            <?php
+                            break;
+    
+                        case ($field_type=='_iot_device'):
+                            $iot_messages = new iot_messages();
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $iot_messages->select_iot_device_options($field_value);?></select>
+                            <?php
+                            break;
+    
+    
 /*
                         case ($field_type=='_customer'):
                             ?>
@@ -1767,13 +1788,6 @@ if (!class_exists('display_documents')) {
                             <?php
                             break;
 */
-                        case ($field_type=='_department'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
-                            <?php
-                            break;
-
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_id).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
