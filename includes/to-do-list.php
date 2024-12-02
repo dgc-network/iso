@@ -48,8 +48,8 @@ if (!class_exists('to_do_list')) {
         function display_select_todo($select_option=false) {
             ?>
             <select id="select-todo">
-                <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
                 <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'your-text-domain' );?></option>
+                <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
                 <option value="signature" <?php echo ($select_option=="signature") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
                 <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'your-text-domain' );?></option>
                 <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
@@ -503,7 +503,6 @@ if (!class_exists('to_do_list')) {
                 <?php
                     $profiles_class = new display_profiles();
                     $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             echo '<input type="button" id="start-job-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
