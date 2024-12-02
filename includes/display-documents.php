@@ -1595,10 +1595,6 @@ if (!class_exists('display_documents')) {
             if ($default_value === 'me') {
                 $default_value = $user_id; // Set default value to an array with the current user ID
             }
-            if ($field_type === '_embedded' || $field_type === '_planning' || $field_type === '_select' ) {
-                $items_class = new sub_items();
-                $default_value = $items_class->get_embedded_post_id_by_number($default_value);
-            }
             return $default_value;
         }
 
