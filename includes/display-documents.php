@@ -1095,7 +1095,6 @@ if (!class_exists('display_documents')) {
                     if (stripos($system_doc, 'employee') !== false) {
                         $this->update_user_employee_id($report_id);
                     }
-
                 }
 
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
@@ -1116,11 +1115,11 @@ if (!class_exists('display_documents')) {
                 }
             } else {
                 // Create a new post if no report_id is set
-                $current_user_id = get_current_user_id();
+                //$current_user_id = get_current_user_id();
                 $new_post = array(
                     'post_type' => 'doc-report',
                     'post_status' => 'publish',
-                    'post_author' => $current_user_id,
+                    'post_author' => get_current_user_id(),
                 );
                 $post_id = wp_insert_post($new_post);
         
@@ -2076,7 +2075,7 @@ if (!class_exists('display_documents')) {
             $options = '<option value="">Select an option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title().'('.get_the_title().')') . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title().'('.get_the_ID().')') . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
