@@ -355,7 +355,7 @@ if (!class_exists('sub_items')) {
             return $options;
         }
         
-        function get_embedded_post_id_by_code($embedded_code=false) {
+        function get_embedded_post_id_by_number($embedded_code=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Define the query arguments
@@ -666,7 +666,7 @@ if (!class_exists('sub_items')) {
 
                     if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                         if ($default_value) {
-                            $embedded_id = $this->get_embedded_post_id_by_code($default_value);
+                            $embedded_id = $this->get_embedded_post_id_by_number($default_value);
                             $inner_query = $this->retrieve_sub_item_list_data($embedded_id);
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();

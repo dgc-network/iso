@@ -1028,6 +1028,12 @@ if (!class_exists('display_documents')) {
                 // Determine content based on document type and status
                 if ($_document && $todo_status == -1 && !$is_admin) {
                     $is_doc_report = get_post_meta($_document, 'is_doc_report', true);
+                    if ($is_doc_report) {
+                        $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $_document));
+                    } else {
+                        $response['html_contain'] = $this->display_doc_frame_contain($_document);
+                    }
+/*
                     // Switch structure for handling various document types
                     switch ($is_doc_report) {
                         case 1:
@@ -1058,10 +1064,9 @@ if (!class_exists('display_documents')) {
                             $response['html_contain'] = $this->display_doc_frame_contain($_document);
                             break;
                     }
+*/                            
                 } else {
-                    // Default response when conditions are not met
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
-                    // Add additional document and sub-item fields
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
                     $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
                     $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
@@ -1137,7 +1142,7 @@ if (!class_exists('display_documents')) {
 
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                             $items_class = new sub_items();
-                            $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                            $embedded_id = $items_class->get_embedded_post_id_by_number($default_value);
                             $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
         
                             if ($inner_query->have_posts()) {
@@ -1581,6 +1586,7 @@ if (!class_exists('display_documents')) {
             }
             // Get and sanitize the field name and default value
             $default_value = sanitize_text_field(get_post_meta($field_id, 'default_value', true));
+            $field_type = sanitize_text_field(get_post_meta($field_id, 'field_type', true));
             // Check if the default value should be 'today'
             if ($default_value === 'today') {
                 $default_value = wp_date('Y-m-d', time()); // Set default value to today's date
@@ -1588,6 +1594,10 @@ if (!class_exists('display_documents')) {
             // Check if the default value should be the current user ID
             if ($default_value === 'me') {
                 $default_value = $user_id; // Set default value to an array with the current user ID
+            }
+            if ($field_type === '_embedded' || $field_type === '_planning' || $field_type === '_select' ) {
+                $items_class = new sub_items();
+                $default_value = $items_class->get_embedded_post_id_by_number($default_value);
             }
             return $default_value;
         }
@@ -1707,7 +1717,7 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_select'):
                             if ($default_value) {
-                                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                                $embedded_id = $items_class->get_embedded_post_id_by_number($default_value);
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
@@ -1717,7 +1727,7 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_item_list'):
                             if ($default_value) {
-                                $embedded_id = $items_class->get_embedded_post_id_by_code($default_value);
+                                $embedded_id = $items_class->get_embedded_post_id_by_number($default_value);
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <div id="sub-report-list">
