@@ -374,7 +374,7 @@ if (!class_exists('display_documents')) {
                         <input type="button" id="doc-report-preview1" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <?php echo $this->display_doc_field_list($doc_id);?>
-                    <label id="doc-report-job-setting" class="button"><?php echo __( '表單上的職務設定', 'your-text-domain' );?></label>
+                    <label id="doc-report-job-setting" class="button"><?php echo __( '職務設定', 'your-text-domain' );?></label>
                 
                     <div id="mermaid-div">
                         <pre class="mermaid">
