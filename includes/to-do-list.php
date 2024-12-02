@@ -720,7 +720,7 @@ if (!class_exists('to_do_list')) {
             // 1. From update_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             // 2. From create_new_todo_and_go_next(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
             // 3. From update_start_job_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 4. From schedule_event_callback($params), create a update_start_job_dialog_data() the go item 3
+            // 4. From schedule_event_callback($params), create a update_start_job_dialog_data() then go item 3
 
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
