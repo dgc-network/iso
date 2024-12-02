@@ -621,8 +621,29 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_report_id, 'doc_id', $doc_id);
             update_post_meta($new_report_id, 'todo_status', $next_job);
 
-            // Update the doc-field meta for new doc-report
+            // update system_doc
             $documents_class = new display_documents();
+            $system_doc = get_post_meta($doc_id, 'system_doc', true);
+            if ($system_doc) {
+                // Update the post
+                $post_data = array(
+                    'ID'           => $new_report_id,
+                    'post_title'   => $_POST['_post_title'],
+                    'post_content' => $_POST['_post_content'],
+                );        
+                wp_update_post($post_data);
+
+                if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
+                    // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
+                    $documents_class->upsert_site_profile($new_report_id);
+                }
+
+                if (stripos($system_doc, 'employee') !== false) {
+                    $documents_class->update_user_employee_id($new_report_id);
+                }
+            }
+
+            // Update the doc-field meta for new doc-report
             $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
