@@ -1905,22 +1905,9 @@ if (!class_exists('display_documents')) {
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
                 $field_value = $this->get_field_default_value($field_id, $user_id);
-                //error_log("Field value for default: " . print_r($field_value, true));
             } else {
                 $field_value = $_POST[$field_id];
-                //error_log("Field value from POST: " . print_r($field_value, true));
             }
-/*
-            $get_system_doc_id = $this->get_system_doc_id($field_type);
-            if ($get_system_doc_id) {
-                if ($field_value) {
-                    //echo esc_html(get_the_title($field_value).'('.$field_value.')');
-                    echo esc_html(get_the_title($field_value));
-                }
-            } else {
-                echo esc_html($field_value);
-            }
-*/                
             update_post_meta($report_id, $field_id, $field_value);
 
             // special field-type
