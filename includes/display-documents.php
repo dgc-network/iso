@@ -1648,6 +1648,11 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_embedded'):
+                            if ($field_type === '_embedded' || $field_type === '_planning' || $field_type === '_select' ) {
+                                $items_class = new sub_items();
+                                $field_value = $items_class->get_embedded_post_id_by_number($field_value);
+                            }
+                
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($field_value));?></label>
                             <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
