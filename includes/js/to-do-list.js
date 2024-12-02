@@ -275,6 +275,40 @@ jQuery(document).ready(function($) {
                 const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                     ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
+                } else {
+                    ajaxData[value.field_id] = $(field_id_tag).val();
+
+                    if (value.default_value === '_post_title') {
+                        ajaxData['_post_title'] = $(field_id_tag).val();
+                    }
+                    if (value.default_value === '_post_content') {
+                        ajaxData['_post_content'] = $(field_id_tag).val();
+                    }
+
+                    if (value.field_type === 'canvas') {
+                        const dataURL = canvas.toDataURL('image/png');
+                        ajaxData[value.field_id] = dataURL;
+                        console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
+                    }
+
+                    if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
+                        $.each(response.sub_item_fields, function(index, inner_value) {
+                            const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
+                            const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
+                            if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
+                                ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
+                            } else {
+                                ajaxData[embedded_field] = $(embedded_field_tag).val();
+                            }
+                        });
+                    }
+                }
+            });
+/*
+            $.each(doc_fields, function(index, value) {
+                const field_id_tag = '#' + value.field_id;
+                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                 } else if (value.field_type === 'canvas') {
                     const dataURL = canvas.toDataURL('image/png');
                     ajaxData[value.field_id] = dataURL;
@@ -283,7 +317,7 @@ jQuery(document).ready(function($) {
                     ajaxData[value.field_id] = $(field_id_tag).val();
                 }
             });
-
+*/
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
