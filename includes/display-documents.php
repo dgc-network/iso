@@ -1903,7 +1903,6 @@ if (!class_exists('display_documents')) {
         function update_doc_field_contains($report_id=false, $field_id=false, $is_default=false, $user_id=false) {
             // standard fields
             $field_type = get_post_meta($field_id, 'field_type', true);
-            //$get_system_doc_id = $this->get_system_doc_id($field_type);
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
                 $field_value = $this->get_field_default_value($field_id, $user_id);
@@ -1912,6 +1911,17 @@ if (!class_exists('display_documents')) {
                 $field_value = $_POST[$field_id];
                 //error_log("Field value from POST: " . print_r($field_value, true));
             }
+/*
+            $get_system_doc_id = $this->get_system_doc_id($field_type);
+            if ($get_system_doc_id) {
+                if ($field_value) {
+                    //echo esc_html(get_the_title($field_value).'('.$field_value.')');
+                    echo esc_html(get_the_title($field_value));
+                }
+            } else {
+                echo esc_html($field_value);
+            }
+*/                
             update_post_meta($report_id, $field_id, $field_value);
 
             // special field-type
@@ -2066,7 +2076,7 @@ if (!class_exists('display_documents')) {
             $options = '<option value="">Select an option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title().'('.get_the_title().')') . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
