@@ -48,8 +48,8 @@ if (!class_exists('to_do_list')) {
         function display_select_todo($select_option=false) {
             ?>
             <select id="select-todo">
-                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'your-text-domain' );?></option>
                 <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
+                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'your-text-domain' );?></option>
                 <option value="signature" <?php echo ($select_option=="signature") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
                 <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'your-text-domain' );?></option>
                 <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
@@ -66,8 +66,6 @@ if (!class_exists('to_do_list')) {
 
                 if (isset($_GET['_id'])) {
                     $todo_id = sanitize_text_field($_GET['_id']);
-                    //$todo_id = intval($todo_id); // Sanitize the ID just in case
-
                     $todo_post = get_post($todo_id);
 
                     // Check if the post exists and is of post type "todo"
@@ -88,7 +86,8 @@ if (!class_exists('to_do_list')) {
                     }
                 }
 
-                if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
+                //if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
+                if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'start-job';
                 if ($_GET['_select_todo']=='todo-list') echo $this->display_todo_list();
                 if ($_GET['_select_todo']=='start-job') {
                     if (isset($_GET['_job_id'])) echo $this->display_start_job_dialog($_GET['_job_id']);
