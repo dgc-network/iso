@@ -1140,13 +1140,14 @@ if (!class_exists('display_documents')) {
                         update_post_meta($post_id, $field_id, $default_value);
 
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
-                            $items_class = new sub_items();
-                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                            error_log('field_type: '.$field_type);
-                            error_log('default_value: '.$default_value);
-                            error_log('embedded_id: '.$embedded_id);
-        
+                            //$items_class = new sub_items();
+                            //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                            //$inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                            //error_log('field_type: '.$field_type);
+                            //error_log('default_value: '.$default_value);
+                            //error_log('embedded_id: '.$embedded_id);
+
+                            $inner_query = $items_class->retrieve_sub_item_list_data($default_value);        
                             if ($inner_query->have_posts()) {
                                 while ($inner_query->have_posts()) {
                                     $inner_query->the_post();
@@ -1155,7 +1156,7 @@ if (!class_exists('display_documents')) {
                                 }
                                 wp_reset_postdata();
                             }
-                            update_post_meta($post_id, $field_id, $embedded_id);
+                            //update_post_meta($post_id, $field_id, $embedded_id);
                         }
                     }
                     wp_reset_postdata();
@@ -1588,7 +1589,6 @@ if (!class_exists('display_documents')) {
             }
             // Get and sanitize the field name and default value
             $default_value = sanitize_text_field(get_post_meta($field_id, 'default_value', true));
-            $field_type = sanitize_text_field(get_post_meta($field_id, 'field_type', true));
             // Check if the default value should be 'today'
             if ($default_value === 'today') {
                 $default_value = wp_date('Y-m-d', time()); // Set default value to today's date
@@ -1597,6 +1597,13 @@ if (!class_exists('display_documents')) {
             if ($default_value === 'me') {
                 $default_value = $user_id; // Set default value to an array with the current user ID
             }
+
+            $field_type = sanitize_text_field(get_post_meta($field_id, 'field_type', true));
+            if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
+                $items_class = new sub_items();
+                $default_value = $items_class->get_embedded_id_by_number($default_value);
+            }
+
             return $default_value;
         }
 

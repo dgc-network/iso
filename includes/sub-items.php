@@ -368,29 +368,16 @@ if (!class_exists('sub_items')) {
             if ($embedded_number === false) {
                 return null; // Return null if no embedded_number is provided
             }
-        
             $query = $this->retrieve_embedded_data(0, $embedded_number);
             if ($query->have_posts()) {
                 // Get the first post ID
                 $post_id = $query->posts[0]->ID; // Correctly retrieve the post ID
                 return $post_id;
             }
-        
             // Return null if no matching post is found
             return null;
         }
-/*        
-        function get_embedded_id_by_number($embedded_number=false) {
-            $query = $this->retrieve_embedded_data(0, $embedded_number);
-            if ($query->have_posts()) {
-                // Get the first post ID
-                $post_id = $query->posts[0];
-                return $post_id;
-            }
-            // Return null if no matching post is found
-            return null;
-        }
-*/
+
         // sub-item
         function register_sub_item_post_type() {
             $labels = array(
