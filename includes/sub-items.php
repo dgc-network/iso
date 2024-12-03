@@ -438,6 +438,31 @@ if (!class_exists('sub_items')) {
             return ob_get_clean();
         }
 
+        function retrieve_sub_item_list_data($embedded_id = false) {
+            $args = array(
+                'post_type'      => 'sub-item',
+                'posts_per_page' => -1,
+                'meta_key'       => 'sorting_key',
+                'orderby'        => 'meta_value_num', // Specify meta value as numeric
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            // Initialize meta_query if $embedded_id is provided
+            if ($embedded_id !== false) {
+                $args['meta_query'] = array(
+                    array(
+                        'key'   => 'embedded_id',
+                        'value' => $embedded_id,
+                        'compare' => '=' // Ensure exact match (optional)
+                    ),
+                );
+            }
+        
+            // Execute the query
+            $query = new WP_Query($args);
+            return $query;
+        }
+/*        
         function retrieve_sub_item_list_data($embedded_id=false) {
             $args = array(
                 'post_type'      => 'sub-item',
@@ -458,7 +483,7 @@ if (!class_exists('sub_items')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         function display_sub_item_dialog($sub_item_id=false) {
             ob_start();
             $sub_item_title = get_the_title($sub_item_id);

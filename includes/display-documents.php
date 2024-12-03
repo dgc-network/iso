@@ -1138,8 +1138,6 @@ if (!class_exists('display_documents')) {
                         $field_type = get_post_meta($field_id, 'field_type', true);
                         $default_value = $this->get_field_default_value($field_id);
                         update_post_meta($post_id, $field_id, $default_value);
-                        error_log('field_type: '.$field_type);
-                        error_log('default_value: '.$default_value);
 
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                             $items_class = new sub_items();
