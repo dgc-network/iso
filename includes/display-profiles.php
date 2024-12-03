@@ -114,14 +114,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(0);
 
                 //if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
-/*                
-                $cards_class = new erp_cards();
-                if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
-                if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
-                if ($_GET['_select_profile']=='product-card') echo $cards_class->display_product_card_list();
-                if ($_GET['_select_profile']=='equipment-card') echo $cards_class->display_equipment_card_list();
-                if ($_GET['_select_profile']=='instrument-card') echo $cards_class->display_instrument_card_list();
-*/
+
                 $items_class = new sub_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
@@ -1065,8 +1058,7 @@ if (!class_exists('display_profiles')) {
 
         function display_site_job_dialog($doc_id=false) {
             ob_start();
-            //$cards_class = new erp_cards();
-            $documents_class = new display_documents();
+            $items_class = new sub_items();
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);

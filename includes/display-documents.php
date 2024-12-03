@@ -297,7 +297,6 @@ if (!class_exists('display_documents')) {
         function display_document_dialog($doc_id=false) {
             ob_start();
             $todo_class = new to_do_list();
-            //$cards_class = new erp_cards();
             $items_class = new sub_items();
             $profiles_class = new display_profiles();
 
@@ -422,7 +421,6 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                //$cards_class = new erp_cards();
                 $profiles_class = new display_profiles();
                 
                 if (is_site_admin()) $response['html_contain'] = $this->display_document_dialog($doc_id);
@@ -962,8 +960,6 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_report_id'])) {
                 // Initialize classes
                 $items_class = new sub_items();
-                //$cards_class = new erp_cards();
-                $profiles_class = new display_profiles();
 
                 // Sanitize POST inputs
                 $report_id = sanitize_text_field($_POST['_report_id']);
@@ -1504,7 +1500,6 @@ if (!class_exists('display_documents')) {
 
         function get_doc_field_contains($params=array()) {
             $items_class = new sub_items();
-            //$cards_class = new erp_cards();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;

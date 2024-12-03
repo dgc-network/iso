@@ -807,7 +807,7 @@ if (!class_exists('sub_items')) {
                         if ($get_system_doc_id) {
                             $params['doc_id'] = $get_system_doc_id;
                             ?>
-                            <select id="<?php echo esc_attr($embedded_id.get_the_ID());?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_system_doc_options($field_value, $params);?></select>
+                            <select id="<?php echo esc_attr($embedded_id.get_the_ID());?>" class="text ui-widget-content ui-corner-all"><?php echo $documents_class->select_system_doc_options($field_value, $params);?></select>
                             <?php
                         } else {
                             ?>
@@ -950,7 +950,6 @@ if (!class_exists('sub_items')) {
 
         function display_doc_category_dialog($category_id=false) {
             ob_start();
-            //$cards_class = new erp_cards();
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
