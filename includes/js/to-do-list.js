@@ -278,6 +278,9 @@ jQuery(document).ready(function($) {
                 } else {
                     ajaxData[value.field_id] = $(field_id_tag).val();
 
+                    if (value.default_value === '_post_number') {
+                        ajaxData['_post_number'] = $(field_id_tag).val();
+                    }
                     if (value.default_value === '_post_title') {
                         ajaxData['_post_title'] = $(field_id_tag).val();
                     }

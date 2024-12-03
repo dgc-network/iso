@@ -632,6 +632,7 @@ if (!class_exists('to_do_list')) {
                     'post_content' => $_POST['_post_content'],
                 );        
                 wp_update_post($post_data);
+                update_post_meta($report_id, '_post_number', $_POST['_post_number']);
 
                 if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
                     // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
