@@ -144,6 +144,55 @@ if (!class_exists('sub_items')) {
                 'post_type'      => 'embedded',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
+                'meta_query'     => array(
+                    'relation' => 'AND', // Combine all conditions with an AND relation
+                    array(
+                        'relation' => 'OR', // Sub-condition for is_private
+                        array(
+                            'key'     => 'is_private',
+                            'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
+                        ),
+                        array(
+                            'key'     => 'is_private',
+                            'value'   => '0',
+                            'compare' => '=', // Condition to check if the meta value is 0
+                        ),
+                        array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'is_private',
+                                'value'   => '1',
+                                'compare' => '=',
+                            ),
+                            array(
+                                'key'     => 'site_id',
+                                'value'   => $site_id,
+                                'compare' => '=',
+                            ),
+                        ),
+                    ),
+                ),
+                'meta_key'       => 'embedded_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'DESC', // Sorting order (ascending)
+            );
+            
+            // Add the embedded_number condition only if $embedded_number exists
+            if (!empty($embedded_number)) {
+                $args['meta_query'][] = array(
+                    'key'     => 'embedded_number',
+                    'value'   => $embedded_number,
+                    'compare' => '=', // Exact match for embedded_number
+                );
+            }
+/*            
+            // Use $args to perform the query
+            $query = new WP_Query($args);
+            
+            $args = array(
+                'post_type'      => 'embedded',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
                 $meta_query = array(
                     'relation' => 'AND', // Combine all conditions with an AND relation
                     array(
@@ -171,7 +220,7 @@ if (!class_exists('sub_items')) {
                             )
                         ),
                     ),
-                )
+                ),
                 'meta_key'       => 'embedded_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
@@ -185,7 +234,7 @@ if (!class_exists('sub_items')) {
                     'compare' => '=', // Exact match for embedded_number
                 )
             }
-            
+*/            
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
