@@ -297,7 +297,7 @@ if (!class_exists('display_documents')) {
         function display_document_dialog($doc_id=false) {
             ob_start();
             $todo_class = new to_do_list();
-            $cards_class = new erp_cards();
+            //$cards_class = new erp_cards();
             $items_class = new sub_items();
             $profiles_class = new display_profiles();
 
@@ -380,7 +380,7 @@ if (!class_exists('display_documents')) {
 
                     <div id="job-setting-div" style="display:none;">
                         <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
-                        <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($department_id);?></select>
+                        <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
                         <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
                         <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
@@ -422,7 +422,7 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_doc_id'])) {
                 $doc_id = sanitize_text_field($_POST['_doc_id']);
                 $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                $cards_class = new erp_cards();
+                //$cards_class = new erp_cards();
                 $profiles_class = new display_profiles();
                 
                 if (is_site_admin()) $response['html_contain'] = $this->display_document_dialog($doc_id);
@@ -962,7 +962,7 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_report_id'])) {
                 // Initialize classes
                 $items_class = new sub_items();
-                $cards_class = new erp_cards();
+                //$cards_class = new erp_cards();
                 $profiles_class = new display_profiles();
 
                 // Sanitize POST inputs
@@ -1503,7 +1503,7 @@ if (!class_exists('display_documents')) {
 
         function get_doc_field_contains($params=array()) {
             $items_class = new sub_items();
-            $cards_class = new erp_cards();
+            //$cards_class = new erp_cards();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
@@ -1647,7 +1647,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_department'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($field_value);?></select>
                             <?php
                             break;
     

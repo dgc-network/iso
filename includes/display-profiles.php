@@ -1065,7 +1065,7 @@ if (!class_exists('display_profiles')) {
 
         function display_site_job_dialog($doc_id=false) {
             ob_start();
-            $cards_class = new erp_cards();
+            //$cards_class = new erp_cards();
             $documents_class = new display_documents();
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
@@ -1086,7 +1086,7 @@ if (!class_exists('display_profiles')) {
                 <label for="action-list"><?php echo __( 'Action list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
-                <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_department_card_options($department_id);?></select>
+                <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
                 <label for="user-list"><?php echo __( 'User list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_user_list($doc_id);?>
                 <input type="checkbox" id="is-summary-job" <?php echo $is_checked?> />

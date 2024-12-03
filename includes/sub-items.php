@@ -802,10 +802,12 @@ if (!class_exists('sub_items')) {
                             $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
                         }
                         $field_type = get_post_meta(get_the_id(), 'sub_item_type', true);
-                        if ($field_type=='_product') {
-                            $cards_class = new erp_cards();
+                        $documents_class = new display_documents();
+                        $get_system_doc_id = $documents_class->get_system_doc_id($field_type);
+                        if ($get_system_doc_id) {
+                            $params['doc_id'] = $get_system_doc_id;
                             ?>
-                            <select id="<?php echo esc_attr($embedded_id.get_the_ID());?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($embedded_id.get_the_ID());?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_system_doc_options($field_value, $params);?></select>
                             <?php
                         } else {
                             ?>
@@ -948,7 +950,7 @@ if (!class_exists('sub_items')) {
 
         function display_doc_category_dialog($category_id=false) {
             ob_start();
-            $cards_class = new erp_cards();
+            //$cards_class = new erp_cards();
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
