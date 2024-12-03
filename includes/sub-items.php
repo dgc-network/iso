@@ -176,7 +176,7 @@ if (!class_exists('sub_items')) {
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
             );
-            
+
             // Add the embedded_number condition only if $embedded_number exists
             if (!empty($embedded_number)) {
                 $args['meta_query'][] = array(
@@ -185,74 +185,24 @@ if (!class_exists('sub_items')) {
                     'compare' => '=', // Exact match for embedded_number
                 );
             }
-/*            
-            // Use $args to perform the query
-            $query = new WP_Query($args);
-            
-            $args = array(
-                'post_type'      => 'embedded',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                $meta_query = array(
-                    'relation' => 'AND', // Combine all conditions with an AND relation
-                    array(
-                        'relation' => 'OR', // Sub-condition for is_private
-                        array(
-                            'key'     => 'is_private',
-                            'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
-                        ),
-                        array(
-                            'key'     => 'is_private',
-                            'value'   => '0',
-                            'compare' => '=', // Condition to check if the meta value is 0
-                        ),
-                        array(
-                            'relation' => 'AND',
-                            array(
-                                'key'     => 'is_private',
-                                'value'   => '1',
-                                'compare' => '='
-                            ),
-                            array(
-                                'key'     => 'site_id',
-                                'value'   => $site_id,
-                                'compare' => '='
-                            )
-                        ),
-                    ),
-                ),
-                'meta_key'       => 'embedded_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'DESC', // Sorting order (ascending)
-            )
-        
-            // Add the embedded_number condition only if $embedded_number exists
-            if (!empty($embedded_number)) {
-                $args['meta_query'][] = array(
-                    'key'     => 'embedded_number',
-                    'value'   => $embedded_number,
-                    'compare' => '=', // Exact match for embedded_number
-                )
-            }
-*/            
+
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
-        
+
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
                 $args['paged'] = 1;
                 $args['s'] = $search_query;
             }
-        
+
             $query = new WP_Query($args);
-        
+
             // Check if query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
                 // Remove the initial search query
                 unset($args['s']);
-
                 // Add meta query for searching across all meta keys
                 $meta_keys = get_post_type_meta_keys('embedded');
                 $meta_query_all_keys = array('relation' => 'OR');
@@ -266,7 +216,7 @@ if (!class_exists('sub_items')) {
                 $args['meta_query'][] = $meta_query_all_keys;
                 $query = new WP_Query($args);
             }
-        
+
             return $query;
         }
 
@@ -408,46 +358,19 @@ if (!class_exists('sub_items')) {
             while ($query->have_posts()) : $query->the_post();
                 $embedded_number = get_post_meta(get_the_ID(), 'embedded_number', true);
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title().'('.$embedded_number.')') . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
         }
         
         function get_embedded_id_by_number($embedded_number=false) {
-/*            
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            // Define the query arguments
-            $args = array(
-                'post_type'  => 'embedded',
-                'meta_query' => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                        'compare' => '=',            // Comparison operator
-                    ),
-                    array(
-                        'key'   => 'embedded_number',  // Meta key
-                        'value' => $embedded_number,   // Meta value to match
-                        'compare' => '=',            // Comparison operator
-                    ),
-                ),
-                'fields' => 'ids', // Return only post IDs
-                'posts_per_page' => 1, // Limit to one post
-            );
-        
-            // Run the query
-            $query = new WP_Query($args);
-*/        
-            // Check if any posts are found
             $query = $this->retrieve_embedded_data(0, $embedded_number);
             if ($query->have_posts()) {
                 // Get the first post ID
                 $post_id = $query->posts[0];
                 return $post_id;
             }
-        
             // Return null if no matching post is found
             return null;
         }

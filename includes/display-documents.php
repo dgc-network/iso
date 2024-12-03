@@ -1143,6 +1143,9 @@ if (!class_exists('display_documents')) {
                             $items_class = new sub_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                            error_log('field_type: '.$field_type);
+                            error_log('default_value: '.$default_value);
+                            error_log('embedded_id: '.$embedded_id);
         
                             if ($inner_query->have_posts()) {
                                 while ($inner_query->have_posts()) {
@@ -1647,12 +1650,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_embedded'):
-/*                            
-                            if ($field_type === '_embedded' || $field_type === '_planning' || $field_type === '_select' ) {
-                                $items_class = new sub_items();
-                                $field_value = $items_class->get_embedded_id_by_number($field_value);
-                            }
-*/                
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($field_value));?></label>
                             <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
