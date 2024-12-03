@@ -1141,7 +1141,7 @@ if (!class_exists('display_documents')) {
 
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                             $items_class = new sub_items();
-                            $embedded_id = $items_class->get_embedded_post_id_by_number($default_value);
+                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             $inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
         
                             if ($inner_query->have_posts()) {
@@ -1650,7 +1650,7 @@ if (!class_exists('display_documents')) {
 /*                            
                             if ($field_type === '_embedded' || $field_type === '_planning' || $field_type === '_select' ) {
                                 $items_class = new sub_items();
-                                $field_value = $items_class->get_embedded_post_id_by_number($field_value);
+                                $field_value = $items_class->get_embedded_id_by_number($field_value);
                             }
 */                
                             ?>
@@ -1718,7 +1718,7 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_select'):
                             if ($default_value) {
-                                $embedded_id = $items_class->get_embedded_post_id_by_number($default_value);
+                                $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_sub_item_options($field_value, $embedded_id);?></select>
@@ -1728,7 +1728,7 @@ if (!class_exists('display_documents')) {
 
                         case ($field_type=='_item_list'):
                             if ($default_value) {
-                                $embedded_id = $items_class->get_embedded_post_id_by_number($default_value);
+                                $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <div id="sub-report-list">

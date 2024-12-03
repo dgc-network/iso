@@ -114,7 +114,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(0);
 
                 //if ($_GET['_select_profile']=='migrate_subform_to_embedded') echo $this->migrate_subform_to_embedded();
-                //if ($_GET['_select_profile']=='migrate_subform_code_to_embedded_code') echo $this->migrate_subform_code_to_embedded_code();
+                if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
                 //if ($_GET['_select_profile']=='migrate_subform_id_to_embedded_id') echo $this->migrate_subform_id_to_embedded_id();
                 //if ($_GET['_select_profile']=='migrate_subform_meta_to_embedded_meta') echo $this->migrate_subform_meta_to_embedded_meta();
                 
@@ -145,13 +145,13 @@ if (!class_exists('display_profiles')) {
         }
         //add_action( 'init', 'migrate_subform_to_embedded' );
 
-        function migrate_subform_code_to_embedded_code() {
+        function migrate_embedded_code_to_embedded_number() {
             // Query all posts of post type "embedded"
             $args = array(
                 'post_type'      => 'embedded',
                 'posts_per_page' => -1, // Retrieve all posts
                 'post_status'    => 'any',
-                'meta_key'       => 'subform_code', // Only query posts with 'subform_code'
+                'meta_key'       => 'embedded_code', // Only query posts with 'subform_code'
             );
             $query = new WP_Query($args);
         
@@ -163,17 +163,17 @@ if (!class_exists('display_profiles')) {
                     $old_meta_value = get_post_meta(get_the_ID(), 'subform_code', true);
         
                     if ($old_meta_value) {
-                        // Update the meta to use 'embedded_code' instead
-                        update_post_meta(get_the_ID(), 'embedded_code', $old_meta_value);
+                        // Update the meta to use 'embedded_number' instead
+                        update_post_meta(get_the_ID(), 'embedded_number', $old_meta_value);
         
                         // Optionally, delete the old 'subform_code' meta to avoid duplication
-                        delete_post_meta(get_the_ID(), 'subform_code');
+                        delete_post_meta(get_the_ID(), 'embedded_code');
                     }
                 }
                 wp_reset_postdata();
             }
         }
-        //add_action('init', 'migrate_subform_code_to_embedded_code');
+        //add_action('init', 'migrate_subform_code_to_embedded_number');
 
         function migrate_subform_id_to_embedded_id() {
             // Query all posts of post type "embedded"
@@ -193,7 +193,7 @@ if (!class_exists('display_profiles')) {
                     $old_meta_value = get_post_meta(get_the_ID(), 'subform_id', true);
         
                     if ($old_meta_value) {
-                        // Update the meta to use 'embedded_code' instead
+                        // Update the meta to use 'embedded_number' instead
                         update_post_meta(get_the_ID(), 'embedded_id', $old_meta_value);
         
                         // Optionally, delete the old 'subform_code' meta to avoid duplication
@@ -222,7 +222,7 @@ if (!class_exists('display_profiles')) {
                     $old_meta_value = get_post_meta(get_the_ID(), 'subform', true);
         
                     if ($old_meta_value) {
-                        // Update the meta to use 'embedded_code' instead
+                        // Update the meta to use 'embedded_number' instead
                         update_post_meta(get_the_ID(), 'embedded', $old_meta_value);
         
                         // Optionally, delete the old 'subform_code' meta to avoid duplication

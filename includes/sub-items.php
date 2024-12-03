@@ -103,11 +103,11 @@ if (!class_exists('sub_items')) {
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $embedded_code = get_post_meta(get_the_ID(), 'embedded_code', true);
+                            $embedded_number = get_post_meta(get_the_ID(), 'embedded_number', true);
                             $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
                             ?>
                             <tr id="edit-embedded-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php echo esc_html($embedded_code);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($embedded_number);?></td>
                                 <td><?php the_title();?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
                             </tr>
@@ -170,7 +170,7 @@ if (!class_exists('sub_items')) {
                     ),
                 ),
 
-                'meta_key'       => 'embedded_code', // Meta key for sorting
+                'meta_key'       => 'embedded_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
 
@@ -216,7 +216,7 @@ if (!class_exists('sub_items')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $embedded_title = get_the_title($embedded_id);
-            $embedded_code = get_post_meta($embedded_id, 'embedded_code', true);
+            $embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
             $iso_category = get_post_meta($embedded_id, 'iso_category', true);
             $embedded_site = get_post_meta($embedded_id, 'site_id', true);
             $is_private = get_post_meta($embedded_id, 'is_private', true);
@@ -225,8 +225,8 @@ if (!class_exists('sub_items')) {
             <fieldset>
                 <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="embedded-code"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
-                <input type="text" id="embedded-code" value="<?php echo esc_attr($embedded_code);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="embedded-number"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
+                <input type="text" id="embedded-number" value="<?php echo esc_attr($embedded_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="embedded-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
                 <input type="text" id="embedded-title" value="<?php echo esc_attr($embedded_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
@@ -258,7 +258,7 @@ if (!class_exists('sub_items')) {
         function set_embedded_dialog_data() {
             if( isset($_POST['_embedded_id']) ) {
                 $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : '';
-                $embedded_code = (isset($_POST['_embedded_code'])) ? sanitize_text_field($_POST['_embedded_code']) : '';
+                $embedded_number = (isset($_POST['_embedded_number'])) ? sanitize_text_field($_POST['_embedded_number']) : '';
                 $embedded_title = (isset($_POST['_embedded_title'])) ? sanitize_text_field($_POST['_embedded_title']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
                 $is_private = (isset($_POST['_is_private'])) ? sanitize_text_field($_POST['_is_private']) : 0;
@@ -267,7 +267,7 @@ if (!class_exists('sub_items')) {
                     'post_title'   => $embedded_title,
                 );
                 wp_update_post( $data );
-                update_post_meta($embedded_id, 'embedded_code', $embedded_code);
+                update_post_meta($embedded_id, 'embedded_number', $embedded_number);
                 update_post_meta($embedded_id, 'iso_category', $iso_category);
                 update_post_meta($embedded_id, 'is_private', $is_private);
             } else {
@@ -282,7 +282,7 @@ if (!class_exists('sub_items')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
-                update_post_meta($post_id, 'embedded_code', time());
+                update_post_meta($post_id, 'embedded_number', time());
             }
             $response = array('html_contain' => $this->display_embedded_list());
             wp_send_json($response);
@@ -299,7 +299,7 @@ if (!class_exists('sub_items')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
-                $embedded_code = (isset($_POST['_embedded_code'])) ? sanitize_text_field($_POST['_embedded_code']) : '';
+                $embedded_number = (isset($_POST['_embedded_number'])) ? sanitize_text_field($_POST['_embedded_number']) : '';
                 $embedded_title = (isset($_POST['_embedded_title'])) ? sanitize_text_field($_POST['_embedded_title']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
                 // Create the post
@@ -311,7 +311,7 @@ if (!class_exists('sub_items')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
-                update_post_meta($post_id, 'embedded_code', time());
+                update_post_meta($post_id, 'embedded_number', time());
                 update_post_meta($post_id, 'iso_category', $iso_category);
                 update_post_meta($post_id, 'is_private', 1);
 
@@ -347,7 +347,7 @@ if (!class_exists('sub_items')) {
             $query = $this->retrieve_embedded_data(0);
             $options = '<option value="">Select an option</option>';
             while ($query->have_posts()) : $query->the_post();
-                $embedded_code = get_post_meta(get_the_ID(), 'embedded_code', true);
+                $embedded_number = get_post_meta(get_the_ID(), 'embedded_number', true);
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
@@ -355,7 +355,7 @@ if (!class_exists('sub_items')) {
             return $options;
         }
         
-        function get_embedded_post_id_by_number($embedded_code=false) {
+        function get_embedded_id_by_number($embedded_number=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Define the query arguments
@@ -368,8 +368,8 @@ if (!class_exists('sub_items')) {
                         'compare' => '=',            // Comparison operator
                     ),
                     array(
-                        'key'   => 'embedded_code',  // Meta key
-                        'value' => $embedded_code,   // Meta value to match
+                        'key'   => 'embedded_number',  // Meta key
+                        'value' => $embedded_number,   // Meta value to match
                         'compare' => '=',            // Comparison operator
                     ),
                 ),
@@ -666,7 +666,7 @@ if (!class_exists('sub_items')) {
 
                     if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                         if ($default_value) {
-                            $embedded_id = $this->get_embedded_post_id_by_number($default_value);
+                            $embedded_id = $this->get_embedded_id_by_number($default_value);
                             $inner_query = $this->retrieve_sub_item_list_data($embedded_id);
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();

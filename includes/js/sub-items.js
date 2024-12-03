@@ -173,7 +173,7 @@ jQuery(document).ready(function($) {
                                         'action': 'set_embedded_dialog_data',
                                         '_embedded_id': embedded_id,
                                         '_embedded_title': $("#embedded-title").val(),
-                                        '_embedded_code': $("#embedded-code").val(),
+                                        '_embedded_number': $("#embedded-number").val(),
                                         '_iso_category': $("#iso-category").val(),
                                         '_is_private': $("#is-private").is(":checked") ? 1 : 0,
                                     },
@@ -219,7 +219,7 @@ jQuery(document).ready(function($) {
                                         'action': 'duplicate_embedded_dialog_data',
                                         '_embedded_id': embedded_id,
                                         '_embedded_title': $("#embedded-title").val(),
-                                        '_embedded_code': $("#embedded-code").val(),
+                                        '_embedded_number': $("#embedded-number").val(),
                                         '_iso_category': $("#iso-category").val(),
                                     },
                                     success: function (response) {
