@@ -338,40 +338,16 @@ if (!class_exists('display_documents')) {
 
                 <div id="doc-frame-div">
                     <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-<?php /*                    
-                    <span id="doc-frame-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-*/?>                    
                     <?php if (is_site_admin()) {?>
-                        <input type="button" id="doc-frame-preview1" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
+                        <input type="button" id="doc-frame-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                 </div>
-<?php /*
-                <div id="system-report-div" style="display:none;">
-                    <label id="system-report-label" class="button"><?php echo __( '系統表單', 'your-text-domain' );?></label>
-                    <span id="system-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-                    <?php if (is_site_admin()) {?>
-                        <input type="button" id="system-report-preview1" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
-                    <?php }?>
-                    <select id="select-system-report"  class="text ui-widget-content ui-corner-all">
-                        <option><?php echo __( 'Select a system report', 'your-text-domain' );?></option>
-                        <option value="document-card" <?php echo ($is_doc_report=="document-card") ? 'selected' : ''?>><?php echo __( '文件清單', 'your-text-domain' );?></option>
-                        <option value="customer-card" <?php echo ($is_doc_report=="customer-card") ? 'selected' : ''?>><?php echo __( '客戶清單', 'your-text-domain' );?></option>
-                        <option value="vendor-card" <?php echo ($is_doc_report=="vendor-card") ? 'selected' : ''?>><?php echo __( '供應商清單', 'your-text-domain' );?></option>
-                        <option value="product-card" <?php echo ($is_doc_report=="product-card") ? 'selected' : ''?>><?php echo __( '產品清單', 'your-text-domain' );?></option>
-                        <option value="equipment-card" <?php echo ($is_doc_report=="equipment-card") ? 'selected' : ''?>><?php echo __( '設備清單', 'your-text-domain' );?></option>
-                        <option value="instrument-card" <?php echo ($is_doc_report=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器清單', 'your-text-domain' );?></option>
-                        <option value="employee-card" <?php echo ($is_doc_report=="employee-card") ? 'selected' : ''?>><?php echo __( '員工清單', 'your-text-domain' );?></option>
-                    </select>
-                </div>
-*/?>
+
                 <div id="doc-report-div" style="display:none;">
                     <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
-<?php /*                    
-                    <span id="doc-report-preview" class="dashicons dashicons-external button" style="margin-left:5px; vertical-align:text-top;"></span>
-*/?>                    
                     <?php if (is_site_admin()) {?>
-                        <input type="button" id="doc-report-preview1" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
+                        <input type="button" id="doc-report-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <?php echo $this->display_doc_field_list($doc_id);?>
                     <label id="doc-report-job-setting" class="button"><?php echo __( '職務設定', 'your-text-domain' );?></label>
@@ -453,13 +429,6 @@ if (!class_exists('display_documents')) {
                 else { // General Users in site
                     if ($is_doc_report==0) $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
                     elseif ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $doc_id));
-                    //elseif ($is_doc_report=='document-card') $response['html_contain'] = $this->display_document_list();
-                    //elseif ($is_doc_report=='customer-card') $response['html_contain'] = $cards_class->display_customer_card_list();
-                    //elseif ($is_doc_report=='vendor-card') $response['html_contain'] = $cards_class->display_vendor_card_list();
-                    //elseif ($is_doc_report=='product-card') $response['html_contain'] = $cards_class->display_product_card_list();
-                    //elseif ($is_doc_report=='equipment-card') $response['html_contain'] = $cards_class->display_equipment_card_list();
-                    //elseif ($is_doc_report=='instrument-card') $response['html_contain'] = $cards_class->display_instrument_card_list();
-                    //elseif ($is_doc_report=='employee-card') $response['html_contain'] = $profiles_class->display_site_user_list();
                     else $response['html_contain'] = $this->display_document_dialog($doc_id);
                 }
             }
@@ -754,30 +723,10 @@ if (!class_exists('display_documents')) {
                                     } elseif ($field_type=='_iot_device') {
                                         $iot_device = get_post_meta($field_value, 'iot_device', true);
                                         echo esc_html(get_the_title($field_value));
-/*
-                                    } elseif ($field_type=='_customer') {
-                                        $customer_code = get_post_meta($field_value, 'customer_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$customer_code.')');
-                                    } elseif ($field_type=='_vendor') {
-                                        $vendor_code = get_post_meta($field_value, 'vendor_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$vendor_code.')');
-                                    } elseif ($field_type=='_product') {
-                                        $product_code = get_post_meta($field_value, 'product_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$product_code.')');
-                                    } elseif ($field_type=='_equipment') {
-                                        $equipment_code = get_post_meta($field_value, 'equipment_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$equipment_code.')');
-                                    } elseif ($field_type=='_instrument') {
-                                        $instrument_code = get_post_meta($field_value, 'instrument_code', true);
-                                        echo esc_html(get_the_title($field_value).'('.$instrument_code.')');
-*/                                        
                                     } else {
                                         $get_system_doc_id = $this->get_system_doc_id($field_type);
                                         if ($get_system_doc_id) {
-                                            if ($field_value) {
-                                                //echo esc_html(get_the_title($field_value).'('.$field_value.')');
-                                                echo esc_html(get_the_title($field_value));
-                                            }
+                                            if ($field_value) echo esc_html(get_the_title($field_value));
                                         } else {
                                             echo esc_html($field_value);
                                         }
@@ -1033,38 +982,6 @@ if (!class_exists('display_documents')) {
                     } else {
                         $response['html_contain'] = $this->display_doc_frame_contain($_document);
                     }
-/*
-                    // Switch structure for handling various document types
-                    switch ($is_doc_report) {
-                        case 1:
-                            $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $_document));
-                            break;
-                        case 'document-card':
-                            $response['html_contain'] = $this->display_document_list();
-                            break;
-                        case 'customer-card':
-                            $response['html_contain'] = $cards_class->display_customer_card_list();
-                            break;
-                        case 'vendor-card':
-                            $response['html_contain'] = $cards_class->display_vendor_card_list();
-                            break;
-                        case 'product-card':
-                            $response['html_contain'] = $cards_class->display_product_card_list();
-                            break;
-                        case 'equipment-card':
-                            $response['html_contain'] = $cards_class->display_equipment_card_list();
-                            break;
-                        case 'instrument-card':
-                            $response['html_contain'] = $cards_class->display_instrument_card_list();
-                            break;
-                        case 'employee-card':
-                            $response['html_contain'] = $profiles_class->display_site_user_list();
-                            break;
-                        default:
-                            $response['html_contain'] = $this->display_doc_frame_contain($_document);
-                            break;
-                    }
-*/                            
                 } else {
                     $response['html_contain'] = $this->display_doc_report_dialog($report_id);
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -1136,17 +1053,10 @@ if (!class_exists('display_documents')) {
                         $query->the_post();
                         $field_id = get_the_ID();
                         $field_type = get_post_meta($field_id, 'field_type', true);
-                        $default_value = $this->get_field_default_value($field_id);
+                        $default_value = $this->get_doc_field_default_value($field_id);
                         update_post_meta($post_id, $field_id, $default_value);
 
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
-                            //$items_class = new sub_items();
-                            //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            //$inner_query = $items_class->retrieve_sub_item_list_data($embedded_id);
-                            //error_log('field_type: '.$field_type);
-                            //error_log('default_value: '.$default_value);
-                            //error_log('embedded_id: '.$embedded_id);
-
                             $inner_query = $items_class->retrieve_sub_item_list_data($default_value);        
                             if ($inner_query->have_posts()) {
                                 while ($inner_query->have_posts()) {
@@ -1156,7 +1066,6 @@ if (!class_exists('display_documents')) {
                                 }
                                 wp_reset_postdata();
                             }
-                            //update_post_meta($post_id, $field_id, $embedded_id);
                         }
                     }
                     wp_reset_postdata();
@@ -1279,16 +1188,8 @@ if (!class_exists('display_documents')) {
                     update_user_meta($user->ID, 'employee_id', $_id);
                     return true; // Return true on success
                 }
-        
-                // Or use fuzzy matching with similar_text
-                // $similarity = 0;
-                // similar_text($user->display_name, $sanitized_title, $similarity);
-                // if ($similarity >= 80) {
-                //     update_user_meta($user->ID, 'employee_id', $_id);
-                //     return true; // Return true on success
-                // }
             }
-        
+
             return false; // No match found
         }
         
@@ -1450,9 +1351,15 @@ if (!class_exists('display_documents')) {
                     <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
-                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
+                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( '_iot_device', 'your-text-domain' );?></option>
+                    <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
+                    <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
+                    <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
+                    <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
+                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
+                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <?php
                     $query = $this->get_system_doc_list_query();
                     if ($query->have_posts()) {
@@ -1469,19 +1376,6 @@ if (!class_exists('display_documents')) {
                         wp_reset_postdata();
                     }
                     ?>
-<?php /*                    
-                    <option value="_customer" <?php echo ($field_type=='_customer') ? 'selected' : ''?>><?php echo __( '_customer', 'your-text-domain' );?></option>
-                    <option value="_vendor" <?php echo ($field_type=='_vendor') ? 'selected' : ''?>><?php echo __( '_vendor', 'your-text-domain' );?></option>
-                    <option value="_product" <?php echo ($field_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
-                    <option value="_equipment" <?php echo ($field_type=='_equipment') ? 'selected' : ''?>><?php echo __( '_equipment', 'your-text-domain' );?></option>
-                    <option value="_instrument" <?php echo ($field_type=='_instrument') ? 'selected' : ''?>><?php echo __( '_instrument', 'your-text-domain' );?></option>
-*/?>                    
-                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( '_iot_device', 'your-text-domain' );?></option>
-                    <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
-                    <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
-                    <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
-                    <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
-                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
                     <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
@@ -1521,11 +1415,11 @@ if (!class_exists('display_documents')) {
                 update_post_meta($field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
             } else {
                 // Create the post
-                $current_user_id = get_current_user_id();
+                //$current_user_id = get_current_user_id();
                 $new_post = array(
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
                     'post_type'     => 'doc-field',
+                    'post_status'   => 'publish',
+                    'post_author'   => get_current_user_id(),
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
@@ -1578,7 +1472,7 @@ if (!class_exists('display_documents')) {
             return $_array;
         }
 
-        function get_field_default_value($field_id=false, $user_id=false) {
+        function get_doc_field_default_value($field_id=false, $user_id=false) {
             // Ensure $field_id is provided
             if (!$field_id) {
                 return false; // Return false or handle the error as needed
@@ -1629,7 +1523,7 @@ if (!class_exists('display_documents')) {
                     } elseif ($prev_report_id) {
                         $field_value = get_post_meta($prev_report_id, $field_id, true);
                     } else {
-                        $field_value = $this->get_field_default_value($field_id);
+                        $field_value = $this->get_doc_field_default_value($field_id);
                     }
 
                     switch (true) {
@@ -1652,7 +1546,7 @@ if (!class_exists('display_documents')) {
                                     echo 'User not found for ID: ' . esc_html($field_value);
                                 }
                             } else {?>
-                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $cards_class->select_multiple_employees_options($field_value);?></select>
+                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $this->select_multiple_employees_options($field_value);?></select>
                             <?php }
                             break;
 
@@ -1764,44 +1658,6 @@ if (!class_exists('display_documents')) {
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $iot_messages->select_iot_device_options($field_value);?></select>
                             <?php
                             break;
-    
-    
-/*
-                        case ($field_type=='_customer'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_customer_card_options($field_value);?></select>
-                            <?php
-                            break;
-
-                        case ($field_type=='_vendor'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_vendor_card_options($field_value);?></select>
-                            <?php
-                            break;
-
-                        case ($field_type=='_product'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_product_card_options($field_value);?></select>
-                            <?php
-                            break;
-
-                        case ($field_type=='_equipment'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_equipment_card_options($field_value);?></select>
-                            <?php
-                            break;
-
-                        case ($field_type=='_instrument'):
-                            ?>
-                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $cards_class->select_instrument_card_options($field_value);?></select>
-                            <?php
-                            break;
-*/
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_id).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
@@ -1914,12 +1770,45 @@ if (!class_exists('display_documents')) {
             }
         }
 
+        // employees
+        function select_multiple_employees_options($selected_options = array()) {
+            if (!is_array($selected_options)) {
+                $selected_options = array();
+            }
+
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+        
+            // Retrieve users based on site_id
+            $meta_query_args = array(
+                array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '=',
+                ),
+            );
+            $users = get_users(array('meta_query' => $meta_query_args));
+        
+            // Initialize options HTML
+            $options = '';
+        
+            // Loop through the users
+            foreach ($users as $user) {
+                // Check if the current user ID is in the selected options array
+                $selected = in_array($user->ID, $selected_options) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($user->ID) . '" ' . $selected . '>' . esc_html($user->display_name) . '</option>';
+            }
+        
+            // Return the options HTML
+            return $options;
+        }
+
         function update_doc_field_contains($report_id=false, $field_id=false, $is_default=false, $user_id=false) {
             // standard fields
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             if ($is_default) {
-                $field_value = $this->get_field_default_value($field_id, $user_id);
+                $field_value = $this->get_doc_field_default_value($field_id, $user_id);
             } else {
                 $field_value = $_POST[$field_id];
             }

@@ -113,37 +113,24 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(0);
 
-                //if ($_GET['_select_profile']=='migrate_subform_to_embedded') echo $this->migrate_subform_to_embedded();
-                if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
-                //if ($_GET['_select_profile']=='migrate_subform_id_to_embedded_id') echo $this->migrate_subform_id_to_embedded_id();
-                //if ($_GET['_select_profile']=='migrate_subform_meta_to_embedded_meta') echo $this->migrate_subform_meta_to_embedded_meta();
-                
+                //if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
+/*                
                 $cards_class = new erp_cards();
                 if ($_GET['_select_profile']=='customer-card') echo $cards_class->display_customer_card_list();
                 if ($_GET['_select_profile']=='vendor-card') echo $cards_class->display_vendor_card_list();
                 if ($_GET['_select_profile']=='product-card') echo $cards_class->display_product_card_list();
                 if ($_GET['_select_profile']=='equipment-card') echo $cards_class->display_equipment_card_list();
                 if ($_GET['_select_profile']=='instrument-card') echo $cards_class->display_instrument_card_list();
-                if ($_GET['_select_profile']=='department-card') echo $cards_class->display_department_card_list();
-
+*/
                 $items_class = new sub_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='embedded') echo $items_class->display_embedded_list();
+                if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
 
                 echo '</div>';
             }
         }
-
-        function migrate_subform_to_embedded() {
-            global $wpdb;
-            $wpdb->update(
-                $wpdb->posts,
-                array( 'post_type' => 'embedded' ),
-                array( 'post_type' => 'subform' )
-            );
-        }
-        //add_action( 'init', 'migrate_subform_to_embedded' );
 
         function migrate_embedded_code_to_embedded_number() {
             // Query all posts of post type "embedded"
@@ -174,64 +161,6 @@ if (!class_exists('display_profiles')) {
             }
         }
         //add_action('init', 'migrate_subform_code_to_embedded_number');
-
-        function migrate_subform_id_to_embedded_id() {
-            // Query all posts of post type "embedded"
-            $args = array(
-                'post_type'      => 'sub-item',
-                'posts_per_page' => -1, // Retrieve all posts
-                'post_status'    => 'any',
-                'meta_key'       => 'subform_id', // Only query posts with 'subform_code'
-            );
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the old 'subform_code' meta value
-                    $old_meta_value = get_post_meta(get_the_ID(), 'subform_id', true);
-        
-                    if ($old_meta_value) {
-                        // Update the meta to use 'embedded_number' instead
-                        update_post_meta(get_the_ID(), 'embedded_id', $old_meta_value);
-        
-                        // Optionally, delete the old 'subform_code' meta to avoid duplication
-                        delete_post_meta(get_the_ID(), 'subform_id');
-                    }
-                }
-                wp_reset_postdata();
-            }
-        }
-
-        function migrate_subform_meta_to_embedded_meta() {
-            // Query all posts of post type "embedded"
-            $args = array(
-                'post_type'      => 'iso-category',
-                'posts_per_page' => -1, // Retrieve all posts
-                'post_status'    => 'any',
-                'meta_key'       => 'subform', // Only query posts with 'subform_code'
-            );
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the old 'subform_code' meta value
-                    $old_meta_value = get_post_meta(get_the_ID(), 'subform', true);
-        
-                    if ($old_meta_value) {
-                        // Update the meta to use 'embedded_number' instead
-                        update_post_meta(get_the_ID(), 'embedded', $old_meta_value);
-        
-                        // Optionally, delete the old 'subform_code' meta to avoid duplication
-                        delete_post_meta(get_the_ID(), 'subform');
-                    }
-                }
-                wp_reset_postdata();
-            }
-        }
 
         // my-profile scripts
         function display_my_profile() {
@@ -288,7 +217,6 @@ if (!class_exists('display_profiles')) {
                     <?php    
                     // Accessing elements of the array
                     if (is_array($user_doc_ids)) {
-                        // Collect documents in an array
                         $documents = array();
                         foreach ($user_doc_ids as $doc_id) {
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
@@ -297,7 +225,6 @@ if (!class_exists('display_profiles')) {
                                 $job_title = get_the_title($doc_id);
                                 $job_content = get_post_field('post_content', $doc_id);
                                 $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
-                                
                                 // Add to documents array
                                 $documents[] = array(
                                     'doc_id' => $doc_id,
@@ -395,8 +322,10 @@ if (!class_exists('display_profiles')) {
         }
 
         function get_my_job_action_list_data() {
-            $doc_id = sanitize_text_field($_POST['_doc_id']);
-            $response = array('html_contain' => $this->display_my_job_action_list($doc_id));
+            if (isset($_POST['_doc_id'])) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $response = array('html_contain' => $this->display_my_job_action_list($doc_id));
+            }
             wp_send_json($response);
         }
 
@@ -428,8 +357,10 @@ if (!class_exists('display_profiles')) {
         }
 
         function get_my_job_action_dialog_data() {
-            $action_id = sanitize_text_field($_POST['_action_id']);
-            $response = array('html_contain' => $this->display_my_job_action_dialog($action_id));
+            if (isset($_POST['_action_id'])) {
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $response = array('html_contain' => $this->display_my_job_action_dialog($action_id));    
+            }
             wp_send_json($response);
         }
 
@@ -481,14 +412,13 @@ if (!class_exists('display_profiles')) {
                 // Get the timezone offset from WordPress settings
                 $timezone_offset = get_option('gmt_offset');
                 $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
-                
+
                 // Calculate and save start time
                 $frequence_report_start_date = sanitize_text_field($_POST['_frequence_report_start_date']);
                 $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
                 $start_time = strtotime($frequence_report_start_date . ' ' . $frequence_report_start_time) - $offset_seconds;
                 update_post_meta($action_id, 'frequence_report_start_time', $start_time);
-                
-                //$todo_class = new to_do_list();
+
                 $hook_name = 'iso_helper_post_event';
                 $interval = sanitize_text_field($_POST['_frequence_report_setting']);
                 $args = array(
@@ -724,21 +654,6 @@ if (!class_exists('display_profiles')) {
                     // Handle the error case
                     $response = array('success' => false, 'message' => 'No key-value pairs found or invalid format');
                 }
-/*
-            } else {
-                // Set up the new post data
-                $current_user_id = get_current_user_id();
-                $site_title = isset($_POST['_site_title']) ? sanitize_text_field($_POST['_site_title']) : 'New site';
-                $new_post = array(
-                    'post_type'     => 'site-profile',
-                    'post_title'    => 'New site',
-                    'post_content'  => 'Your post content goes here.',
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
-                );    
-                $post_id = wp_insert_post($new_post);
-                update_user_meta( $current_user_id, 'site_id', $post_id );
-*/
             }
             wp_send_json($response);
         }
@@ -943,17 +858,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-/*
-        function display_new_user_dialog($site_id=false) {
-            ?>
-            <div id="new-user-dialog" title="New user dialog" style="display:none;">
-            <fieldset>
-                <img src="<?php echo get_option('line_official_qr_code');?>">
-            </fieldset>
-            </div>
-            <?php
-        }
-*/
+
         function set_site_admin_data($user_id=false, $is_site_admin=false) {
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
@@ -1033,9 +938,6 @@ if (!class_exists('display_profiles')) {
                         <th>#</th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-<?php /*                        
-                        <th><?php echo __( 'Department', 'your-text-domain' );?></th>
-*/?>                        
                         <th>#</th>
                     </thead>
                     <tbody>
@@ -1063,9 +965,6 @@ if (!class_exists('display_profiles')) {
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
                                 <td width="70%"><?php echo esc_html($content);?></td>
-<?php /*
-                                <td style="text-align:center;"><?php echo get_the_title($department_id).$users_unassigned;?></td>
-*/?>                                
                                 <td style="text-align:center;"><?php echo $users_unassigned;?></td>
                             </tr>
                             <?php 
