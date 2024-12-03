@@ -171,12 +171,11 @@ if (!class_exists('sub_items')) {
                             )
                         ),
                     ),
-                );
+                )
                 'meta_key'       => 'embedded_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
-
-            );
+            )
         
             // Add the embedded_number condition only if $embedded_number exists
             if (!empty($embedded_number)) {
@@ -184,7 +183,7 @@ if (!class_exists('sub_items')) {
                     'key'     => 'embedded_number',
                     'value'   => $embedded_number,
                     'compare' => '=', // Exact match for embedded_number
-                );
+                )
             }
             
             if ($paged == 0) {
