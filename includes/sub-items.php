@@ -136,7 +136,7 @@ if (!class_exists('sub_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_embedded_data($paged = 1) {
+        function retrieve_embedded_data($paged=1, $embedded_number=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             
@@ -144,38 +144,49 @@ if (!class_exists('sub_items')) {
                 'post_type'      => 'embedded',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
-                'meta_query'     => array(
-                    'relation' => 'OR',
+                $meta_query = array(
+                    'relation' => 'AND', // Combine all conditions with an AND relation
                     array(
-                        'key'     => 'is_private',
-                        'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
-                    ),
-                    array(
-                        'key'     => 'is_private',
-                        'value'   => '0',
-                        'compare' => '=' // Condition to check if the meta value is 0
-                    ),
-                    array(
-                        'relation' => 'AND',
+                        'relation' => 'OR', // Sub-condition for is_private
                         array(
                             'key'     => 'is_private',
-                            'value'   => '1',
-                            'compare' => '='
+                            'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
                         ),
                         array(
-                            'key'   => 'site_id',
-                            'value' => $site_id,
-                            'compare' => '='
-                        )                        
+                            'key'     => 'is_private',
+                            'value'   => '0',
+                            'compare' => '=', // Condition to check if the meta value is 0
+                        ),
+                        array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'is_private',
+                                'value'   => '1',
+                                'compare' => '='
+                            ),
+                            array(
+                                'key'     => 'site_id',
+                                'value'   => $site_id,
+                                'compare' => '='
+                            )
+                        ),
                     ),
-                ),
-
+                );
                 'meta_key'       => 'embedded_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
 
             );
         
+            // Add the embedded_number condition only if $embedded_number exists
+            if (!empty($embedded_number)) {
+                $args['meta_query'][] = array(
+                    'key'     => 'embedded_number',
+                    'value'   => $embedded_number,
+                    'compare' => '=', // Exact match for embedded_number
+                );
+            }
+            
             if ($paged == 0) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
@@ -356,6 +367,7 @@ if (!class_exists('sub_items')) {
         }
         
         function get_embedded_id_by_number($embedded_number=false) {
+/*            
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Define the query arguments
@@ -379,8 +391,9 @@ if (!class_exists('sub_items')) {
         
             // Run the query
             $query = new WP_Query($args);
-        
+*/        
             // Check if any posts are found
+            $query = $this->retrieve_embedded_data(0, $embedded_number);
             if ($query->have_posts()) {
                 // Get the first post ID
                 $post_id = $query->posts[0];
