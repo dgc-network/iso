@@ -16,11 +16,11 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
+/*
 if ( headers_sent( $file, $line ) ) {
     error_log( "Headers already sent in $file on line $line" );
 }
-
+*/
 function is_rest_request() {
     return defined( 'REST_REQUEST' ) && REST_REQUEST;
 }
