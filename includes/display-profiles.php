@@ -160,7 +160,7 @@ if (!class_exists('display_profiles')) {
                     $query->the_post();
         
                     // Get the old 'subform_code' meta value
-                    $old_meta_value = get_post_meta(get_the_ID(), 'subform_code', true);
+                    $old_meta_value = get_post_meta(get_the_ID(), 'embedded_code', true);
         
                     if ($old_meta_value) {
                         // Update the meta to use 'embedded_number' instead
