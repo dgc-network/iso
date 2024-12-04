@@ -67,7 +67,8 @@ jQuery(document).ready(function($) {
                     '_device_id': device_id,
                 },
                 success: function (response) {
-                    $("#iot-device-dialog").html(response.html_contain);
+                    //$("#iot-device-dialog").html(response.html_contain);
+                    $("#result-container").html(response.html_contain);
                     // Initialize Mermaid when the document is ready
                     if (typeof mermaid !== 'undefined') {
                         mermaid.initialize({ 
