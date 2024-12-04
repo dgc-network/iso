@@ -191,9 +191,7 @@ if (!class_exists('display_documents')) {
                             $is_doc_report = get_post_meta(get_the_ID(), 'is_doc_report', true);
 
                             if ($is_doc_report == 1) {
-                                $doc_title = '*' . $doc_title;
-                            } elseif ($is_doc_report != 0 && $is_doc_report != 1) {
-                                $doc_title = '**' . $doc_title;
+                                $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
                             }
 
                             ?>
