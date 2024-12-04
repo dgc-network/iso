@@ -50,7 +50,7 @@ if (!class_exists('to_do_list')) {
             <select id="select-todo">
                 <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
                 <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'your-text-domain' );?></option>
-                <option value="signature" <?php echo ($select_option=="signature") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
+                <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
                 <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'your-text-domain' );?></option>
                 <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
                 </select>
@@ -94,7 +94,7 @@ if (!class_exists('to_do_list')) {
                     else echo $this->display_start_job_list();
                 }
                 
-                if ($_GET['_select_todo']=='signature') $this->display_signature_record();
+                if ($_GET['_select_todo']=='action-log') $this->display_action_log();
                 if ($_GET['_select_todo']=='cron-events') {
                     ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
                 }
@@ -1202,26 +1202,26 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
         
-        // signature_record
-        function display_signature_record() {
+        // action_log
+        function display_action_log() {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
             
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $this->display_select_todo('signature');?></div>
+                    <div><?php $this->display_select_todo('action-log');?></div>
                     <div style="text-align: right">
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
                     </div>
                 </div>
-                <?php echo $this->get_signature_record_list();?>
-                <p style="background-color:lightblue;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_signature_records();?></p>
+                <?php echo $this->get_action_log_list();?>
+                <p style="background-color:lightblue;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_action_logs();?></p>
             </div>
             <?php
         }
         
-        function get_signature_record_list($report_id=false) {
+        function get_action_log_list($report_id=false) {
             ob_start();
             ?>
             <fieldset>
@@ -1239,7 +1239,7 @@ if (!class_exists('to_do_list')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_signature_record_data($paged, $report_id);
+                    $query = $this->retrieve_action_log_data($paged, $report_id);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
@@ -1287,11 +1287,11 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
         
-        function count_signature_records(){
+        function count_action_logs(){
             $current_user_id = get_current_user_id();
             $current_site = get_user_meta($current_user_id, 'site_id', true);
             $x = 0;
-            $query = $this->retrieve_signature_record_data(0);
+            $query = $this->retrieve_action_log_data(0);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -1305,7 +1305,7 @@ if (!class_exists('to_do_list')) {
             return $x;
         }
         
-        function retrieve_signature_record_data($paged=1, $report_id=false) {
+        function retrieve_action_log_data($paged=1, $report_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
         

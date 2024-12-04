@@ -421,8 +421,8 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#signature-record").on("click", function () {
-            $("#signature-record-div").toggle()
+        $("#action-log").on("click", function () {
+            $("#action-log-div").toggle()
         });
 
         $("#export-to-excel").on("click", function () {
@@ -1176,8 +1176,8 @@ jQuery(document).ready(function($) {
             }    
         });
 
-        $("#signature-record").on("click", function () {
-            $("#report-signature-record-div").toggle()
+        $("#action-log").on("click", function () {
+            $("#report-action-log-div").toggle()
         });
 
         $("#doc-report-dialog-exit").on("click", function () {

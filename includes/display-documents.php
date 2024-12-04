@@ -932,7 +932,7 @@ if (!class_exists('display_documents')) {
                 ?>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <input type="button" id="signature-record" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
+                    <input type="button" id="action-log" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
                 </div>
                 <div style="text-align:right;">
                     <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
@@ -944,9 +944,9 @@ if (!class_exists('display_documents')) {
             ?>
             </fieldset>
 
-            <div id="report-signature-record-div" style="display:none;">
+            <div id="report-action-log-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_signature_record_list($report_id);?>
+                <?php echo $todo_class->get_action_log_list($report_id);?>
             </div>
 
             <?php
