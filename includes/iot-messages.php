@@ -173,6 +173,7 @@ if (!class_exists('iot_messages')) {
 
         function display_iot_device_dialog($device_id=false) {
             ob_start();
+            $todo_class = new to_do_list();
             $device_number = get_post_meta($device_id, 'device_number', true);
             $device_title = get_the_title($device_id);
             $device_content = get_post_field('post_content', $device_id);
