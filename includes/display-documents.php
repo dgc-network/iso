@@ -1508,7 +1508,7 @@ if (!class_exists('display_documents')) {
             }
             $get_system_doc_id = $this->get_system_doc_id($field_type);
             if ($get_system_doc_id) {
-                if ($field_type=='_employee' && $default_value=='me') $default_value=$user_id;
+                //if ($field_type=='_employee' && $default_value=='me') $default_value=$user_id;
             }
 
             return $default_value;
