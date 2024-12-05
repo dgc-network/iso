@@ -1457,8 +1457,9 @@ if (!class_exists('display_documents')) {
             }
 
             if ($field_type=='date' && $default_value === 'today') $default_value = wp_date('Y-m-d', time());
-            if ($field_type=='_employee' && $default_value === 'me') $default_value = $user_id;
-            if ($field_type=='_employees' && $default_value === 'me') $default_value = array($user_id);
+            //if ($field_type=='_employee' && $default_value === 'me') $default_value = $user_id;
+            //if ($field_type=='_employees' && $default_value === 'me') $default_value = array($user_id);
+            if ($default_value === 'me') $default_value = array($user_id);
             if ($default_value=='_post_number') $default_value=time();
             if ($default_value=='_post_title') $default_value='';
             if ($default_value=='_post_content') $default_value='';
@@ -1494,14 +1495,16 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_employee'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
                             <?php 
+/*                            
                             if ($default_value=='me') {
-/*                                
+
                                 ?>
                                 <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
                                 <?php
-*/                                
-                                // Get user data
+
+// Get user data
                                 $user = get_userdata(intval($field_value));
                                 // Check if the user data is retrieved successfully
                                 if ($user) {
@@ -1514,6 +1517,7 @@ if (!class_exists('display_documents')) {
                             } else {?>
                                 <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
                             <?php }
+*/                            
                             break;
 
                         case ($field_type=='_employees'):
