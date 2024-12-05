@@ -19,6 +19,7 @@ jQuery(document).ready(function($) {
     // iot-device scripts
     activate_iot_device_list_data();
     function activate_iot_device_list_data(){
+/*        
         $("#select-todo").on("change", function () {
             // Get the selected value
             var selectValue = $("#select-todo").val();
@@ -41,7 +42,7 @@ jQuery(document).ready(function($) {
             // Clear the search input value after updating the URL
             $("#search-device").val('');
         });
-/*        
+*/
         $("#select-todo").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -76,7 +77,7 @@ jQuery(document).ready(function($) {
             // Clear the values of all select elements after redirection
             $("#search-device").val('');
         });
-*/
+
         $("#new-iot-device").on("click", function() {
             $.ajax({
                 type: 'POST',

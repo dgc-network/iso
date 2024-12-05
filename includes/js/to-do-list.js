@@ -134,35 +134,6 @@ jQuery(document).ready(function($) {
                 window.location.replace(window.location.href);
             }
         });
-/*
-        $('[id^="edit-doc-report-"]').on("click", function () {
-            const report_id = this.id.substring(16);
-            $.ajax({
-                url: ajax_object.ajax_url,
-                type: 'post',
-                data: {
-                    action: 'get_doc_report_dialog_data',
-                    _report_id: report_id,
-                    _is_admin: $("#is-admin").val()
-                },
-                success: function (response) {
-                    if (response.html_contain === undefined || response.html_contain === null) {
-                        alert("The report is in To-do process. Please wait for publishing.");
-                    } else {
-                        $('#result-container').html(response.html_contain);
-                    }
-                    //activate_doc_report_dialog_data(response);
-                    //activate_published_document_data(doc_id);
-                    $("#doc-report-dialog-exit").on("click", function () {
-                        window.location.replace(window.location.href);
-                    });
-                },
-                error: function (error) {
-                    console.error(error);
-                }
-            });
-        });        
-*/            
     }
 
     $("#search-start-job").on( "change", function() {

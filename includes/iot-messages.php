@@ -181,14 +181,14 @@ if (!class_exists('iot_messages')) {
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'IoT devices', 'your-text-domain' );?></h2>
-
+<?php /*
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $todo_class->display_select_todo('iot-devices');?></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-device" style="display:inline" placeholder="Search..." />
                 </div>
             </div>
-
+*/?>
             <fieldset>
                 <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
