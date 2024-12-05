@@ -66,6 +66,68 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + urlParams.toString();
         });
 
+        $("#del-iot-device").on("click", function () {
+            if (window.confirm("Are you sure you want to delete this IoT device?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_iot_device_dialog_data',
+                        '_device_id': $("#device-id").val(),
+                    },
+                    success: function (response) {
+                        //$("#iot-device-dialog").dialog('close');
+                        $("#result-container").html(response.html_contain);
+                        activate_iot_device_list_data();
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        });
+
+        $("#save-iot-device").on("click", function () {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_iot_device_dialog_data',
+                    '_device_id': $("#device-id").val(),
+                    '_device_number': $("#device-number").val(),
+                    '_device_title': $("#device-title").val(),
+                    '_device_content': $("#device-content").val(),
+                },
+                success: function (response) {
+                    //$("#iot-device-dialog").dialog('close');
+                    $("#result-container").html(response.html_contain);
+                    activate_iot_device_list_data();
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#iot-dialog-exit").on("click", function () {
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_device_id');
+            // Reset the 'paged' parameter to 1
+            url.searchParams.set('paged', 1);
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+        });
+/*        
         $("#iot-dialog-exit").on("click", function () {
             //window.location.replace(window.location.href);
             // Get the current URL
@@ -79,7 +141,8 @@ jQuery(document).ready(function($) {
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
         });
-
+*/
+/*
         $('[id^="backup-edit-iot-device-"]').on("click", function () {
             const device_id = this.id.substring(16);
             $.ajax({
@@ -169,7 +232,8 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
             buttons: {}
-        });    
+        });
+*/        
     }
 
     
