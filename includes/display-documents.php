@@ -1500,6 +1500,8 @@ if (!class_exists('display_documents')) {
             if ($default_value === 'today') $default_value = wp_date('Y-m-d', time());
             if ($default_value === 'me') $default_value = $user_id;
             if ($default_value=='_post_number') $default_value=time();
+            if ($default_value=='_post_title') $default_value='';
+            if ($default_value=='_post_content') $default_value='';
 
             $field_type = sanitize_text_field(get_post_meta($field_id, 'field_type', true));
             if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
@@ -1508,7 +1510,9 @@ if (!class_exists('display_documents')) {
             }
             $get_system_doc_id = $this->get_system_doc_id($field_type);
             if ($get_system_doc_id) {
-                //if ($field_type=='_employee' && $default_value=='me') $default_value=$user_id;
+                if ($field_type=='_employee' && $default_value=='me') {
+                    $default_value = get_user_meta($user_id, 'employee_id', true);
+                }
             }
 
             return $default_value;
