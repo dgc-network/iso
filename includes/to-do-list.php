@@ -647,7 +647,7 @@ if (!class_exists('to_do_list')) {
                 }
 
                 if (stripos($system_doc, 'employee') !== false) {
-                    $documents_class->update_user_employee_id($new_report_id);
+                    //$documents_class->update_user_employee_id($new_report_id);
                 }
             }
 

@@ -1028,7 +1028,7 @@ if (!class_exists('display_documents')) {
                     }
 
                     if (stripos($system_doc, 'employee') !== false) {
-                        $this->update_user_employee_id($report_id);
+                        //$this->update_user_employee_id($report_id);
                     }
                 }
 
@@ -1519,7 +1519,7 @@ if (!class_exists('display_documents')) {
             return $default_value;
         }
 
-        function get_doc_report_id_by_user_id($user_id) {
+        function get_doc_report_id_by_user_id($user_id=false) {
             if (empty($user_id)) {
                 return null; // Return null if $user_id is empty
             }
