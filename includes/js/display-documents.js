@@ -192,7 +192,7 @@ jQuery(document).ready(function($) {
                     mermaid.initialize({ 
                         startOnLoad: true,
                         themeVariables: {
-                            lineColor: "#FF0000", // Replace with your desired color
+                            //lineColor: "#FF0000", // Replace with your desired color
                         }
                     });
                     mermaid.init(undefined, $('#result-container .mermaid'));
