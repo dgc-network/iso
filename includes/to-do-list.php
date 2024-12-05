@@ -107,7 +107,7 @@ if (!class_exists('to_do_list')) {
         // Create a todo Post Type
         function register_todo_post_type() {
             $labels = array(
-                'menu_name'          => _x('To-Do Items', 'admin menu', 'textdomain'),
+                'menu_name'          => _x('Todo-list', 'admin menu', 'textdomain'),
             );        
             $args = array(
                 'labels'             => $labels,
@@ -358,7 +358,7 @@ if (!class_exists('to_do_list')) {
         function set_todo_dialog_data() {
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                $this->update_todo_dialog_data($action_id);
+                $this->create_todo_dialog_and_go_next($action_id);
             }
             wp_send_json($response);
         }
@@ -533,13 +533,13 @@ if (!class_exists('to_do_list')) {
         function set_start_job_dialog_data() {
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                $this->update_start_job_dialog_data($action_id);
+                $this->create_start_job_and_go_next($action_id);
             }
             wp_send_json($response);
         }
         
         // to-do-list misc
-        function update_todo_dialog_data($action_id=false, $user_id=false, $is_default=false) {
+        function create_todo_dialog_and_go_next($action_id=false, $user_id=false, $is_default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
@@ -599,10 +599,10 @@ if (!class_exists('to_do_list')) {
             } else {
                 $params['prev_report_id'] = $prev_report_id;
             }
-            if ($next_job>0) $this->update_next_todo_and_actions($params);
+            if ($next_job>0) $this->initial_next_todo_and_actions($params);
         }
         
-        function update_start_job_dialog_data($action_id=false, $user_id=false, $is_default=false) {
+        function create_start_job_and_go_next($action_id=false, $user_id=false, $is_default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
@@ -680,10 +680,10 @@ if (!class_exists('to_do_list')) {
             } else {
                 $params['prev_report_id'] = $new_report_id;
             }
-            if ($next_job>0) $this->update_next_todo_and_actions($params);
+            if ($next_job>0) $this->initial_next_todo_and_actions($params);
         }
         
-        function create_new_todo_and_go_next($action_id=false, $report_id=false, $doc_id=false) {
+        function create_action_log_and_go_next($action_id=false, $report_id=false, $doc_id=false) {
             // Create the new To-do
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -713,15 +713,14 @@ if (!class_exists('to_do_list')) {
                 'prev_report_id' => $report_id,
                 'prev_todo_id' => $todo_id,
             );        
-            //$todo_class = new to_do_list();
-            if ($next_job>0) $this->update_next_todo_and_actions($params);
+            if ($next_job>0) $this->initial_next_todo_and_actions($params);
         }
 
-        function update_next_todo_and_actions($params=array()) {
-            // 1. From update_todo_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 2. From create_new_todo_and_go_next(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
-            // 3. From update_start_job_dialog_data(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 4. From schedule_event_callback($params), create a update_start_job_dialog_data() then go item 3
+        function initial_next_todo_and_actions($params=array()) {
+            // 1. From create_todo_dialog_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
+            // 2. From create_action_log_and_go_next(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
+            // 3. From create_start_job_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
+            // 4. From schedule_event_callback($params), create a create_start_job_and_go_next() then go item 3
 
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
@@ -740,7 +739,7 @@ if (!class_exists('to_do_list')) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
             } else {
-                // create_new_todo_and_go_next() and frquence doc_report
+                // create_action_log_and_go_next() and frquence doc_report
                 $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
                 if ($next_job==0) $next_job = $doc_id; // frquence doc_report                    
             }
@@ -1308,7 +1307,7 @@ if (!class_exists('to_do_list')) {
         function retrieve_action_log_data($paged=1, $report_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
-        
+
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => get_option('operation_row_counts'),
@@ -1323,10 +1322,6 @@ if (!class_exists('to_do_list')) {
                         'key'     => 'submit_user',
                         'compare' => 'EXISTS',
                     ),
-                    //array(
-                    //    'key'     => 'prev_report_id',
-                    //    'compare' => 'EXISTS',
-                    //),
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
@@ -1337,12 +1332,12 @@ if (!class_exists('to_do_list')) {
                 'meta_key'       => 'submit_time',
                 'order'          => 'DESC',
             );
-        
+
             // If paged is 0, retrieve all matching posts
             if ($paged == 0) {
                 $args['posts_per_page'] = -1;
             }
-        
+
             // If $report_id is provided, filter by prev_report_id
             if ($report_id) {
                 $args['meta_query'][] = array(
@@ -1351,7 +1346,7 @@ if (!class_exists('to_do_list')) {
                     'compare' => '='
                 );
             }
-        
+
             // Query to get matching posts
             $query = new WP_Query($args);
             return $query;
@@ -1361,7 +1356,7 @@ if (!class_exists('to_do_list')) {
         function schedule_event_callback($params) {
             $action_id = $params['action_id'];
             $user_id = $params['user_id'];
-            $this->update_start_job_dialog_data($action_id, $user_id, true);
+            $this->create_start_job_and_go_next($action_id, $user_id, true);
         }
         
         function weekday_event_callback($args) {
@@ -1372,7 +1367,7 @@ if (!class_exists('to_do_list')) {
                 // Your weekday-specific code here, e.g., send_email_reminder(), update_daily_task(), etc.
                 $action_id = $args['action_id'];
                 $user_id = $args['user_id'];
-                $this->update_start_job_dialog_data($action_id, $user_id, true);
+                $this->create_start_job_and_go_next($action_id, $user_id, true);
             }
         }
         
@@ -1419,7 +1414,7 @@ if (!class_exists('to_do_list')) {
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
                                 foreach ($action_authorized_ids as $user_id) {
-                                    $this->update_todo_dialog_data($action_id, $user_id, true);
+                                    $this->create_todo_dialog_and_go_next($action_id, $user_id, true);
                                 }
                             }
                         endwhile;

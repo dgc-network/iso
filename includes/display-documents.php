@@ -1028,7 +1028,7 @@ if (!class_exists('display_documents')) {
         
                 if ($proceed_to_todo == 1) {
                     $todo_class = new to_do_list();
-                    $todo_class->create_new_todo_and_go_next($action_id, $report_id);
+                    $todo_class->create_action_log_and_go_next($action_id, $report_id);
                 }
             } else {
                 // Create a new post if no report_id is set
@@ -2212,7 +2212,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $todo_class = new to_do_list();
-            $todo_class->create_new_todo_and_go_next(false, false, $post_id);
+            $todo_class->create_action_log_and_go_next(false, false, $post_id);
 
             // Create the Action list for $post_id
             $profiles_class = new display_profiles();

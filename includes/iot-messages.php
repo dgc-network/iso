@@ -187,7 +187,6 @@ if (!class_exists('iot_messages')) {
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <?php
-/*                
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $query = $this->retrieve_iot_message_data($paged, $device_number);
                 $data_points = []; // Initialize an array to hold valid temperature values
@@ -220,7 +219,6 @@ if (!class_exists('iot_messages')) {
                     </pre>
                 </div>                
                 <?php }
-*/                
                 ?>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id)?>
@@ -240,7 +238,8 @@ if (!class_exists('iot_messages')) {
         function get_iot_device_dialog_data() {
             if( isset($_POST['_device_id']) ) {
                 $device_id = sanitize_text_field($_POST['_device_id']);
-                $response = array('html_contain' => $this->display_iot_device_dialog($device_id));
+                //$response = array('html_contain' => $this->display_iot_device_dialog($device_id));
+                echo $this->display_iot_device_dialog($device_id);
             }
             wp_send_json($response);
         }
