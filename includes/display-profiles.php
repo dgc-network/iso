@@ -219,7 +219,7 @@ if (!class_exists('display_profiles')) {
                                     'job_number' => $job_number,
                                     'job_title' => $job_title,
                                     'doc_title' => $doc_title,
-                                    'job_content' => $job_content,
+                                    //'job_content' => $job_content,
                                     'is_checked' => $is_checked
                                 );
                             }
