@@ -1511,6 +1511,11 @@ if (!class_exists('display_documents')) {
                 $items_class = new sub_items();
                 $default_value = $items_class->get_embedded_id_by_number($default_value);
             }
+            $get_system_doc_id = $this->get_system_doc_id($field_type);
+            if ($get_system_doc_id) {
+                if ($default_value=='_post_number') $default_value=time();
+                if ($field_type=='_employee' && $default_value=='me') $default_value=$user_id;
+            }
 
             return $default_value;
         }
