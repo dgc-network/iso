@@ -6,9 +6,9 @@ jQuery(document).ready(function($) {
             // Initialize an empty array to store query parameters
             var queryParams = [];
             // Check the selected value for each select element and add it to the queryParams array
-            var profileValue = $("#select-todo").val();
-            if (profileValue) {
-                queryParams.push("_select_todo=" + profileValue);
+            var selectValue = $("#select-todo").val();
+            if (selectValue) {
+                queryParams.push("_select_todo=" + selectValue);
             }
             // Combine all query parameters into a single string
             var queryString = queryParams.join("&");
@@ -20,9 +20,9 @@ jQuery(document).ready(function($) {
             // Initialize an empty array to store query parameters
             var queryParams = [];
             // Check the selected value for each select element and add it to the queryParams array
-            var profileValue = $("#select-todo").val();
-            if (profileValue) {
-                queryParams.push("_select_todo=" + profileValue);
+            var selectValue = $("#select-todo").val();
+            if (selectValue) {
+                queryParams.push("_select_todo=" + selectValue);
             }
         
             var searchValue = $("#search-device").val();
@@ -55,8 +55,19 @@ jQuery(document).ready(function($) {
                 }
             });    
         });
-    
+
         $('[id^="edit-iot-device-"]').on("click", function () {
+            const device_id = this.id.substring(16);
+            // Initialize an empty array to store query parameters
+            var queryParams = [];
+            queryParams.push("_device_id=" + device_id);
+            // Combine all query parameters into a single string
+            var queryString = queryParams.join("&");
+            // Redirect to the new URL with all combined query parameters
+            window.location.href = "?" + queryString;
+        });
+
+        $('[id^="backup-edit-iot-device-"]').on("click", function () {
             const device_id = this.id.substring(16);
             $.ajax({
                 type: 'POST',

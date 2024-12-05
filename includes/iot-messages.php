@@ -238,8 +238,8 @@ if (!class_exists('iot_messages')) {
         function get_iot_device_dialog_data() {
             if( isset($_POST['_device_id']) ) {
                 $device_id = sanitize_text_field($_POST['_device_id']);
-                //$response = array('html_contain' => $this->display_iot_device_dialog($device_id));
-                echo $this->display_iot_device_dialog($device_id);
+                $response = array('html_contain' => $this->display_iot_device_dialog($device_id));
+                //echo $this->display_iot_device_dialog($device_id);
             }
             wp_send_json($response);
         }

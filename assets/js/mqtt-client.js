@@ -195,9 +195,9 @@ jQuery(document).ready(function($) {
             var queryParams = [];
         
             // Check the selected value for each select element and add it to the queryParams array
-            var profileValue = $("#select-profile").val();
-            if (profileValue) {
-                queryParams.push("_select_profile=" + profileValue);
+            var selectValue = $("#select-profile").val();
+            if (selectValue) {
+                queryParams.push("_select_profile=" + selectValue);
             }
         
             var searchValue = $("#search-mqtt-client").val();
