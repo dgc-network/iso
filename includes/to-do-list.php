@@ -1321,10 +1321,12 @@ if (!class_exists('to_do_list')) {
                 'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'AND',
+/*                    
                     array(
                         'key'     => 'submit_action',
                         'compare' => 'EXISTS',
                     ),
+*/                    
                     array(
                         'key'     => 'submit_user',
                         'compare' => 'EXISTS',
