@@ -84,14 +84,6 @@ if (!class_exists('display_profiles')) {
             <select id="select-profile">
                 <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
                 <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
-<?php /*
-                <option value="site-job" <?php echo ($select_option=="site-job") ? 'selected' : ''?>><?php echo __( '工作職掌', 'your-text-domain' );?></option>
-                <option value="customer-card" <?php echo ($select_option=="customer-card") ? 'selected' : ''?>><?php echo __( '客戶資料', 'your-text-domain' );?></option>
-                <option value="vendor-card" <?php echo ($select_option=="vendor-card") ? 'selected' : ''?>><?php echo __( '廠商資料', 'your-text-domain' );?></option>
-                <option value="product-card" <?php echo ($select_option=="product-card") ? 'selected' : ''?>><?php echo __( '產品資料', 'your-text-domain' );?></option>
-                <option value="equipment-card" <?php echo ($select_option=="equipment-card") ? 'selected' : ''?>><?php echo __( '設備資料', 'your-text-domain' );?></option>
-                <option value="instrument-card" <?php echo ($select_option=="instrument-card") ? 'selected' : ''?>><?php echo __( '儀器資料', 'your-text-domain' );?></option>
-*/?>
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
                 <option value="embedded" <?php echo ($select_option=="embedded") ? 'selected' : ''?>><?php echo __( '嵌入項目', 'your-text-domain' );?></option>
@@ -201,7 +193,6 @@ if (!class_exists('display_profiles')) {
             <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th>#</th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
@@ -215,14 +206,19 @@ if (!class_exists('display_profiles')) {
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
                             if ($doc_site == $site_id) {
                                 $job_number = get_post_meta($doc_id, 'job_number', true);
-                                $job_title = get_the_title($doc_id);
+                                $job_title = get_the_title($doc_id).'('.$job_number.')';
                                 $job_content = get_post_field('post_content', $doc_id);
+                                $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                                if ($doc_number) $doc_title.='('.$doc_number.')';
+                                else $doc_title=$job_content;
                                 $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
                                 // Add to documents array
                                 $documents[] = array(
                                     'doc_id' => $doc_id,
                                     'job_number' => $job_number,
                                     'job_title' => $job_title,
+                                    'doc_title' => $doc_title,
                                     'job_content' => $job_content,
                                     'is_checked' => $is_checked
                                 );
@@ -238,9 +234,8 @@ if (!class_exists('display_profiles')) {
                         foreach ($documents as $doc) {
                             ?>
                             <tr id="edit-my-job-<?php echo $doc['doc_id']; ?>">
-                                <td style="text-align:center;"><?php echo esc_html($doc['job_number']); ?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc['job_title']); ?></td>
-                                <td width="70%"><?php echo wp_kses_post($doc['job_content']); ?></td>
+                                <td><?php echo esc_html($doc['doc_title']); ?></td>
                                 <td style="text-align:center;"><input type="radio" <?php echo $doc['is_checked']; ?> /></td>
                             </tr>
                             <?php
