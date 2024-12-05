@@ -958,7 +958,7 @@ if (!class_exists('display_profiles')) {
                             <tr id="edit-site-job-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
-                                <td width="70%"><?php echo esc_html($doc_title.$users_unassigned);?></td>
+                                <td width="70%"><?php echo $doc_title.$users_unassigned;?></td>
                             </tr>
                             <?php 
                         endwhile;
