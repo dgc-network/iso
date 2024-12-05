@@ -1199,6 +1199,7 @@ if (!class_exists('display_documents')) {
                 // Partial match using stripos
                 if (stripos($user->display_name, $sanitized_title) !== false) {
                     update_user_meta($user->ID, 'employee_id', $_id);
+                    update_post_meta($_id, 'user_id', $user->ID);
                     return true; // Return true on success
                 }
             }
@@ -1511,13 +1512,54 @@ if (!class_exists('display_documents')) {
             $get_system_doc_id = $this->get_system_doc_id($field_type);
             if ($get_system_doc_id) {
                 if ($field_type=='_employee' && $default_value=='me') {
-                    $default_value = get_user_meta($user_id, 'employee_id', true);
+                    $default_value = get_doc_report_id_by_user_id($user_id);
                 }
             }
 
             return $default_value;
         }
 
+        function get_doc_report_id_by_user_id($user_id) {
+            if (empty($user_id)) {
+                return null; // Return null if $user_id is empty
+            }
+        
+            // Query arguments
+            $args = array(
+                'post_type'      => 'doc-report', // Specify the post type
+                'posts_per_page' => 1, // Limit the query to a single result
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'user_id', // The meta key to search
+                        'value'   => $user_id,  // The meta value to match
+                        'compare' => '=',       // Exact match
+                    ),
+                ),
+                'fields'         => 'ids', // Retrieve only the post IDs
+            );
+        
+            // Run the query
+            $query = new WP_Query($args);
+        
+            // Check if any posts were found
+            if ($query->have_posts()) {
+                return $query->posts[0]; // Return the first matching post ID
+            }
+        
+            // Return null if no matching post is found
+            return null;
+        }
+/*        
+        // Example usage
+        $user_id = 123; // Replace with the actual user ID
+        $doc_report_id = get_doc_report_id_by_user_id($user_id);
+        
+        if ($doc_report_id) {
+            echo "The ID of the doc-report is: " . $doc_report_id;
+        } else {
+            echo "No matching doc-report found for user_id: " . $user_id;
+        }
+*/        
         function get_doc_field_contains($params=array()) {
             $items_class = new sub_items();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
