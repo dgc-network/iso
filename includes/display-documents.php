@@ -1450,17 +1450,18 @@ if (!class_exists('display_documents')) {
             }
             // Get and sanitize the field name and default value
             $default_value = sanitize_text_field(get_post_meta($field_id, 'default_value', true));
-            if ($default_value === 'today') $default_value = wp_date('Y-m-d', time());
-            if ($default_value === 'me') $default_value = $user_id;
-            if ($default_value=='_post_number') $default_value=time();
-            if ($default_value=='_post_title') $default_value='';
-            if ($default_value=='_post_content') $default_value='';
-
             $field_type = sanitize_text_field(get_post_meta($field_id, 'field_type', true));
             if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                 $items_class = new sub_items();
                 $default_value = $items_class->get_embedded_id_by_number($default_value);
             }
+
+            if ($field_type=='date' && $default_value === 'today') $default_value = wp_date('Y-m-d', time());
+            if ($field_type=='_employee' && $default_value === 'me') $default_value = $user_id;
+            if ($field_type=='_employees' && $default_value === 'me') $default_value = array($user_id);
+            if ($default_value=='_post_number') $default_value=time();
+            if ($default_value=='_post_title') $default_value='';
+            if ($default_value=='_post_content') $default_value='';
 
             return $default_value;
         }
@@ -1495,9 +1496,11 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <?php 
                             if ($default_value=='me') {
+/*                                
                                 ?>
                                 <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
                                 <?php
+*/                                
                                 // Get user data
                                 $user = get_userdata(intval($field_value));
                                 // Check if the user data is retrieved successfully
