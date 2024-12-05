@@ -188,7 +188,13 @@ jQuery(document).ready(function($) {
                 $('#result-container').html(response.html_contain);
                  // Initialize Mermaid when the document is ready
                 if (typeof mermaid !== 'undefined') {
-                    mermaid.initialize({ startOnLoad: true });
+                    //mermaid.initialize({ startOnLoad: true });
+                    mermaid.initialize({ 
+                        startOnLoad: true,
+                        themeVariables: {
+                            lineColor: "#FF0000", // Replace with your desired color
+                        }
+                    });
                     mermaid.init(undefined, $('#result-container .mermaid'));
                 } else {
                     console.error('Mermaid is not loaded');

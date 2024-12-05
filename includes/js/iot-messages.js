@@ -66,29 +66,6 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + urlParams.toString();
         });
 
-        $("#del-iot-device").on("click", function () {
-            if (window.confirm("Are you sure you want to delete this IoT device?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'del_iot_device_dialog_data',
-                        '_device_id': $("#device-id").val(),
-                    },
-                    success: function (response) {
-                        //$("#iot-device-dialog").dialog('close');
-                        $("#result-container").html(response.html_contain);
-                        activate_iot_device_list_data();
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }
-        });
-
         $("#save-iot-device").on("click", function () {
             $.ajax({
                 type: 'POST',
@@ -111,6 +88,29 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
+        });
+
+        $("#del-iot-device").on("click", function () {
+            if (window.confirm("Are you sure you want to delete this IoT device?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_iot_device_dialog_data',
+                        '_device_id': $("#device-id").val(),
+                    },
+                    success: function (response) {
+                        //$("#iot-device-dialog").dialog('close');
+                        $("#result-container").html(response.html_contain);
+                        activate_iot_device_list_data();
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
         });
 
         $("#iot-dialog-exit").on("click", function () {

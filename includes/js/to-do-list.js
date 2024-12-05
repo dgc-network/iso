@@ -134,7 +134,7 @@ jQuery(document).ready(function($) {
                 window.location.replace(window.location.href);
             }
         });
-
+/*
         $('[id^="edit-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(16);
             $.ajax({
@@ -162,6 +162,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });        
+*/            
     }
 
     $("#search-start-job").on( "change", function() {
@@ -187,7 +188,6 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-
     });            
 
     function activate_start_job_dialog_data(doc_fields){
