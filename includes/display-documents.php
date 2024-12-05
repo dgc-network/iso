@@ -693,7 +693,7 @@ if (!class_exists('display_documents')) {
                                         if ($field_value==1) echo 'V';
                                     } elseif ($field_type=='radio') {
                                         if ($field_value==1) echo 'V';
-                                    } elseif ($field_type=='_employees') {
+                                    } elseif ($field_type=='_employee'||$field_type=='_employees') {
                                         if (is_array($field_value)) {
                                             $user_names = array(); // Array to hold user display names
                                             // Loop through each selected user ID
