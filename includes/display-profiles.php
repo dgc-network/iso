@@ -931,7 +931,6 @@ if (!class_exists('display_profiles')) {
                         <th>#</th>
                         <th><?php echo __( 'Job', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th>#</th>
                     </thead>
                     <tbody>
                     <?php
@@ -948,6 +947,7 @@ if (!class_exists('display_profiles')) {
                             $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
                             //$content = get_the_content();
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
+                            else $doc_title = get_the_content();
                             // display the warning if the job without assigned actions
                             $action_query = $this->retrieve_doc_action_list_data(get_the_ID());
                             $action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
@@ -958,8 +958,7 @@ if (!class_exists('display_profiles')) {
                             <tr id="edit-site-job-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
-                                <td width="70%"><?php echo esc_html($doc_title);?></td>
-                                <td style="text-align:center;"><?php echo $users_unassigned;?></td>
+                                <td width="70%"><?php echo esc_html($doc_title.$users_unassigned);?></td>
                             </tr>
                             <?php 
                         endwhile;
