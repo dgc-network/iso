@@ -390,13 +390,12 @@ jQuery(document).ready(function($) {
                     $("#site-user-dialog").dialog('open');
 
                     $('[id^="check-user-job-"]').on("click", function () {
-                        const doc_id = this.id.substring(15);
-                        // Toggle the checkbox state
-                        $("#is-user-doc-"+doc_id).prop("checked", function(i, value) {
-                            return !value;
-                        });
-                        
                         if (window.confirm("Are you sure you want to change this setting?")) {
+                            const doc_id = this.id.substring(15);
+                            $("#is-user-doc-"+doc_id).prop("checked", function(i, value) {
+                                return !value; // Toggle the checkbox state
+                            });
+
                             $.ajax({
                                 type: 'POST',
                                 url: ajax_object.ajax_url,

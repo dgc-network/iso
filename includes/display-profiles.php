@@ -731,7 +731,7 @@ if (!class_exists('display_profiles')) {
                                         echo '<td style="text-align:center;">' . get_the_title() . '</td>';
                                         echo '</tr>';
                                     endwhile;
-                                    wp_reset_postdata();
+                                    wp_reset_postdata();                                    
                                 }
                                 ?>
                             </tbody>
