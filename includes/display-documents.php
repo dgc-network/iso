@@ -1374,6 +1374,7 @@ if (!class_exists('display_documents')) {
                     <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
                     <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
                     <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
+                    <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( '_employee', 'your-text-domain' );?></option>
                     <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <?php
                     $query = $this->get_system_doc_list_query();
@@ -1512,54 +1513,13 @@ if (!class_exists('display_documents')) {
             $get_system_doc_id = $this->get_system_doc_id($field_type);
             if ($get_system_doc_id) {
                 if ($field_type=='_employee' && $default_value=='me') {
-                    $default_value = $this->get_doc_report_id_by_user_id($user_id);
+                    //$default_value = $this->get_doc_report_id_by_user_id($user_id);
                 }
             }
 
             return $default_value;
         }
 
-        function get_doc_report_id_by_user_id($user_id=false) {
-            if (empty($user_id)) {
-                return null; // Return null if $user_id is empty
-            }
-        
-            // Query arguments
-            $args = array(
-                'post_type'      => 'doc-report', // Specify the post type
-                'posts_per_page' => 1, // Limit the query to a single result
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'user_id', // The meta key to search
-                        'value'   => $user_id,  // The meta value to match
-                        'compare' => '=',       // Exact match
-                    ),
-                ),
-                'fields'         => 'ids', // Retrieve only the post IDs
-            );
-        
-            // Run the query
-            $query = new WP_Query($args);
-        
-            // Check if any posts were found
-            if ($query->have_posts()) {
-                return $query->posts[0]; // Return the first matching post ID
-            }
-        
-            // Return null if no matching post is found
-            return null;
-        }
-/*        
-        // Example usage
-        $user_id = 123; // Replace with the actual user ID
-        $doc_report_id = get_doc_report_id_by_user_id($user_id);
-        
-        if ($doc_report_id) {
-            echo "The ID of the doc-report is: " . $doc_report_id;
-        } else {
-            echo "No matching doc-report found for user_id: " . $user_id;
-        }
-*/        
         function get_doc_field_contains($params=array()) {
             $items_class = new sub_items();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
@@ -1585,7 +1545,7 @@ if (!class_exists('display_documents')) {
                     }
 
                     switch (true) {
-                        case ($field_type=='_employees'):
+                        case ($field_type=='_employee'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <?php 
@@ -1604,8 +1564,34 @@ if (!class_exists('display_documents')) {
                                     echo 'User not found for ID: ' . esc_html($field_value);
                                 }
                             } else {?>
+                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
+                            <?php }
+                            break;
+
+                        case ($field_type=='_employees'):
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $this->select_multiple_employees_options($field_value);?></select>
+                            <?php 
+/*                            
+                            if ($default_value=='me') {
+                                ?>
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
+                                <?php
+                                // Get user data
+                                $user = get_userdata(intval($field_value));
+                                // Check if the user data is retrieved successfully
+                                if ($user) {
+                                    // Add the user's display name to the array
+                                    echo esc_html($user->display_name);
+                                } else {
+                                    // Optionally handle the case where user data is not found
+                                    echo 'User not found for ID: ' . esc_html($field_value);
+                                }
+                            } else {?>
                                 <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $this->select_multiple_employees_options($field_value);?></select>
                             <?php }
+*/                            
                             break;
 
                         case ($field_type=='_embedded'):
