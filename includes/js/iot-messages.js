@@ -58,6 +58,19 @@ jQuery(document).ready(function($) {
 
         $('[id^="edit-iot-device-"]').on("click", function () {
             const device_id = this.id.substring(16);
+        
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+        
+            // Add or update the `_device_id` parameter
+            urlParams.set("_device_id", device_id);
+        
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+        });
+/*        
+        $('[id^="edit-iot-device-"]').on("click", function () {
+            const device_id = this.id.substring(16);
             // Initialize an empty array to store query parameters
             var queryParams = [];
             queryParams.push("_device_id=" + device_id);
@@ -66,7 +79,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $('[id^="backup-edit-iot-device-"]').on("click", function () {
             const device_id = this.id.substring(16);
             $.ajax({
