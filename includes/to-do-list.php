@@ -645,10 +645,6 @@ if (!class_exists('to_do_list')) {
                     // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
                     $documents_class->upsert_site_profile($new_report_id);
                 }
-
-                if (stripos($system_doc, 'employee') !== false) {
-                    //$documents_class->update_user_employee_id($new_report_id);
-                }
             }
 
             // Update the doc-field meta for new doc-report

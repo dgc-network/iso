@@ -1026,10 +1026,6 @@ if (!class_exists('display_documents')) {
                         // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
                         $this->upsert_site_profile($report_id);
                     }
-
-                    if (stripos($system_doc, 'employee') !== false) {
-                        //$this->update_user_employee_id($report_id);
-                    }
                 }
 
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
@@ -1160,51 +1156,6 @@ if (!class_exists('display_documents')) {
                 ));
                 return $post_id; // Return the new post ID
             }
-        }
-        
-        function update_user_employee_id($_id=false) {
-            if (empty($_id)) {
-                return false; // Ensure the ID is provided
-            }
-
-            // Get the title of the post
-            $_title = get_the_title($_id);
-            if (empty($_title)) {
-                return false; // Ensure the title is valid
-            }
-
-            // Sanitize the input title
-            $sanitized_title = sanitize_text_field($_title);
-        
-            // Get the current user's site_id
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            if (empty($site_id)) {
-                return false; // Ensure the site_id is valid
-            }
-        
-            // Query users with the matching site_id
-            $users = get_users(array(
-                'meta_query' => array(
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=', // Exact match
-                    ),
-                ),
-            ));
-        
-            // Check if the sanitized title matches any user's display_name
-            foreach ($users as $user) {
-                // Partial match using stripos
-                if (stripos($user->display_name, $sanitized_title) !== false) {
-                    update_user_meta($user->ID, 'employee_id', $_id);
-                    update_post_meta($_id, 'user_id', $user->ID);
-                    return true; // Return true on success
-                }
-            }
-
-            return false; // No match found
         }
         
         function get_transactions_by_key_value_pair($key_value_pair = array()) {
@@ -1509,12 +1460,6 @@ if (!class_exists('display_documents')) {
             if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                 $items_class = new sub_items();
                 $default_value = $items_class->get_embedded_id_by_number($default_value);
-            }
-            $get_system_doc_id = $this->get_system_doc_id($field_type);
-            if ($get_system_doc_id) {
-                if ($field_type=='_employee' && $default_value=='me') {
-                    //$default_value = $this->get_doc_report_id_by_user_id($user_id);
-                }
             }
 
             return $default_value;
