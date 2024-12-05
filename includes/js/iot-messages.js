@@ -58,28 +58,28 @@ jQuery(document).ready(function($) {
 
         $('[id^="edit-iot-device-"]').on("click", function () {
             const device_id = this.id.substring(16);
-        
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-        
             // Add or update the `_device_id` parameter
             urlParams.set("_device_id", device_id);
-        
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
-/*        
-        $('[id^="edit-iot-device-"]').on("click", function () {
-            const device_id = this.id.substring(16);
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            queryParams.push("_device_id=" + device_id);
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
+
+        $("#iot-dialog-exit").on("click", function () {
+            //window.location.replace(window.location.href);
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_device_id');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
         });
-*/
+
         $('[id^="backup-edit-iot-device-"]').on("click", function () {
             const device_id = this.id.substring(16);
             $.ajax({

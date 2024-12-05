@@ -177,6 +177,17 @@ if (!class_exists('iot_messages')) {
             $device_title = get_the_title($device_id);
             $device_content = get_post_field('post_content', $device_id);
             ?>
+            <div class="ui-widget" id="result-container">
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( 'IoT devices', 'your-text-domain' );?></h2>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div><?php $todo_class->display_select_todo('iot-devices');?></div>
+                <div style="text-align:right; display:flex;">
+                    <input type="text" id="search-device" style="display:inline" placeholder="Search..." />
+                </div>
+            </div>
+
             <fieldset>
                 <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
@@ -230,7 +241,20 @@ if (!class_exists('iot_messages')) {
                 $documents_class = new display_documents();
                 $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
+                <hr>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <?php if (is_site_admin()) {?>
+                            <input type="button" id="save-iot-device" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+                            <input type="button" id="del-iot-device" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                        <?php }?>
+                    </div>
+                    <div style="text-align: right">
+                        <input type="button" id="iot-dialog-exit" value="Exit" style="margin:5px;" />
+                    </div>
+                </div>
             </fieldset>
+            </div>
             <?php
             return ob_get_clean();
         }
