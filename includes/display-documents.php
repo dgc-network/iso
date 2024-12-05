@@ -1495,7 +1495,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_employee'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo print_r($field_value);?></select>
                             <?php 
 /*                            
                             if ($default_value=='me') {
@@ -1845,6 +1845,9 @@ if (!class_exists('display_documents')) {
                 update_post_meta($report_id, '_employees', $employee_ids);
             }
 
+            if ($field_type=='_employee'){
+                update_post_meta($report_id, '_employee', $field_value);
+            }
             if ($field_type=='_document'){
                 update_post_meta($report_id, '_document', $field_value);
             }
