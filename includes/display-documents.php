@@ -223,7 +223,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
         
-        function retrieve_document_list_data($paged = 1) {
+        function retrieve_document_list_data($paged=1, $is_doc_report=2) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $site_filter = array(
@@ -274,6 +274,24 @@ if (!class_exists('display_documents')) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
 
+            if ($is_doc_report == 0) {
+                $args['meta_query'][] = array(
+                    'key'     => 'is_doc_report',
+                    'value'   => 0,
+                    'compare' => '=',    
+                    'type'    => 'NUMERIC'
+                );
+            }
+
+            if ($is_doc_report == 1) {
+                $args['meta_query'][] = array(
+                    'key'     => 'is_doc_report',
+                    'value'   => 1,
+                    'compare' => '=',    
+                    'type'    => 'NUMERIC'
+                );
+            }
+/*
             if ($paged == 'not_doc_report') {
                 $args['posts_per_page'] = -1;
                 $args['meta_query'][] = array(
@@ -282,7 +300,7 @@ if (!class_exists('display_documents')) {
                     'compare' => '=',    
                 );
             }
-
+*/
             $query = new WP_Query($args);
             return $query;
         }
@@ -1347,6 +1365,7 @@ if (!class_exists('display_documents')) {
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
+                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( '_doc_report', 'your-text-domain' );?></option>
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
                     <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( '_iot_device', 'your-text-domain' );?></option>
                     <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
@@ -1631,10 +1650,17 @@ if (!class_exists('display_documents')) {
                             }
                             break;
 
+                        case ($field_type=='_doc_report'):
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value, 1);?></select>
+                            <?php
+                            break;
+
                         case ($field_type=='_document'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value, 0);?></select>
                             <?php
                             break;
 
@@ -1966,8 +1992,8 @@ if (!class_exists('display_documents')) {
             return $options;
         }
 
-        function select_document_list_options($selected_option=0) {
-            $query = $this->retrieve_document_list_data('not_doc_report');
+        function select_document_list_options($selected_option=0, $is_doc_report=2) {
+            $query = $this->retrieve_document_list_data(0, $is_doc_report);
             $options = '<option value="">Select document</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
