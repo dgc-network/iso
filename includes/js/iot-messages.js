@@ -169,9 +169,9 @@ jQuery(document).ready(function($) {
             var queryParams = [];
         
             // Check the selected value for each select element and add it to the queryParams array
-            var todoValue = $("#select-todo").val();
-            if (todoValue) {
-                queryParams.push("_select_todo=" + todoValue);
+            var selectValue = $("#select-todo").val();
+            if (selectValue) {
+                queryParams.push("_select_todo=" + selectValue);
             }
 
             // Combine all query parameters into a single string

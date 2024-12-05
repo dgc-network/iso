@@ -27,9 +27,9 @@ jQuery(document).ready(function($) {
         // Initialize an empty array to store query parameters
         var queryParams = [];    
         // Check the selected value for each select element and add it to the queryParams array
-        var todoValue = $("#select-todo").val();
-        if (todoValue) {
-            queryParams.push("_select_todo=" + todoValue);
+        var selectValue = $("#select-todo").val();
+        if (selectValue) {
+            queryParams.push("_select_todo=" + selectValue);
         }
         // Combine all query parameters into a single string
         var queryString = queryParams.join("&");    
@@ -307,20 +307,7 @@ jQuery(document).ready(function($) {
                     }
                 }
             });
-/*
-            $.each(doc_fields, function(index, value) {
-                const field_id_tag = '#' + value.field_id;
-                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
-                } else if (value.field_type === 'canvas') {
-                    const dataURL = canvas.toDataURL('image/png');
-                    ajaxData[value.field_id] = dataURL;
-                    console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
-                } else {
-                    ajaxData[value.field_id] = $(field_id_tag).val();
-                }
-            });
-*/
+
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
