@@ -291,16 +291,7 @@ if (!class_exists('display_documents')) {
                     'type'    => 'NUMERIC'
                 );
             }
-/*
-            if ($paged == 'not_doc_report') {
-                $args['posts_per_page'] = -1;
-                $args['meta_query'][] = array(
-                    'key'     => 'is_doc_report',
-                    'value'   => 0,
-                    'compare' => '=',    
-                );
-            }
-*/
+
             $query = new WP_Query($args);
             return $query;
         }
@@ -1497,27 +1488,6 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
                             <?php 
-/*                            
-                            if ($default_value=='me') {
-
-                                ?>
-                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
-                                <?php
-
-// Get user data
-                                $user = get_userdata(intval($field_value));
-                                // Check if the user data is retrieved successfully
-                                if ($user) {
-                                    // Add the user's display name to the array
-                                    echo esc_html($user->display_name);
-                                } else {
-                                    // Optionally handle the case where user data is not found
-                                    echo 'User not found for ID: ' . esc_html($field_value);
-                                }
-                            } else {?>
-                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
-                            <?php }
-*/                            
                             break;
 
                         case ($field_type=='_employees'):
@@ -1525,25 +1495,6 @@ if (!class_exists('display_documents')) {
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $this->select_multiple_employees_options($field_value);?></select>
                             <?php 
-/*                            
-                            if ($default_value=='me') {
-                                ?>
-                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
-                                <?php
-                                // Get user data
-                                $user = get_userdata(intval($field_value));
-                                // Check if the user data is retrieved successfully
-                                if ($user) {
-                                    // Add the user's display name to the array
-                                    echo esc_html($user->display_name);
-                                } else {
-                                    // Optionally handle the case where user data is not found
-                                    echo 'User not found for ID: ' . esc_html($field_value);
-                                }
-                            } else {?>
-                                <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all multiple-select"><?php echo $this->select_multiple_employees_options($field_value);?></select>
-                            <?php }
-*/                            
                             break;
 
                         case ($field_type=='_embedded'):
@@ -1781,7 +1732,7 @@ if (!class_exists('display_documents')) {
 
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-        
+
             // Retrieve users based on site_id
             $meta_query_args = array(
                 array(
@@ -1791,17 +1742,15 @@ if (!class_exists('display_documents')) {
                 ),
             );
             $users = get_users(array('meta_query' => $meta_query_args));
-        
+
             // Initialize options HTML
             $options = '';
-        
             // Loop through the users
             foreach ($users as $user) {
                 // Check if the current user ID is in the selected options array
                 $selected = in_array($user->ID, $selected_options) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr($user->ID) . '" ' . $selected . '>' . esc_html($user->display_name) . '</option>';
             }
-        
             // Return the options HTML
             return $options;
         }
@@ -1849,6 +1798,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($report_id, $field_id, array($field_value));
                 update_post_meta($report_id, '_employee', $field_value);
             }
+
             if ($field_type=='_document'){
                 update_post_meta($report_id, '_document', $field_value);
             }
@@ -2002,7 +1952,7 @@ if (!class_exists('display_documents')) {
                 'numberposts' => 1,         // Limit the number of results to one
             );            
             $posts = get_posts($args); // get_posts returns an array
-        
+
             // Ensure there's a post returned
             if (!empty($posts)) {
                 $site_id = $posts[0]->ID; // Retrieve the ID of the first post
@@ -2050,10 +2000,8 @@ if (!class_exists('display_documents')) {
                     'orderby'  => 'meta_value', // Order by meta value
                     'order'    => 'ASC', // Sort in ascending order
                 ));
-
                 // Return the query object
                 return $document_query;
-
             } else {
                 // If no 'doc-category' posts are found, return an empty WP_Query
                 return new WP_Query(); // Empty query object
@@ -2185,9 +2133,8 @@ if (!class_exists('display_documents')) {
                 'posts_per_page' => 1,
                 'fields'         => 'ids' // Only fetch the post ID
             );
-        
             $query = new WP_Query($args);
-        
+
             // Check if we have any matching "site-profile" posts
             if ($query->have_posts()) {
                 //return "Matching 'site-profile' post found for site_id: $site_id with title 'iso-helper.com'.";

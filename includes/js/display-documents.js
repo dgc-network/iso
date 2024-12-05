@@ -231,20 +231,7 @@ jQuery(document).ready(function($) {
             $("#doc-frame-div").toggle();
             $("#is-doc-report").val(0)
         });
-/*
-        $("#system-report-label").on("click", function () {
-            $("#doc-frame-div").toggle();
-            $("#system-report-div").toggle();
-            $("#mermaid-div").toggle()
-            const is_doc_report = 0;
-            $("#is-doc-report").val(is_doc_report)
-        });
 
-        $("#select-system-report").on("change", function () {
-            const is_doc_report = $("#select-system-report").val();
-            $("#is-doc-report").val(is_doc_report)
-        });
-*/
         $("#doc-frame-job-setting").on("click", function () {
             $("#doc-frame-job-setting").toggle()
             $(".mermaid").toggle()
@@ -392,7 +379,6 @@ jQuery(document).ready(function($) {
         });
 
         $("#document-dialog-exit").on("click", function () {
-            //window.location.replace(window.location.href);
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
