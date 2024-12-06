@@ -686,11 +686,17 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) $this->initial_next_todo_and_actions($params);
         }
         
-        function create_action_log_and_go_next($action_id=false, $report_id=false, $doc_id=false) {
+        function create_action_log_and_go_next($params=array()) {
             // Create the new To-do
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
+
+            $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+
             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
+            else $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+
             $next_job = get_post_meta($action_id, 'next_job', true);
             $new_post = array(
                 'post_type'     => 'todo',

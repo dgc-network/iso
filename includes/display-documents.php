@@ -1032,8 +1032,12 @@ if (!class_exists('display_documents')) {
                 $proceed_to_todo = isset($_POST['_proceed_to_todo']) ? sanitize_text_field($_POST['_proceed_to_todo']) : 0;
         
                 if ($proceed_to_todo == 1) {
+                    $params = array(
+                        'action_id' => $action_id,
+                        'report_id' => $report_id,
+                    );        
                     $todo_class = new to_do_list();
-                    $todo_class->create_action_log_and_go_next($action_id, $report_id);
+                    $todo_class->create_action_log_and_go_next($params);
                 }
             } else {
                 // Create a new post if no report_id is set
@@ -2171,8 +2175,12 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'doc_frame', $doc_frame);
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
+            $params = array(
+                'doc_id' => $post_id,
+                '_status' => 'draft',
+            );
             $todo_class = new to_do_list();
-            $todo_class->create_action_log_and_go_next(false, false, $post_id);
+            $todo_class->create_action_log_and_go_next($params);
 
             // Create the Action list for $post_id
             $profiles_class = new display_profiles();
