@@ -303,7 +303,7 @@ if (!class_exists('iot_messages')) {
                 update_post_meta($post_id, 'device_number', time());
 
                 $params = array(
-                    'log_message' => 'Create an IoT device. Number is: '.$device_number,
+                    'log_message' => 'Create an IoT device. Number is: '.time(),
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    

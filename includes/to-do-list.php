@@ -1220,7 +1220,6 @@ if (!class_exists('to_do_list')) {
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
-            
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('action-log');?></div>
                     <div style="text-align: right">
@@ -1262,16 +1261,22 @@ if (!class_exists('to_do_list')) {
                             $todo_title = get_the_title();
                             $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
                             if ($report_id) $doc_title .= '(#'.$report_id.')';
-                            else $doc_title = get_the_title();
+                            else {
+                                $doc_title = get_the_title();
+                                $todo_title = 'logfile';
+                            }
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
-                            if ($submit_action) $submit_title = get_the_title($submit_action);
-                            else $submit_title = 'log';
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
                             $next_job = get_post_meta(get_the_ID(), 'next_job', true);
                             if (!$next_job) $next_job = get_post_meta($submit_action, 'next_job', true);
                             $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
                             $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
+                            if ($submit_action) $submit_title = get_the_title($submit_action);
+                            else {
+                                $submit_title = '';
+                                $job_title = '';
+                            } 
         
                             $user_data = get_userdata( $submit_user );
                             ?>
