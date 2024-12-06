@@ -1371,10 +1371,9 @@ if (!class_exists('sub_items')) {
                         'value' => $site_id,
                     ),
                 ),
-                //'meta_key'       => 'department_number', // Meta key for sorting
-                //'orderby'        => 'meta_value', // Sort by meta value
-                //'order'          => 'ASC', // Sorting order (ascending)
-
+                'meta_key'       => 'department_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
             );
         
             if ($paged == 0) {

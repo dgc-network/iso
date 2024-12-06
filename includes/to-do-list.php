@@ -1244,7 +1244,7 @@ if (!class_exists('to_do_list')) {
                     <thead>
                         <tr>
                             <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Document', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
                             <th><?php echo __( 'User', 'your-text-domain' );?></th>
                             <th><?php echo __( 'Action', 'your-text-domain' );?></th>
