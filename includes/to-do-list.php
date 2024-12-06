@@ -297,7 +297,7 @@ if (!class_exists('to_do_list')) {
         function display_todo_dialog($todo_id=false, $view_mode=false) {
             if ($view_mode) {
                 $submit_action = get_post_meta($todo_id, 'submit_action', true);
-                if (!$submit_action) return;
+                if (!$submit_action) return 'logfile <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />';
             }
             ob_start();
             $documents_class = new display_documents();
