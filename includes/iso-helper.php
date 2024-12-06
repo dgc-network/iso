@@ -33,62 +33,6 @@ function display_iso_helper_logo() {
     return ob_get_clean();
 }
 
-function display_iso_category_contains($atts) {
-    ob_start();
-    // Extract and sanitize the shortcode attributes
-    $atts = shortcode_atts(array(
-        'parent_category' => false,
-    ), $atts);
-
-    $parent_category = $atts['parent_category'];
-
-    $meta_query = array(
-        'relation' => 'OR',
-    );
-
-    if ($parent_category) {
-        $meta_query[] = array(
-            'key'   => 'parent_category',
-            'value' => $parent_category,
-        );
-    }
-
-    $args = array(
-        'post_type'      => 'iso-category',
-        'posts_per_page' => -1,
-        'meta_query'     => $meta_query,
-    );
-
-    $query = new WP_Query($args);
-
-    while ($query->have_posts()) : $query->the_post();
-        $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-        $embedded = get_post_meta(get_the_ID(), 'embedded', true);
-        //$start_ai_url = '/display-documents/?_statement=' . $embedded;
-        $start_ai_url = '/display-documents/?_statement=' . get_the_ID();
-        ?>
-        <div class="iso-category-content">
-            <?php the_content(); ?>
-            <div class="wp-block-buttons">
-                <div class="wp-block-button">
-                    <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
-                </div>
-                <div class="wp-block-button">
-                    <?php if ($embedded) {?>
-                    <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'your-text-domain' ); ?></a>
-                    <?php }?>
-                </div>
-            </div>
-            <!-- Spacer -->
-            <div style="height: 20px;"></div> <!-- Adjust the height as needed -->
-        </div>
-        <?php
-    endwhile;
-    wp_reset_postdata();
-    return ob_get_clean();
-}
-add_shortcode('display-iso-category-contains', 'display_iso_category_contains');
-
 function is_site_admin($user_id=false, $site_id=false) {
     if (!$user_id && current_user_can('administrator')) return true;
     // Get the current user ID
@@ -133,22 +77,12 @@ function get_NDA_assignment($user_id=false) {
             <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
                 <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
                 <?php
-/*                
-                    $site_args = array(
-                        'post_type'      => 'site-profile',
-                        'posts_per_page' => -1,
-                    );
-                    $sites = get_posts($site_args);    
-                    foreach ($sites as $site) {
-                        echo '<option value="' . esc_attr($site->ID) . '" >' . esc_html($site->post_title) . '</option>';
-                    }
-*/
                     $site_args = array(
                         'post_type'      => 'site-profile',
                         'posts_per_page' => -1,
                     );
                     $sites = get_posts($site_args);
-                    
+
                     // Check if "site-profile" posts are empty
                     if (empty($sites)) {
                         // Insert a new "site-profile" post with the title "iso-helper.com"
@@ -157,16 +91,14 @@ function get_NDA_assignment($user_id=false) {
                             'post_type'   => 'site-profile',
                             'post_status' => 'publish',
                         ));
-                    
                         // Retrieve the updated list of "site-profile" posts
                         $sites = get_posts($site_args);
                     }
-                    
+
                     // Display the options in a dropdown
                     foreach ($sites as $site) {
                         echo '<option value="' . esc_attr($site->ID) . '">' . esc_html($site->post_title) . '</option>';
                     }
-                    
                 ?>
             </select>
             <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
@@ -181,6 +113,25 @@ function get_NDA_assignment($user_id=false) {
         </div>
         <div id="site-content">
             <!-- The site content will be displayed here -->
+        </div>
+        <div>
+            <label for="identify-number"><?php echo __( '簽名：', 'your-text-domain' );?></label>
+<?php /*            
+            <div id="signature-image-div">
+                <?php if ($field_value) {?>
+                    <div><img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" /></div>
+                <?php }?>
+                <button id="redraw-signature" style="margin:3px;">Redraw</button>
+            </div>
+
+            <div style="display:none;" id="signature-pad-div">
+*/?>            
+            <div id="signature-pad-div">
+                <div>
+                    <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
+                </div>
+                <button id="clear-signature" style="margin:3px;">Clear</button>
+            </div>
         </div>
         <div style="display:flex;">
             <?php echo __( '日期：', 'your-text-domain' );?>
@@ -201,6 +152,7 @@ function set_NDA_assignment() {
         update_user_meta( $user_id, 'site_id', $site_id);
         update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
         update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
+        update_user_meta( $user_id, 'signature_image', $_POST['_signature_image']);
         update_user_meta( $user_id, 'nda_date', sanitize_text_field($_POST['_nda_date']));
     }
     wp_send_json($response);
