@@ -295,6 +295,10 @@ if (!class_exists('to_do_list')) {
         }
 
         function display_todo_dialog($todo_id=false, $view_mode=false) {
+            if ($view_mode) {
+                $submit_action = get_post_meta($todo_id, 'submit_action', true);
+                if (!$submit_action) return;
+            }
             ob_start();
             $documents_class = new display_documents();
             ?>
@@ -1335,12 +1339,6 @@ if (!class_exists('to_do_list')) {
                 'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'AND',
-/*                    
-                    array(
-                        'key'     => 'submit_action',
-                        'compare' => 'EXISTS',
-                    ),
-*/                    
                     array(
                         'key'     => 'submit_user',
                         'compare' => 'EXISTS',
