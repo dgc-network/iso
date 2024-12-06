@@ -470,6 +470,13 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
+
+                $params = array(
+                    'log_message' => 'Update a Document(#'.$doc_number.')',
+                );
+                $todo_class = new to_do_list();
+                $todo_class->create_action_log_and_go_next($params);    
+
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -723,7 +730,6 @@ if (!class_exists('display_documents')) {
                                         $doc_revision = get_post_meta($field_value, 'doc_revision', true);
                                         echo esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision);
                                     } elseif ($field_type=='_department') {
-                                        $department_code = get_post_meta($field_value, 'department_code', true);
                                         echo esc_html(get_the_title($field_value));
                                     } elseif ($field_type=='_iot_device') {
                                         $iot_device = get_post_meta($field_value, 'iot_device', true);

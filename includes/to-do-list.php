@@ -1267,7 +1267,7 @@ if (!class_exists('to_do_list')) {
                             if ($report_id) $doc_title .= '(#'.$report_id.')';
                             else {
                                 $doc_title = get_the_title();
-                                $todo_title = 'logfile';
+                                $todo_title = 'system log';
                             }
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
