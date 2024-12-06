@@ -1277,7 +1277,6 @@ if (!class_exists('to_do_list')) {
                                 $submit_title = '';
                                 $job_title = '';
                             } 
-        
                             $user_data = get_userdata( $submit_user );
                             ?>
                             <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
