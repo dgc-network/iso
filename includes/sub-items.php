@@ -991,7 +991,7 @@ if (!class_exists('sub_items')) {
                 update_post_meta($category_id, 'iso_category', $iso_category);
 
                 $params = array(
-                    'log_message' => 'Update a doc-category('.$category_title.')',
+                    'log_message' => 'Update a Category('.$category_title.')',
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
