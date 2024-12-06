@@ -1224,7 +1224,7 @@ if (!class_exists('to_do_list')) {
                     </div>
                 </div>
                 <?php echo $this->get_action_log_list();?>
-                <p style="background-color:lightblue;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_action_logs();?></p>
+                <p style="background-color:lightblue; text-align:center;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_action_logs();?></p>
             </div>
             <?php
         }
