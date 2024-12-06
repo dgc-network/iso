@@ -694,13 +694,17 @@ if (!class_exists('to_do_list')) {
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
 
-            if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-            else $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            if ($report_id) {
+                $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $todo_title = get_the_title($doc_id);
+            } else {
+                $todo_title = isset($params['log_message']) ? $params['log_message'] : 'No message.'; 
+            }
 
             $next_job = get_post_meta($action_id, 'next_job', true);
             $new_post = array(
                 'post_type'     => 'todo',
-                'post_title'    => get_the_title($doc_id),
+                'post_title'    => $todo_title,
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
             );    
@@ -1255,9 +1259,13 @@ if (!class_exists('to_do_list')) {
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
                             $site_id = get_post_meta($doc_id, 'site_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $todo_title = get_the_title();
                             $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
                             if ($report_id) $doc_title .= '(#'.$report_id.')';
+                            else $doc_title = get_the_title();
                             $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
+                            if ($submit_action) $submit_title = get_the_title($submit_action);
+                            else $submit_title = 'log';
                             $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
                             $next_job = get_post_meta(get_the_ID(), 'next_job', true);
@@ -1270,9 +1278,9 @@ if (!class_exists('to_do_list')) {
                             <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
                                 <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
                                 <td><?php echo esc_html($doc_title);?></td>
-                                <td style="text-align:center;"><?php esc_html(the_title());?></td>
+                                <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
-                                <td style="text-align:center;"><?php echo esc_html(get_the_title($submit_action));?></td>
+                                <td style="text-align:center;"><?php echo esc_html($submit_title);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                             </tr>
                             <?php

@@ -2176,8 +2176,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(
-                'doc_id' => $post_id,
-                '_status' => 'draft',
+                'log_message' => 'Generate the draft of '.get_the_title($doc_id),
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);

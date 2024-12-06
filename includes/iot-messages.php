@@ -281,6 +281,13 @@ if (!class_exists('iot_messages')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($device_id, 'device_number', $device_number);
+
+                $params = array(
+                    'log_message' => 'Update an IoT device. Number is: '.$device_number,
+                );
+                $todo_class = new to_do_list();
+                $todo_class->create_action_log_and_go_next($params);    
+
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -294,6 +301,12 @@ if (!class_exists('iot_messages')) {
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'device_number', time());
+
+                $params = array(
+                    'log_message' => 'Create an IoT device. Number is: '.$device_number,
+                );
+                $todo_class = new to_do_list();
+                $todo_class->create_action_log_and_go_next($params);    
             }
             $response = array('html_contain' => $this->display_iot_device_list());
             wp_send_json($response);
