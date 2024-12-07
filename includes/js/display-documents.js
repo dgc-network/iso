@@ -221,6 +221,13 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-document-"]').on("click", function () {
         const doc_id = this.id.substring(14);
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        // Add or update the `_device_id` parameter
+        urlParams.set("_doc_id", device_id);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+/*
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
@@ -251,6 +258,7 @@ jQuery(document).ready(function($) {
                 console.error(error);
             }
         });
+*/        
     });            
 
     function activate_document_dialog_data(doc_id){
