@@ -90,8 +90,14 @@ if (!class_exists('display_documents')) {
 
                 // Display document dialog if doc_id is existed
                 if (isset($_GET['_doc_id'])) {
+                    $doc_id = sanitize_text_field($_GET['_doc_id']);
+                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                     echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_document_dialog(sanitize_text_field($_GET['_doc_id']));
+                    if (is_site_admin()) echo $this->display_document_dialog($doc_id);
+                    else {
+                        if ($is_doc_report==0) echo $this->display_doc_frame_contain($doc_id);
+                        elseif ($is_doc_report==1) echo = $this->display_doc_report_list(array('doc_id' => $doc_id));
+                    }
                     echo '</div>';
                 }
 
