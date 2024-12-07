@@ -96,7 +96,7 @@ if (!class_exists('display_documents')) {
                     if (is_site_admin()) echo $this->display_document_dialog($doc_id);
                     else {
                         if ($is_doc_report==0) echo $this->display_doc_frame_contain($doc_id);
-                        elseif ($is_doc_report==1) echo = $this->display_doc_report_list(array('doc_id' => $doc_id));
+                        elseif ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
                     }
                     echo '</div>';
                 }
