@@ -320,10 +320,12 @@ if (!class_exists('display_documents')) {
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
                 'meta_query'    => array(
-                    'key'     => 'site_id',
-                    'value'   => $site_id,
-                    'compare' => '=',
-                )
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',    
+                    ),
+                ),
             );
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
@@ -342,10 +344,12 @@ if (!class_exists('display_documents')) {
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
                 'meta_query'    => array(
-                    'key'     => 'site_id',
-                    'value'   => $site_id,
-                    'compare' => '=',
-                )
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',    
+                    ),
+                ),
             );
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
