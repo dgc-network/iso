@@ -15,9 +15,9 @@ jQuery(document).ready(function($) {
     // Keyboard navigation
     $(document).on("keydown", function (event) {
         if (event.key === "ArrowRight" && nextDocId) {
-            navigateToDevice(nextDocId); // Move to the next record
+            navigateToDoc(nextDocId); // Move to the next record
         } else if (event.key === "ArrowLeft" && prevDocId) {
-            navigateToDevice(prevDocId); // Move to the previous record
+            navigateToDoc(prevDocId); // Move to the previous record
         }
     });
 
