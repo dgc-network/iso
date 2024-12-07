@@ -224,7 +224,7 @@ jQuery(document).ready(function($) {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         // Add or update the `_device_id` parameter
-        urlParams.set("_doc_id", device_id);
+        urlParams.set("_doc_id", doc_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
 /*
