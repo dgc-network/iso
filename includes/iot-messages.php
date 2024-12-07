@@ -178,6 +178,9 @@ if (!class_exists('iot_messages')) {
                 'order'          => 'DESC',
                 'orderby'        => 'ID',
                 'post__lt'       => $current_device_id,
+                'meta_key'       => 'device_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
             );
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
@@ -190,6 +193,9 @@ if (!class_exists('iot_messages')) {
                 'order'          => 'ASC',
                 'orderby'        => 'ID',
                 'post__gt'       => $current_device_id,
+                'meta_key'       => 'device_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
             );
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
