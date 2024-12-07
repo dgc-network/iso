@@ -227,6 +227,7 @@ jQuery(document).ready(function($) {
         urlParams.set("_doc_id", doc_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
+        activate_document_dialog_data(doc_id);
 /*
         $.ajax({
             url: ajax_object.ajax_url,
