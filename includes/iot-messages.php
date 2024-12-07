@@ -171,8 +171,39 @@ if (!class_exists('iot_messages')) {
             return $query;
         }
 
+        function get_previous_device_id($current_device_id) {
+            $args = array(
+                'post_type'      => 'iot-device',
+                'posts_per_page' => 1,
+                'order'          => 'DESC',
+                'orderby'        => 'ID',
+                'post__lt'       => $current_device_id,
+            );
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+        
+        function get_next_device_id($current_device_id) {
+            $args = array(
+                'post_type'      => 'iot-device',
+                'posts_per_page' => 1,
+                'order'          => 'ASC',
+                'orderby'        => 'ID',
+                'post__gt'       => $current_device_id,
+            );
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+        
         function display_iot_device_dialog($device_id=false) {
             ob_start();
+            $prev_device_id = $this->get_previous_device_id($device_id); // Fetch the previous device ID
+            $next_device_id = $this->get_next_device_id($device_id);     // Fetch the next device ID
+            ?>
+            <input type="hidden" id="prev-device-id" value="<?php echo esc_attr($prev_device_id); ?>" />
+            <input type="hidden" id="next-device-id" value="<?php echo esc_attr($next_device_id); ?>" />
+            <?php
+            
             $todo_class = new to_do_list();
             $device_number = get_post_meta($device_id, 'device_number', true);
             $device_title = get_the_title($device_id);
@@ -181,14 +212,6 @@ if (!class_exists('iot_messages')) {
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'IoT devices', 'your-text-domain' );?></h2>
-<?php /*
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $todo_class->display_select_todo('iot-devices');?></div>
-                <div style="text-align:right; display:flex;">
-                    <input type="text" id="search-device" style="display:inline" placeholder="Search..." />
-                </div>
-            </div>
-*/?>
             <fieldset>
                 <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />

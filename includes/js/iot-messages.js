@@ -1,4 +1,50 @@
+$(document).ready(function () {
+    const prevDeviceId = $("#prev-device-id").val();
+    const nextDeviceId = $("#next-device-id").val();
+
+    // Function to navigate to the previous or next device
+    function navigateToDevice(deviceId) {
+        if (deviceId) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("_device_id", deviceId);
+            window.location.href = currentUrl.toString();
+        }
+    }
+
+    // Keyboard navigation
+    $(document).on("keydown", function (event) {
+        if (event.key === "ArrowRight" && nextDeviceId) {
+            navigateToDevice(nextDeviceId); // Move to the next device
+        } else if (event.key === "ArrowLeft" && prevDeviceId) {
+            navigateToDevice(prevDeviceId); // Move to the previous device
+        }
+    });
+
+    // Touch navigation for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    $(document).on("touchstart", function (event) {
+        touchStartX = event.originalEvent.changedTouches[0].screenX;
+    });
+
+    $(document).on("touchend", function (event) {
+        touchEndX = event.originalEvent.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        const swipeThreshold = 50; // Minimum swipe distance
+        if (touchEndX < touchStartX - swipeThreshold && nextDeviceId) {
+            navigateToDevice(nextDeviceId); // Swipe left: Move to the next device
+        } else if (touchEndX > touchStartX + swipeThreshold && prevDeviceId) {
+            navigateToDevice(prevDeviceId); // Swipe right: Move to the previous device
+        }
+    }
+});
+
 jQuery(document).ready(function($) {
+    
     // Function to update the URL with new query parameters
     function updateUrlWithParams(params) {
         var currentUrl = new URL(window.location.href);
