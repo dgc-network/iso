@@ -323,7 +323,7 @@ if (!class_exists('display_documents')) {
                 //'order'          => 'ASC',
                 //'orderby'        => 'ID',
                 'post__gt'       => $current_id,
-                'meta_key'       => 'device_number', // Meta key for sorting
+                'meta_key'       => 'doc_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
             );
