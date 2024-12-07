@@ -308,6 +308,8 @@ if (!class_exists('display_documents')) {
         }
         
         function get_previous_doc_id($current_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
@@ -317,12 +319,19 @@ if (!class_exists('display_documents')) {
                 'meta_key'       => 'doc_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
+                'meta_query'    => array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '=',
+                )
             );
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
 
         function get_next_doc_id($current_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
@@ -332,6 +341,11 @@ if (!class_exists('display_documents')) {
                 'meta_key'       => 'doc_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
+                'meta_query'    => array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                    'compare' => '=',
+                )
             );
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
