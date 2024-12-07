@@ -1,5 +1,49 @@
 // display documents
 jQuery(document).ready(function($) {
+    const prevDocId = $("#prev-doc-id").val();
+    const nextDocId = $("#next-doc-id").val();
+
+    // Function to navigate to the previous or next record
+    function navigateToDoc(Id) {
+        if (Id) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("_doc_id", Id);
+            window.location.href = currentUrl.toString();
+        }
+    }
+
+    // Keyboard navigation
+    $(document).on("keydown", function (event) {
+        if (event.key === "ArrowRight" && nextDocId) {
+            navigateToDevice(nextDocId); // Move to the next record
+        } else if (event.key === "ArrowLeft" && prevDocId) {
+            navigateToDevice(prevDocId); // Move to the previous record
+        }
+    });
+
+    // Touch navigation for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    $(document).on("touchstart", function (event) {
+        touchStartX = event.originalEvent.changedTouches[0].screenX;
+    });
+
+    $(document).on("touchend", function (event) {
+        touchEndX = event.originalEvent.changedTouches[0].screenX;
+        handleDocSwipe();
+    });
+
+    function handleDocSwipe() {
+        const swipeThreshold = 50; // Minimum swipe distance
+        if (touchEndX < touchStartX - swipeThreshold && nextDocId) {
+            navigateToDoc(nextDocId); // Swipe left: Move to the next record
+        } else if (touchEndX > touchStartX + swipeThreshold && prevDocId) {
+            navigateToDevice(prevDocId); // Swipe right: Move to the previous record
+        }
+    }
+
+    // copyToClipboard
     function copyToClipboard(text) {
         // Create a temporary textarea element
         var textarea = $("<textarea>")

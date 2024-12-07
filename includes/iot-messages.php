@@ -185,7 +185,7 @@ if (!class_exists('iot_messages')) {
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-        
+
         function get_next_device_id($current_device_id) {
             $args = array(
                 'post_type'      => 'iot-device',
@@ -200,7 +200,7 @@ if (!class_exists('iot_messages')) {
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-        
+
         function display_iot_device_dialog($device_id=false) {
             ob_start();
             $prev_device_id = $this->get_previous_device_id($device_id); // Fetch the previous device ID
@@ -209,7 +209,6 @@ if (!class_exists('iot_messages')) {
             <input type="hidden" id="prev-device-id" value="<?php echo esc_attr($prev_device_id); ?>" />
             <input type="hidden" id="next-device-id" value="<?php echo esc_attr($next_device_id); ?>" />
             <?php
-            
             $todo_class = new to_do_list();
             $device_number = get_post_meta($device_id, 'device_number', true);
             $device_title = get_the_title($device_id);

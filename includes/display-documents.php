@@ -66,6 +66,11 @@ if (!class_exists('display_documents')) {
             ));                
         }
 
+        function add_mermaid_script() {
+            // Add Mermaid script
+            wp_enqueue_script('mermaid', 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js', array(), null, true);
+        }
+
         // Shortcode to display
         function display_documents() {
             // Check if the user is logged in
@@ -296,13 +301,44 @@ if (!class_exists('display_documents')) {
             return $query;
         }
         
-        function add_mermaid_script() {
-            // Add Mermaid script
-            wp_enqueue_script('mermaid', 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js', array(), null, true);
+        function get_previous_doc_id($current_id) {
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => 1,
+                //'order'          => 'DESC',
+                //'orderby'        => 'ID',
+                'post__lt'       => $current_id,
+                'meta_key'       => 'doc_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_doc_id($current_id) {
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => 1,
+                //'order'          => 'ASC',
+                //'orderby'        => 'ID',
+                'post__gt'       => $current_id,
+                'meta_key'       => 'device_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'DESC', // Sorting order (ascending)
+            );
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
         }
 
         function display_document_dialog($doc_id=false) {
             ob_start();
+            $prev_doc_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
+            $next_doc_id = $this->get_next_doc_id($doc_id);     // Fetch the next ID
+            ?>
+            <input type="hidden" id="prev-doc-id" value="<?php echo esc_attr($prev_doc_id); ?>" />
+            <input type="hidden" id="next-doc-id" value="<?php echo esc_attr($next_doc_id); ?>" />
+            <?php
             $todo_class = new to_do_list();
             $items_class = new sub_items();
             $profiles_class = new display_profiles();
