@@ -307,7 +307,7 @@ if (!class_exists('display_documents')) {
             return $query;
         }
         
-        function get_previous_doc_id($current_id) {
+        function get_previous_doc_id($current_doc_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
@@ -315,7 +315,7 @@ if (!class_exists('display_documents')) {
                 'posts_per_page' => 1,
                 //'order'          => 'DESC',
                 //'orderby'        => 'ID',
-                'post__lt'       => $current_id,
+                'post__lt'       => $current_doc_id,
                 'meta_key'       => 'doc_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
@@ -331,7 +331,7 @@ if (!class_exists('display_documents')) {
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
 
-        function get_next_doc_id($current_id) {
+        function get_next_doc_id($current_doc_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
@@ -339,7 +339,7 @@ if (!class_exists('display_documents')) {
                 'posts_per_page' => 1,
                 //'order'          => 'ASC',
                 //'orderby'        => 'ID',
-                'post__gt'       => $current_id,
+                'post__gt'       => $current_doc_id,
                 'meta_key'       => 'doc_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)

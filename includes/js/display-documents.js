@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
         if (touchEndX < touchStartX - swipeThreshold && nextDocId) {
             navigateToDoc(nextDocId); // Swipe left: Move to the next record
         } else if (touchEndX > touchStartX + swipeThreshold && prevDocId) {
-            navigateToDevice(prevDocId); // Swipe right: Move to the previous record
+            navigateToDoc(prevDocId); // Swipe right: Move to the previous record
         }
     }
 
