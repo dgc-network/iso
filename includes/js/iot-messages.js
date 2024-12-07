@@ -1,4 +1,4 @@
-$(document).ready(function ($) {
+jQuery(document).ready(function($) {
     const prevDeviceId = $("#prev-device-id").val();
     const nextDeviceId = $("#next-device-id").val();
 
