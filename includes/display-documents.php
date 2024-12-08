@@ -91,10 +91,11 @@ if (!class_exists('display_documents')) {
                 // Display document dialog if doc_id is existed
                 // Display doc_report dialog if report_id is existed
                 if (isset($_GET['_doc_id'])) {
-                    $doc_id = sanitize_text_field($_GET['_doc_id']);                    
+                    $doc_id = sanitize_text_field($_GET['_doc_id']);
                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                     echo '<div class="ui-widget" id="result-container">';
                     if (isset($_GET['_report_id'])) {
+                        $report_id = sanitize_text_field($_GET['_report_id']);
                         echo $this->display_doc_report_dialog($report_id);
                     } else {
                         if (is_site_admin()) echo $this->display_document_dialog($doc_id);
@@ -1031,7 +1032,6 @@ if (!class_exists('display_documents')) {
 
         function display_doc_report_dialog($report_id=false) {
             ob_start();
-            $report_id = (int)$report_id;
             $prev_report_id = $this->get_previous_report_id($report_id); // Fetch the previous ID
             $next_report_id = $this->get_next_report_id($report_id);     // Fetch the next ID
             ?>
