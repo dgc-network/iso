@@ -89,18 +89,23 @@ if (!class_exists('display_documents')) {
                 }
 
                 // Display document dialog if doc_id is existed
+                // Display doc_report dialog if report_id is existed
                 if (isset($_GET['_doc_id'])) {
-                    $doc_id = sanitize_text_field($_GET['_doc_id']);
+                    $doc_id = sanitize_text_field($_GET['_doc_id']);                    
                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                     echo '<div class="ui-widget" id="result-container">';
-                    if (is_site_admin()) echo $this->display_document_dialog($doc_id);
-                    else {
-                        if ($is_doc_report==0) echo $this->display_doc_frame_contain($doc_id);
-                        elseif ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
+                    if (isset($_GET['_report_id'])) {
+                        echo $this->display_doc_report_dialog($report_id);
+                    } else {
+                        if (is_site_admin()) echo $this->display_document_dialog($doc_id);
+                        else {
+                            if ($is_doc_report==0) echo $this->display_doc_frame_contain($doc_id);
+                            elseif ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
+                        }    
                     }
                     echo '</div>';
                 }
-
+/*
                 if (isset($_GET['_doc_report'])) {
                     echo '<div class="ui-widget" id="result-container">';
                     echo $this->display_doc_report_list(array('doc_id' => sanitize_text_field($_GET['_doc_report'])));
@@ -112,7 +117,7 @@ if (!class_exists('display_documents')) {
                     echo $this->display_doc_frame_contain(sanitize_text_field($_GET['_doc_frame']));
                     echo '</div>';
                 }
-
+*/
                 // Get shared document if shared doc ID is existed
                 if (isset($_GET['_duplicate_document'])) {
                     $doc_id = sanitize_text_field($_GET['_duplicate_document']);
