@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
     const nextJobId = $("#next-job-id").val();
 
     // Function to navigate to the previous or next record
-    function navigateToDoc(Id) {
+    function navigateToJob(Id) {
         if (Id) {
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set("_job_id", Id);
@@ -16,9 +16,9 @@ jQuery(document).ready(function($) {
     // Keyboard navigation
     $(document).on("keydown", function (event) {
         if (event.key === "ArrowRight" && nextJobId) {
-            navigateToDoc(nextJobId); // Move to the next record
+            navigateToJob(nextJobId); // Move to the next record
         } else if (event.key === "ArrowLeft" && prevJobId) {
-            navigateToDoc(prevJobId); // Move to the previous record
+            navigateToJob(prevJobId); // Move to the previous record
         }
     });
 
@@ -38,9 +38,9 @@ jQuery(document).ready(function($) {
     function handleJobSwipe() {
         const swipeThreshold = 50; // Minimum swipe distance
         if (touchEndX < touchStartX - swipeThreshold && nextJobId) {
-            navigateToDoc(nextJobId); // Swipe left: Move to the next record
+            navigateToJob(nextJobId); // Swipe left: Move to the next record
         } else if (touchEndX > touchStartX + swipeThreshold && prevJobId) {
-            navigateToDoc(prevJobId); // Swipe right: Move to the previous record
+            navigateToJob(prevJobId); // Swipe right: Move to the previous record
         }
     }
 
@@ -213,7 +213,31 @@ jQuery(document).ready(function($) {
 */        
     });            
 
-    function activate_start_job_dialog_data(doc_fields){
+    function get_start_job_dialog_data(job_id){
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_start_job_dialog_data',
+                _job_id: job_id,
+            },
+            success: function (response) {
+                return response.doc_fields;                
+                //$('#result-container').html(response.html_contain);
+                //activate_start_job_dialog_data(response.doc_fields);
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });
+
+    }
+
+    activate_start_job_dialog_data();
+    //function activate_start_job_dialog_data(doc_fields){
+    function activate_start_job_dialog_data(){
+
         const canvas = document.getElementById('signature-pad');
         if (canvas) {
             canvas.width = window.innerWidth-10;
@@ -294,6 +318,7 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_action_id'] = action_id;
 
+            doc_fields = get_start_job_dialog_data($("job-id").val());
             $.each(doc_fields, function(index, value) {
                 const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {

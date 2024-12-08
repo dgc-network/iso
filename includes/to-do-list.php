@@ -548,7 +548,7 @@ if (!class_exists('to_do_list')) {
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             // Get the current document's `job_number`
-            $current_job_number = get_post_meta($current_doc_id, 'job_number', true);
+            $current_job_number = get_post_meta($current_job_id, 'job_number', true);
         
             if (!$current_job_number) {
                 return null; // Return null if the current job_number is not set
@@ -596,6 +596,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Start job: '.get_the_title($doc_id));?></h2>
+            <input type="hidden" id="job-id" value="<?php echo $doc_id;?>">
             <fieldset>
             <?php
                 $documents_class = new display_documents();
