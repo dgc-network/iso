@@ -337,12 +337,12 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
-                //'order'          => 'ASC',
-                //'orderby'        => 'ID',
+                'order'          => 'ASC',
+                'orderby'        => 'ID',
                 'post__gt'       => $current_doc_id,
-                'meta_key'       => 'doc_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'DESC', // Sorting order (ascending)
+                //'meta_key'       => 'doc_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                //'order'          => 'DESC', // Sorting order (ascending)
                 'meta_query'    => array(
                     array(
                         'key'     => 'site_id',
@@ -379,6 +379,8 @@ if (!class_exists('display_documents')) {
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+            $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
+            $is_frame_display = ($is_doc_report==1) ? 'display:none;' : '';
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
 
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
@@ -402,7 +404,7 @@ if (!class_exists('display_documents')) {
 
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 
-                <div id="doc-frame-div">
+                <div id="doc-frame-div" style="<?php echo $is_frame_display;?>">
                     <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="doc-frame-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
@@ -410,7 +412,7 @@ if (!class_exists('display_documents')) {
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                 </div>
 
-                <div id="doc-report-div" style="display:none;">
+                <div id="doc-report-div" style="<?php echo $is_report_display;?>">
                     <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="doc-report-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />

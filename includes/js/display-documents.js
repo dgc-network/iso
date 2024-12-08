@@ -227,7 +227,6 @@ jQuery(document).ready(function($) {
         urlParams.set("_doc_id", doc_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-        activate_document_dialog_data(doc_id);
 /*
         $.ajax({
             url: ajax_object.ajax_url,
@@ -262,7 +261,11 @@ jQuery(document).ready(function($) {
 */        
     });            
 
+    activate_document_dialog_data(doc_id);
     function activate_document_dialog_data(doc_id){
+
+        activate_doc_action_list_data(doc_id);
+        activate_doc_field_list_data(doc_id);
 
         if ($('#is-doc-report').val()==1) {
             $("#doc-report-div").show();
@@ -300,9 +303,6 @@ jQuery(document).ready(function($) {
         if ($("#doc-report-frequence-setting").val()) {
             $("#frquence-start-time-div").show();
         }
-
-        activate_doc_action_list_data(doc_id);
-        activate_doc_field_list_data(doc_id);
 
         $("#doc-report-frequence-setting").on("change", function () {
             if ($(this).val()) {
@@ -380,30 +380,6 @@ jQuery(document).ready(function($) {
                         alert(error);
                     }
                 });
-            }
-        });
-
-        $("#system-report-preview, #system-report-preview1").on("click", function () {
-            if ($("#is-doc-report").val()=='document-card') {
-                window.location.replace('/display-document/');
-            }
-            if ($("#is-doc-report").val()=='customer-card') {
-                window.location.replace('/display-profiles/?_select_profile=customer-card');
-            }
-            if ($("#is-doc-report").val()=='vendor-card') {
-                window.location.replace('/display-profiles/?_select_profile=vendor-card');
-            }
-            if ($("#is-doc-report").val()=='product-card') {
-                window.location.replace('/display-profiles/?_select_profile=product-card');
-            }
-            if ($("#is-doc-report").val()=='equipment-card') {
-                window.location.replace('/display-profiles/?_select_profile=equipment-card');
-            }
-            if ($("#is-doc-report").val()=='instrument-card') {
-                window.location.replace('/display-profiles/?_select_profile=instrument-card');
-            }
-            if ($("#is-doc-report").val()=='employee-card') {
-                window.location.replace('/display-profiles/?_select_profile=employee-card');
             }
         });
 
