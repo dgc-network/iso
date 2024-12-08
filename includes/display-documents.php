@@ -987,7 +987,7 @@ if (!class_exists('display_documents')) {
                 ),
                 'date_query'     => array(
                     array(
-                        'before' => get_post_field('post_date', $current_report_id), // Get posts before the current report's date
+                        'after' => get_post_field('post_date', $current_report_id), // Get posts after the current report's date
                         'inclusive' => false,
                     ),
                 ),
@@ -1020,7 +1020,7 @@ if (!class_exists('display_documents')) {
                 ),
                 'date_query'     => array(
                     array(
-                        'after' => get_post_field('post_date', $current_report_id), // Get posts after the current report's date
+                        'before' => get_post_field('post_date', $current_report_id), // Get posts before the current report's date
                         'inclusive' => false,
                     ),
                 ),
