@@ -322,6 +322,45 @@ if (!class_exists('display_documents')) {
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
                 'meta_key'       => 'doc_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value as a string
+                'order'          => 'DESC', // Descending order to get the previous document
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',    
+                    ),
+                    array(
+                        'key'     => 'doc_number',
+                        'value'   => $current_doc_number,
+                        'compare' => '<', // Find `doc_number` less than the current one
+                        'type'    => 'CHAR', // Treat `doc_number` as a string
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Return the previous document ID or null if no previous document is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+/*        
+        function get_previous_doc_id($current_doc_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            
+            // Get the current document's `doc_number`
+            $current_doc_number = get_post_meta($current_doc_id, 'doc_number', true);
+        
+            if (!$current_doc_number) {
+                return null; // Return null if the current doc_number is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => 1,
+                'meta_key'       => 'doc_number', // Meta key for sorting
                 //'orderby'        => 'meta_value_num', // Sort as numeric
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Descending order to get the previous document
@@ -371,6 +410,46 @@ if (!class_exists('display_documents')) {
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
 */
+        function get_next_doc_id($current_doc_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            
+            // Get the current document's `doc_number`
+            $current_doc_number = get_post_meta($current_doc_id, 'doc_number', true);
+        
+            if (!$current_doc_number) {
+                return null; // Return null if the current doc_number is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => 1,
+                'meta_key'       => 'doc_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value as a string
+                'order'          => 'ASC', // Ascending order to get the next document
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',    
+                    ),
+                    array(
+                        'key'     => 'doc_number',
+                        'value'   => $current_doc_number,
+                        'compare' => '>', // Find `doc_number` greater than the current one
+                        'type'    => 'CHAR', // Treat `doc_number` as a string
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Return the next document ID or null if no next document is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+        
+/*
         function get_next_doc_id($current_doc_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
