@@ -497,8 +497,102 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
         
+        function get_previous_job_id($current_job_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            // Get the current document's `job_number`
+            $current_job_number = get_post_meta($current_job_id, 'job_number', true);
+        
+            if (!$current_job_number) {
+                return null; // Return null if the current job_number is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => 1,
+                'meta_key'       => 'job_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value as a string
+                'order'          => 'DESC', // Descending order to get the previous document
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',    
+                    ),
+                    array(
+                        'key'     => 'job_number',
+                        'value'   => $current_job_number,
+                        'compare' => '<', // Find `job_number` less than the current one
+                        'type'    => 'CHAR', // Treat `job_number` as a string
+                    ),
+                ),
+            );
+            if (!is_site_admin()||current_user_can('administrator')) {
+                $args['post__in'] = $user_doc_ids; // Array of document post IDs
+            }
+
+            $query = new WP_Query($args);
+        
+            // Return the previous document ID or null if no previous document is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_job_id($current_job_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            // Get the current document's `job_number`
+            $current_job_number = get_post_meta($current_doc_id, 'job_number', true);
+        
+            if (!$current_job_number) {
+                return null; // Return null if the current job_number is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => 1,
+                'meta_key'       => 'job_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value as a string
+                'order'          => 'ASC', // Ascending order to get the next document
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',    
+                    ),
+                    array(
+                        'key'     => 'job_number',
+                        'value'   => $current_job_number,
+                        'compare' => '>', // Find `job_number` greater than the current one
+                        'type'    => 'CHAR', // Treat `job_number` as a string
+                    ),
+                ),
+            );
+            if (!is_site_admin()||current_user_can('administrator')) {
+                $args['post__in'] = $user_doc_ids; // Array of document post IDs
+            }
+
+            $query = new WP_Query($args);
+        
+            // Return the next document ID or null if no next document is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
         function display_start_job_dialog($doc_id) {
             ob_start();
+            $prev_job_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
+            $next_job_id = $this->get_next_doc_id($doc_id);     // Fetch the next ID
+            ?>
+            <input type="hidden" id="prev-job-id" value="<?php echo esc_attr($prev_job_id); ?>" />
+            <input type="hidden" id="next-job-id" value="<?php echo esc_attr($next_job_id); ?>" />
+            <?php
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Start job: '.get_the_title($doc_id));?></h2>

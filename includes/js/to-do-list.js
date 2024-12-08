@@ -1,5 +1,49 @@
 // To-do list
 jQuery(document).ready(function($) {
+    // start-job
+    const prevJobId = $("#prev-job-id").val();
+    const nextJobId = $("#next-job-id").val();
+
+    // Function to navigate to the previous or next record
+    function navigateToDoc(Id) {
+        if (Id) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("_job_id", Id);
+            window.location.href = currentUrl.toString();
+        }
+    }
+
+    // Keyboard navigation
+    $(document).on("keydown", function (event) {
+        if (event.key === "ArrowRight" && nextJobId) {
+            navigateToDoc(nextJobId); // Move to the next record
+        } else if (event.key === "ArrowLeft" && prevJobId) {
+            navigateToDoc(prevJobId); // Move to the previous record
+        }
+    });
+
+    // Touch navigation for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    $(document).on("touchstart", function (event) {
+        touchStartX = event.originalEvent.changedTouches[0].screenX;
+    });
+
+    $(document).on("touchend", function (event) {
+        touchEndX = event.originalEvent.changedTouches[0].screenX;
+        handleJobSwipe();
+    });
+
+    function handleJobSwipe() {
+        const swipeThreshold = 50; // Minimum swipe distance
+        if (touchEndX < touchStartX - swipeThreshold && nextJobId) {
+            navigateToDoc(nextJobId); // Swipe left: Move to the next record
+        } else if (touchEndX > touchStartX + swipeThreshold && prevJobId) {
+            navigateToDoc(prevJobId); // Swipe right: Move to the previous record
+        }
+    }
+
 
     // Check if the target node exists
     const targetNode = document.getElementById("get-todo-id");
@@ -143,6 +187,13 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-start-job-"]').on("click", function () {
         const job_id = this.id.substring(15);
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        // Add or update the `_job_id` parameter
+        urlParams.set("_job_id", job_id);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+/*
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
@@ -159,6 +210,7 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
+*/        
     });            
 
     function activate_start_job_dialog_data(doc_fields){
