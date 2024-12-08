@@ -519,19 +519,16 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-report-exit").on("click", function () {
-            window.location.replace(window.location.href);
-/*            
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
             var url = new URL(currentUrl);
             // Remove the specified parameter
-            url.searchParams.delete('_doc_report');
+            url.searchParams.delete('_report_id');
             // Get the modified URL
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
-*/            
         });
     }
 
