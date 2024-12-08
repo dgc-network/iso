@@ -1031,6 +1031,7 @@ if (!class_exists('display_documents')) {
 
         function display_doc_report_dialog($report_id=false) {
             ob_start();
+            $report_id = (int)$report_id;
             $prev_report_id = $this->get_previous_report_id($report_id); // Fetch the previous ID
             $next_report_id = $this->get_next_report_id($report_id);     // Fetch the next ID
             ?>
