@@ -313,12 +313,12 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
-                //'order'          => 'DESC',
+                'order'          => 'DESC',
                 //'orderby'        => 'ID',
                 'post__lt'       => $current_doc_id,
                 'meta_key'       => 'doc_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
+                //'order'          => 'ASC', // Sorting order (ascending)
                 'meta_query'    => array(
                     array(
                         'key'     => 'site_id',
@@ -337,12 +337,12 @@ if (!class_exists('display_documents')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
-                //'order'          => 'ASC',
+                'order'          => 'ASC',
                 //'orderby'        => 'ID',
                 'post__gt'       => $current_doc_id,
                 'meta_key'       => 'doc_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'DESC', // Sorting order (ascending)
+                //'order'          => 'DESC', // Sorting order (ascending)
                 'meta_query'    => array(
                     array(
                         'key'     => 'site_id',
