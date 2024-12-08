@@ -856,8 +856,38 @@ jQuery(document).ready(function($) {
 
     }
 
+    function get_doc_report_dialog_data(report_id){
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_doc_report_dialog_data',
+                _report_id: report_id,
+                _is_admin: $("#is-admin").val()
+            },
+            success: function (response) {
+                return response;
+/*                
+                if (response.html_contain === undefined || response.html_contain === null) {
+                    alert("The report is in To-do process. Please wait for publishing.");
+                } else {
+                    $('#result-container').html(response.html_contain);
+                }
+                activate_doc_report_dialog_data(response);
+                activate_published_document_data(doc_id);
+*/                
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+
+    }
+
     activate_doc_report_dialog_data()
-    function activate_doc_report_dialog_data(response=false){
+    //function activate_doc_report_dialog_data(response=false){
+    function activate_doc_report_dialog_data(){
+
 
         const canvas = document.getElementById('signature-pad');
         if (canvas) {
@@ -941,6 +971,7 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
             ajaxData['_proceed_to_todo'] = 1;
 
+            response = get_doc_report_dialog_data($("#report-id").val());
             $.each(response.doc_fields, function(index, value) {
                 const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
@@ -1000,6 +1031,7 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_report_id'] = report_id;
 
+            response = get_doc_report_dialog_data($("#report-id").val());
             $.each(response.doc_fields, function(index, value) {
                 const field_id_tag = '#' + value.field_id;
                 if (value.field_type === 'checkbox' || value.field_type === 'radio') {
@@ -1087,7 +1119,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (set_response) {
                     $("#sub-report-list").html(set_response.html_contain);
-                    activate_doc_report_dialog_data(response);
+                    //activate_doc_report_dialog_data(response);
                 },
                 error: function(error){
                     console.error(error);
@@ -1135,7 +1167,7 @@ jQuery(document).ready(function($) {
                                     success: function(set_response) {
                                         $("#sub-report-dialog").dialog('close');
                                         $('#sub-report-list').html(set_response.html_contain);
-                                        activate_doc_report_dialog_data(response);
+                                        //activate_doc_report_dialog_data(response);
                                     },
                                     error: function(error) {
                                         console.error(error);
@@ -1158,7 +1190,7 @@ jQuery(document).ready(function($) {
                                         success: function (del_response) {
                                             $("#sub-report-dialog").dialog('close');
                                             $('#sub-report-list').html(del_response.html_contain);
-                                            activate_doc_report_dialog_data(response);
+                                            //activate_doc_report_dialog_data(response);
                                         },
                                         error: function(error){
                                             console.error(error);

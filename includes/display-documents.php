@@ -977,7 +977,7 @@ if (!class_exists('display_documents')) {
                 'post_type'      => 'doc-report',
                 'posts_per_page' => 1,
                 'orderby'        => 'date', // Sort by post date
-                'order'          => 'DESC', // Find the latest report before the current one
+                'order'          => 'ASC', // Find the earliest report after the current one
                 'meta_query'     => array(
                     array(
                         'key'   => 'doc_id',
@@ -1010,7 +1010,7 @@ if (!class_exists('display_documents')) {
                 'post_type'      => 'doc-report',
                 'posts_per_page' => 1,
                 'orderby'        => 'date', // Sort by post date
-                'order'          => 'ASC', // Find the earliest report after the current one
+                'order'          => 'DESC', // Find the latest report before the current one
                 'meta_query'     => array(
                     array(
                         'key'   => 'doc_id',
