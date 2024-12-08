@@ -261,9 +261,10 @@ jQuery(document).ready(function($) {
 */        
     });            
 
-    activate_document_dialog_data(doc_id);
-    function activate_document_dialog_data(doc_id){
+    activate_document_dialog_data();
+    function activate_document_dialog_data(){
 
+        doc_id = $('#doc-id').val();
         activate_doc_action_list_data(doc_id);
         activate_doc_field_list_data(doc_id);
 
