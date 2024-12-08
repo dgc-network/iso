@@ -322,7 +322,8 @@ if (!class_exists('display_documents')) {
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
                 'meta_key'       => 'doc_number', // Meta key for sorting
-                'orderby'        => 'meta_value_num', // Sort as numeric
+                //'orderby'        => 'meta_value_num', // Sort as numeric
+                'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Descending order to get the previous document
                 'meta_query'     => array(
                     'relation' => 'AND',
@@ -335,7 +336,7 @@ if (!class_exists('display_documents')) {
                         'key'     => 'doc_number',
                         'value'   => $current_doc_number,
                         'compare' => '<',
-                        'type'    => 'NUMERIC', // Ensure numeric comparison
+                        //'type'    => 'NUMERIC', // Ensure numeric comparison
                     ),
                 ),
             );
@@ -385,7 +386,8 @@ if (!class_exists('display_documents')) {
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
                 'meta_key'       => 'doc_number', // Meta key for sorting
-                'orderby'        => 'meta_value_num', // Sort as numeric
+                //'orderby'        => 'meta_value_num', // Sort as numeric
+                'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Ascending order to get the next document
                 'meta_query'     => array(
                     'relation' => 'AND',
@@ -398,7 +400,7 @@ if (!class_exists('display_documents')) {
                         'key'     => 'doc_number',
                         'value'   => $current_doc_number,
                         'compare' => '>',
-                        'type'    => 'NUMERIC', // Ensure numeric comparison
+                        //'type'    => 'NUMERIC', // Ensure numeric comparison
                     ),
                 ),
             );
