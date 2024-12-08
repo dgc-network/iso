@@ -88,7 +88,11 @@ if (!class_exists('to_do_list')) {
 
                 //if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
                 if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'start-job';
-                if ($_GET['_select_todo']=='todo-list') echo $this->display_todo_list();
+                if ($_GET['_select_todo']=='todo-list') {
+                    if (isset($_GET['_todo_id'])) echo $this->display_todo_dialog($_GET['_todo_id']);
+                    else echo $this->display_todo_list();
+                }
+                
 
                 if ($_GET['_select_todo']=='start-job') {
                     if (isset($_GET['_job_id'])) echo $this->display_start_job_dialog($_GET['_job_id']);
@@ -294,16 +298,107 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
 
+        function get_previous_todo_id($current_todo_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => 1,
+                //'order'          => 'DESC',
+                'orderby'        => 'ID',
+                'post__lt'       => $current_todo_id,
+                //'meta_key'       => 'device_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'todo_due',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                ),
+            );
+            if (!is_site_admin()||current_user_can('administrator')) {
+                // Check if $user_doc_ids is not an empty array and add it to the meta_query
+                if (!empty($user_doc_ids)) {
+                    $meta_query[] = array(
+                        'key'     => 'doc_id',
+                        'value'   => $user_doc_ids,
+                        'compare' => 'IN',
+                    );
+                }
+            }
+
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_todo_id($current_todo_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => 1,
+                //'order'          => 'ASC',
+                'orderby'        => 'ID',
+                'post__gt'       => $current_todo_id,
+                //'meta_key'       => 'device_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'DESC', // Sorting order (ascending)
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'todo_due',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                ),
+            );
+            if (!is_site_admin()||current_user_can('administrator')) {
+                // Check if $user_doc_ids is not an empty array and add it to the meta_query
+                if (!empty($user_doc_ids)) {
+                    $meta_query[] = array(
+                        'key'     => 'doc_id',
+                        'value'   => $user_doc_ids,
+                        'compare' => 'IN',
+                    );
+                }
+            }
+
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
         function display_todo_dialog($todo_id=false, $view_mode=false) {
             if ($view_mode) {
                 $submit_action = get_post_meta($todo_id, 'submit_action', true);
                 if (!$submit_action) return 'system log! <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />';
             }
             ob_start();
+            $prev_todo_id = $this->get_previous_todo_id($todo_id); // Fetch the previous ID
+            $next_todo_id = $this->get_next_todo_id($todo_id);     // Fetch the next ID
+            ?>
+            <input type="hidden" id="prev-todo-id" value="<?php echo esc_attr($prev_todo_id); ?>" />
+            <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
+            <?php
             $documents_class = new display_documents();
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
+            <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
             <fieldset>
             <?php
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);

@@ -44,6 +44,50 @@ jQuery(document).ready(function($) {
         }
     }
 
+    // todo-list
+    const prevTodoId = $("#prev-todo-id").val();
+    const nextTodoId = $("#next-todo-id").val();
+
+    // Function to navigate to the previous or next record
+    function navigateToTodo(Id) {
+        if (Id) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("_todo_id", Id);
+            window.location.href = currentUrl.toString();
+        }
+    }
+
+    // Keyboard navigation
+    $(document).on("keydown", function (event) {
+        if (event.key === "ArrowRight" && nextTodoId) {
+            navigateToTodo(nextTodoId); // Move to the next record
+        } else if (event.key === "ArrowLeft" && prevTodoId) {
+            navigateToTodo(prevTodoId); // Move to the previous record
+        }
+    });
+
+    // Touch navigation for mobile
+    //let touchStartX = 0;
+    //let touchEndX = 0;
+
+    $(document).on("touchstart", function (event) {
+        touchStartX = event.originalEvent.changedTouches[0].screenX;
+    });
+
+    $(document).on("touchend", function (event) {
+        touchEndX = event.originalEvent.changedTouches[0].screenX;
+        handleTodoSwipe();
+    });
+
+    function handleTodoSwipe() {
+        const swipeThreshold = 50; // Minimum swipe distance
+        if (touchEndX < touchStartX - swipeThreshold && nextTodoId) {
+            navigateToJob(nextTodoId); // Swipe left: Move to the next record
+        } else if (touchEndX > touchStartX + swipeThreshold && prevTodoId) {
+            navigateToJob(prevTodoId); // Swipe right: Move to the previous record
+        }
+    }
+
 
     // Check if the target node exists
     const targetNode = document.getElementById("get-todo-id");
@@ -88,6 +132,13 @@ jQuery(document).ready(function($) {
 
     $('[id^="edit-todo-"]').on("click", function () {
         const todo_id = this.id.substring(10);
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        // Add or update the `_todo_id` parameter
+        urlParams.set("_todo_id", todo_id);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+/*
         $.ajax({
             url: ajax_object.ajax_url,
             type: 'post',
@@ -104,6 +155,7 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
+*/        
     });            
 
     $('[id^="view-todo-"]').on("click", function () {
@@ -169,6 +221,17 @@ jQuery(document).ready(function($) {
 
         $("#todo-dialog-exit").on("click", function () {
             // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_todo_id');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+/*
+            // Get the current URL
             const currentUrl = window.location.href;
             // Check if the current URL includes '/to-do-list/?_id='
             if (currentUrl.includes('/to-do-list/?_id=')) {
@@ -177,6 +240,7 @@ jQuery(document).ready(function($) {
             } else {
                 window.location.replace(window.location.href);
             }
+*/                
         });
     }
 
