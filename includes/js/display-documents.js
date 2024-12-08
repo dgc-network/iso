@@ -850,7 +850,8 @@ jQuery(document).ready(function($) {
 
     }
 
-    function activate_doc_report_dialog_data(response){
+    activate_doc_report_dialog_data()
+    function activate_doc_report_dialog_data(response=false){
 
         const canvas = document.getElementById('signature-pad');
         if (canvas) {
