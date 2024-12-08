@@ -618,7 +618,7 @@ if (!class_exists('to_do_list')) {
                 ?>
                 </div>
                 <div style="text-align: right">
-                    <input type="button" id="job-dialog-exit" value="Exit" style="margin:5px;" />
+                    <input type="button" id="start-job-exit" value="Exit" style="margin:5px;" />
                 </div>
             </div>
             </fieldset>
