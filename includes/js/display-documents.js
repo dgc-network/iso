@@ -1,5 +1,6 @@
 // display documents
 jQuery(document).ready(function($) {
+    // document
     const prevDocId = $("#prev-doc-id").val();
     const nextDocId = $("#next-doc-id").val();
 
@@ -40,6 +41,50 @@ jQuery(document).ready(function($) {
             navigateToDoc(nextDocId); // Swipe left: Move to the next record
         } else if (touchEndX > touchStartX + swipeThreshold && prevDocId) {
             navigateToDoc(prevDocId); // Swipe right: Move to the previous record
+        }
+    }
+
+    // doc-report
+    const prevReportId = $("#prev-report-id").val();
+    const nextReportId = $("#next-report-id").val();
+
+    // Function to navigate to the previous or next record
+    function navigateToReport(Id) {
+        if (Id) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("_report_id", Id);
+            window.location.href = currentUrl.toString();
+        }
+    }
+
+    // Keyboard navigation
+    $(document).on("keydown", function (event) {
+        if (event.key === "ArrowRight" && nextReportId) {
+            navigateToReport(nextReportId); // Move to the next record
+        } else if (event.key === "ArrowLeft" && prevReportId) {
+            navigateToReport(prevReportId); // Move to the previous record
+        }
+    });
+
+    // Touch navigation for mobile
+    //let touchStartX = 0;
+    //let touchEndX = 0;
+
+    $(document).on("touchstart", function (event) {
+        touchStartX = event.originalEvent.changedTouches[0].screenX;
+    });
+
+    $(document).on("touchend", function (event) {
+        touchEndX = event.originalEvent.changedTouches[0].screenX;
+        handleReportSwipe();
+    });
+
+    function handleReportSwipe() {
+        const swipeThreshold = 50; // Minimum swipe distance
+        if (touchEndX < touchStartX - swipeThreshold && nextReportId) {
+            navigateToDoc(nextReportId); // Swipe left: Move to the next record
+        } else if (touchEndX > touchStartX + swipeThreshold && prevReportId) {
+            navigateToDoc(prevReportId); // Swipe right: Move to the previous record
         }
     }
 
@@ -743,6 +788,13 @@ jQuery(document).ready(function($) {
 
         $('[id^="edit-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(16);
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Add or update the `_device_id` parameter
+            urlParams.set("_report_id", report_id);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*    
             $.ajax({
                 url: ajax_object.ajax_url,
                 type: 'post',
@@ -764,6 +816,7 @@ jQuery(document).ready(function($) {
                     console.error(error);
                 }
             });
+*/            
         });            
 
         $("#search-doc-report").on( "change", function() {

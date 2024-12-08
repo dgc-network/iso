@@ -345,71 +345,7 @@ if (!class_exists('display_documents')) {
             // Return the previous document ID or null if no previous document is found
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-/*        
-        function get_previous_doc_id($current_doc_id) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            
-            // Get the current document's `doc_number`
-            $current_doc_number = get_post_meta($current_doc_id, 'doc_number', true);
-        
-            if (!$current_doc_number) {
-                return null; // Return null if the current doc_number is not set
-            }
-        
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => 1,
-                'meta_key'       => 'doc_number', // Meta key for sorting
-                //'orderby'        => 'meta_value_num', // Sort as numeric
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'DESC', // Descending order to get the previous document
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',    
-                    ),
-                    array(
-                        'key'     => 'doc_number',
-                        'value'   => $current_doc_number,
-                        'compare' => '<',
-                        //'type'    => 'NUMERIC', // Ensure numeric comparison
-                    ),
-                ),
-            );
-        
-            $query = new WP_Query($args);
-        
-            // Return the previous document ID or null if no previous document is found
-            return $query->have_posts() ? $query->posts[0]->ID : null;
-        }
-/*        
-        function get_previous_doc_id($current_doc_id) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => 1,
-                //'order'          => 'DESC',
-                //'orderby'        => 'ID',
-                'post__lt'       => $current_doc_id,
-                'meta_key'       => 'doc_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
-                'meta_query'    => array(
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',    
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query->have_posts() ? $query->posts[0]->ID : null;
-        }
-*/
+
         function get_next_doc_id($current_doc_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -448,72 +384,7 @@ if (!class_exists('display_documents')) {
             // Return the next document ID or null if no next document is found
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-        
-/*
-        function get_next_doc_id($current_doc_id) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            
-            // Get the current document's `doc_number`
-            $current_doc_number = get_post_meta($current_doc_id, 'doc_number', true);
-        
-            if (!$current_doc_number) {
-                return null; // Return null if the current doc_number is not set
-            }
-        
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => 1,
-                'meta_key'       => 'doc_number', // Meta key for sorting
-                //'orderby'        => 'meta_value_num', // Sort as numeric
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Ascending order to get the next document
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',    
-                    ),
-                    array(
-                        'key'     => 'doc_number',
-                        'value'   => $current_doc_number,
-                        'compare' => '>',
-                        //'type'    => 'NUMERIC', // Ensure numeric comparison
-                    ),
-                ),
-            );
-        
-            $query = new WP_Query($args);
-        
-            // Return the next document ID or null if no next document is found
-            return $query->have_posts() ? $query->posts[0]->ID : null;
-        }
-/*        
-        function get_next_doc_id($current_doc_id) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => 1,
-                //'order'          => 'ASC',
-                //'orderby'        => 'ID',
-                'post__gt'       => $current_doc_id,
-                'meta_key'       => 'doc_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'DESC', // Sorting order (ascending)
-                'meta_query'    => array(
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        'compare' => '=',    
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query->have_posts() ? $query->posts[0]->ID : null;
-        }
-*/
+
         function display_document_dialog($doc_id=false) {
             ob_start();
             $prev_doc_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
@@ -1089,6 +960,52 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
+        function get_previous_report_id($current_report_id) {
+            $doc_id = get_post_meta($current_report_id, 'doc_id', true);
+            $args = array(
+                'post_type'      => 'doc-report',
+                'posts_per_page' => 1,
+                //'order'          => 'DESC',
+                'order'          => 'ASC', // Sorting order (ascending)
+                //'orderby'        => 'ID',
+                'orderby'        => 'date',
+                'post__lt'       => $current_report_id,
+                //'meta_key'       => 'device_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                'meta_query' => array(
+                    array(
+                        'key'   => 'doc_id',
+                        'value' => $doc_id,    
+                    )
+                )
+            );
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_report_id($current_report_id) {
+            $doc_id = get_post_meta($current_report_id, 'doc_id', true);
+            $args = array(
+                'post_type'      => 'doc-report',
+                'posts_per_page' => 1,
+                //'order'          => 'ASC',
+                'order'          => 'DESC', // Sorting order
+                //'orderby'        => 'ID',
+                'orderby'        => 'date',
+                'post__gt'       => $current_report_id,
+                //'meta_key'       => 'device_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                'meta_query' => array(
+                    array(
+                        'key'   => 'doc_id',
+                        'value' => $doc_id,    
+                    )
+                )
+            );
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
         function get_doc_report_list_data() {
             $result = array();
             // Check if _doc_id is set and not empty
@@ -1109,6 +1026,12 @@ if (!class_exists('display_documents')) {
 
         function display_doc_report_dialog($report_id=false) {
             ob_start();
+            $prev_report_id = $this->get_previous_report_id($report_id); // Fetch the previous ID
+            $next_report_id = $this->get_next_report_id($report_id);     // Fetch the next ID
+            ?>
+            <input type="hidden" id="prev-report-id" value="<?php echo esc_attr($prev_report_id); ?>" />
+            <input type="hidden" id="next-report-id" value="<?php echo esc_attr($next_report_id); ?>" />
+            <?php
             $todo_status = get_post_meta($report_id, 'todo_status', true);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);

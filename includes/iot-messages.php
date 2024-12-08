@@ -172,6 +172,66 @@ if (!class_exists('iot_messages')) {
         }
 
         function get_previous_device_id($current_device_id) {
+            // Get the current device's `device_number`
+            $current_device_number = get_post_meta($current_device_id, 'device_number', true);
+        
+            if (!$current_device_number) {
+                return null; // Return null if the current device_number is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'iot-device',
+                'posts_per_page' => 1,
+                'meta_key'       => 'device_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value as a string
+                'order'          => 'DESC', // Descending order to get the previous device
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'device_number',
+                        'value'   => $current_device_number,
+                        'compare' => '<', // Find `device_number` less than the current one
+                        'type'    => 'CHAR', // Treat `device_number` as a string
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Return the previous device ID or null if no previous device is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_device_id($current_device_id) {
+            // Get the current device's `device_number`
+            $current_device_number = get_post_meta($current_device_id, 'device_number', true);
+        
+            if (!$current_device_number) {
+                return null; // Return null if the current device_number is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'iot-device',
+                'posts_per_page' => 1,
+                'meta_key'       => 'device_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value as a string
+                'order'          => 'ASC', // Ascending order to get the next device
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'device_number',
+                        'value'   => $current_device_number,
+                        'compare' => '>', // Find `device_number` greater than the current one
+                        'type'    => 'CHAR', // Treat `device_number` as a string
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Return the next device ID or null if no next device is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+/*        
+        function get_previous_device_id($current_device_id) {
             $args = array(
                 'post_type'      => 'iot-device',
                 'posts_per_page' => 1,
@@ -200,7 +260,7 @@ if (!class_exists('iot_messages')) {
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-
+*/
         function display_iot_device_dialog($device_id=false) {
             ob_start();
             $prev_device_id = $this->get_previous_device_id($device_id); // Fetch the previous device ID
