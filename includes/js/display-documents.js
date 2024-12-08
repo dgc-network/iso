@@ -503,6 +503,8 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-frame-exit").on("click", function () {
+            window.location.replace(window.location.href);
+/*
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -513,9 +515,12 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
+*/            
         });
 
         $("#doc-report-exit").on("click", function () {
+            window.location.replace(window.location.href);
+/*            
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -526,6 +531,7 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
+*/            
         });
     }
 
@@ -1257,7 +1263,8 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-report-dialog-exit").on("click", function () {
-            //get_doc_report_list_data($("#doc-id").val());
+            get_doc_report_list_data($("#doc-id").val());
+/*            
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -1268,7 +1275,7 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
-
+*/
         });
 
         $(".video-button").on("click", function () {

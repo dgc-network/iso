@@ -968,6 +968,72 @@ if (!class_exists('display_documents')) {
 
         function get_previous_report_id($current_report_id) {
             $doc_id = get_post_meta($current_report_id, 'doc_id', true);
+        
+            if (!$doc_id) {
+                return null; // Return null if the 'doc_id' meta is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'doc-report',
+                'posts_per_page' => 1,
+                'orderby'        => 'date', // Sort by post date
+                'order'          => 'DESC', // Find the latest report before the current one
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'doc_id',
+                        'value' => $doc_id,
+                        'compare' => '=', // Ensure only reports matching the same 'doc_id'
+                    ),
+                ),
+                'date_query'     => array(
+                    array(
+                        'before' => get_post_field('post_date', $current_report_id), // Get posts before the current report's date
+                        'inclusive' => false,
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Return the previous report ID or null if no match is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_report_id($current_report_id) {
+            $doc_id = get_post_meta($current_report_id, 'doc_id', true);
+        
+            if (!$doc_id) {
+                return null; // Return null if the 'doc_id' meta is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'doc-report',
+                'posts_per_page' => 1,
+                'orderby'        => 'date', // Sort by post date
+                'order'          => 'ASC', // Find the earliest report after the current one
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'doc_id',
+                        'value' => $doc_id,
+                        'compare' => '=', // Ensure only reports matching the same 'doc_id'
+                    ),
+                ),
+                'date_query'     => array(
+                    array(
+                        'after' => get_post_field('post_date', $current_report_id), // Get posts after the current report's date
+                        'inclusive' => false,
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            // Return the next report ID or null if no match is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+/*        
+        function get_previous_report_id($current_report_id) {
+            $doc_id = get_post_meta($current_report_id, 'doc_id', true);
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => 1,
@@ -1011,7 +1077,7 @@ if (!class_exists('display_documents')) {
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-
+*/
         function get_doc_report_list_data() {
             $result = array();
             // Check if _doc_id is set and not empty
