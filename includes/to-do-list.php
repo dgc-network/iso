@@ -587,8 +587,8 @@ if (!class_exists('to_do_list')) {
 
         function display_start_job_dialog($doc_id) {
             ob_start();
-            $prev_job_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
-            $next_job_id = $this->get_next_doc_id($doc_id);     // Fetch the next ID
+            $prev_job_id = $this->get_previous_job_id($doc_id); // Fetch the previous ID
+            $next_job_id = $this->get_next_job_id($doc_id);     // Fetch the next ID
             ?>
             <input type="hidden" id="prev-job-id" value="<?php echo esc_attr($prev_job_id); ?>" />
             <input type="hidden" id="next-job-id" value="<?php echo esc_attr($next_job_id); ?>" />
