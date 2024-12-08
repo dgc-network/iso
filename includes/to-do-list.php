@@ -594,6 +594,7 @@ if (!class_exists('to_do_list')) {
             <input type="hidden" id="next-job-id" value="<?php echo esc_attr($next_job_id); ?>" />
             <?php
             ?>
+            <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Start job: '.get_the_title($doc_id));?></h2>
             <input type="hidden" id="job-id" value="<?php echo $doc_id;?>">
@@ -621,6 +622,7 @@ if (!class_exists('to_do_list')) {
                 </div>
             </div>
             </fieldset>
+            </div>
             <?php
             return ob_get_clean();
         }
