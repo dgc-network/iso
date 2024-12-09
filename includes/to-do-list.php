@@ -1424,7 +1424,9 @@ if (!class_exists('to_do_list')) {
                     </div>
                 </div>
                 <?php echo $this->get_action_log();?>
-                <p style="background-color:lightblue; text-align:center;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_action_logs();?></p>
+                <div style="background-color:lightblue; text-align:center;">
+                    <?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_action_logs();?>
+                </div>
             </div>
             <?php
         }
@@ -1573,9 +1575,10 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($log_id));?></h2>
-            <input type="hidden" id="log-id" value="<?php echo $log_id;?>" />
+            <?php echo 'Log: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?>
+            
             <fieldset>
+            <h2 style="display:inline;"><?php echo esc_html(get_the_title($log_id));?></h2>
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
