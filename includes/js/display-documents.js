@@ -280,16 +280,7 @@ jQuery(document).ready(function($) {
         doc_id = $('#doc-id').val();
         activate_doc_action_list_data(doc_id);
         activate_doc_field_list_data(doc_id);
-/*
-        if ($('#is-doc-report').val()==1) {
-            $("#doc-report-div").show();
-            $("#doc-frame-div").hide();
-        }
 
-        if ($('#is-doc-report').val()!=1) {
-            $("#doc-frame-div").show();
-        }    
-*/
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
             $("#doc-frame-div").toggle();

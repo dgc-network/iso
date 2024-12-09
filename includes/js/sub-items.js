@@ -149,7 +149,95 @@ jQuery(document).ready(function($) {
                 }
             });    
         });
-    
+
+        $("#save-embedded-button").on("click", function () {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_embedded_dialog_data',
+                    '_embedded_id': $("#embedded-id").val(),
+                    '_embedded_title': $("#embedded-title").val(),
+                    '_embedded_number': $("#embedded-number").val(),
+                    '_iso_category': $("#iso-category").val(),
+                    '_is_private': $("#is-private").is(":checked") ? 1 : 0,
+                },
+                success: function (response) {
+                    $("#embedded-dialog").dialog('close');
+                    $("#result-container").html(response.html_contain);
+                    activate_embedded_list_data();
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+
+        });
+
+        $("#duplicate-embedded-button").on("click", function () {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'duplicate_embedded_dialog_data',
+                    '_embedded_id': $("#embedded-id").val(),
+                    '_embedded_title': $("#embedded-title").val(),
+                    '_embedded_number': $("#embedded-number").val(),
+                    '_iso_category': $("#iso-category").val(),
+                },
+                success: function (response) {
+                    $("#embedded-dialog").dialog('close');
+                    $("#result-container").html(response.html_contain);
+                    activate_embedded_list_data();
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+
+        });
+
+        $("#del-embedded-button").on("click", function () {
+            if (window.confirm("Are you sure you want to delete this sub form?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_embedded_dialog_data',
+                        '_embedded_id': $("#embedded-id").val(),
+                    },
+                    success: function (response) {
+                        $("#embedded-dialog").dialog('close');
+                        $("#result-container").html(response.html_contain);
+                        activate_embedded_list_data();
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+
+        });
+
+        $("#embedded-dialog-exit").on("click", function () {
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_embedded_id');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+        });
+
         $('[id^="edit-embedded-"]').on("click", function () {
             const embedded_id = this.id.substring(14);
             // Get existing URL parameters

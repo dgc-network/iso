@@ -269,6 +269,18 @@ if (!class_exists('sub_items')) {
                         <label for="is-private"><?php echo __( 'Is private', 'your-text-domain' );?></label>
                     </div>
                 <?php }?>
+                <hr>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <?php if (is_site_admin()) {?>
+                            <input type="button" id="save-embedded-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+                            <input type="button" id="del-embedded-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                        <?php }?>
+                    </div>
+                    <div style="text-align: right">
+                        <input type="button" id="embedded-dialog-exit" value="Exit" style="margin:5px;" />
+                    </div>
+                </div>
             </fieldset>
             <?php
             return ob_get_clean();
