@@ -208,7 +208,7 @@ jQuery(document).ready(function($) {
                     '_is_private': $("#is-private").is(":checked") ? 1 : 0,
                 },
                 success: function (response) {
-                    $("#embedded-dialog").dialog('close');
+                    //$("#embedded-dialog").dialog('close');
                     $("#result-container").html(response.html_contain);
                     activate_embedded_list_data();
                 },
@@ -233,7 +233,7 @@ jQuery(document).ready(function($) {
                     '_iso_category': $("#iso-category").val(),
                 },
                 success: function (response) {
-                    $("#embedded-dialog").dialog('close');
+                    //$("#embedded-dialog").dialog('close');
                     $("#result-container").html(response.html_contain);
                     activate_embedded_list_data();
                 },
@@ -256,7 +256,7 @@ jQuery(document).ready(function($) {
                         '_embedded_id': $("#embedded-id").val(),
                     },
                     success: function (response) {
-                        $("#embedded-dialog").dialog('close');
+                        //$("#embedded-dialog").dialog('close');
                         $("#result-container").html(response.html_contain);
                         activate_embedded_list_data();
                     },
@@ -290,107 +290,17 @@ jQuery(document).ready(function($) {
             urlParams.set("_embedded_id", embedded_id);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*    
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_embedded_dialog_data',
-                    '_embedded_id': embedded_id,
-                },
-                success: function (response) {
-                    $("#embedded-dialog").html(response.html_contain);
-                    if ($("#is-site-admin").val() === "1") {
-                        $("#embedded-dialog").dialog("option", "buttons", {
-                            "Save": function () {
-                                $.ajax({
-                                    type: 'POST',
-                                    url: ajax_object.ajax_url,
-                                    dataType: "json",
-                                    data: {
-                                        'action': 'set_embedded_dialog_data',
-                                        '_embedded_id': embedded_id,
-                                        '_embedded_title': $("#embedded-title").val(),
-                                        '_embedded_number': $("#embedded-number").val(),
-                                        '_iso_category': $("#iso-category").val(),
-                                        '_is_private': $("#is-private").is(":checked") ? 1 : 0,
-                                    },
-                                    success: function (response) {
-                                        $("#embedded-dialog").dialog('close');
-                                        $("#result-container").html(response.html_contain);
-                                        activate_embedded_list_data();
-                                    },
-                                    error: function (error) {
-                                        console.error(error);
-                                        alert(error);
-                                    }
-                                });
-                            },
-                            "Delete": function () {
-                                if (window.confirm("Are you sure you want to delete this sub form?")) {
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: ajax_object.ajax_url,
-                                        dataType: "json",
-                                        data: {
-                                            'action': 'del_embedded_dialog_data',
-                                            '_embedded_id': embedded_id,
-                                        },
-                                        success: function (response) {
-                                            $("#embedded-dialog").dialog('close');
-                                            $("#result-container").html(response.html_contain);
-                                            activate_embedded_list_data();
-                                        },
-                                        error: function (error) {
-                                            console.error(error);
-                                            alert(error);
-                                        }
-                                    });
-                                }
-                            },
-                            "Duplicate": function () {
-                                $.ajax({
-                                    type: 'POST',
-                                    url: ajax_object.ajax_url,
-                                    dataType: "json",
-                                    data: {
-                                        'action': 'duplicate_embedded_dialog_data',
-                                        '_embedded_id': embedded_id,
-                                        '_embedded_title': $("#embedded-title").val(),
-                                        '_embedded_number': $("#embedded-number").val(),
-                                        '_iso_category': $("#iso-category").val(),
-                                    },
-                                    success: function (response) {
-                                        $("#embedded-dialog").dialog('close');
-                                        $("#result-container").html(response.html_contain);
-                                        activate_embedded_list_data();
-                                    },
-                                    error: function (error) {
-                                        console.error(error);
-                                        alert(error);
-                                    }
-                                });
-                            },
-                        });
-                    }
-                    $("#embedded-dialog").dialog('open');
-                    activate_sub_item_list_data(embedded_id);
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-*/            
+            
+            activate_sub_item_list_data(embedded_id);
         });
-
+/*
         $("#embedded-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
             buttons: {}
         });
+*/        
     }
 
     // sub-item scripts

@@ -145,9 +145,10 @@ if (!class_exists('sub_items')) {
                     if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
                 </div>
-
             </fieldset>
+<?php /*            
             <div id="embedded-dialog" title="Sub form dialog"></div>
+*/?>            
             <?php
             return ob_get_clean();
         }
