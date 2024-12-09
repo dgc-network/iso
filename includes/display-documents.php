@@ -168,7 +168,7 @@ if (!class_exists('display_documents')) {
                     </div>
                     <div style="text-align:right; display:flex;">
                         <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
-                        <span id="document-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+                        <span id="document-setting-button" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
 
@@ -686,14 +686,16 @@ if (!class_exists('display_documents')) {
                 <div></div>
                 <div style="text-align:right; display:flex;">
                     <input type="text" id="search-doc-report" style="display:inline" placeholder="Search..." />
-                    <span id="doc-field-setting" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
+                    <span id="doc-field-setting-button" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                 </div>
             </div>
 
             <div id="doc-field-setting-dialog" title="Field setting" style="display:none">
                 <fieldset>
+<?php /*                    
                     <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
                     <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
+*/?>                    
                     <label for="doc-field-setting"><?php echo __( 'Field setting:', 'your-text-domain' );?></label>
                     <?php echo $this->display_doc_field_list($doc_id);?>
                 </fieldset>

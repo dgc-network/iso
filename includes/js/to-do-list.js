@@ -1,5 +1,19 @@
 // To-do list
 jQuery(document).ready(function($) {
+    $("#select-todo").on("change", function() {
+        // Initialize an empty array to store query parameters
+        var queryParams = [];    
+        // Check the selected value for each select element and add it to the queryParams array
+        var selectValue = $("#select-todo").val();
+        if (selectValue) {
+            queryParams.push("_select_todo=" + selectValue);
+        }
+        // Combine all query parameters into a single string
+        var queryString = queryParams.join("&");    
+        // Redirect to the new URL with all combined query parameters
+        window.location.href = "?" + queryString;
+    });
+
     // start-job
     const prevJobId = $("#prev-job-id").val();
     const nextJobId = $("#next-job-id").val();
@@ -132,184 +146,7 @@ jQuery(document).ready(function($) {
         }
     }
 
-
-    // Check if the target node exists
-    const targetNode = document.getElementById("get-todo-id");
-    if (targetNode) {
-        console.log("Target node 'get-todo-id' found");
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_todo_dialog_data',
-                _todo_id: targetNode.value,
-            },
-            success: function(response) {
-                $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data(response.doc_fields);
-            },
-            error: function(error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-
-    $("#select-todo").on("change", function() {
-        // Initialize an empty array to store query parameters
-        var queryParams = [];    
-        // Check the selected value for each select element and add it to the queryParams array
-        var selectValue = $("#select-todo").val();
-        if (selectValue) {
-            queryParams.push("_select_todo=" + selectValue);
-        }
-        // Combine all query parameters into a single string
-        var queryString = queryParams.join("&");    
-        // Redirect to the new URL with all combined query parameters
-        window.location.href = "?" + queryString;
-    });
-
-    $("#search-todo").on( "change", function() {
-        window.location.replace("?_search="+$(this).val()+"&paged=1");
-        $(this).val('');
-    });
-
-    $('[id^="edit-todo-"]').on("click", function () {
-        const todo_id = this.id.substring(10);
-        // Get existing URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        // Add or update the `_todo_id` parameter
-        urlParams.set("_todo_id", todo_id);
-        // Redirect to the updated URL
-        window.location.href = "?" + urlParams.toString();
-    });            
-
-    $('[id^="edit-action-log"]').on("click", function () {
-        const log_id = this.id.substring(15);
-        // Get existing URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        // Add or update the `_log_id` parameter
-        urlParams.set("_log_id", log_id);
-        // Redirect to the updated URL
-        window.location.href = "?" + urlParams.toString();
-    });            
-
-    function get_todo_dialog_data(todo_id, callback) {
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_todo_dialog_data',
-                _todo_id: todo_id,
-            },
-            success: function (response) {
-                if (typeof callback === "function") {
-                    callback(null, response.doc_fields); // Pass the data to the callback
-                }
-            },
-            error: function (error) {
-                console.error(error);
-                alert('An error occurred. Please try again.');
-                if (typeof callback === "function") {
-                    callback(error, null); // Pass the error to the callback
-                }
-            }
-        });
-    }
-/*
-    function get_todo_dialog_data(todo_id){
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_todo_dialog_data',
-                _todo_id: todo_id,
-                _mode: 'view_mode',
-            },
-            success: function (response) {
-                return response.doc_fields;
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    };            
-*/
-    activate_todo_dialog_data();
-    function activate_todo_dialog_data(){
-        $('[id^="todo-dialog-button-"]').on("click", function () {
-            const action_id = this.id.substring(19);
-            const ajaxData = {
-                'action': 'set_todo_dialog_data',
-            };
-            ajaxData['_action_id'] = action_id;
-
-            //doc_fields = get_todo_dialog_data($('#todo-id').val());
-            get_todo_dialog_data($("#todo-id").val(), function (error, doc_fields) {
-                $.each(doc_fields, function(index, value) {
-                    const field_id_tag = '#' + value.field_id;
-                    if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                        ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
-                    } else {
-                        ajaxData[value.field_id] = $(field_id_tag).val();
-                    }
-                });
-    
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: ajaxData,
-                    success: function (response) {
-                        // Get the current URL
-                        const currentUrl = window.location.href;
-                        // Check if the current URL includes '/to-do-list/?_id='
-                        if (currentUrl.includes('/to-do-list/?_id=')) {
-                            // Redirect to '/to-do-list'
-                            window.location.replace('/to-do-list');
-                        } else {
-                            window.location.replace(window.location.href);
-                        }
-                    },
-                    error: function(error){
-                        console.error(error);
-                        alert(error);
-                    }
-                });    
-            })
-        });
-
-        $("#todo-dialog-exit").on("click", function () {
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_todo_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-        });
-    }
-
-    activate_action_log_dialog_data();
-    function activate_action_log_dialog_data(){
-        $("#action-log-exit").on("click", function () {
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_log_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-        });
-    }
-
+    // start-job
     $("#search-start-job").on( "change", function() {
         window.location.replace("?_select_todo=start-job&_search="+$(this).val()+"&paged=1");
         $(this).val('');
@@ -335,7 +172,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 if (typeof callback === "function") {
-                    callback(null, response.doc_fields); // Pass the data to the callback
+                    callback(null, response); // Pass the data to the callback
                 }
             },
             error: function (error) {
@@ -347,37 +184,9 @@ jQuery(document).ready(function($) {
             }
         });
     }
-/*    
-    // Usage example
-    get_start_job_dialog_data(123, function (error, docFields) {
-        if (error) {
-            console.error('Error fetching data:', error);
-            return;
-        }
-        console.log('Document fields:', docFields);
-    });
-    
-    function get_start_job_dialog_data(job_id){
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_start_job_dialog_data',
-                _job_id: job_id,
-            },
-            success: function (response) {
-                return response.doc_fields;                
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-*/
+
     activate_start_job_dialog_data();
     function activate_start_job_dialog_data(){
-
         const canvas = document.getElementById('signature-pad');
         if (canvas) {
             canvas.width = window.innerWidth-10;
@@ -458,9 +267,8 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_action_id'] = action_id;
 
-            //doc_fields = get_start_job_dialog_data($("#job-id").val());
-            get_start_job_dialog_data($("#job-id").val(), function (error, doc_fields) {
-                $.each(doc_fields, function(index, value) {
+            get_start_job_dialog_data($("#job-id").val(), function (error, response) {
+                $.each(response.doc_fields, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
@@ -520,7 +328,6 @@ jQuery(document).ready(function($) {
                     }
                 });
             })
-
         });
 
         $("#exit-start-job").on("click", function () {
@@ -530,6 +337,141 @@ jQuery(document).ready(function($) {
             var url = new URL(currentUrl);
             // Remove the specified parameter
             url.searchParams.delete('_job_id');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+        });
+    }
+
+    // todo-list
+    $("#search-todo").on( "change", function() {
+        window.location.replace("?_search="+$(this).val()+"&paged=1");
+        $(this).val('');
+    });
+
+    $('[id^="edit-todo-"]').on("click", function () {
+        const todo_id = this.id.substring(10);
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        // Add or update the `_todo_id` parameter
+        urlParams.set("_todo_id", todo_id);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+    });            
+
+    function get_todo_dialog_data(todo_id, callback) {
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_todo_dialog_data',
+                _todo_id: todo_id,
+            },
+            success: function (response) {
+                if (typeof callback === "function") {
+                    callback(null, response); // Pass the data to the callback
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                alert('An error occurred. Please try again.');
+                if (typeof callback === "function") {
+                    callback(error, null); // Pass the error to the callback
+                }
+            }
+        });
+    }
+
+    activate_todo_dialog_data();
+    function activate_todo_dialog_data(){
+        $('[id^="todo-dialog-button-"]').on("click", function () {
+            const action_id = this.id.substring(19);
+            const ajaxData = {
+                'action': 'set_todo_dialog_data',
+            };
+            ajaxData['_action_id'] = action_id;
+
+            //doc_fields = get_todo_dialog_data($('#todo-id').val());
+            get_todo_dialog_data($("#todo-id").val(), function (error, response) {
+                $.each(response.doc_fields, function(index, value) {
+                    const field_id_tag = '#' + value.field_id;
+                    if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                        ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
+                    } else {
+                        ajaxData[value.field_id] = $(field_id_tag).val();
+                    }
+                });
+    
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: ajaxData,
+                    success: function (response) {
+                        // Get the current URL
+                        var currentUrl = window.location.href;
+                        // Create a URL object
+                        var url = new URL(currentUrl);
+                        // Remove the specified parameter
+                        url.searchParams.delete('_todo_id');
+                        // Get the modified URL
+                        var modifiedUrl = url.toString();
+                        // Reload the page with the modified URL
+                        window.location.replace(modifiedUrl);
+/*
+                        const currentUrl = window.location.href;
+                        // Check if the current URL includes '/to-do-list/?_id='
+                        if (currentUrl.includes('/to-do-list/?_id=')) {
+                            // Redirect to '/to-do-list'
+                            window.location.replace('/to-do-list');
+                        } else {
+                            window.location.replace(window.location.href);
+                        }
+*/                            
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });    
+            })
+        });
+
+        $("#todo-dialog-exit").on("click", function () {
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_todo_id');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+        });
+    }
+
+    // action-log
+    $('[id^="edit-action-log"]').on("click", function () {
+        const log_id = this.id.substring(15);
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        // Add or update the `_log_id` parameter
+        urlParams.set("_log_id", log_id);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+    });            
+
+    activate_action_log_dialog_data();
+    function activate_action_log_dialog_data(){
+        $("#action-log-exit").on("click", function () {
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_log_id');
             // Get the modified URL
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL

@@ -1,5 +1,18 @@
 // display documents
 jQuery(document).ready(function($) {
+    // copyToClipboard
+    function copyToClipboard(text) {
+        // Create a temporary textarea element
+        var textarea = $("<textarea>")
+            .val(text)
+            .appendTo("body")
+            .select();
+        // Execute the copy command
+        document.execCommand("copy");
+        // Remove the textarea from the document
+        textarea.remove();
+    }
+
     // document
     const prevDocId = $("#prev-doc-id").val();
     const nextDocId = $("#next-doc-id").val();
@@ -88,19 +101,7 @@ jQuery(document).ready(function($) {
         }
     }
 
-    // copyToClipboard
-    function copyToClipboard(text) {
-        // Create a temporary textarea element
-        var textarea = $("<textarea>")
-            .val(text)
-            .appendTo("body")
-            .select();
-        // Execute the copy command
-        document.execCommand("copy");
-        // Remove the textarea from the document
-        textarea.remove();
-    }
-    
+    // statement
     $("#exit-statement").on("click", function () {
         window.location.replace('/');
     })
@@ -225,6 +226,7 @@ jQuery(document).ready(function($) {
         }
     })
 
+    // document
     $("#select-category").on( "change", function() {
         window.location.replace("?_category="+$(this).val()+"&paged=1");
         $(this).val('');
@@ -235,7 +237,7 @@ jQuery(document).ready(function($) {
         $(this).val('');
     });
 
-    $("#document-setting").on("click", function () {
+    $("#document-setting-button").on("click", function () {
         $("#document-setting-dialog").dialog('open');
     });
 
@@ -276,7 +278,6 @@ jQuery(document).ready(function($) {
 
     activate_document_dialog_data();
     function activate_document_dialog_data(){
-
         doc_id = $('#doc-id').val();
         activate_doc_action_list_data(doc_id);
         activate_doc_field_list_data(doc_id);
@@ -303,18 +304,6 @@ jQuery(document).ready(function($) {
             $("#doc-report-job-setting").toggle();
             $(".mermaid").toggle()
             $("#job-setting-div").toggle();
-        });
-
-        if ($("#doc-report-frequence-setting").val()) {
-            $("#frquence-start-time-div").show();
-        }
-
-        $("#doc-report-frequence-setting").on("change", function () {
-            if ($(this).val()) {
-                $("#frquence-start-time-div").show();
-            } else {
-                $("#frquence-start-time-div").hide();
-            }
         });
 
         $("#save-document-button").on("click", function() {
@@ -716,9 +705,9 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // doc-report scripts
+    // doc-report
     function activate_doc_report_list_data(doc_id){
-        $("#doc-field-setting").on("click", function () {
+        $("#doc-field-setting-button").on("click", function () {
             $("#doc-field-setting-dialog").dialog('open');
         });
     
@@ -798,7 +787,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 if (typeof callback === "function") {
-                    callback(null, response.doc_fields); // Pass the data to the callback
+                    callback(null, response); // Pass the data to the callback
                 }
             },
             error: function (error) {
@@ -895,8 +884,8 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
             ajaxData['_proceed_to_todo'] = 1;
 
-            get_doc_report_dialog_data($("#report-id").val(), function (error, doc_fields) {
-                $.each(doc_fields, function(index, value) {
+            get_doc_report_dialog_data($("#report-id").val(), function (error, response) {
+                $.each(response.doc_fields, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
@@ -956,8 +945,8 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_report_id'] = report_id;
 
-            get_doc_report_dialog_data($("#report-id").val(), function (error, doc_fields) {
-                $.each(doc_fields, function(index, value) {
+            get_doc_report_dialog_data($("#report-id").val(), function (error, response) {
+                $.each(response.doc_fields, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
@@ -1040,8 +1029,8 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_report_id'] = report_id;
 
-            get_doc_report_dialog_data($("#report-id").val(), function (error, doc_fields) {
-                $.each(doc_fields, function (index, value) {
+            get_doc_report_dialog_data($("#report-id").val(), function (error, response) {
+                $.each(response.doc_fields, function (index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
@@ -1058,7 +1047,6 @@ jQuery(document).ready(function($) {
                                 }
                             });
                         }
-    
                     }
                 });
                         
