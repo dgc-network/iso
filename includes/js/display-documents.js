@@ -82,9 +82,9 @@ jQuery(document).ready(function($) {
     function handleReportSwipe() {
         const swipeThreshold = 50; // Minimum swipe distance
         if (touchEndX < touchStartX - swipeThreshold && nextReportId) {
-            navigateToDoc(nextReportId); // Swipe left: Move to the next record
+            navigateToReport(nextReportId); // Swipe left: Move to the next record
         } else if (touchEndX > touchStartX + swipeThreshold && prevReportId) {
-            navigateToDoc(prevReportId); // Swipe right: Move to the previous record
+            navigateToReport(prevReportId); // Swipe right: Move to the previous record
         }
     }
 

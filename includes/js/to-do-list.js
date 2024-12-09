@@ -82,9 +82,9 @@ jQuery(document).ready(function($) {
     function handleTodoSwipe() {
         const swipeThreshold = 50; // Minimum swipe distance
         if (touchEndX < touchStartX - swipeThreshold && nextTodoId) {
-            navigateToJob(nextTodoId); // Swipe left: Move to the next record
+            navigateToTodo(nextTodoId); // Swipe left: Move to the next record
         } else if (touchEndX > touchStartX + swipeThreshold && prevTodoId) {
-            navigateToJob(prevTodoId); // Swipe right: Move to the previous record
+            navigateToTodo(prevTodoId); // Swipe right: Move to the previous record
         }
     }
 
@@ -126,9 +126,9 @@ jQuery(document).ready(function($) {
     function handleLogSwipe() {
         const swipeThreshold = 50; // Minimum swipe distance
         if (touchEndX < touchStartX - swipeThreshold && nextLogId) {
-            navigateToJob(nextLogId); // Swipe left: Move to the next record
+            navigateToLog(nextLogId); // Swipe left: Move to the next record
         } else if (touchEndX > touchStartX + swipeThreshold && prevLogId) {
-            navigateToJob(prevLogId); // Swipe right: Move to the previous record
+            navigateToLog(prevLogId); // Swipe right: Move to the previous record
         }
     }
 
