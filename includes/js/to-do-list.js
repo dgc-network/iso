@@ -434,7 +434,7 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
 
             //doc_fields = get_start_job_dialog_data($("#job-id").val());
-            get_start_job_dialog_data($("#job-id").val(), function (error, docFields) {
+            get_start_job_dialog_data($("#job-id").val(), function (error, doc_fields) {
                 $.each(doc_fields, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
