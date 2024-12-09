@@ -1159,6 +1159,13 @@ if (!class_exists('sub_items')) {
         }
 
         function del_doc_category_dialog_data() {
+            $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
+            $params = array(
+                'log_message' => 'Delete a Category('.get_the_title($category_id).')',
+            );
+            $todo_class = new to_do_list();
+            $todo_class->create_action_log_and_go_next($params);    
+
             wp_delete_post($_POST['_category_id'], true);
             $response = array('html_contain' => $this->display_doc_category_list());
             wp_send_json($response);
@@ -1630,6 +1637,13 @@ if (!class_exists('sub_items')) {
         }
 
         function del_department_card_dialog_data() {
+            $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
+            $params = array(
+                'log_message' => 'Delete a Department('.get_the_title($department_id).')',
+            );
+            $todo_class = new to_do_list();
+            $todo_class->create_action_log_and_go_next($params);    
+
             wp_delete_post($_POST['_department_id'], true);
             $response = array('html_contain' => $this->display_department_card_list());
             wp_send_json($response);

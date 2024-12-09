@@ -447,7 +447,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#action-log").on("click", function () {
+        $("#action-log-button").on("click", function () {
             $("#action-log-div").toggle()
         });
 
@@ -786,7 +786,6 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-
     }
 
     function get_doc_report_dialog_data(report_id, callback) {
@@ -811,26 +810,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-/*
-    function get_doc_report_dialog_data(report_id){
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_doc_report_dialog_data',
-                _report_id: report_id,
-                _is_admin: $("#is-admin").val()
-            },
-            success: function (response) {
-                return response;
-            },
-            error: function (error) {
-                console.error(error);
-            }
-        });
 
-    }
-*/
     activate_doc_report_dialog_data()
     function activate_doc_report_dialog_data(){
         const canvas = document.getElementById('signature-pad');
@@ -915,57 +895,58 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
             ajaxData['_proceed_to_todo'] = 1;
 
-            response = get_doc_report_dialog_data($("#report-id").val());
-            $.each(response.doc_fields, function(index, value) {
-                const field_id_tag = '#' + value.field_id;
-                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
-                } else {
-                    ajaxData[value.field_id] = $(field_id_tag).val();
-
-                    if (value.default_value === '_post_number') {
-                        ajaxData['_post_number'] = $(field_id_tag).val();
+            get_doc_report_dialog_data($("#report-id").val(), function (error, doc_fields) {
+                $.each(doc_fields, function(index, value) {
+                    const field_id_tag = '#' + value.field_id;
+                    if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                        ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
+                    } else {
+                        ajaxData[value.field_id] = $(field_id_tag).val();
+    
+                        if (value.default_value === '_post_number') {
+                            ajaxData['_post_number'] = $(field_id_tag).val();
+                        }
+                        if (value.default_value === '_post_title') {
+                            ajaxData['_post_title'] = $(field_id_tag).val();
+                        }
+                        if (value.default_value === '_post_content') {
+                            ajaxData['_post_content'] = $(field_id_tag).val();
+                        }
+    
+                        if (value.field_type === 'canvas') {
+                            const dataURL = canvas.toDataURL('image/png');
+                            ajaxData[value.field_id] = dataURL;
+                            console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
+                        }
+    
+                        if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
+                            $.each(response.sub_item_fields, function(index, inner_value) {
+                                const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
+                                const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
+                                if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
+                                    ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
+                                } else {
+                                    ajaxData[embedded_field] = $(embedded_field_tag).val();
+                                }
+                            });
+                        }
                     }
-                    if (value.default_value === '_post_title') {
-                        ajaxData['_post_title'] = $(field_id_tag).val();
+                });
+    
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: ajaxData,
+                    success: function(response) {
+                        get_doc_report_list_data($("#doc-id").val());
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
                     }
-                    if (value.default_value === '_post_content') {
-                        ajaxData['_post_content'] = $(field_id_tag).val();
-                    }
-
-                    if (value.field_type === 'canvas') {
-                        const dataURL = canvas.toDataURL('image/png');
-                        ajaxData[value.field_id] = dataURL;
-                        console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
-                    }
-
-                    if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
-                        $.each(response.sub_item_fields, function(index, inner_value) {
-                            const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
-                            const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
-                            if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
-                            } else {
-                                ajaxData[embedded_field] = $(embedded_field_tag).val();
-                            }
-                        });
-                    }
-                }
-            });
-
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: ajaxData,
-                success: function(response) {
-                    get_doc_report_list_data($("#doc-id").val());
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
+                });
+            })
         });
 
         $('[id^="save-doc-report-"]').on("click", function () {
@@ -975,7 +956,6 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_report_id'] = report_id;
 
-            //response = get_doc_report_dialog_data($("#report-id").val());
             get_doc_report_dialog_data($("#report-id").val(), function (error, doc_fields) {
                 $.each(doc_fields, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
@@ -1053,6 +1033,118 @@ jQuery(document).ready(function($) {
             }
         });
 
+        $('[id^="duplicate-doc-report-"]').on("click", function () {
+            const report_id = this.id.substring(21);
+            const ajaxData = {
+                'action': 'duplicate_doc_report_data',
+            };
+            ajaxData['_report_id'] = report_id;
+
+            get_doc_report_dialog_data($("#report-id").val(), function (error, doc_fields) {
+                $.each(doc_fields, function (index, value) {
+                    const field_id_tag = '#' + value.field_id;
+                    if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                        ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
+                    } else {
+                        ajaxData[value.field_id] = $(field_id_tag).val();
+                        if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
+                            $.each(response.sub_item_fields, function(index, inner_value) {
+                                const embedded_field = value.field_id + inner_value.sub_item_id;
+                                const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
+                                if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
+                                    ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
+                                } else {
+                                    ajaxData[embedded_field] = $(embedded_field_tag).val();
+                                }
+                            });
+                        }
+    
+                    }
+                });
+                        
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: ajaxData,
+                    success: function (response) {
+                        get_doc_report_list_data($("#doc-id").val());
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });    
+            })
+        });
+
+        $('[id^="report-unpublished-"]').on("click", function () {
+            const report_id = this.id.substring(19);
+            if (window.confirm("Are you sure you want to unpublish this report?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'reset_doc_report_todo_status',
+                        '_report_id': report_id,
+                    },
+                    success: function (response) {
+                        get_doc_report_list_data($("#doc-id").val());
+/*
+                        // Get the current URL
+                        var currentUrl = window.location.href;
+                        // Create a URL object
+                        var url = new URL(currentUrl);
+                        // Remove the specified parameter
+                        url.searchParams.delete('_report_id');
+                        // Get the modified URL
+                        var modifiedUrl = url.toString();
+                        // Reload the page with the modified URL
+                        window.location.replace(modifiedUrl);
+*/                        
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }    
+        });
+
+        $("#action-log-button").on("click", function () {
+            $("#report-action-log-div").toggle()
+        });
+
+        $("#exit-doc-report-dialog").on("click", function () {
+            get_doc_report_list_data($("#doc-id").val());
+/*            
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_report_id');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+*/
+        });
+
+        $(".video-button").on("click", function () {
+            $(".video-display").toggle()
+            $(".video-url").toggle()
+            $(".video-display").empty().append($(".video-url").val())
+        });
+
+        $(".image-button").on("click", function () {
+            $(".image-display").toggle()
+            $(".image-url").toggle()
+            $(".image-display").attr("src", $(".image-url").val());
+        });
+
+        // sub-report
         $("#new-sub-report").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -1163,109 +1255,6 @@ jQuery(document).ready(function($) {
             buttons: {}
         });    
 
-        $('[id^="duplicate-doc-report-"]').on("click", function () {
-            const report_id = this.id.substring(21);
-            const ajaxData = {
-                'action': 'duplicate_doc_report_data',
-            };
-            ajaxData['_report_id'] = report_id;
-            $.each(response.doc_fields, function (index, value) {
-                const field_id_tag = '#' + value.field_id;
-                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
-                } else {
-                    ajaxData[value.field_id] = $(field_id_tag).val();
-                    if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
-                        $.each(response.sub_item_fields, function(index, inner_value) {
-                            const embedded_field = value.field_id + inner_value.sub_item_id;
-                            const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
-                            if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
-                            } else {
-                                ajaxData[embedded_field] = $(embedded_field_tag).val();
-                            }
-                        });
-                    }
 
-                }
-            });
-                    
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: ajaxData,
-                success: function (response) {
-                    get_doc_report_list_data($("#doc-id").val());
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-
-        $('[id^="report-unpublished-"]').on("click", function () {
-            const report_id = this.id.substring(19);
-            if (window.confirm("Are you sure you want to unpublish this report?")) {
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'reset_doc_report_todo_status',
-                        '_report_id': report_id,
-                    },
-                    success: function (response) {
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);
-                        // Remove the specified parameter
-                        url.searchParams.delete('_report_id');
-                        // Get the modified URL
-                        var modifiedUrl = url.toString();
-                        // Reload the page with the modified URL
-                        window.location.replace(modifiedUrl);
-                    },
-                    error: function(error){
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }    
-        });
-
-        $("#action-log").on("click", function () {
-            $("#report-action-log-div").toggle()
-        });
-
-        $("#doc-report-dialog-exit").on("click", function () {
-            get_doc_report_list_data($("#doc-id").val());
-/*            
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_report_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-*/
-        });
-
-        $(".video-button").on("click", function () {
-            $(".video-display").toggle()
-            $(".video-url").toggle()
-            $(".video-display").empty().append($(".video-url").val())
-        });
-
-        $(".image-button").on("click", function () {
-            $(".image-display").toggle()
-            $(".image-url").toggle()
-            $(".image-display").attr("src", $(".image-url").val());
-        });
     }    
 });

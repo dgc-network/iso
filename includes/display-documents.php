@@ -587,6 +587,14 @@ if (!class_exists('display_documents')) {
         
         function del_document_dialog_data() {
             $response = array();
+            $doc_id = (isset($_POST['_doc_id'])) ? sanitize_text_field($_POST['_doc_id']) : 0;
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $params = array(
+                'log_message' => 'Delete a Document(#'.$doc_number.')',
+            );
+            $todo_class = new to_do_list();
+            $todo_class->create_action_log_and_go_next($params);    
+
             wp_delete_post($_POST['_doc_id'], true);
             wp_send_json($response);
         }
@@ -619,10 +627,10 @@ if (!class_exists('display_documents')) {
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
+                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="doc-frame-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
             </div>
@@ -715,9 +723,6 @@ if (!class_exists('display_documents')) {
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                </div>
-                <div style="text-align:right; display:flex;">
-                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                     <?php if ($profiles_class->is_user_doc($doc_id)) {?>
                         <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'your-text-domain' );?>" style="margin:3px;" />
                     <?php }?>
@@ -729,6 +734,9 @@ if (!class_exists('display_documents')) {
                         }
                     }
                     </style>
+                </div>
+                <div style="text-align:right; display:flex;">
+                    <input type="button" id="doc-report-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
             </div>
@@ -1102,7 +1110,7 @@ if (!class_exists('display_documents')) {
                     <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
                     <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
                 <?php }?>                    
-                    <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 </div>
                 <?php
@@ -1110,11 +1118,11 @@ if (!class_exists('display_documents')) {
                 ?>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <input type="button" id="action-log" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
+                    <input type="button" id="action-log-button" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
+                    <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 <div style="text-align:right;">
-                    <input type="button" id="doc-report-dialog-exit" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
-                    <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
                 </div>
                 </div>
                 <?php
