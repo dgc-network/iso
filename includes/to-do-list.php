@@ -1475,6 +1475,94 @@ if (!class_exists('to_do_list')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+        
+            // Ensure $user_doc_ids is an array
+            if (!is_array($user_doc_ids)) {
+                $user_doc_ids = array();
+            }
+        
+            // Get the submit time of the current log
+            $current_submit_time = get_post_meta($current_log_id, 'submit_time', true);
+        
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => 1,
+                'orderby'        => 'meta_value', // Order by meta value
+                'meta_key'       => 'submit_time', // Key for sorting by submit time
+                'order'          => 'DESC', // Get the most recent log before the current one
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'EXISTS', // Ensure the meta key exists
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=', // Match the site ID
+                    ),
+                    array(
+                        'key'     => 'submit_time',
+                        'value'   => $current_submit_time,
+                        'compare' => '<', // Find logs submitted before the current one
+                        'type'    => 'DATETIME', // Ensure proper comparison for datetime values
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_log_id($current_log_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+        
+            // Ensure $user_doc_ids is an array
+            if (!is_array($user_doc_ids)) {
+                $user_doc_ids = array();
+            }
+        
+            // Get the submit time of the current log
+            $current_submit_time = get_post_meta($current_log_id, 'submit_time', true);
+        
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => 1,
+                'orderby'        => 'meta_value', // Order by meta value
+                'meta_key'       => 'submit_time', // Key for sorting by submit time
+                'order'          => 'ASC', // Get the earliest log after the current one
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'EXISTS', // Ensure the meta key exists
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=', // Match the site ID
+                    ),
+                    array(
+                        'key'     => 'submit_time',
+                        'value'   => $current_submit_time,
+                        'compare' => '>', // Find logs submitted after the current one
+                        'type'    => 'DATETIME', // Ensure proper comparison for datetime values
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+/*        
+        function get_previous_log_id($current_log_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             $args = array(
@@ -1542,7 +1630,7 @@ if (!class_exists('to_do_list')) {
             $query = new WP_Query($args);
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-
+*/
         function display_action_log_dialog($todo_id=false) {
             //if ($view_mode) {
                 $submit_action = get_post_meta($todo_id, 'submit_action', true);
@@ -1557,6 +1645,7 @@ if (!class_exists('to_do_list')) {
             <?php
             $documents_class = new display_documents();
             ?>
+            <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
             <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
@@ -1592,6 +1681,7 @@ if (!class_exists('to_do_list')) {
                 </div>
             </div>
             </fieldset>
+            </div>
             <?php
             return ob_get_clean();
         }
