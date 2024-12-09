@@ -110,8 +110,11 @@ if (!class_exists('display_profiles')) {
                 $items_class = new sub_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
-                if ($_GET['_select_profile']=='embedded') echo $items_class->display_embedded_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
+                if ($_GET['_select_profile']=='embedded') {
+                    if (isset($_GET['_embedded_id'])) echo $items_class->display_embedded_dialog($_GET['_embedded_id']);
+                    else echo $items_class->display_embedded_list();                    
+                }
 
                 echo '</div>';
             }

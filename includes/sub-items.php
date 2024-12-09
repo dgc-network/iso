@@ -247,9 +247,12 @@ if (!class_exists('sub_items')) {
             $is_private = get_post_meta($embedded_id, 'is_private', true);
             $is_private_checked = ($is_private==1) ? 'checked' : '';
             ?>
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
+            <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
+            <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
+
             <fieldset>
-                <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="embedded-number"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
                 <input type="text" id="embedded-number" value="<?php echo esc_attr($embedded_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="embedded-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>

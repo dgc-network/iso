@@ -272,38 +272,6 @@ jQuery(document).ready(function($) {
         urlParams.set("_doc_id", doc_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_document_dialog_data',
-                _doc_id: doc_id,
-            },
-            success: function (response) {
-                $('#result-container').html(response.html_contain);
-                 // Initialize Mermaid when the document is ready
-                if (typeof mermaid !== 'undefined') {
-                    //mermaid.initialize({ startOnLoad: true });
-                    mermaid.initialize({ 
-                        startOnLoad: true,
-                        themeVariables: {
-                            //lineColor: "#FF0000", // Replace with your desired color
-                        }
-                    });
-                    mermaid.init(undefined, $('#result-container .mermaid'));
-                } else {
-                    console.error('Mermaid is not loaded');
-                }
-                activate_document_dialog_data(doc_id);
-                activate_published_document_data(doc_id);
-                activate_doc_report_list_data(doc_id);
-            },
-            error: function (error) {
-                console.error(error);
-            }
-        });
-*/        
     });            
 
     activate_document_dialog_data();
@@ -312,7 +280,7 @@ jQuery(document).ready(function($) {
         doc_id = $('#doc-id').val();
         activate_doc_action_list_data(doc_id);
         activate_doc_field_list_data(doc_id);
-
+/*
         if ($('#is-doc-report').val()==1) {
             $("#doc-report-div").show();
             $("#doc-frame-div").hide();
@@ -321,7 +289,7 @@ jQuery(document).ready(function($) {
         if ($('#is-doc-report').val()!=1) {
             $("#doc-frame-div").show();
         }    
-
+*/
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
             $("#doc-frame-div").toggle();
@@ -429,11 +397,11 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $("#doc-report-preview, #doc-report-preview1").on("click", function () {
+        $("#doc-report-preview").on("click", function () {
             get_doc_report_list_data(doc_id);
         });
 
-        $("#doc-frame-preview, #doc-frame-preview1").on("click", function () {
+        $("#doc-frame-preview").on("click", function () {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -797,29 +765,6 @@ jQuery(document).ready(function($) {
             urlParams.set("_report_id", report_id);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*    
-            $.ajax({
-                url: ajax_object.ajax_url,
-                type: 'post',
-                data: {
-                    action: 'get_doc_report_dialog_data',
-                    _report_id: report_id,
-                    _is_admin: $("#is-admin").val()
-                },
-                success: function (response) {
-                    if (response.html_contain === undefined || response.html_contain === null) {
-                        alert("The report is in To-do process. Please wait for publishing.");
-                    } else {
-                        $('#result-container').html(response.html_contain);
-                    }
-                    activate_doc_report_dialog_data(response);
-                    activate_published_document_data(doc_id);
-                },
-                error: function (error) {
-                    console.error(error);
-                }
-            });
-*/            
         });            
 
         $("#search-doc-report").on( "change", function() {
@@ -864,15 +809,6 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 return response;
-/*                
-                if (response.html_contain === undefined || response.html_contain === null) {
-                    alert("The report is in To-do process. Please wait for publishing.");
-                } else {
-                    $('#result-container').html(response.html_contain);
-                }
-                activate_doc_report_dialog_data(response);
-                activate_published_document_data(doc_id);
-*/                
             },
             error: function (error) {
                 console.error(error);
@@ -882,10 +818,7 @@ jQuery(document).ready(function($) {
     }
 
     activate_doc_report_dialog_data()
-    //function activate_doc_report_dialog_data(response=false){
     function activate_doc_report_dialog_data(){
-
-
         const canvas = document.getElementById('signature-pad');
         if (canvas) {
             canvas.width = window.innerWidth-10;

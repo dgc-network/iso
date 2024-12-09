@@ -93,7 +93,7 @@ if (!class_exists('display_documents')) {
                 if (isset($_GET['_doc_id'])) {
                     $doc_id = sanitize_text_field($_GET['_doc_id']);
                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                    echo '<div class="ui-widget" id="result-container">';
+                    //echo '<div class="ui-widget" id="result-container">';
                     if (isset($_GET['_report_id'])) {
                         $report_id = sanitize_text_field($_GET['_report_id']);
                         echo $this->display_doc_report_dialog($report_id);
@@ -104,21 +104,9 @@ if (!class_exists('display_documents')) {
                             elseif ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
                         }    
                     }
-                    echo '</div>';
-                }
-/*
-                if (isset($_GET['_doc_report'])) {
-                    echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_doc_report_list(array('doc_id' => sanitize_text_field($_GET['_doc_report'])));
-                    echo '</div>';
+                    //echo '</div>';
                 }
 
-                if (isset($_GET['_doc_frame'])) {
-                    echo '<div class="ui-widget" id="result-container">';
-                    echo $this->display_doc_frame_contain(sanitize_text_field($_GET['_doc_frame']));
-                    echo '</div>';
-                }
-*/
                 // Get shared document if shared doc ID is existed
                 if (isset($_GET['_duplicate_document'])) {
                     $doc_id = sanitize_text_field($_GET['_duplicate_document']);
@@ -422,6 +410,7 @@ if (!class_exists('display_documents')) {
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
             $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
             ?>
+            <div class="ui-widget" id="result-container">
             <div>
                 <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
@@ -517,6 +506,7 @@ if (!class_exists('display_documents')) {
                     </div>
                 </div>
             </fieldset>
+            </div>
             <?php
             return ob_get_clean();
         }
@@ -609,6 +599,7 @@ if (!class_exists('display_documents')) {
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             ?>
+            <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php echo display_iso_helper_logo();?>
@@ -634,7 +625,7 @@ if (!class_exists('display_documents')) {
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
-        
+            </div>
             <?php
             return ob_get_clean();
         }
@@ -669,6 +660,7 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             ?>
+            <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php echo display_iso_helper_logo();?>
@@ -739,7 +731,7 @@ if (!class_exists('display_documents')) {
                     </style>
                 </div>
             </div>
-
+            </div>
             <?php
             return ob_get_clean();
         }
@@ -1031,53 +1023,7 @@ if (!class_exists('display_documents')) {
             // Return the next report ID or null if no match is found
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-/*        
-        function get_previous_report_id($current_report_id) {
-            $doc_id = get_post_meta($current_report_id, 'doc_id', true);
-            $args = array(
-                'post_type'      => 'doc-report',
-                'posts_per_page' => 1,
-                //'order'          => 'DESC',
-                'order'          => 'ASC', // Sorting order (ascending)
-                //'orderby'        => 'ID',
-                'orderby'        => 'date',
-                'post__lt'       => $current_report_id,
-                //'meta_key'       => 'device_number', // Meta key for sorting
-                //'orderby'        => 'meta_value', // Sort by meta value
-                'meta_query' => array(
-                    array(
-                        'key'   => 'doc_id',
-                        'value' => $doc_id,    
-                    )
-                )
-            );
-            $query = new WP_Query($args);
-            return $query->have_posts() ? $query->posts[0]->ID : null;
-        }
 
-        function get_next_report_id($current_report_id) {
-            $doc_id = get_post_meta($current_report_id, 'doc_id', true);
-            $args = array(
-                'post_type'      => 'doc-report',
-                'posts_per_page' => 1,
-                //'order'          => 'ASC',
-                'order'          => 'DESC', // Sorting order
-                //'orderby'        => 'ID',
-                'orderby'        => 'date',
-                'post__gt'       => $current_report_id,
-                //'meta_key'       => 'device_number', // Meta key for sorting
-                //'orderby'        => 'meta_value', // Sort by meta value
-                'meta_query' => array(
-                    array(
-                        'key'   => 'doc_id',
-                        'value' => $doc_id,    
-                    )
-                )
-            );
-            $query = new WP_Query($args);
-            return $query->have_posts() ? $query->posts[0]->ID : null;
-        }
-*/
         function get_doc_report_list_data() {
             $result = array();
             // Check if _doc_id is set and not empty
@@ -1110,6 +1056,7 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_title .= '('.$doc_number.')';
             ?>
+            <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php echo display_iso_helper_logo();?>
@@ -1179,7 +1126,8 @@ if (!class_exists('display_documents')) {
                 <?php $todo_class = new to_do_list();?>
                 <?php echo $todo_class->get_action_log($report_id);?>
             </div>
-
+            
+            </div>
             <?php
             return ob_get_clean();
         }

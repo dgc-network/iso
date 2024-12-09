@@ -230,37 +230,7 @@ if (!class_exists('iot_messages')) {
             // Return the next device ID or null if no next device is found
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-/*        
-        function get_previous_device_id($current_device_id) {
-            $args = array(
-                'post_type'      => 'iot-device',
-                'posts_per_page' => 1,
-                //'order'          => 'DESC',
-                //'orderby'        => 'ID',
-                'post__lt'       => $current_device_id,
-                'meta_key'       => 'device_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
-            );
-            $query = new WP_Query($args);
-            return $query->have_posts() ? $query->posts[0]->ID : null;
-        }
 
-        function get_next_device_id($current_device_id) {
-            $args = array(
-                'post_type'      => 'iot-device',
-                'posts_per_page' => 1,
-                //'order'          => 'ASC',
-                //'orderby'        => 'ID',
-                'post__gt'       => $current_device_id,
-                'meta_key'       => 'device_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'DESC', // Sorting order (ascending)
-            );
-            $query = new WP_Query($args);
-            return $query->have_posts() ? $query->posts[0]->ID : null;
-        }
-*/
         function display_iot_device_dialog($device_id=false) {
             ob_start();
             $prev_device_id = $this->get_previous_device_id($device_id); // Fetch the previous device ID
@@ -410,7 +380,6 @@ if (!class_exists('iot_messages')) {
             wp_reset_postdata();
             return $options;
         }
-
 
         // iot-message operation
         function register_iot_message_post_type() {
@@ -562,7 +531,6 @@ if (!class_exists('iot_messages')) {
 
         function create_exception_notification_events($device_id=false, $iot_sensor=false, $sensor_value=false) {
             $device_number = get_post_meta($device_id, 'device_number', true);
-            //$documents_class = new display_documents();
             $query = $this->get_doc_reports_by_doc_field('_iot_device', $device_id);
 
             if ($query->have_posts()) {
@@ -683,22 +651,10 @@ if (!class_exists('iot_messages')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             ?>
-<?php /*            
-            <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( 'IoT Messages', 'your-text-domain' );?></h2>
-
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $todo_class->display_select_todo('iot-message');?></div>
-                <div style="text-align: right"></div>                        
-            </div>
-*/?>
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-<?php /*                        
-                        <th><?php echo __( 'Device', 'your-text-domain' );?></th>
-*/?>                        
                         <th><?php echo __( 'Sensor', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Value', 'your-text-domain' );?></th>
                         <th></th>
@@ -726,9 +682,6 @@ if (!class_exists('iot_messages')) {
                             ?>
                             <tr id="edit-iot-message-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
-<?php /*                                
-                                <td style="text-align:center;"><?php echo esc_html($device_number);?></td>
-*/?>                                
                                 <?php if ($temperature) {?>
                                     <td style="text-align:center;"><?php echo __( 'Temperature', 'your-text-domain' );?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
@@ -777,7 +730,6 @@ if (!class_exists('iot_messages')) {
                     'relation' => 'AND',
                     array(
                         'key'     => 'deviceID',
-                        //'key'     => 'device_number',
                         'value'   => $device_number,
                         'compare' => '=',
                     ),

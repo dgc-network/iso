@@ -30,10 +30,10 @@ jQuery(document).ready(function($) {
 
     $(document).on("touchend", function (event) {
         touchEndX = event.originalEvent.changedTouches[0].screenX;
-        handleSwipe();
+        handleDeviceSwipe();
     });
 
-    function handleSwipe() {
+    function handleDeviceSwipe() {
         const swipeThreshold = 50; // Minimum swipe distance
         if (touchEndX < touchStartX - swipeThreshold && nextDeviceId) {
             navigateToDevice(nextDeviceId); // Swipe left: Move to the next device
@@ -41,54 +41,10 @@ jQuery(document).ready(function($) {
             navigateToDevice(prevDeviceId); // Swipe right: Move to the previous device
         }
     }
-});
 
-jQuery(document).ready(function($) {
-    
-    // Function to update the URL with new query parameters
-    function updateUrlWithParams(params) {
-        var currentUrl = new URL(window.location.href);
-    
-        // Loop through the params object and set query parameters
-        for (const key in params) {
-            if (params[key]) {
-                currentUrl.searchParams.set(key, params[key]);
-            } else {
-                currentUrl.searchParams.delete(key); // Remove parameter if value is null or empty
-            }
-        }
-    
-        // Redirect to the updated URL
-        window.location.href = currentUrl.toString();
-    }
-    
     // iot-device scripts
     activate_iot_device_list_data();
     function activate_iot_device_list_data(){
-/*        
-        $("#select-todo").on("change", function () {
-            // Get the selected value
-            var selectValue = $("#select-todo").val();
-        
-            // Update the URL with the new parameter
-            updateUrlWithParams({ _select_todo: selectValue });
-        });
-        
-        $("#search-device").on("change", function () {
-            // Get values from select and search inputs
-            var selectValue = $("#select-todo").val();
-            var searchValue = $("#search-device").val();
-        
-            // Update the URL with new parameters
-            updateUrlWithParams({
-                _select_todo: selectValue,
-                _search: searchValue,
-            });
-        
-            // Clear the search input value after updating the URL
-            $("#search-device").val('');
-        });
-*/
         $("#select-todo").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -215,28 +171,4 @@ jQuery(document).ready(function($) {
             window.location.replace(modifiedUrl);
         });
     }
-
-/*    
-    // iot-message scripts
-    activate_iot_message_list_data();
-    function activate_iot_message_list_data(){
-
-        $("#select-todo").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-        
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-todo").val();
-            if (selectValue) {
-                queryParams.push("_select_todo=" + selectValue);
-            }
-
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-        
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-    }
-*/
 });

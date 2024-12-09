@@ -152,6 +152,13 @@ jQuery(document).ready(function($) {
     
         $('[id^="edit-embedded-"]').on("click", function () {
             const embedded_id = this.id.substring(14);
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Add or update the `_embedded_id` parameter
+            urlParams.set("_embedded_id", embedded_id);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*    
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -243,6 +250,7 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
+*/            
         });
 
         $("#embedded-dialog").dialog({

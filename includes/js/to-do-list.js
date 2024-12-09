@@ -182,24 +182,6 @@ jQuery(document).ready(function($) {
         urlParams.set("_todo_id", todo_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_todo_dialog_data',
-                _todo_id: todo_id,
-            },
-            success: function (response) {
-                $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data(response.doc_fields);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-*/        
     });            
 
     $('[id^="edit-action-log"]').on("click", function () {
@@ -210,25 +192,6 @@ jQuery(document).ready(function($) {
         urlParams.set("_log_id", log_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_todo_dialog_data',
-                _todo_id: todo_id,
-                _mode: 'view_mode',
-            },
-            success: function (response) {
-                $('#result-container').html(response.html_contain);
-                activate_todo_dialog_data(response.doc_fields);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-*/        
     });            
 
     function get_todo_dialog_data(todo_id){
@@ -242,8 +205,6 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 return response.doc_fields;
-                //$('#result-container').html(response.html_contain);
-                //activate_todo_dialog_data(response.doc_fields);
             },
             error: function (error) {
                 console.error(error);
@@ -305,17 +266,6 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
-/*
-            // Get the current URL
-            const currentUrl = window.location.href;
-            // Check if the current URL includes '/to-do-list/?_id='
-            if (currentUrl.includes('/to-do-list/?_id=')) {
-                // Redirect to '/to-do-list'
-                window.location.replace('/to-do-list');
-            } else {
-                window.location.replace(window.location.href);
-            }
-*/                
         });
     }
 
@@ -348,24 +298,6 @@ jQuery(document).ready(function($) {
         urlParams.set("_job_id", job_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        $.ajax({
-            url: ajax_object.ajax_url,
-            type: 'post',
-            data: {
-                action: 'get_start_job_dialog_data',
-                _job_id: job_id,
-            },
-            success: function (response) {
-                $('#result-container').html(response.html_contain);
-                activate_start_job_dialog_data(response.doc_fields);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-*/        
     });            
 
     function get_start_job_dialog_data(job_id){
@@ -378,8 +310,6 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 return response.doc_fields;                
-                //$('#result-container').html(response.html_contain);
-                //activate_start_job_dialog_data(response.doc_fields);
             },
             error: function (error) {
                 console.error(error);
@@ -390,7 +320,6 @@ jQuery(document).ready(function($) {
     }
 
     activate_start_job_dialog_data();
-    //function activate_start_job_dialog_data(doc_fields){
     function activate_start_job_dialog_data(){
 
         const canvas = document.getElementById('signature-pad');
@@ -527,8 +456,6 @@ jQuery(document).ready(function($) {
                     var modifiedUrl = url.toString();
                     // Reload the page with the modified URL
                     window.location.replace(modifiedUrl);
-
-                    //window.location.replace(window.location.href);
                 },
                 error: function(error){
                     console.error(error);
@@ -549,8 +476,6 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
-
-            //window.location.replace(window.location.href);
         });
     }
 })

@@ -102,8 +102,7 @@ if (!class_exists('to_do_list')) {
                 
                 if ($_GET['_select_todo']=='action-log') {
                     if (isset($_GET['_log_id'])) echo $this->display_action_log_dialog($_GET['_log_id']);
-                    else echo $this->display_action_log_list();
-                    
+                    else echo $this->display_action_log_list();                    
                 }
 
                 if ($_GET['_select_todo']=='cron-events') {
@@ -340,7 +339,6 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => 1,
-                //'post__lt'       => $current_todo_id, // Get posts with ID less than the current ID
                 'orderby'        => 'date',          // Order by post date
                 'order'          => 'ASC',           // Ascending order
                 'meta_query'     => $meta_query,     // Apply the meta query
@@ -394,7 +392,6 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => 1,
-                //'post__gt'       => $current_todo_id, // Get posts with ID greater than the current ID
                 'orderby'        => 'date',          // Order by post date
                 'order'          => 'DESC',          // Descending order
                 'meta_query'     => $meta_query,     // Apply the meta query
@@ -452,7 +449,6 @@ if (!class_exists('to_do_list')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php
-                    //if ($view_mode==false) {
                         $query = $this->retrieve_todo_action_list_data($todo_id);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
@@ -460,7 +456,6 @@ if (!class_exists('to_do_list')) {
                             endwhile;
                             wp_reset_postdata();
                         }    
-                    //}
                     ?>
                 </div>
                 <div style="text-align: right">
