@@ -236,8 +236,134 @@ if (!class_exists('sub_items')) {
             return $query;
         }
 
+        function get_previous_embedded_id($current_embedded_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            // Get the current embedded's `embedded_number`
+            $current_embedded_number = get_post_meta($current_embedded_id, 'embedded_number', true);
+        
+            if (!$current_embedded_number) {
+                return null; // Return null if the current job_number is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'embedded',
+                'posts_per_page' => 1,
+                'meta_key'       => 'embedded_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value as a string
+                'order'          => 'DESC', // Descending order to get the previous document
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'relation' => 'OR', // Sub-condition for is_private
+                        array(
+                            'key'     => 'is_private',
+                            'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
+                        ),
+                        array(
+                            'key'     => 'is_private',
+                            'value'   => '0',
+                            'compare' => '=', // Condition to check if the meta value is 0
+                        ),
+                        array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'is_private',
+                                'value'   => '1',
+                                'compare' => '=',
+                            ),
+                            array(
+                                'key'     => 'site_id',
+                                'value'   => $site_id,
+                                'compare' => '=',
+                            ),
+                        ),
+                    ),
+                    array(
+                        'key'     => 'embedded_number',
+                        'value'   => $current_embedded_number,
+                        'compare' => '<', // Find `embedded_number` less than the current one
+                        'type'    => 'CHAR', // Treat `embedded_number` as a string
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+        
+            // Return the previous embedded ID or null if no previous embedded is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_embedded_id($current_embedded_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            // Get the current embedded's `embedded_number`
+            $current_embedded_number = get_post_meta($current_embedded_id, 'embedded_number', true);
+        
+            if (!$current_embedded_number) {
+                return null; // Return null if the current embedded_number is not set
+            }
+        
+            $args = array(
+                'post_type'      => 'embedded',
+                'posts_per_page' => 1,
+                'meta_key'       => 'embedded_number', // Meta key for sorting
+                'orderby'        => 'meta_value', // Sort by meta value as a string
+                'order'          => 'ASC', // Ascending order to get the next embedded
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'relation' => 'OR', // Sub-condition for is_private
+                        array(
+                            'key'     => 'is_private',
+                            'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
+                        ),
+                        array(
+                            'key'     => 'is_private',
+                            'value'   => '0',
+                            'compare' => '=', // Condition to check if the meta value is 0
+                        ),
+                        array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'is_private',
+                                'value'   => '1',
+                                'compare' => '=',
+                            ),
+                            array(
+                                'key'     => 'site_id',
+                                'value'   => $site_id,
+                                'compare' => '=',
+                            ),
+                        ),
+                    ),
+                    array(
+                        'key'     => 'embedded_number',
+                        'value'   => $current_embedded_number,
+                        'compare' => '>', // Find `embedded_number` greater than the current one
+                        'type'    => 'CHAR', // Treat `embedded_number` as a string
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+        
+            // Return the next embedded ID or null if no next embedded is found
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
         function display_embedded_dialog($embedded_id=false) {
             ob_start();
+            $prev_embedded_id = $this->get_previous_embedded_id($embedded_id); // Fetch the previous ID
+            $next_embedded_id = $this->get_next_embedded_id($embedded_id);     // Fetch the next ID
+            ?>
+            <input type="hidden" id="prev-embedded-id" value="<?php echo esc_attr($prev_embedded_id); ?>" />
+            <input type="hidden" id="next-embedded-id" value="<?php echo esc_attr($next_embedded_id); ?>" />
+            <?php
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $embedded_title = get_the_title($embedded_id);
@@ -278,7 +404,10 @@ if (!class_exists('sub_items')) {
                         <?php }?>
                     </div>
                     <div style="text-align: right">
-                        <input type="button" id="embedded-dialog-exit" value="Exit" style="margin:5px;" />
+                    <?php if (is_site_admin()) {?>
+                        <input type="button" id="duplicate-embedded-button" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+                    <?php }?>
+                    <input type="button" id="embedded-dialog-exit" value="Exit" style="margin:5px;" />
                     </div>
                 </div>
             </fieldset>

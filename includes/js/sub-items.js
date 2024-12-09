@@ -1,4 +1,48 @@
 jQuery(document).ready(function($) {
+    // embedded
+    const prevEmbeddedId = $("#prev-embedded-id").val();
+    const nextEmbeddedId = $("#next-embedded-id").val();
+
+    // Function to navigate to the previous or next record
+    function navigateToEmbedded(Id) {
+        if (Id) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("_embedded_id", Id);
+            window.location.href = currentUrl.toString();
+        }
+    }
+
+    // Keyboard navigation
+    $(document).on("keydown", function (event) {
+        if (event.key === "ArrowRight" && nextEmbeddedId) {
+            navigateToEmbedded(nextEmbeddedId); // Move to the next record
+        } else if (event.key === "ArrowLeft" && prevEmbeddedId) {
+            navigateToEmbedded(prevEmbeddedId); // Move to the previous record
+        }
+    });
+
+    // Touch navigation for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    $(document).on("touchstart", function (event) {
+        touchStartX = event.originalEvent.changedTouches[0].screenX;
+    });
+
+    $(document).on("touchend", function (event) {
+        touchEndX = event.originalEvent.changedTouches[0].screenX;
+        handleEmbeddedSwipe();
+    });
+
+    function handleEmbeddedSwipe() {
+        const swipeThreshold = 50; // Minimum swipe distance
+        if (touchEndX < touchStartX - swipeThreshold && nextEmbeddedId) {
+            navigateToEmbedded(nextEmbeddedId); // Swipe left: Move to the next record
+        } else if (touchEndX > touchStartX + swipeThreshold && prevEmbeddedId) {
+            navigateToEmbedded(prevEmbeddedId); // Swipe right: Move to the previous record
+        }
+    }
+
     // doc-category scripts
     activate_doc_category_list_data();
     function activate_doc_category_list_data(){
