@@ -769,7 +769,7 @@ if (!class_exists('display_documents')) {
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
                     $params['paged'] = $paged;
-                    $query = $this->retrieve_doc_report_list_data($params);
+                    $query = $this->retrieve_doc_report_data($params);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts'));
         
@@ -861,7 +861,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
 
-        function retrieve_doc_report_list_data($params) {
+        function retrieve_doc_report_data($params) {
             // Construct the meta query array
             $meta_query = array(
                 'relation' => 'AND',
@@ -1408,7 +1408,7 @@ if (!class_exists('display_documents')) {
                                     'doc_id'         => $doc_id,
                                     'key_value_pair' => $key_value_pair,
                                 );
-                                $doc_report = $this->retrieve_doc_report_list_data($params);
+                                $doc_report = $this->retrieve_doc_report_data($params);
                                 if ($doc_report->have_posts()) {
                                     echo $doc_title. ':';
                                     echo '<fieldset>';
@@ -2145,7 +2145,7 @@ if (!class_exists('display_documents')) {
         }
 
         function select_system_doc_options($selected_option=0, $params=array()) {
-            $query = $this->retrieve_doc_report_list_data($params);
+            $query = $this->retrieve_doc_report_data($params);
             $options = '<option value="">Select an option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
