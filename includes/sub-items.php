@@ -285,7 +285,7 @@ if (!class_exists('sub_items')) {
                     array(
                         'key'     => 'embedded_number',
                         'value'   => $current_embedded_number,
-                        'compare' => '<', // Find `embedded_number` less than the current one
+                        'compare' => '>', // Find `embedded_number` greater than the current one
                         'type'    => 'CHAR', // Treat `embedded_number` as a string
                     ),
                 ),
@@ -345,7 +345,7 @@ if (!class_exists('sub_items')) {
                     array(
                         'key'     => 'embedded_number',
                         'value'   => $current_embedded_number,
-                        'compare' => '>', // Find `embedded_number` greater than the current one
+                        'compare' => '<', // Find `embedded_number` less than the current one
                         'type'    => 'CHAR', // Treat `embedded_number` as a string
                     ),
                 ),
