@@ -1655,7 +1655,7 @@ if (!class_exists('to_do_list')) {
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
-                if (!$submit_action) echo 'system log!'
+                if (!$submit_action) echo 'system log!';
                 // Figure out the summary-job Step 3
                 else if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
