@@ -88,6 +88,7 @@ if (!class_exists('to_do_list')) {
 
                 //if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
                 if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'start-job';
+
                 if ($_GET['_select_todo']=='todo-list') {
                     if (isset($_GET['_todo_id'])) echo $this->display_todo_dialog($_GET['_todo_id']);
                     else echo $this->display_todo_list();
@@ -100,7 +101,9 @@ if (!class_exists('to_do_list')) {
                 }
                 
                 if ($_GET['_select_todo']=='action-log') {
-                    $this->display_action_log();
+                    if (isset($_GET['_log_id'])) echo $this->display_action_log_dialog($_GET['_log_id']);
+                    else echo $this->display_action_log_list();
+                    
                 }
 
                 if ($_GET['_select_todo']=='cron-events') {
@@ -382,11 +385,7 @@ if (!class_exists('to_do_list')) {
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
 
-        function display_todo_dialog($todo_id=false, $view_mode=false) {
-            if ($view_mode) {
-                $submit_action = get_post_meta($todo_id, 'submit_action', true);
-                if (!$submit_action) return 'system log! <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />';
-            }
+        function display_todo_dialog($todo_id=false) {
             ob_start();
             $prev_todo_id = $this->get_previous_todo_id($todo_id); // Fetch the previous ID
             $next_todo_id = $this->get_next_todo_id($todo_id);     // Fetch the next ID
@@ -426,7 +425,7 @@ if (!class_exists('to_do_list')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php
-                    if ($view_mode==false) {
+                    //if ($view_mode==false) {
                         $query = $this->retrieve_todo_action_list_data($todo_id);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
@@ -434,7 +433,7 @@ if (!class_exists('to_do_list')) {
                             endwhile;
                             wp_reset_postdata();
                         }    
-                    }
+                    //}
                     ?>
                 </div>
                 <div style="text-align: right">
@@ -1411,7 +1410,7 @@ if (!class_exists('to_do_list')) {
         }
         
         // action_log
-        function display_action_log() {
+        function display_action_log_list() {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -1422,103 +1421,10 @@ if (!class_exists('to_do_list')) {
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
                     </div>
                 </div>
-                <?php echo $this->get_action_log_list();?>
+                <?php echo $this->get_action_log();?>
                 <p style="background-color:lightblue; text-align:center;"><?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_action_logs();?></p>
             </div>
             <?php
-        }
-        
-        function get_action_log_list($report_id=false) {
-            ob_start();
-            ?>
-            <fieldset>
-                <table class="ui-widget" style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'User', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Next', 'your-text-domain' );?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_action_log_data($paged, $report_id);
-                    $total_posts = $query->found_posts;
-                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
-                    if ($query->have_posts()) :
-                        while ($query->have_posts()) : $query->the_post();
-                            $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                            $site_id = get_post_meta($doc_id, 'site_id', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                            $todo_title = get_the_title();
-                            $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
-                            if ($report_id) $doc_title .= '(#'.$report_id.')';
-                            else {
-                                $doc_title = get_the_title();
-                                $todo_title = 'system';
-                            }
-                            $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
-                            $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
-                            $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
-                            $next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                            if (!$next_job) $next_job = get_post_meta($submit_action, 'next_job', true);
-                            $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
-                            $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
-                            if ($submit_action) $submit_title = get_the_title($submit_action);
-                            else {
-                                $submit_title = '';
-                                $job_title = '';
-                            } 
-                            $user_data = get_userdata( $submit_user );
-                            ?>
-                            <tr id="view-todo-<?php esc_attr(the_ID()); ?>">
-                                <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
-                                <td><?php echo esc_html($doc_title);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($submit_title);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
-                            </tr>
-                            <?php
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;
-                    ?>
-                    </tbody>
-                </table>
-                <div class="pagination">
-                    <?php
-                    // Display pagination links
-                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                    ?>
-                </div>
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-        
-        function count_action_logs(){
-            $current_user_id = get_current_user_id();
-            $current_site = get_user_meta($current_user_id, 'site_id', true);
-            $x = 0;
-            $query = $this->retrieve_action_log_data(0);
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                    $site_id = get_post_meta($doc_id, 'site_id', true);
-                    if ($current_site==$site_id) { // Aditional condition to filter the data
-                        $x += 1;
-                    }
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            return $x;
         }
         
         function retrieve_action_log_data($paged=1, $report_id=false) {
@@ -1565,6 +1471,224 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
 
+        function get_previous_log_id($current_log_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => 1,
+                //'order'          => 'DESC',
+                'orderby'        => 'ID',
+                'post__lt'       => $current_log_id,
+                //'meta_key'       => 'device_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'ASC', // Sorting order (ascending)
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'submit_time',
+                'order'          => 'DESC',
+            );
+
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function get_next_log_id($current_log_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
+            $args = array(
+                'post_type'      => 'todo',
+                'posts_per_page' => 1,
+                //'order'          => 'ASC',
+                'orderby'        => 'ID',
+                'post__gt'       => $current_log_id,
+                //'meta_key'       => 'device_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                'order'          => 'DESC', // Sorting order (ascending)
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'submit_time',
+                'order'          => 'DESC',
+            );
+
+            $query = new WP_Query($args);
+            return $query->have_posts() ? $query->posts[0]->ID : null;
+        }
+
+        function display_action_log_dialog($todo_id=false) {
+            //if ($view_mode) {
+                $submit_action = get_post_meta($todo_id, 'submit_action', true);
+                if (!$submit_action) return 'system log! <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />';
+            //}
+            ob_start();
+            $prev_todo_id = $this->get_previous_todo_id($todo_id); // Fetch the previous ID
+            $next_todo_id = $this->get_next_todo_id($todo_id);     // Fetch the next ID
+            ?>
+            <input type="hidden" id="prev-todo-id" value="<?php echo esc_attr($prev_todo_id); ?>" />
+            <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
+            <?php
+            $documents_class = new display_documents();
+            ?>
+            <?php echo display_iso_helper_logo();?>
+            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
+            <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
+            <fieldset>
+            <?php
+                $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
+                // Figure out the summary-job Step 3
+                if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
+                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                    $params = array(
+                        'doc_id'           => $doc_id,
+                        'todo_in_summary'  => $todo_in_summary,
+                    );
+                    $documents_class->get_doc_report_contain_list($params);
+                } else {
+                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                    $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                    $params = array(
+                        'is_todo'         => true,
+                        'todo_id'         => $todo_id,
+                        'doc_id'          => $doc_id,
+                        'prev_report_id'  => $prev_report_id,
+                    );
+                    $documents_class->get_doc_field_contains($params);
+                }
+            ?>
+            <hr>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                </div>
+                <div style="text-align: right">
+                    <input type="button" id="action-log-exit" value="Exit" style="margin:5px;" />
+                </div>
+            </div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+        
+        function get_action_log($report_id=false) {
+            ob_start();
+            ?>
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __( 'Time', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'User', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Action', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_action_log_data($paged, $report_id);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                            $site_id = get_post_meta($doc_id, 'site_id', true);
+                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $todo_title = get_the_title();
+                            $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
+                            if ($report_id) $doc_title .= '(#'.$report_id.')';
+                            else {
+                                $doc_title = get_the_title();
+                                $todo_title = 'system';
+                            }
+                            $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
+                            $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
+                            $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
+                            $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                            if (!$next_job) $next_job = get_post_meta($submit_action, 'next_job', true);
+                            $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
+                            $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
+                            if ($submit_action) $submit_title = get_the_title($submit_action);
+                            else {
+                                $submit_title = '';
+                                $job_title = '';
+                            } 
+                            $user_data = get_userdata( $submit_user );
+                            ?>
+                            <tr id="edit-action-log<?php esc_attr(the_ID()); ?>">
+                                <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
+                                <td><?php echo esc_html($doc_title);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($submit_title);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                            </tr>
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    ?>
+                </div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+        
+        function count_action_logs(){
+            $current_user_id = get_current_user_id();
+            $current_site = get_user_meta($current_user_id, 'site_id', true);
+            $x = 0;
+            $query = $this->retrieve_action_log_data(0);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                    $site_id = get_post_meta($doc_id, 'site_id', true);
+                    if ($current_site==$site_id) { // Aditional condition to filter the data
+                        $x += 1;
+                    }
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            return $x;
+        }
+        
         // doc-report frequence setting
         function schedule_event_callback($params) {
             $action_id = $params['action_id'];
