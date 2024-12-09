@@ -340,10 +340,16 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => 1,
-                'post__lt'       => $current_todo_id, // Get posts with ID less than the current ID
+                //'post__lt'       => $current_todo_id, // Get posts with ID less than the current ID
                 'orderby'        => 'date',          // Order by post date
                 'order'          => 'ASC',           // Ascending order
                 'meta_query'     => $meta_query,     // Apply the meta query
+                'date_query'     => array(
+                    array(
+                        'after' => get_post_field('post_date', $current_todo_id), // Get posts after the current report's date
+                        'inclusive' => false,
+                    ),
+                ),
             );
         
             $query = new WP_Query($args);
@@ -388,10 +394,16 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'todo',
                 'posts_per_page' => 1,
-                'post__gt'       => $current_todo_id, // Get posts with ID greater than the current ID
+                //'post__gt'       => $current_todo_id, // Get posts with ID greater than the current ID
                 'orderby'        => 'date',          // Order by post date
                 'order'          => 'DESC',          // Descending order
                 'meta_query'     => $meta_query,     // Apply the meta query
+                'date_query'     => array(
+                    array(
+                        'before' => get_post_field('post_date', $current_todo_id), // Get posts before the current report's date
+                        'inclusive' => false,
+                    ),
+                ),
             );
         
             $query = new WP_Query($args);
