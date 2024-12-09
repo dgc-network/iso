@@ -51,9 +51,11 @@ if (!class_exists('to_do_list')) {
                 <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
                 <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'your-text-domain' );?></option>
                 <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
+                <?php if (current_user_can('administrator')) {?>
                 <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'your-text-domain' );?></option>
                 <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
-                </select>
+                <?php }?>
+            </select>
             <?php
         }
 
@@ -63,7 +65,7 @@ if (!class_exists('to_do_list')) {
             if (!is_user_logged_in()) user_is_not_logged_in();                
             elseif (is_site_not_configured()) get_NDA_assignment();
             else {
-
+/*
                 if (isset($_GET['_id'])) {
                     $todo_id = sanitize_text_field($_GET['_id']);
                     $todo_post = get_post($todo_id);
@@ -85,9 +87,10 @@ if (!class_exists('to_do_list')) {
                         echo 'This ID does not match a "todo" post.';
                     }
                 }
-
+*/
                 //if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'todo-list';
-                if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'start-job';
+                //if (!isset($_GET['_select_todo']) && !isset($_GET['_id'])) $_GET['_select_todo'] = 'start-job';
+                if (!isset($_GET['_select_todo'])) $_GET['_select_todo'] = 'start-job';
 
                 if ($_GET['_select_todo']=='todo-list') {
                     if (isset($_GET['_todo_id'])) echo $this->display_todo_dialog($_GET['_todo_id']);
