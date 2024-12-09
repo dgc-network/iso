@@ -104,9 +104,9 @@ jQuery(document).ready(function($) {
     // Keyboard navigation
     $(document).on("keydown", function (event) {
         if (event.key === "ArrowRight" && nextLogId) {
-            navigateToTodo(nextLogId); // Move to the next record
+            navigateToLog(nextLogId); // Move to the next record
         } else if (event.key === "ArrowLeft" && prevLogId) {
-            navigateToTodo(prevLogId); // Move to the previous record
+            navigateToLog(prevLogId); // Move to the previous record
         }
     });
 
@@ -321,46 +321,6 @@ jQuery(document).ready(function($) {
 
     activate_action_log_dialog_data();
     function activate_action_log_dialog_data(){
-        $('[id^="todo-dialog-button-"]').on("click", function () {
-            const action_id = this.id.substring(19);
-            const ajaxData = {
-                'action': 'set_todo_dialog_data',
-            };
-            ajaxData['_action_id'] = action_id;
-
-            doc_fields = get_todo_dialog_data($('todo-id').val());
-            $.each(doc_fields, function(index, value) {
-                const field_id_tag = '#' + value.field_id;
-                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
-                } else {
-                    ajaxData[value.field_id] = $(field_id_tag).val();
-                }
-            });
-
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: ajaxData,
-                success: function (response) {
-                    // Get the current URL
-                    const currentUrl = window.location.href;
-                    // Check if the current URL includes '/to-do-list/?_id='
-                    if (currentUrl.includes('/to-do-list/?_id=')) {
-                        // Redirect to '/to-do-list'
-                        window.location.replace('/to-do-list');
-                    } else {
-                        window.location.replace(window.location.href);
-                    }
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-
         $("#action-log-exit").on("click", function () {
             // Get the current URL
             var currentUrl = window.location.href;
@@ -372,17 +332,6 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
-/*
-            // Get the current URL
-            const currentUrl = window.location.href;
-            // Check if the current URL includes '/to-do-list/?_id='
-            if (currentUrl.includes('/to-do-list/?_id=')) {
-                // Redirect to '/to-do-list'
-                window.location.replace('/to-do-list');
-            } else {
-                window.location.replace(window.location.href);
-            }
-*/                
         });
     }
 
