@@ -194,6 +194,29 @@ jQuery(document).ready(function($) {
         window.location.href = "?" + urlParams.toString();
     });            
 
+    function get_todo_dialog_data(todo_id, callback) {
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_todo_dialog_data',
+                _todo_id: todo_id,
+            },
+            success: function (response) {
+                if (typeof callback === "function") {
+                    callback(null, response.doc_fields); // Pass the data to the callback
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                alert('An error occurred. Please try again.');
+                if (typeof callback === "function") {
+                    callback(error, null); // Pass the error to the callback
+                }
+            }
+        });
+    }
+/*
     function get_todo_dialog_data(todo_id){
         $.ajax({
             url: ajax_object.ajax_url,
@@ -212,7 +235,7 @@ jQuery(document).ready(function($) {
             }
         });
     };            
-
+*/
     activate_todo_dialog_data();
     function activate_todo_dialog_data(){
         $('[id^="todo-dialog-button-"]').on("click", function () {
@@ -222,37 +245,39 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_action_id'] = action_id;
 
-            doc_fields = get_todo_dialog_data($('#todo-id').val());
-            $.each(doc_fields, function(index, value) {
-                const field_id_tag = '#' + value.field_id;
-                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
-                } else {
-                    ajaxData[value.field_id] = $(field_id_tag).val();
-                }
-            });
-
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: ajaxData,
-                success: function (response) {
-                    // Get the current URL
-                    const currentUrl = window.location.href;
-                    // Check if the current URL includes '/to-do-list/?_id='
-                    if (currentUrl.includes('/to-do-list/?_id=')) {
-                        // Redirect to '/to-do-list'
-                        window.location.replace('/to-do-list');
+            //doc_fields = get_todo_dialog_data($('#todo-id').val());
+            get_todo_dialog_data($("#todo-id").val(), function (error, doc_fields) {
+                $.each(doc_fields, function(index, value) {
+                    const field_id_tag = '#' + value.field_id;
+                    if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                        ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                     } else {
-                        window.location.replace(window.location.href);
+                        ajaxData[value.field_id] = $(field_id_tag).val();
                     }
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
+                });
+    
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: ajaxData,
+                    success: function (response) {
+                        // Get the current URL
+                        const currentUrl = window.location.href;
+                        // Check if the current URL includes '/to-do-list/?_id='
+                        if (currentUrl.includes('/to-do-list/?_id=')) {
+                            // Redirect to '/to-do-list'
+                            window.location.replace('/to-do-list');
+                        } else {
+                            window.location.replace(window.location.href);
+                        }
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
+                    }
+                });    
+            })
         });
 
         $("#todo-dialog-exit").on("click", function () {
