@@ -1071,7 +1071,7 @@ if (!class_exists('display_documents')) {
                     <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <span id='report-unpublished-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
+                    <span id='reset-doc-report-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
                 </div>
             </div>
 

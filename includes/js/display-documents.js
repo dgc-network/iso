@@ -1078,9 +1078,9 @@ jQuery(document).ready(function($) {
             })
         });
 
-        $('[id^="report-unpublished-"]').on("click", function () {
-            const report_id = this.id.substring(19);
-            if (window.confirm("Are you sure you want to unpublish this report?")) {
+        $('[id^="reset-doc-report-"]').on("click", function () {
+            const report_id = this.id.substring(17);
+            if (window.confirm("Are you sure you want to reset this report?")) {
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
@@ -1091,18 +1091,6 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         get_doc_report_list_data($("#doc-id").val());
-/*
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);
-                        // Remove the specified parameter
-                        url.searchParams.delete('_report_id');
-                        // Get the modified URL
-                        var modifiedUrl = url.toString();
-                        // Reload the page with the modified URL
-                        window.location.replace(modifiedUrl);
-*/                        
                     },
                     error: function(error){
                         console.error(error);
@@ -1118,18 +1106,6 @@ jQuery(document).ready(function($) {
 
         $("#exit-doc-report-dialog").on("click", function () {
             get_doc_report_list_data($("#doc-id").val());
-/*            
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_report_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-*/
         });
 
         $(".video-button").on("click", function () {
