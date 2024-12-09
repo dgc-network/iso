@@ -395,6 +395,7 @@ if (!class_exists('to_do_list')) {
             <?php
             $documents_class = new display_documents();
             ?>
+            <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
             <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
@@ -441,6 +442,7 @@ if (!class_exists('to_do_list')) {
                 </div>
             </div>
             </fieldset>
+            </div>
             <?php
             return ob_get_clean();
         }
@@ -1631,41 +1633,43 @@ if (!class_exists('to_do_list')) {
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
 */
-        function display_action_log_dialog($todo_id=false) {
+        function display_action_log_dialog($log_id=false) {
             //if ($view_mode) {
-                $submit_action = get_post_meta($todo_id, 'submit_action', true);
-                if (!$submit_action) return 'system log! <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />';
+                //$submit_action = get_post_meta($todo_id, 'submit_action', true);
+                //if (!$submit_action) return 'system log! <input type="button" id="todo-dialog-exit" value="Exit" style="margin:5px;" />';
             //}
             ob_start();
-            $prev_todo_id = $this->get_previous_todo_id($todo_id); // Fetch the previous ID
-            $next_todo_id = $this->get_next_todo_id($todo_id);     // Fetch the next ID
+            $prev_log_id = $this->get_previous_log_id($log_id); // Fetch the previous ID
+            $next_log_id = $this->get_next_log_id($log_id);     // Fetch the next ID
             ?>
-            <input type="hidden" id="prev-todo-id" value="<?php echo esc_attr($prev_todo_id); ?>" />
-            <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
+            <input type="hidden" id="prev-log-id" value="<?php echo esc_attr($prev_log_id); ?>" />
+            <input type="hidden" id="next-log-id" value="<?php echo esc_attr($next_log_id); ?>" />
             <?php
             $documents_class = new display_documents();
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
-            <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
+            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($log_id));?></h2>
+            <input type="hidden" id="log-id" value="<?php echo $log_id;?>" />
             <fieldset>
             <?php
-                $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
+                $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
+                $submit_action = get_post_meta($log_id, 'submit_action', true);
+                if (!$submit_action) echo 'system log!'
                 // Figure out the summary-job Step 3
-                if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
-                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                else if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
+                    $doc_id = get_post_meta($log_id, 'doc_id', true);
                     $params = array(
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
                     $documents_class->get_doc_report_contain_list($params);
                 } else {
-                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                    $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                    $doc_id = get_post_meta($log_id, 'doc_id', true);
+                    $prev_report_id = get_post_meta($log_id, 'prev_report_id', true);
                     $params = array(
                         'is_todo'         => true,
-                        'todo_id'         => $todo_id,
+                        'todo_id'         => $log_id,
                         'doc_id'          => $doc_id,
                         'prev_report_id'  => $prev_report_id,
                     );
