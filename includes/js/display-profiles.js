@@ -7,23 +7,23 @@ jQuery(document).ready(function($) {
         return pattern.test(str);
     }
 
-    // my-profile scripts
+    $("#select-profile").on("change", function() {
+        // Initialize an empty array to store query parameters
+        var queryParams = [];
+        // Check the selected value for each select element and add it to the queryParams array
+        var selectValue = $("#select-profile").val();
+        if (selectValue) {
+            queryParams.push("_select_profile=" + selectValue);
+        }
+        // Combine all query parameters into a single string
+        var queryString = queryParams.join("&");
+        // Redirect to the new URL with all combined query parameters
+        window.location.href = "?" + queryString;
+    });
+
+    // my-profile
     activate_my_profile_data();
     function activate_my_profile_data(){
-        $("#select-profile").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-profile").val();
-            if (selectValue) {
-                queryParams.push("_select_profile=" + selectValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-
         $("#my-profile-submit").on("click", function () {
             $.ajax({
                 type: 'POST',
@@ -92,42 +92,6 @@ jQuery(document).ready(function($) {
                     $("#my-job-action-list").html(response.html_contain);
                     $("#my-job-action-list").dialog('open');
 
-                    $("#my-job-action-dialog").dialog({
-                        width: 390,
-                        modal: true,
-                        autoOpen: false,
-                        buttons: {
-                            "Action": function () {
-                                $.ajax({
-                                    type: 'POST',
-                                    url: ajax_object.ajax_url,
-                                    dataType: "json",
-                                    data: {
-                                        'action': 'set_my_job_action_dialog_data',
-                                        _action_id: $("#action-id").val(),
-                                        _is_action_authorized: $("#is-action-authorized").val(),
-                                        _frequence_report_setting: $("#frequence-report-setting").val(),
-                                        _frequence_report_start_date: $("#frequence-report-start-date").val(),
-                                        _frequence_report_start_time: $("#frequence-report-start-time").val(),
-                                        _prev_start_time: $("#prev-start-time").val(),
-                                    },
-                                    success: function (response) {
-                                        console.log(response);
-                                        window.location.replace(window.location.href);
-                                    },
-                                    error: function (error) {
-                                        console.error(error);
-                                        alert(error);
-                                    }
-                                });
-                            },
-                            "Cancel": function () {
-                                $("#my-job-action-dialog").dialog('close');
-                            },
-                        }
-            
-                    });
-
                     $('[id^="edit-my-job-action-"]').on("click", function () {
                         $("#my-job-action-list").dialog('close');
                         const action_id = this.id.substring(19);
@@ -156,6 +120,42 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
+        });
+
+        $("#my-job-action-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Action": function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_my_job_action_dialog_data',
+                            _action_id: $("#action-id").val(),
+                            _is_action_authorized: $("#is-action-authorized").val(),
+                            _frequence_report_setting: $("#frequence-report-setting").val(),
+                            _frequence_report_start_date: $("#frequence-report-start-date").val(),
+                            _frequence_report_start_time: $("#frequence-report-start-time").val(),
+                            _prev_start_time: $("#prev-start-time").val(),
+                        },
+                        success: function (response) {
+                            console.log(response);
+                            window.location.replace(window.location.href);
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                },
+                "Cancel": function () {
+                    $("#my-job-action-dialog").dialog('close');
+                },
+            }
+
         });
 
         $('[id^="edit-my-notification-"]').on("click", function () {
@@ -231,9 +231,10 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    // site-profile scripts
+    // site-profile
     activate_site_profile_data();
     function activate_site_profile_data(){
+/*        
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -247,7 +248,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#site-image-container").on("click", function() {
             $("#site-image-container").hide();
             $("#site-image-url").show();
@@ -504,9 +505,10 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // site-job scripts
+    // site-job
     activate_site_job_list_data();
     function activate_site_job_list_data(){
+/*        
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -520,7 +522,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#search-site-job").on( "change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -550,7 +552,6 @@ jQuery(document).ready(function($) {
                     'action': 'set_site_job_dialog_data',
                 },
                 success: function (response) {
-                    //$("#result-container").html(response.html_contain);
                     window.location.replace(window.location.href);
                     activate_site_job_list_data();
                 },
@@ -591,7 +592,6 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#site-job-dialog").dialog('close');
-                                        //$("#result-container").html(response.html_contain);
                                         window.location.replace(window.location.href);
                                         activate_site_job_list_data();
                                     },
@@ -613,7 +613,6 @@ jQuery(document).ready(function($) {
                                         },
                                         success: function (response) {
                                             $("#site-job-dialog").dialog('close');
-                                            //$("#result-container").html(response.html_contain);
                                             window.location.replace(window.location.href);
                                             activate_site_job_list_data();
                                         },
@@ -645,7 +644,7 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    // doc-action scripts
+    // doc-action
     function activate_job_action_list_data(doc_id=false) {
         $("#new-doc-action").on("click", function() {
             jQuery.ajax({
@@ -742,11 +741,10 @@ jQuery(document).ready(function($) {
                     }
                 }
             }
-        });    
-
+        });
     }
 
-    // doc-user scripts
+    // doc-user
     function activate_doc_user_list_data(doc_id=false) {
         $("#new-doc-user").on("click", function() {
             jQuery.ajax({

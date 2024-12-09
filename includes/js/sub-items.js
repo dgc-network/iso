@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
         }
     }
 
-    // doc-category scripts
+    // doc-category
     activate_doc_category_list_data();
     function activate_doc_category_list_data(){
         $("#select-profile").on("change", function() {
@@ -157,7 +157,7 @@ jQuery(document).ready(function($) {
         });
     }
     
-    // embedded scripts
+    // embedded
     activate_embedded_list_data()
     function activate_embedded_list_data(){
         $("#select-profile").on("change", function() {
@@ -292,17 +292,9 @@ jQuery(document).ready(function($) {
 
             activate_sub_item_list_data(embedded_id);
         });
-/*
-        $("#embedded-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-            buttons: {}
-        });
-*/        
     }
 
-    // sub-item scripts
+    // sub-item
     function activate_sub_item_list_data(embedded_id){
         $("#new-sub-item").on("click", function() {
             $.ajax({
@@ -378,7 +370,6 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_sub_item_dialog_data',
-                            //'_embedded_id': embedded_id,
                             '_embedded_id': $("#embedded-id").val(),
                             '_sub_item_id': $("#sub-item-id").val(),
                             '_sub_item_title': $("#sub-item-title").val(),
@@ -405,7 +396,6 @@ jQuery(document).ready(function($) {
                             dataType: "json",
                             data: {
                                 'action': 'del_sub_item_dialog_data',
-                                //'_embedded_id': embedded_id,
                                 '_embedded_id': $("#embedded-id").val(),
                                 '_sub_item_id': $("#sub-item-id").val(),
                             },
@@ -425,7 +415,7 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // iso-category scripts
+    // iso-category
     activate_iso_category_list_data();
     function activate_iso_category_list_data(){
 
@@ -539,7 +529,7 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // department-card scripts
+    // department
     activate_department_card_list_data();
     function activate_department_card_list_data(){
         $("#select-profile").on("change", function() {
@@ -674,7 +664,7 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    // department-user scripts
+    // department-user
     function activate_department_user_list_data(){
         $("#new-department-user").on("click", function() {
             $.ajax({
@@ -748,6 +738,5 @@ jQuery(document).ready(function($) {
             modal: true,
             autoOpen: false,
         });    
-    }    
-
+    }
 });
