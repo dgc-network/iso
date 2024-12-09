@@ -1144,19 +1144,19 @@ jQuery(document).ready(function($) {
             $(".image-display").attr("src", $(".image-url").val());
         });
 
-        // sub-report
-        $("#new-sub-report").on("click", function() {
+        // sub-line
+        $("#new-sub-line").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_sub_report_dialog_data',
+                    'action': 'set_sub_line_dialog_data',
                     '_report_id': $("#report-id").val(),
                     '_embedded_id': $("#embedded-id").val(),
                 },
                 success: function (set_response) {
-                    $("#sub-report-list").html(set_response.html_contain);
+                    $("#sub-line-list").html(set_response.html_contain);
                     //activate_doc_report_dialog_data(response);
                 },
                 error: function(error){
@@ -1165,36 +1165,36 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $('[id^="edit-sub-report-"]').on( "click", function() {
-            const sub_report_id = this.id.substring(16);
+        $('[id^="edit-sub-line-"]').on( "click", function() {
+            const sub_line_id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_sub_report_dialog_data',
-                    '_sub_report_id': sub_report_id,
+                    'action': 'get_sub_line_dialog_data',
+                    '_sub_line_id': sub_line_id,
                     '_embedded_id': $("#embedded-id").val(),
                 },
                 success: function (get_response) {
-                    $("#sub-report-dialog").html(get_response.html_contain);
+                    $("#sub-line-dialog").html(get_response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        $("#sub-report-dialog").dialog("option", "buttons", {
+                        $("#sub-line-dialog").dialog("option", "buttons", {
                             "Save": function() {
                                 const ajaxData = {
-                                    'action': 'set_sub_report_dialog_data',
+                                    'action': 'set_sub_line_dialog_data',
                                 };
-                                ajaxData['_sub_report_id'] = sub_report_id;
+                                ajaxData['_sub_line_id'] = sub_line_id;
                                 ajaxData['_report_id'] = $("#report-id").val();
                                 ajaxData['_embedded_id'] = $("#embedded-id").val();
                                 field_id = $("#embedded-id").val();
-                                $.each(get_response.sub_report_fields, function(index, inner_value) {
-                                    const sub_report_field = field_id + inner_value.sub_item_id;
-                                    const sub_report_field_tag = '#' + field_id + inner_value.sub_item_id;
+                                $.each(get_response.sub_line_fields, function(index, inner_value) {
+                                    const sub_line_field = field_id + inner_value.sub_item_id;
+                                    const sub_line_field_tag = '#' + field_id + inner_value.sub_item_id;
                                     if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                        ajaxData[sub_report_field] = $(sub_report_field_tag).is(":checked") ? 1 : 0;
+                                        ajaxData[sub_line_field] = $(sub_line_field_tag).is(":checked") ? 1 : 0;
                                     } else {
-                                        ajaxData[sub_report_field] = $(sub_report_field_tag).val();
+                                        ajaxData[sub_line_field] = $(sub_line_field_tag).val();
                                     }
                                 });
                                 $.ajax({
@@ -1203,8 +1203,8 @@ jQuery(document).ready(function($) {
                                     dataType: "json",
                                     data: ajaxData,
                                     success: function(set_response) {
-                                        $("#sub-report-dialog").dialog('close');
-                                        $('#sub-report-list').html(set_response.html_contain);
+                                        $("#sub-line-dialog").dialog('close');
+                                        $('#sub-line-list').html(set_response.html_contain);
                                         //activate_doc_report_dialog_data(response);
                                     },
                                     error: function(error) {
@@ -1214,20 +1214,20 @@ jQuery(document).ready(function($) {
                                 });                    
                             },
                             "Delete": function() {
-                                if (window.confirm("Are you sure you want to delete this sub-report?")) {
+                                if (window.confirm("Are you sure you want to delete this sub-line?")) {
                                     $.ajax({
                                         type: 'POST',
                                         url: ajax_object.ajax_url,
                                         dataType: "json",
                                         data: {
-                                            'action': 'del_sub_report_dialog_data',
-                                            '_sub_report_id': sub_report_id,
+                                            'action': 'del_sub_line_dialog_data',
+                                            '_sub_line_id': sub_line_id,
                                             '_report_id': $("#report-id").val(),
                                             '_embedded_id': $("#embedded-id").val(),
                                         },
                                         success: function (del_response) {
-                                            $("#sub-report-dialog").dialog('close');
-                                            $('#sub-report-list').html(del_response.html_contain);
+                                            $("#sub-line-dialog").dialog('close');
+                                            $('#sub-line-list').html(del_response.html_contain);
                                             //activate_doc_report_dialog_data(response);
                                         },
                                         error: function(error){
@@ -1239,7 +1239,7 @@ jQuery(document).ready(function($) {
                             }
                         });
                     }
-                    $("#sub-report-dialog").dialog('open');
+                    $("#sub-line-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.error(error);                
@@ -1248,13 +1248,11 @@ jQuery(document).ready(function($) {
             });
         });
     
-        $("#sub-report-dialog").dialog({
+        $("#sub-line-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
             buttons: {}
-        });    
-
-
+        });
     }    
 });

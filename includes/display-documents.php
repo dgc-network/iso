@@ -1753,14 +1753,14 @@ if (!class_exists('display_documents')) {
                             }
                             break;
 
-                        case ($field_type=='_item_list'):
+                        case ($field_type=='_line_list'):
                             if ($default_value) {
                                 $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <div id="sub-report-list">
-                                    <?php if ($report_id) echo $items_class->display_sub_report_list($embedded_id, $report_id);?>
-                                    <?php if ($prev_report_id) echo $items_class->display_sub_report_list($embedded_id, $prev_report_id);?>
+                                <div id="sub-line-list">
+                                    <?php if ($report_id) echo $items_class->display_sub_line_list($embedded_id, $report_id);?>
+                                    <?php if ($prev_report_id) echo $items_class->display_sub_line_list($embedded_id, $prev_report_id);?>
                                 </div>
                                 <?php
                             }

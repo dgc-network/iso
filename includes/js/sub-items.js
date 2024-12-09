@@ -141,7 +141,6 @@ jQuery(document).ready(function($) {
                         });
                     }
                     $("#doc-category-dialog").dialog('open');
-                    //activate_audit_item_list_data(category_id)                
                 },
                 error: function (error) {
                     console.error(error);
@@ -290,7 +289,7 @@ jQuery(document).ready(function($) {
             urlParams.set("_embedded_id", embedded_id);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-            
+
             activate_sub_item_list_data(embedded_id);
         });
 /*
