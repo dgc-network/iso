@@ -300,6 +300,38 @@ jQuery(document).ready(function($) {
         window.location.href = "?" + urlParams.toString();
     });            
 
+    function get_start_job_dialog_data(job_id, callback) {
+        $.ajax({
+            url: ajax_object.ajax_url,
+            type: 'post',
+            data: {
+                action: 'get_start_job_dialog_data',
+                _job_id: job_id,
+            },
+            success: function (response) {
+                if (typeof callback === "function") {
+                    callback(null, response.doc_fields); // Pass the data to the callback
+                }
+            },
+            error: function (error) {
+                console.error(error);
+                alert('An error occurred. Please try again.');
+                if (typeof callback === "function") {
+                    callback(error, null); // Pass the error to the callback
+                }
+            }
+        });
+    }
+/*    
+    // Usage example
+    get_start_job_dialog_data(123, function (error, docFields) {
+        if (error) {
+            console.error('Error fetching data:', error);
+            return;
+        }
+        console.log('Document fields:', docFields);
+    });
+    
     function get_start_job_dialog_data(job_id){
         $.ajax({
             url: ajax_object.ajax_url,
@@ -316,9 +348,8 @@ jQuery(document).ready(function($) {
                 alert(error);
             }
         });
-
     }
-
+*/
     activate_start_job_dialog_data();
     function activate_start_job_dialog_data(){
 
@@ -402,70 +433,72 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_action_id'] = action_id;
 
-            doc_fields = get_start_job_dialog_data($("#job-id").val());
-            $.each(doc_fields, function(index, value) {
-                const field_id_tag = '#' + value.field_id;
-                if (value.field_type === 'checkbox' || value.field_type === 'radio') {
-                    ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
-                } else {
-                    ajaxData[value.field_id] = $(field_id_tag).val();
-
-                    if (value.default_value === '_post_number') {
-                        ajaxData['_post_number'] = $(field_id_tag).val();
+            //doc_fields = get_start_job_dialog_data($("#job-id").val());
+            get_start_job_dialog_data($("#job-id").val(), function (error, docFields) {
+                $.each(doc_fields, function(index, value) {
+                    const field_id_tag = '#' + value.field_id;
+                    if (value.field_type === 'checkbox' || value.field_type === 'radio') {
+                        ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
+                    } else {
+                        ajaxData[value.field_id] = $(field_id_tag).val();
+    
+                        if (value.default_value === '_post_number') {
+                            ajaxData['_post_number'] = $(field_id_tag).val();
+                        }
+                        if (value.default_value === '_post_title') {
+                            ajaxData['_post_title'] = $(field_id_tag).val();
+                        }
+                        if (value.default_value === '_post_content') {
+                            ajaxData['_post_content'] = $(field_id_tag).val();
+                        }
+    
+                        if (value.field_type === 'canvas') {
+                            const dataURL = canvas.toDataURL('image/png');
+                            ajaxData[value.field_id] = dataURL;
+                            console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
+                        }
+    
+                        if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
+                            $.each(response.sub_item_fields, function(index, inner_value) {
+                                const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
+                                const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
+                                if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
+                                    ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
+                                } else {
+                                    ajaxData[embedded_field] = $(embedded_field_tag).val();
+                                }
+                            });
+                        }
                     }
-                    if (value.default_value === '_post_title') {
-                        ajaxData['_post_title'] = $(field_id_tag).val();
+                });
+    
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: ajaxData,
+                    success: function (response) {
+                        // Get the current URL
+                        var currentUrl = window.location.href;
+                        // Create a URL object
+                        var url = new URL(currentUrl);
+                        // Remove the specified parameter
+                        url.searchParams.delete('_job_id');
+                        // Get the modified URL
+                        var modifiedUrl = url.toString();
+                        // Reload the page with the modified URL
+                        window.location.replace(modifiedUrl);
+                    },
+                    error: function(error){
+                        console.error(error);
+                        alert(error);
                     }
-                    if (value.default_value === '_post_content') {
-                        ajaxData['_post_content'] = $(field_id_tag).val();
-                    }
-
-                    if (value.field_type === 'canvas') {
-                        const dataURL = canvas.toDataURL('image/png');
-                        ajaxData[value.field_id] = dataURL;
-                        console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
-                    }
-
-                    if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
-                        $.each(response.sub_item_fields, function(index, inner_value) {
-                            const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
-                            const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
-                            if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
-                            } else {
-                                ajaxData[embedded_field] = $(embedded_field_tag).val();
-                            }
-                        });
-                    }
-                }
-            });
-
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: ajaxData,
-                success: function (response) {
-                    // Get the current URL
-                    var currentUrl = window.location.href;
-                    // Create a URL object
-                    var url = new URL(currentUrl);
-                    // Remove the specified parameter
-                    url.searchParams.delete('_job_id');
-                    // Get the modified URL
-                    var modifiedUrl = url.toString();
-                    // Reload the page with the modified URL
-                    window.location.replace(modifiedUrl);
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
+                });
+            })
 
         });
 
-        $("#start-job-exit").on("click", function () {
+        $("#exit-start-job").on("click", function () {
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object

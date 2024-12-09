@@ -717,7 +717,7 @@ if (!class_exists('to_do_list')) {
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html('Start job: '.get_the_title($doc_id));?></h2>
-            <input type="hidden" id="job-id" value="<?php echo $doc_id;?>">
+            <input type="hidden" id="job-id" value="<?php echo $doc_id;?>" />
             <fieldset>
             <?php
                 $documents_class = new display_documents();
@@ -738,7 +738,7 @@ if (!class_exists('to_do_list')) {
                 ?>
                 </div>
                 <div style="text-align: right">
-                    <input type="button" id="start-job-exit" value="Exit" style="margin:5px;" />
+                    <input type="button" id="exit-start-job" value="Exit" style="margin:5px;" />
                 </div>
             </div>
             </fieldset>
