@@ -254,7 +254,7 @@ if (!class_exists('sub_items')) {
                 'posts_per_page' => 1,
                 'meta_key'       => 'embedded_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value as a string
-                'order'          => 'DESC', // Descending order to get the previous document
+                'order'          => 'ASC', // Ascending order to get the next embedded
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -314,7 +314,7 @@ if (!class_exists('sub_items')) {
                 'posts_per_page' => 1,
                 'meta_key'       => 'embedded_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value as a string
-                'order'          => 'ASC', // Ascending order to get the next embedded
+                'order'          => 'DESC', // Descending order to get the previous document
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
