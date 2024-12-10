@@ -84,7 +84,7 @@ if (!class_exists('to_do_list')) {
                 }
 
                 if ($_GET['_select_todo']=='cron-events') {
-                    ?><script>window.location.replace("/wp-admin/tools.php?page=crontrol_admin_manage_page");</script><?php
+                    ?><script>window.location.replace("/wp-admin/tools.php?page=wp-crontrol");</script><?php
                 }
 
                 $iot_messages = new iot_messages();
