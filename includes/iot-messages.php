@@ -624,13 +624,16 @@ if (!class_exists('iot_messages')) {
                     }
 
                     $employee_id = get_post_meta($report_id, '_employee', true);
-                    if ($employee_id) $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
-
-                    $employee_ids = get_post_meta($report_id, '_employees', true);
-                    foreach ($employee_ids as $employee_id) {
+                    if ($employee_id && !is_array($employee_id)) {
                         $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
                     }
 
+                    $employee_ids = get_post_meta($report_id, '_employees', true);
+                    if (is_array($employee_ids)) {
+                        foreach ($employee_ids as $employee_id) {
+                            $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
+                        }    
+                    }
                 }
                 return $query->posts; // Return the array of post IDs
             }
