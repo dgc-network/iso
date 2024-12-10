@@ -474,11 +474,11 @@ if (!class_exists('iot_messages')) {
                             $humidity = get_post_meta($iot_post_id, 'humidity', true);
                             // Update 'temperature' and 'humidity' metadata
                             if ($temperature !== '') {
-                                update_post_meta(get_the_ID(), 'temperature', $temperature);
+                                //update_post_meta(get_the_ID(), 'temperature', $temperature);
                                 $this->create_exception_notification_events(get_the_ID(), 'temperature', $temperature);
                             }
                             if ($humidity !== '') {
-                                update_post_meta(get_the_ID(), 'humidity', $humidity);
+                                //update_post_meta(get_the_ID(), 'humidity', $humidity);
                                 $this->create_exception_notification_events(get_the_ID(), 'humidity', $humidity);
                             }
                             // Mark the 'iot-message' post as processed
@@ -592,6 +592,7 @@ if (!class_exists('iot_messages')) {
             $params = [
                 'user_id' => $user_id,
                 'text_message' => $text_message,
+                'device_id' => $device_id,
             ];
 
             // Schedule the event to run after 5 minutes (300 seconds)
@@ -604,6 +605,7 @@ if (!class_exists('iot_messages')) {
         function send_delayed_notification_handler($params) {
             $user_id = $params['user_id'];
             $text_message = $params['text_message'];
+            $device_id = $params['device_id'];
 
             $user_data = get_userdata($user_id);
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
@@ -631,7 +633,7 @@ if (!class_exists('iot_messages')) {
                     'action' => array(
                         'type' => 'uri',
                         'label' => 'Click me!',
-                        'uri' => home_url() . '/display-profiles/?_id=' . $user_id,
+                        'uri' => home_url() . 'to-do-list/?_select_todo=iot-devices&_device_id=' . $device_id,
                     ),
                     'style' => 'primary',
                     'margin' => 'sm',
