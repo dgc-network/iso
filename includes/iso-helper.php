@@ -472,6 +472,24 @@ function iso_helper_cron_schedules($schedules) {
 }
 add_filter( 'cron_schedules', 'iso_helper_cron_schedules' );
 
+add_filter('cron_schedules', function($schedules) {
+    $schedules['every_five_minutes'] = array(
+        'interval' => 300, // 5 minutes in seconds
+        'display'  => __('Every 5 Minutes'),
+    );
+    return $schedules;
+});
+
+register_activation_hook(__FILE__, function() {
+    if (!wp_next_scheduled('five_minutes_action_process_event')) {
+        wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
+    }
+});
+
+register_deactivation_hook(__FILE__, function() {
+    wp_clear_scheduled_hook('five_minutes_action_process_event');
+});
+/*
 function every_five_minutes_cron_schedules($schedules) {
     if (!isset($schedules['every_five_minutes'])) {
         $schedules['every_five_minutes'] = array(
@@ -490,7 +508,7 @@ function every_five_minutes_cron_deactivation() {
     }
 }
 register_deactivation_hook(__FILE__, 'every_five_minutes_cron_deactivation');
-
+*/
 function remove_weekday_event() {
     $timestamp = wp_next_scheduled('my_weekday_event');
     if ($timestamp) {

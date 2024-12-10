@@ -23,6 +23,7 @@ if (!class_exists('iot_messages')) {
                 wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
             add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
+            add_action('send_delayed_notification', array( $this, 'send_delayed_notification_handler'));
         }
 
         function enqueue_iot_message_scripts() {
@@ -559,6 +560,139 @@ if (!class_exists('iot_messages')) {
         }
 
         function update_iot_message_meta_data() {
+            $args = array(
+                'post_type'      => 'iot-message',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'processed',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                ),
+                'date_query'     => array(
+                    array(
+                        'after'     => '5 minutes ago',
+                        'inclusive' => true,
+                    ),
+                ),
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    $post_id = get_the_ID();
+                    $device_number = get_post_meta($post_id, 'deviceID', true);
+                    $temperature = get_post_meta($post_id, 'temperature', true);
+                    $humidity = get_post_meta($post_id, 'humidity', true);
+        
+                    $device_id = get_iot_device_id_by_device_number($device_number);
+                    if ($device_id) {
+                        if ($temperature) {
+                            process_exception_notification($device_id, 'temperature', $temperature);
+                        }
+                        if ($humidity) {
+                            process_exception_notification($device_id, 'humidity', $humidity);
+                        }
+                    }
+        
+                    // Mark the message as processed
+                    update_post_meta($post_id, 'processed', 1);
+                }
+                wp_reset_postdata();
+            }
+        }
+        
+        function process_exception_notification($device_id, $sensor_type, $sensor_value) {
+            $device_number = get_post_meta($device_id, 'device_number', true);
+            $reports = get_doc_reports_by_doc_field('_iot_device', $device_id);
+        
+            if ($reports->have_posts()) {
+                foreach ($reports->posts as $report_id) {
+                    $max_value = get_post_meta($report_id, '_max_value', true);
+                    $min_value = get_post_meta($report_id, '_min_value', true);
+        
+                    $notification_message = build_notification_message($device_id, $device_number, $sensor_type, $sensor_value, $max_value, $min_value);
+        
+                    $employee_ids = get_post_meta($report_id, '_employees', true);
+                    $employee_ids = is_array($employee_ids) ? $employee_ids : [get_post_meta($report_id, '_employee', true)];
+        
+                    foreach ($employee_ids as $user_id) {
+                        if ($user_id) {
+                            schedule_notification_event($device_id, $user_id, $notification_message);
+                        }
+                    }
+                }
+            }
+        }
+        
+        function build_notification_message($device_id, $device_number, $sensor_type, $sensor_value, $max_value, $min_value) {
+            $formatted_time = wp_date(get_option('date_format')) . ' ' . wp_date(get_option('time_format'));
+        
+            if ($max_value && $sensor_value > $max_value) {
+                return sprintf(
+                    '#%s %s在%s的%s是%s，已經大於設定的%s。',
+                    $device_number,
+                    get_the_title($device_id),
+                    $formatted_time,
+                    $sensor_type,
+                    $sensor_value,
+                    $max_value
+                );
+            }
+            if ($min_value && $sensor_value < $min_value) {
+                return sprintf(
+                    '#%s %s在%s的%s是%s，已經小於設定的%s。',
+                    $device_number,
+                    get_the_title($device_id),
+                    $formatted_time,
+                    $sensor_type,
+                    $sensor_value,
+                    $min_value
+                );
+            }
+            return '';
+        }
+        
+        function schedule_notification_event($device_id, $user_id, $message) {
+            $last_notification = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
+            $today = wp_date('Y-m-d');
+        
+            if ($last_notification && wp_date('Y-m-d', $last_notification) === $today) {
+                return; // Notification already sent today
+            }
+        
+            wp_schedule_single_event(time() + 300, 'send_delayed_notification', [
+                'device_id'   => $device_id,
+                'user_id'     => $user_id,
+                'message'     => $message,
+            ]);
+        
+            update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
+        }
+        
+        function send_delayed_notification_handler($params) {
+            $user_id = $params['user_id'];
+            $message = $params['message'];
+            $device_id = $params['device_id'];
+        
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+        
+            if ($line_user_id) {
+                $line_bot_api = new line_bot_api();
+                $flexMessage = $line_bot_api->set_bubble_message([
+                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/iot-device/?id=$device_id")], 'style' => 'primary']],
+                ]);
+                $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
+            }
+        }
+        
+/*        
+        function update_iot_message_meta_data() {
             // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
             $args = array(
                 'post_type' => 'iot-message',
@@ -713,7 +847,7 @@ if (!class_exists('iot_messages')) {
                 'messages' => [$flexMessage],
             ]);
         }
-
+*/
         // iot message
         function display_iot_message_list($device_id=false) {
             ob_start();
