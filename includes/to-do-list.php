@@ -408,7 +408,7 @@ if (!class_exists('to_do_list')) {
                     $doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $params = array(
                         'doc_id'           => $doc_id,
-                        'todo_in_summary'  => $todo_in_summary,
+                        //'todo_in_summary'  => $todo_in_summary,
                     );
                     $documents_class->get_doc_report_contain_list($params);
                 } else {
@@ -450,11 +450,8 @@ if (!class_exists('to_do_list')) {
             $result = array();
             if (isset($_POST['_todo_id'])) {
                 $todo_id = sanitize_text_field($_POST['_todo_id']);
+                $result['html_contain'] = $this->display_todo_dialog($todo_id);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                if (isset($_POST['_mode'])) {
-                    $_mode = sanitize_text_field($_POST['_mode']);
-                }
-                $result['html_contain'] = $this->display_todo_dialog($todo_id, $_mode);
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
             }
@@ -1587,7 +1584,7 @@ if (!class_exists('to_do_list')) {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
                     $params = array(
                         'doc_id'           => $doc_id,
-                        'todo_in_summary'  => $todo_in_summary,
+                        //'todo_in_summary'  => $todo_in_summary,
                     );
                     $documents_class->get_doc_report_contain_list($params);
                 } else {

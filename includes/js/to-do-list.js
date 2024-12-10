@@ -392,7 +392,6 @@ jQuery(document).ready(function($) {
             };
             ajaxData['_action_id'] = action_id;
 
-            //doc_fields = get_todo_dialog_data($('#todo-id').val());
             get_todo_dialog_data($("#todo-id").val(), function (error, response) {
                 $.each(response.doc_fields, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
@@ -419,16 +418,6 @@ jQuery(document).ready(function($) {
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
                         window.location.replace(modifiedUrl);
-/*
-                        const currentUrl = window.location.href;
-                        // Check if the current URL includes '/to-do-list/?_id='
-                        if (currentUrl.includes('/to-do-list/?_id=')) {
-                            // Redirect to '/to-do-list'
-                            window.location.replace('/to-do-list');
-                        } else {
-                            window.location.replace(window.location.href);
-                        }
-*/                            
                     },
                     error: function(error){
                         console.error(error);
