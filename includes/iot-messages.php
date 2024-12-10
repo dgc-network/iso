@@ -567,7 +567,7 @@ if (!class_exists('iot_messages')) {
                     }
 
                     $employee_id = get_post_meta($report_id, '_employee', true);
-                    $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
+                    if ($employee_id) $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
 
                     $employee_ids = get_post_meta($report_id, '_employees', true);
                     foreach ($employee_ids as $employee_id) {
