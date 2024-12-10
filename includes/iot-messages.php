@@ -303,7 +303,7 @@ if (!class_exists('iot_messages')) {
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <?php if (is_site_admin()) {?>
+                        <?php if (current_user_can('administrator')) {?>
                             <input type="button" id="save-iot-device" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
                             <input type="button" id="del-iot-device" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
                         <?php }?>
@@ -322,7 +322,6 @@ if (!class_exists('iot_messages')) {
             if( isset($_POST['_device_id']) ) {
                 $device_id = sanitize_text_field($_POST['_device_id']);
                 $response = array('html_contain' => $this->display_iot_device_dialog($device_id));
-                //echo $this->display_iot_device_dialog($device_id);
             }
             wp_send_json($response);
         }
