@@ -618,6 +618,11 @@ if (!class_exists('to_do_list')) {
                         'compare' => '=',    
                     ),
                     array(
+                        'key'     => 'is_doc_report',
+                        'value'   => 1,
+                        'compare' => '=',
+                    ),
+                    array(
                         'key'     => 'job_number',
                         'value'   => $current_job_number,
                         'compare' => '<', // Find `job_number` less than the current one
@@ -660,6 +665,11 @@ if (!class_exists('to_do_list')) {
                         'key'     => 'site_id',
                         'value'   => $site_id,
                         'compare' => '=',    
+                    ),
+                    array(
+                        'key'     => 'is_doc_report',
+                        'value'   => 1,
+                        'compare' => '=',
                     ),
                     array(
                         'key'     => 'job_number',
