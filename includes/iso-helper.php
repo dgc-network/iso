@@ -489,6 +489,13 @@ register_activation_hook(__FILE__, function() {
 register_deactivation_hook(__FILE__, function() {
     wp_clear_scheduled_hook('five_minutes_action_process_event');
 });
+
+function flush_iot_message_rewrites() {
+    register_iot_message_post_type(); // Re-register post type
+    flush_rewrite_rules();            // Flush rules
+}
+add_action('init', 'flush_iot_message_rewrites');
+
 /*
 function every_five_minutes_cron_schedules($schedules) {
     if (!isset($schedules['every_five_minutes'])) {
