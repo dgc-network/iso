@@ -419,75 +419,7 @@ if (!class_exists('iot_messages')) {
                 'type' => 'number',
             ));
         }
-
-        function update_iot_message_meta_data() {
-            // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
-            $args = array(
-                'post_type' => 'iot-message',
-                'posts_per_page' => -1,
-                'meta_query' => array(
-                    array(
-                        'key' => 'processed',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                ),
-                'date_query' => array(
-                    array(
-                        'after' => '5 minutes ago',
-                        'inclusive' => true,
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $device_number = get_post_meta(get_the_ID(), 'deviceID', true);
-                    $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                    $humidity = get_post_meta(get_the_ID(), 'humidity', true);
-                    $device_id = $this->get_iot_device_id_by_device_number($device_number);
-                    if ($temperature) $this->create_exception_notification_events($device_id, 'temperature', $temperature);
-                    if ($humidity) $this->create_exception_notification_events($device_id, 'humidity', $humidity);
-                    // Mark the 'iot-message' post as processed
-                    update_post_meta(get_the_ID(), 'processed', 1);
-                }
-                wp_reset_postdata();
-            }
-        }
-
-        function get_iot_device_id_by_device_number($device_number) {
-            // Define the query arguments
-            $args = array(
-                'post_type'  => 'iot-device',
-                'meta_query' => array(
-                    array(
-                        'key'   => 'device_number', // Meta key
-                        'value' => $device_number,  // Meta value to match
-                        'compare' => '=',           // Comparison operator
-                    ),
-                ),
-                'posts_per_page' => 1, // Limit to one result
-                'fields'         => 'ids', // Retrieve only post IDs
-            );
-        
-            // Execute the query
-            $query = new WP_Query($args);
-        
-            // Return the ID if a matching post is found, otherwise return null
-            return !empty($query->posts) ? $query->posts[0] : null;
-        }
-/*        
-        // Usage example
-        $device_number = '12345'; // Replace with your desired device_number
-        $device_id = get_iot_device_id_by_device_number($device_number);
-        
-        if ($device_id) {
-            echo "Device ID: " . $device_id;
-        } else {
-            echo "No device found with device_number: " . $device_number;
-        }
-*/        
+/*
         function update_iot_message_meta_data_backup() {
             // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
             $args = array(
@@ -557,6 +489,28 @@ if (!class_exists('iot_messages')) {
                 wp_reset_postdata();
             }
         }
+*/
+        function get_iot_device_id_by_device_number($device_number) {
+            // Define the query arguments
+            $args = array(
+                'post_type'  => 'iot-device',
+                'meta_query' => array(
+                    array(
+                        'key'   => 'device_number', // Meta key
+                        'value' => $device_number,  // Meta value to match
+                        'compare' => '=',           // Comparison operator
+                    ),
+                ),
+                'posts_per_page' => 1, // Limit to one result
+                'fields'         => 'ids', // Retrieve only post IDs
+            );
+        
+            // Execute the query
+            $query = new WP_Query($args);
+        
+            // Return the ID if a matching post is found, otherwise return null
+            return !empty($query->posts) ? $query->posts[0] : null;
+        }
 
         function get_doc_reports_by_doc_field($field_type = false, $field_value = false) {
             $args = array(
@@ -602,6 +556,43 @@ if (!class_exists('iot_messages')) {
             }
             // Return the accumulated post IDs
             return $accumulated_post_ids;
+        }
+
+        function update_iot_message_meta_data() {
+            // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
+            $args = array(
+                'post_type' => 'iot-message',
+                'posts_per_page' => -1,
+                'meta_query' => array(
+                    array(
+                        'key' => 'processed',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                ),
+                'date_query' => array(
+                    array(
+                        'after' => '5 minutes ago',
+                        'inclusive' => true,
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $device_number = get_post_meta(get_the_ID(), 'deviceID', true);
+                    $temperature = get_post_meta(get_the_ID(), 'temperature', true);
+                    $humidity = get_post_meta(get_the_ID(), 'humidity', true);
+                    $device_id = $this->get_iot_device_id_by_device_number($device_number);
+                    wp_schedule_single_event(time() + 300, 'send_delayed_notification', []);
+                    //if ($temperature) $this->create_exception_notification_events($device_id, 'temperature', $temperature);
+                    //if ($humidity) $this->create_exception_notification_events($device_id, 'humidity', $humidity);
+                    // Mark the 'iot-message' post as processed
+                    update_post_meta(get_the_ID(), 'processed', 1);
+                }
+                wp_reset_postdata();
+            }
         }
 
         function create_exception_notification_events($device_id=false, $iot_sensor=false, $sensor_value=false) {
@@ -661,7 +652,6 @@ if (!class_exists('iot_messages')) {
                 'text_message' => $text_message,
                 'device_id' => $device_id,
             ];
-
             // Schedule the event to run after 5 minutes (300 seconds)
             wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
 
