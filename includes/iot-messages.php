@@ -438,11 +438,11 @@ if (!class_exists('iot_messages')) {
                     ),
                 ),
             );
-            $iot_query = new WP_Query($args);
+            $query = new WP_Query($args);
 
-            if ($iot_query->have_posts()) {
-                while ($iot_query->have_posts()) {
-                    $iot_query->the_post();
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
                     $device_number = get_post_meta(get_the_ID(), 'deviceID', true);
                     $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                     $humidity = get_post_meta(get_the_ID(), 'humidity', true);
