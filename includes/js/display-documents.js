@@ -392,7 +392,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     $('#result-container').html(response.html_contain);
-                    activate_published_document_data(doc_id);
+                    activate_doc_frame_contain_data(doc_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -415,7 +415,8 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function activate_published_document_data(doc_id){
+    activate_doc_frame_contain_data($("#doc-id").val());
+    function activate_doc_frame_contain_data(doc_id){
         $("#share-document").on("click", function() {
             var homeAddress = window.location.origin;
             var textToCopy = homeAddress + "/display-documents/?_duplicate_document=" + doc_id;
@@ -435,49 +436,25 @@ jQuery(document).ready(function($) {
                 $(this).remove();
             });
         });
-
+/*
         $("#action-log-button").on("click", function () {
             $("#action-log-div").toggle()
         });
-
-        $("#export-to-excel").on("click", function () {
-            let table = document.getElementsByTagName('table');
-            TableToExcel.convert(table[0], {
-                name: 'UserManagement.xlsx',
-                sheet: {
-                    name: 'Usermanagement'
-                }
-            });
-        });
-
-        $("#doc-frame-exit").on("click", function () {
-            window.location.replace(window.location.href);
-/*
+*/
+        $("#exit-doc-frame").on("click", function () {
+            //window.location.replace(window.location.href);
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
             var url = new URL(currentUrl);
             // Remove the specified parameter
-            url.searchParams.delete('_doc_frame');
+            url.searchParams.delete('_doc_id');
             // Get the modified URL
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
-*/            
         });
 
-        $("#doc-report-exit").on("click", function () {
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_report_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-        });
     }
 
     // doc-field scripts
@@ -706,18 +683,22 @@ jQuery(document).ready(function($) {
     }
 
     // doc-report
+    activate_doc_report_list_data($("#doc-id").val());
     function activate_doc_report_list_data(doc_id){
         $("#doc-field-setting-button").on("click", function () {
             $("#doc-field-setting-dialog").dialog('open');
         });
     
         $("#doc-field-setting-dialog").dialog({
-            width: 600,
+            width: 390,
             modal: true,
             autoOpen: false,
         });
     
-        activate_published_document_data(doc_id);
+        $("#search-doc-report").on( "change", function() {
+            get_doc_report_list_data(doc_id, $(this).val())
+            $(this).val('');
+        });
 
         $("#new-doc-report").on("click", function() {
             $.ajax({
@@ -747,10 +728,28 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + urlParams.toString();
         });            
 
-        $("#search-doc-report").on( "change", function() {
-            get_doc_report_list_data(doc_id, $(this).val())
-            $(this).val('');
-        });    
+        $("#export-to-excel").on("click", function () {
+            let table = document.getElementsByTagName('table');
+            TableToExcel.convert(table[0], {
+                name: 'UserManagement.xlsx',
+                sheet: {
+                    name: 'Usermanagement'
+                }
+            });
+        });
+
+        $("#exit-doc-report-list").on("click", function () {
+            // Get the current URL
+            var currentUrl = window.location.href;
+            // Create a URL object
+            var url = new URL(currentUrl);
+            // Remove the specified parameter
+            url.searchParams.delete('_report_id');
+            // Get the modified URL
+            var modifiedUrl = url.toString();
+            // Reload the page with the modified URL
+            window.location.replace(modifiedUrl);
+        });
     }
 
     function get_doc_report_list_data(doc_id=false, search_doc_report=false) {
