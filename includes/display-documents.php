@@ -1628,9 +1628,9 @@ if (!class_exists('display_documents')) {
             }
 
             if ($field_type=='date' && $default_value === 'today') $default_value = wp_date('Y-m-d', time());
-            //if ($field_type=='_employee' && $default_value === 'me') $default_value = $user_id;
-            //if ($field_type=='_employees' && $default_value === 'me') $default_value = array($user_id);
-            if ($default_value === 'me') $default_value = array($user_id);
+            if ($field_type=='_employee' && $default_value === 'me') $default_value = $user_id;
+            if ($field_type=='_employees' && $default_value === 'me') $default_value = array($user_id);
+            //if ($default_value === 'me') $default_value = array($user_id);
             if ($default_value=='_post_number') $default_value=time();
             if ($default_value=='_post_title') $default_value='';
             if ($default_value=='_post_content') $default_value='';
@@ -1666,7 +1666,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_employee'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options(array($field_value));?></select>
                             <?php 
                             break;
 
@@ -1975,7 +1975,7 @@ if (!class_exists('display_documents')) {
             }
 
             if ($field_type=='_employee'){
-                update_post_meta($report_id, $field_id, array($field_value));
+                //update_post_meta($report_id, $field_id, array($field_value));
                 update_post_meta($report_id, '_employee', $field_value);
             }
 
