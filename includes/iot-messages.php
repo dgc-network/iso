@@ -545,29 +545,32 @@ if (!class_exists('iot_messages')) {
                 foreach ($query->posts as $report_id) {
                     $max_value = get_post_meta($report_id, '_max_value', true);
                     $min_value = get_post_meta($report_id, '_min_value', true);
-                    $employee_ids = get_post_meta($report_id, '_employees', true);
 
                     // Prepare the notification message
                     $five_minutes_ago = time() - (5 * 60);
                     $five_minutes_ago_formatted = wp_date(get_option('date_format'), $five_minutes_ago) . ' ' . wp_date(get_option('time_format'), $five_minutes_ago);
+                    if ($max_value && $sensor_value>$max_value) {
+                        if ($iot_sensor=='temperature') {
+                            $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經大於設定的'.$max_value.'°C了。';
+                        }
+                        if ($iot_sensor=='humidity') {
+                            $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經大於設定的'.$max_value.'%了。';
+                        }
+                    }
+                    if ($min_value && $sensor_value<$min_value) {
+                        if ($iot_sensor=='temperature') {
+                            $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經小於設定的'.$min_value.'°C了。';
+                        }
+                        if ($iot_sensor=='humidity') {
+                            $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經小於設定的'.$min_value.'%了。';
+                        }
+                    }
 
+                    $employee_id = get_post_meta($report_id, '_employee', true);
+                    $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
+
+                    $employee_ids = get_post_meta($report_id, '_employees', true);
                     foreach ($employee_ids as $employee_id) {
-                        if ($max_value && $sensor_value>$max_value) {
-                            if ($iot_sensor=='temperature') {
-                                $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經大於設定的'.$max_value.'°C了。';
-                            }
-                            if ($iot_sensor=='humidity') {
-                                $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經大於設定的'.$max_value.'%了。';
-                            }
-                        }
-                        if ($min_value && $sensor_value<$min_value) {
-                            if ($iot_sensor=='temperature') {
-                                $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經小於設定的'.$min_value.'°C了。';
-                            }
-                            if ($iot_sensor=='humidity') {
-                                $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經小於設定的'.$min_value.'%了。';
-                            }
-                        }
                         $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
                     }
                 }

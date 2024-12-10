@@ -692,10 +692,6 @@ if (!class_exists('display_documents')) {
 
             <div id="doc-field-setting-dialog" title="Field setting" style="display:none">
                 <fieldset>
-<?php /*                    
-                    <label for="doc-title"><?php echo __( 'Document:', 'your-text-domain' );?></label>
-                    <input type="text" id="doc-title" value="<?php echo $doc_title;?>" class="text ui-widget-content ui-corner-all" disabled />
-*/?>                    
                     <label for="doc-field-setting"><?php echo __( 'Field setting:', 'your-text-domain' );?></label>
                     <?php echo $this->display_doc_field_list($doc_id);?>
                 </fieldset>
