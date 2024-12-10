@@ -590,7 +590,7 @@ if (!class_exists('iot_messages')) {
                         'text_message' => 'Hello, this is a test',
                         'device_id' => $device_id,
                     ];
-                    wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
+                    //wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
                     //if ($temperature) $this->create_exception_notification_events($device_id, 'temperature', $temperature);
                     //if ($humidity) $this->create_exception_notification_events($device_id, 'humidity', $humidity);
                     // Mark the 'iot-message' post as processed
