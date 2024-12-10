@@ -622,7 +622,7 @@ if (!class_exists('iot_messages')) {
                             $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經小於設定的'.$min_value.'%了。';
                         }
                     }
-
+/*
                     $employee_id = get_post_meta($report_id, '_employee', true);
                     if ($employee_id) $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
 
@@ -630,6 +630,7 @@ if (!class_exists('iot_messages')) {
                     foreach ($employee_ids as $employee_id) {
                         $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
                     }
+*/                        
                 }
                 return $query->posts; // Return the array of post IDs
             }
