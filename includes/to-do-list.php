@@ -450,10 +450,12 @@ if (!class_exists('to_do_list')) {
             $result = array();
             if (isset($_POST['_todo_id'])) {
                 $todo_id = sanitize_text_field($_POST['_todo_id']);
-                $result['html_contain'] = $this->display_todo_dialog($todo_id);
+                //$result['html_contain'] = $this->display_todo_dialog($todo_id);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
+                $items_class = new sub_items();
+                $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
             }
             wp_send_json($result);
         }
@@ -723,9 +725,11 @@ if (!class_exists('to_do_list')) {
             $result = array();
             if (isset($_POST['_job_id'])) {
                 $job_id = sanitize_text_field($_POST['_job_id']);
-                $result['html_contain'] = $this->display_start_job_dialog($job_id);
+                //$result['html_contain'] = $this->display_start_job_dialog($job_id);
                 $documents_class = new display_documents();
                 $result['doc_fields'] = $documents_class->get_doc_field_keys($job_id);
+                $items_class = new sub_items();
+                $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($job_id);
             }
             wp_send_json($result);
         }
