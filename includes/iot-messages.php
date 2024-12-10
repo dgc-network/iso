@@ -585,7 +585,12 @@ if (!class_exists('iot_messages')) {
                     $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                     $humidity = get_post_meta(get_the_ID(), 'humidity', true);
                     $device_id = $this->get_iot_device_id_by_device_number($device_number);
-                    wp_schedule_single_event(time() + 300, 'send_delayed_notification', []);
+                    $params = [
+                        'user_id' => 42,
+                        'text_message' => 'Hello, this is a test',
+                        'device_id' => $device_id,
+                    ];
+                    wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
                     //if ($temperature) $this->create_exception_notification_events($device_id, 'temperature', $temperature);
                     //if ($humidity) $this->create_exception_notification_events($device_id, 'humidity', $humidity);
                     // Mark the 'iot-message' post as processed
