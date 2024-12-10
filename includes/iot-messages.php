@@ -653,7 +653,7 @@ if (!class_exists('iot_messages')) {
                 'device_id' => $device_id,
             ];
             // Schedule the event to run after 5 minutes (300 seconds)
-            //wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
+            wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
 
             // Update the last notification time
             update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
