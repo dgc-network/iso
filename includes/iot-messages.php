@@ -474,11 +474,11 @@ if (!class_exists('iot_messages')) {
                             // Update 'temperature' and 'humidity' metadata
                             if ($temperature !== '') {
                                 //update_post_meta(get_the_ID(), 'temperature', $temperature);
-                                $this->create_exception_notification_events(get_the_ID(), 'temperature', $temperature);
+                                //$this->create_exception_notification_events(get_the_ID(), 'temperature', $temperature);
                             }
                             if ($humidity !== '') {
                                 //update_post_meta(get_the_ID(), 'humidity', $humidity);
-                                $this->create_exception_notification_events(get_the_ID(), 'humidity', $humidity);
+                                //$this->create_exception_notification_events(get_the_ID(), 'humidity', $humidity);
                             }
                             // Mark the 'iot-message' post as processed
                             update_post_meta($iot_post_id, 'processed', 1);
