@@ -585,14 +585,8 @@ if (!class_exists('iot_messages')) {
                     $temperature = get_post_meta(get_the_ID(), 'temperature', true);
                     $humidity = get_post_meta(get_the_ID(), 'humidity', true);
                     $device_id = $this->get_iot_device_id_by_device_number($device_number);
-                    $params = [
-                        'user_id' => 42,
-                        'text_message' => 'Hello, this is a test',
-                        'device_id' => $device_id,
-                    ];
-                    //wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
-                    //if ($temperature) $this->create_exception_notification_events($device_id, 'temperature', $temperature);
-                    //if ($humidity) $this->create_exception_notification_events($device_id, 'humidity', $humidity);
+                    if ($temperature) $this->create_exception_notification_events($device_id, 'temperature', $temperature);
+                    if ($humidity) $this->create_exception_notification_events($device_id, 'humidity', $humidity);
                     // Mark the 'iot-message' post as processed
                     update_post_meta(get_the_ID(), 'processed', 1);
                 }
@@ -702,6 +696,7 @@ if (!class_exists('iot_messages')) {
                 ),
             );
 
+            $line_bot_api = new line_bot_api();
             // Generate the Flex Message
             $flexMessage = $line_bot_api->set_bubble_message([
                 'header_contents' => $header_contents,
@@ -709,7 +704,6 @@ if (!class_exists('iot_messages')) {
                 'footer_contents' => $footer_contents,
             ]);
             // Send the message via the LINE API
-            $line_bot_api = new line_bot_api();
             $line_bot_api->pushMessage([
                 'to' => $line_user_id,
                 'messages' => [$flexMessage],

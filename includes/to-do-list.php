@@ -1136,6 +1136,7 @@ if (!class_exists('to_do_list')) {
 
         // Notice the persons in charge the job
         function notice_the_responsible_persons($todo_id=0) {
+            $line_bot_api = new line_bot_api();
             $todo_title = get_the_title($todo_id);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -1143,9 +1144,8 @@ if (!class_exists('to_do_list')) {
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
             $text_message = '你在「'.$todo_title.'」的職務有一份文件需要在'.$due_date.'前簽核完成，你可以點擊下方連結查看該文件。';
-            $link_uri = home_url().'/to-do-list/?_id='.$todo_id;
+            $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;
         
-            $line_bot_api = new line_bot_api();
             $args = array(
                 'meta_query'     => array(
                     array(
@@ -1321,8 +1321,11 @@ if (!class_exists('to_do_list')) {
             $text_message = '文件「'.$doc_title.'」已經在'.wp_date( get_option('date_format'), $submit_time );
             if ($next_job==-1) $text_message .= '發行，你可以點擊下方連結查看該文件。';
             if ($next_job==-2) $text_message .= '廢止，你可以點擊下方連結查看該文件。';
-            $link_uri = home_url().'/display-documents/?_id='.$doc_id;
-            if ($report_id) $link_uri = home_url().'/display-documents/?_id='.$report_id;
+            if ($report_id) {
+                $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
+            } else {
+                $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id;
+            }
         
             $args = array(
                 'meta_query'     => array(
