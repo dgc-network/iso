@@ -490,6 +490,38 @@ register_deactivation_hook(__FILE__, function() {
     wp_clear_scheduled_hook('five_minutes_action_process_event');
 });
 
+function delete_iot_messages_after_date() {
+    // Define the date after which posts should be deleted
+    $cutoff_date = '2024-11-14 23:59:59';
+
+    // Query for posts of type 'iot-message' after the specified date
+    $args = array(
+        'post_type'      => 'iot-message',
+        'post_status'    => 'any',
+        'date_query'     => array(
+            array(
+                'after'     => $cutoff_date,
+                'inclusive' => false,
+            ),
+        ),
+        'posts_per_page' => -1,
+        'fields'         => 'ids', // Retrieve only post IDs for performance
+    );
+
+    $query = new WP_Query($args);
+
+    // Delete each post
+    if ($query->have_posts()) {
+        foreach ($query->posts as $post_id) {
+            wp_delete_post($post_id, true); // True for force delete (skip trash)
+        }
+    }
+}
+
+// Hook to run on admin init (or call the function manually)
+add_action('admin_init', 'delete_iot_messages_after_date');
+
+/*
 function flush_iot_message_rewrites() {
     register_iot_message_post_type(); // Re-register post type
     flush_rewrite_rules();            // Flush rules
