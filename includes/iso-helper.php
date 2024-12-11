@@ -489,7 +489,7 @@ register_activation_hook(__FILE__, function() {
 register_deactivation_hook(__FILE__, function() {
     wp_clear_scheduled_hook('five_minutes_action_process_event');
 });
-
+/*
 function delete_iot_messages_after_date() {
     // Define the date after which posts should be deleted
     $cutoff_date = '2024-11-14 23:59:59';
