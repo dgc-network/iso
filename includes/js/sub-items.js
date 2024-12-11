@@ -232,7 +232,6 @@ jQuery(document).ready(function($) {
                     '_iso_category': $("#iso-category").val(),
                 },
                 success: function (response) {
-                    //$("#embedded-dialog").dialog('close');
                     $("#result-container").html(response.html_contain);
                     activate_embedded_list_data();
                 },

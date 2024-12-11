@@ -1276,8 +1276,9 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $field_value = sanitize_text_field($_POST[$field_id]);
-                        update_post_meta($post_id, get_the_ID(), $field_value);
+                        //$field_value = sanitize_text_field($_POST[$field_id]);
+                        //update_post_meta($post_id, get_the_ID(), $field_value);
+                        update_post_meta($post_id, get_the_ID(), $_POST[get_the_ID()]);
                     endwhile;
                     wp_reset_postdata();
                 }
