@@ -949,7 +949,7 @@ if (!class_exists('iot_messages')) {
     }
     $iot_messages = new iot_messages();
 }
-
+/*
 function remove_iot_message_post_type() {
     unregister_post_type('iot-message');
 }
@@ -976,3 +976,4 @@ function flush_rewrite_after_removal() {
     flush_rewrite_rules();
 }
 add_action('init', 'flush_rewrite_after_removal', 20);
+*/
