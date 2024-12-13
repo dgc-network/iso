@@ -603,6 +603,28 @@ if (!class_exists('iot_messages')) {
                 }
                 wp_reset_postdata();
             }
+
+            // Delete posts older than 3 days
+            $delete_args = array(
+                'post_type'      => 'iot-message',
+                'posts_per_page' => -1,
+                'date_query'     => array(
+                    array(
+                        'before'    => '3 days ago',
+                        'inclusive' => true,
+                    ),
+                ),
+            );
+        
+            $delete_query = new WP_Query($delete_args);
+        
+            if ($delete_query->have_posts()) {
+                while ($delete_query->have_posts()) {
+                    $delete_query->the_post();
+                    wp_delete_post(get_the_ID(), true); // Force delete the post
+                }
+                wp_reset_postdata();
+            }
         }
         
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
