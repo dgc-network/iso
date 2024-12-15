@@ -248,17 +248,17 @@ if (!class_exists('iot_messages')) {
         
                     error_log("Processing post ID: $post_id, Device Number: $device_number, Temperature: $temperature, Humidity: $humidity");
         
-                    $device_id = get_iot_device_id_by_device_number($device_number);
+                    $device_id = $this->get_iot_device_id_by_device_number($device_number);
         
                     if ($device_id) {
                         //error_log("Device ID found: $device_id");
                         error_log("Device ID found: " . print_r($device_id, true));
         
                         if ($temperature) {
-                            process_exception_notification($device_id, 'temperature', $temperature);
+                            $this->process_exception_notification($device_id, 'temperature', $temperature);
                         }
                         if ($humidity) {
-                            process_exception_notification($device_id, 'humidity', $humidity);
+                            $this->process_exception_notification($device_id, 'humidity', $humidity);
                         }
                     } else {
                         error_log("Device ID not found for Device Number: $device_number");
@@ -305,7 +305,7 @@ if (!class_exists('iot_messages')) {
             error_log("process_exception_notification: Device ID: $device_id, Sensor Type: $sensor_type, Sensor Value: $sensor_value");
         
             $device_number = get_post_meta($device_id, 'device_number', true);
-            $reports = get_doc_reports_by_doc_field('_iot_device', $device_id);
+            $reports = $this->get_doc_reports_by_doc_field('_iot_device', $device_id);
         
             if ($reports->have_posts()) {
                 foreach ($reports->posts as $report_id) {
@@ -314,7 +314,7 @@ if (!class_exists('iot_messages')) {
         
                     error_log("Report ID: $report_id, Max Value: $max_value, Min Value: $min_value");
         
-                    $notification_message = build_notification_message($device_id, $device_number, $sensor_type, $sensor_value, $max_value, $min_value);
+                    $notification_message = $this->build_notification_message($device_id, $device_number, $sensor_type, $sensor_value, $max_value, $min_value);
         
                     $employee_ids = get_post_meta($report_id, '_employees', true);
                     $employee_ids = is_array($employee_ids) ? $employee_ids : [get_post_meta($report_id, '_employee', true)];
@@ -322,7 +322,7 @@ if (!class_exists('iot_messages')) {
                     foreach ($employee_ids as $user_id) {
                         if ($user_id) {
                             error_log("Scheduling notification for User ID: $user_id, Message: $notification_message");
-                            schedule_notification_event($device_id, $user_id, $notification_message);
+                            $this->schedule_notification_event($device_id, $user_id, $notification_message);
                         }
                     }
                 }
