@@ -105,7 +105,12 @@ jQuery(document).ready(function($) {
                             },
                             success: function (response) {
                                 $("#my-job-action-dialog").html(response.html_contain);
-                                $("#my-job-action-dialog").dialog('open');        
+                                $("#my-job-action-dialog").dialog({
+                                    width: 390,
+                                    modal: true,
+                                    autoOpen: false,
+                                });
+                                $("#my-job-action-dialog").dialog('open');
                             },
                             error: function (error) {
                                 console.error(error);
