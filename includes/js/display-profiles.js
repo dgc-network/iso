@@ -109,7 +109,7 @@ jQuery(document).ready(function($) {
                                     modal: true,
                                     autoOpen: false,
                                     buttons: {
-                                        "Action": function () {
+                                        "Set": function () {
                                             $.ajax({
                                                 type: 'POST',
                                                 url: ajax_object.ajax_url,
