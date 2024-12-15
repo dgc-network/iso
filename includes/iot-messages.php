@@ -300,11 +300,11 @@ if (!class_exists('iot_messages')) {
                 error_log("update_iot_message_meta_data: No posts found for deletion");
             }
         }
-        
+
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
             error_log("process_exception_notification: Device ID: $device_id, Sensor Type: $sensor_type, Sensor Value: $sensor_value");
         
-            $reports = get_doc_reports_by_doc_field('_iot_device', $device_id);
+            $reports = $this->get_doc_reports_by_doc_field('_iot_device', $device_id);
         
             if (!empty($reports)) {
                 error_log("Found " . count($reports) . " reports for Device ID: $device_id");
@@ -315,7 +315,7 @@ if (!class_exists('iot_messages')) {
         
                     error_log("Report ID: $report_id, Max Value: $max_value, Min Value: $min_value");
         
-                    $notification_message = build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value);
+                    $notification_message = $this->build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value);
         
                     $employee_ids = get_post_meta($report_id, '_employees', true);
                     $employee_ids = is_array($employee_ids) ? $employee_ids : [get_post_meta($report_id, '_employee', true)];
@@ -323,7 +323,7 @@ if (!class_exists('iot_messages')) {
                     foreach ($employee_ids as $user_id) {
                         if ($user_id) {
                             error_log("Scheduling notification for User ID: $user_id, Message: $notification_message");
-                            schedule_notification_event($device_id, $user_id, $notification_message);
+                            $this->schedule_notification_event($device_id, $user_id, $notification_message);
                         }
                     }
                 }
@@ -331,7 +331,7 @@ if (!class_exists('iot_messages')) {
                 error_log("No reports found for Device ID: $device_id");
             }
         }
-/*        
+/*
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
@@ -361,7 +361,7 @@ if (!class_exists('iot_messages')) {
                 error_log("No reports found for Device ID: ".print_r($device_id, true));
             }
         }
-*/        
+*/
         function send_delayed_notification_handler($params) {
             error_log("send_delayed_notification_handler: Params: " . json_encode($params));
         
