@@ -104,9 +104,8 @@ jQuery(document).ready(function($) {
                                 '_action_id': action_id,
                             },
                             success: function (response) {
-                                $("#my-job-action-dialog").html(response.html_contain);
-                                $("#my-job-action-dialog").dialog('open');
-        
+                                //$("#my-job-action-dialog").html(response.html_contain);
+                                $("#my-job-action-dialog").dialog('open');        
                             },
                             error: function (error) {
                                 console.error(error);
