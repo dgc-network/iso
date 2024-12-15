@@ -251,7 +251,8 @@ if (!class_exists('iot_messages')) {
                     $device_id = get_iot_device_id_by_device_number($device_number);
         
                     if ($device_id) {
-                        error_log("Device ID found: $device_id");
+                        //error_log("Device ID found: $device_id");
+                        error_log("Device ID found: " . print_r($device_id, true));
         
                         if ($temperature) {
                             process_exception_notification($device_id, 'temperature', $temperature);
