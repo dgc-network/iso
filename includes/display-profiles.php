@@ -248,6 +248,7 @@ if (!class_exists('display_profiles')) {
                     </tbody>
                 </table>
                 <div id="my-job-action-list" title="Action authorization"></div>
+                <div id="my-job-action-dialog" title="Action authorization"></div>
             </fieldset>
             <?php
             return ob_get_clean();
