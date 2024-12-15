@@ -246,7 +246,7 @@ if (!class_exists('iot_messages')) {
                     $temperature = get_post_meta($post_id, 'temperature', true);
                     $humidity = get_post_meta($post_id, 'humidity', true);
         
-                    error_log("Processing post ID: $post_id, Device Number: $device_number, Temperature: $temperature, Humidity: $humidity");
+                    error_log("Processing post ID: ".print_r($post_id, true)." , Device Number: ".print_r($device_number, true).", Temperature: ".print_r($temperature, true).", Humidity: ".print_r($humidity, true));
         
                     $device_id = $this->get_iot_device_id_by_device_number($device_number);
         
@@ -261,7 +261,7 @@ if (!class_exists('iot_messages')) {
                             $this->process_exception_notification($device_id, 'humidity', $humidity);
                         }
                     } else {
-                        error_log("Device ID not found for Device Number: $device_number");
+                        error_log("Device ID not found for Device Number: ".print_r($device_number, true));
                     }
         
                     update_post_meta($post_id, 'processed', 1);
@@ -302,7 +302,7 @@ if (!class_exists('iot_messages')) {
         }
         
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
-            error_log("process_exception_notification: Device ID: $device_id, Sensor Type: $sensor_type, Sensor Value: $sensor_value");
+            error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
             $device_number = get_post_meta($device_id, 'device_number', true);
             $reports = $this->get_doc_reports_by_doc_field('_iot_device', $device_id);
@@ -312,7 +312,7 @@ if (!class_exists('iot_messages')) {
                     $max_value = get_post_meta($report_id, '_max_value', true);
                     $min_value = get_post_meta($report_id, '_min_value', true);
         
-                    error_log("Report ID: $report_id, Max Value: $max_value, Min Value: $min_value");
+                    error_log("Report ID: ".print_r($report_id, true).", Max Value: ".print_r($max_value, true).", Min Value: ".print_r($min_value, true));
         
                     $notification_message = $this->build_notification_message($device_id, $device_number, $sensor_type, $sensor_value, $max_value, $min_value);
         
@@ -321,13 +321,13 @@ if (!class_exists('iot_messages')) {
         
                     foreach ($employee_ids as $user_id) {
                         if ($user_id) {
-                            error_log("Scheduling notification for User ID: $user_id, Message: $notification_message");
+                            error_log("Scheduling notification for User ID: ".print_r($user_id, true).", Message: ".print_r($notification_message, true));
                             $this->schedule_notification_event($device_id, $user_id, $notification_message);
                         }
                     }
                 }
             } else {
-                error_log("No reports found for Device ID: $device_id");
+                error_log("No reports found for Device ID: ".print_r($device_id, true));
             }
         }
         
@@ -341,7 +341,7 @@ if (!class_exists('iot_messages')) {
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
         
             if ($line_user_id) {
-                error_log("Sending notification to Line User ID: $line_user_id, Message: $message");
+                error_log("Sending notification to Line User ID: ".print_r($line_user_id, true).", Message: ".print_r($message, true));
         
                 $line_bot_api = new line_bot_api();
                 $flexMessage = $line_bot_api->set_bubble_message([
@@ -351,7 +351,7 @@ if (!class_exists('iot_messages')) {
                 ]);
                 $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
             } else {
-                error_log("Line User ID not found for User ID: $user_id");
+                error_log("Line User ID not found for User ID: ".print_r($user_id, true));
             }
         }
 /*        
