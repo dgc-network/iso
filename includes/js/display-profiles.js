@@ -109,7 +109,7 @@ jQuery(document).ready(function($) {
                                     modal: true,
                                     autoOpen: false,
                                     buttons: {
-                                        "Set": function () {
+                                        "Update": function () {
                                             $.ajax({
                                                 type: 'POST',
                                                 url: ajax_object.ajax_url,
@@ -154,7 +154,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+/*
         $("#my-job-action-dialog").dialog({
             width: 390,
             modal: true,
@@ -261,7 +261,8 @@ jQuery(document).ready(function($) {
                     }
                 },
             }
-        });    
+        });
+*/        
     }
 
     // site-profile
