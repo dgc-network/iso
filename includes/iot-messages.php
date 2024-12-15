@@ -181,7 +181,6 @@ if (!class_exists('iot_messages')) {
                     $device_id = $this->get_iot_device_id_by_device_number($device_number);
         
                     if ($device_id) {
-                        //error_log("Device ID found: $device_id");
                         error_log("Device ID found: " . print_r($device_id, true));
         
                         if ($temperature) {
@@ -223,7 +222,7 @@ if (!class_exists('iot_messages')) {
                     $delete_post_id = get_the_ID();
                     wp_delete_post($delete_post_id, true); // Force delete the post
         
-                    error_log("Deleted post ID: $delete_post_id");
+                    error_log("Deleted post ID: ".print_r($delete_post_id, true));
                 }
                 wp_reset_postdata();
             } else {
