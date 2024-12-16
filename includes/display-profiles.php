@@ -173,11 +173,11 @@ if (!class_exists('display_profiles')) {
                 </div>
             </div>    
             <fieldset>
-                <label for="display-name"><?php echo __( 'Name: ', 'your-text-domain' );?></label>
+                <label for="display-name"><?php echo __( 'Name', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="user-email"><?php echo __( 'Email: ', 'your-text-domain' );?></label>
+                <label for="user-email"><?php echo __( 'Email', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="my-job-list"><?php echo __( 'Jobs & authorizations: ', 'your-text-domain' );?></label>
+                <label for="my-job-list"><?php echo __( 'Jobs & authorizations', 'your-text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
                 <?php
                 // transaction data vs card key/value
@@ -187,9 +187,9 @@ if (!class_exists('display_profiles')) {
                 $documents_class = new display_documents();
                 $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
-                <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
+                <label for="phone-number"><?php echo __( 'Phone', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
-                <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting: ', 'your-text-domain' );?></label>
+                <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting', 'your-text-domain' );?></label>
                 <div id="my-exception-notification-setting" style="display:none;"><?php echo $this->display_exception_notification_setting_list();?></div>
             </fieldset>
             <?php
