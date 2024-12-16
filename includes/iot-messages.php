@@ -242,6 +242,7 @@ if (!class_exists('iot_messages')) {
                     $employee_id = get_post_meta(get_the_id(), '_employee_id', true);
                     $notification_message = $this->build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value);
                     $this->schedule_notification_event($device_id, $employee_id, $notification_message);
+                    error_log("Notification message: ".print_r($notification_message, true));
                 endwhile;
                 wp_reset_postdata();
             endif;
@@ -281,7 +282,7 @@ if (!class_exists('iot_messages')) {
             $today = wp_date('Y-m-d');
         
             if ($last_notification && wp_date('Y-m-d', $last_notification) === $today) {
-                return; // Notification already sent today
+                //return; // Notification already sent today
             }
         
             wp_schedule_single_event(time() + 300, 'send_delayed_notification', [
@@ -316,163 +317,7 @@ if (!class_exists('iot_messages')) {
                 error_log("Line User ID not found for User ID: ".print_r($user_id, true));
             }
         }
-/*        
-        function update_iot_message_meta_data() {
-            // Retrieve all 'iot-message' posts from the last 5 minutes that haven't been processed
-            $args = array(
-                'post_type' => 'iot-message',
-                'posts_per_page' => -1,
-                'meta_query' => array(
-                    array(
-                        'key' => 'processed',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                ),
-                'date_query' => array(
-                    array(
-                        'after' => '5 minutes ago',
-                        'inclusive' => true,
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
 
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $device_number = get_post_meta(get_the_ID(), 'deviceID', true);
-                    $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                    $humidity = get_post_meta(get_the_ID(), 'humidity', true);
-                    $device_id = $this->get_iot_device_id_by_device_number($device_number);
-                    if ($temperature) $this->create_exception_notification_events($device_id, 'temperature', $temperature);
-                    if ($humidity) $this->create_exception_notification_events($device_id, 'humidity', $humidity);
-                    // Mark the 'iot-message' post as processed
-                    update_post_meta(get_the_ID(), 'processed', 1);
-                }
-                wp_reset_postdata();
-            }
-        }
-
-        function create_exception_notification_events($device_id=false, $iot_sensor=false, $sensor_value=false) {
-            $device_number = get_post_meta($device_id, 'device_number', true);
-            $query = $this->get_doc_reports_by_doc_field('_iot_device', $device_id);
-
-            if ($query->have_posts()) {
-                foreach ($query->posts as $report_id) {
-                    $max_value = get_post_meta($report_id, '_max_value', true);
-                    $min_value = get_post_meta($report_id, '_min_value', true);
-
-                    // Prepare the notification message
-                    $five_minutes_ago = time() - (5 * 60);
-                    $five_minutes_ago_formatted = wp_date(get_option('date_format'), $five_minutes_ago) . ' ' . wp_date(get_option('time_format'), $five_minutes_ago);
-                    if ($max_value && $sensor_value>$max_value) {
-                        if ($iot_sensor=='temperature') {
-                            $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經大於設定的'.$max_value.'°C了。';
-                        }
-                        if ($iot_sensor=='humidity') {
-                            $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經大於設定的'.$max_value.'%了。';
-                        }
-                    }
-                    if ($min_value && $sensor_value<$min_value) {
-                        if ($iot_sensor=='temperature') {
-                            $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的溫度是'.$sensor_value.'°C，已經小於設定的'.$min_value.'°C了。';
-                        }
-                        if ($iot_sensor=='humidity') {
-                            $text_message = '#'.$device_number.' '.get_the_title($device_id).'在'.$five_minutes_ago_formatted.'的濕度是'.$sensor_value.'%，已經小於設定的'.$min_value.'%了。';
-                        }
-                    }
-
-                    $employee_id = get_post_meta($report_id, '_employee', true);
-                    if ($employee_id && !is_array($employee_id)) {
-                        $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
-                    }
-
-                    $employee_ids = get_post_meta($report_id, '_employees', true);
-                    if (is_array($employee_ids)) {
-                        foreach ($employee_ids as $employee_id) {
-                            $this->prepare_exception_notification_event($device_id, $employee_id, $text_message);
-                        }    
-                    }
-                }
-                return $query->posts; // Return the array of post IDs
-            }
-        }
-
-        function prepare_exception_notification_event($device_id=false, $user_id=false, $text_message=false) {
-            // Check if a notification has been sent today
-            $last_notification_time = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
-            $today = wp_date('Y-m-d');
-
-            if ($last_notification_time && wp_date('Y-m-d', $last_notification_time) === $today) {
-                // Notification already sent today, do not send again
-                return;
-            }
-
-            // Parameters to pass to the notification function
-            $params = [
-                'user_id' => $user_id,
-                'text_message' => $text_message,
-                'device_id' => $device_id,
-            ];
-            // Schedule the event to run after 5 minutes (300 seconds)
-            wp_schedule_single_event(time() + 300, 'send_delayed_notification', [$params]);
-
-            // Update the last notification time
-            update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
-        }
-
-        function send_delayed_notification_handler($params) {
-            $user_id = $params['user_id'];
-            $text_message = $params['text_message'];
-            $device_id = $params['device_id'];
-
-            $user_data = get_userdata($user_id);
-            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-
-            $header_contents = array(
-                array(
-                    'type' => 'text',
-                    'text' => 'Hello, ' . $user_data->display_name,
-                    'size' => 'lg',
-                    'weight' => 'bold',
-                ),
-            );
-
-            $body_contents = array(
-                array(
-                    'type' => 'text',
-                    'text' => $text_message,
-                    'wrap' => true,
-                ),
-            );
-
-            $footer_contents = array(
-                array(
-                    'type' => 'button',
-                    'action' => array(
-                        'type' => 'uri',
-                        'label' => 'Click me!',
-                        'uri' => home_url() . 'to-do-list/?_select_todo=iot-devices&_device_id=' . $device_id,
-                    ),
-                    'style' => 'primary',
-                    'margin' => 'sm',
-                ),
-            );
-
-            $line_bot_api = new line_bot_api();
-            // Generate the Flex Message
-            $flexMessage = $line_bot_api->set_bubble_message([
-                'header_contents' => $header_contents,
-                'body_contents' => $body_contents,
-                'footer_contents' => $footer_contents,
-            ]);
-            // Send the message via the LINE API
-            $line_bot_api->pushMessage([
-                'to' => $line_user_id,
-                'messages' => [$flexMessage],
-            ]);
-        }
-*/
         // iot message
         function display_iot_message_list($device_id=false) {
             ob_start();
