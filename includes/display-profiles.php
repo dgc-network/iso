@@ -160,13 +160,13 @@ if (!class_exists('display_profiles')) {
         // my-profile
         function register_exception_notification_setting_post_type() {
             $labels = array(
-                'menu_name'     => _x('exception_notification', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('notification', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
             );
-            register_post_type( 'exception-notification', $args );
+            register_post_type( 'notification', $args );
         }
 
         function display_my_profile() {
@@ -247,7 +247,7 @@ if (!class_exists('display_profiles')) {
             
             if (!$employee_id) $employee_id = get_current_user_id();
             $args = array(
-                'post_type'      => 'exception-notification',
+                'post_type'      => 'notification',
                 'posts_per_page' => -1, // Retrieve all posts
                 'meta_query'     => array(
                     'relation' => 'AND',
@@ -311,7 +311,7 @@ if (!class_exists('display_profiles')) {
             if( !isset($_POST['_setting_id']) ) {
                 // Create the post
                 $new_post = array(
-                    'post_type'     => 'exception-notification',
+                    'post_type'     => 'notification',
                     'post_status'   => 'publish',
                     'post_author'   => get_current_user_id(),
                 );    
