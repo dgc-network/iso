@@ -98,6 +98,37 @@ if (!class_exists('iot_messages')) {
             return !empty($query->posts) ? $query->posts[0] : null;
         }
 
+        function retrieve_exception_notification_data($device_id = false, $employee_id = false) {
+            
+            if (!$employee_id) $employee_id = get_current_user_id();
+            $args = array(
+                'post_type'      => 'exception-notification',
+                'posts_per_page' => -1, // Retrieve all posts
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'device_id',
+                        'value'   => $device_id,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'max_value',
+                        'compare' => 'EXISTS'
+                    )
+                ),
+                //'fields' => 'ids' // Only return post IDs
+            );
+            if ($employee_id!=-1) {
+                $args['meta_query'][] = array(
+                    'key'     => 'employee_id',
+                    'value'   => $employee_id,
+                    'compare' => '='
+                )
+            }
+            $query = new WP_Query($args);
+            return $query;
+        }
+
         function get_doc_reports_by_doc_field($field_type = false, $field_value = false) {
             $args = array(
                 'post_type'      => 'doc-field',
@@ -233,32 +264,62 @@ if (!class_exists('iot_messages')) {
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
-            $reports = $this->get_doc_reports_by_doc_field('_iot_device', $device_id);
-        
-            if (!empty($reports)) {
-                error_log("Found " . count($reports) . " reports for Device ID: ".print_r($device_id, true));
-        
-                foreach ($reports as $report_id) {
-                    $max_value = get_post_meta($report_id, '_max_value', true);
-                    $min_value = get_post_meta($report_id, '_min_value', true);
-        
-                    error_log("Report ID: ".print_r($report_id, true).", Max Value: ".print_r($max_value, true).", Min Value: ".print_r($min_value, true));
-        
+            $query = $this->retrieve_exception_notification_data($device_id, -1);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $max_value = get_post_meta(get_the_id(), '_max_value', true);
+                    $min_value = get_post_meta(get_the_id(), '_min_value', true);
+                    $employee_id = get_post_meta(get_the_id(), '_employee_id', true);
                     $notification_message = $this->build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value);
+                    $this->schedule_notification_event($device_id, $employee_id, $notification_message);
+                endwhile;
+                wp_reset_postdata();
+            endif;
+        }
+
+        function build_notification_message($device_id, $device_number, $sensor_type, $sensor_value, $max_value, $min_value) {
+            $formatted_time = wp_date(get_option('date_format')) . ' ' . wp_date(get_option('time_format'));
         
-                    $employee_ids = get_post_meta($report_id, '_employees', true);
-                    $employee_ids = is_array($employee_ids) ? $employee_ids : [get_post_meta($report_id, '_employee', true)];
-        
-                    foreach ($employee_ids as $user_id) {
-                        if ($user_id) {
-                            error_log("Scheduling notification for User ID: ".print_r($user_id, true).", Message: ".print_r($notification_message, true));
-                            $this->schedule_notification_event($device_id, $user_id, $notification_message);
-                        }
-                    }
-                }
-            } else {
-                error_log("No reports found for Device ID: ".print_r($device_id, true));
+            if ($max_value && $sensor_value > $max_value) {
+                return sprintf(
+                    '#%s %s在%s的%s是%s，已經大於設定的%s。',
+                    $device_number,
+                    get_the_title($device_id),
+                    $formatted_time,
+                    $sensor_type,
+                    $sensor_value,
+                    $max_value
+                );
             }
+            if ($min_value && $sensor_value < $min_value) {
+                return sprintf(
+                    '#%s %s在%s的%s是%s，已經小於設定的%s。',
+                    $device_number,
+                    get_the_title($device_id),
+                    $formatted_time,
+                    $sensor_type,
+                    $sensor_value,
+                    $min_value
+                );
+            }
+            return '';
+        }
+
+        function schedule_notification_event($device_id, $user_id, $message) {
+            $last_notification = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
+            $today = wp_date('Y-m-d');
+        
+            if ($last_notification && wp_date('Y-m-d', $last_notification) === $today) {
+                return; // Notification already sent today
+            }
+        
+            wp_schedule_single_event(time() + 300, 'send_delayed_notification', [
+                'device_id'   => $device_id,
+                'user_id'     => $user_id,
+                'message'     => $message,
+            ]);
+        
+            update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
         }
 
         function send_delayed_notification_handler($params) {

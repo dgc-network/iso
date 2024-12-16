@@ -150,7 +150,7 @@ if (!class_exists('display_profiles')) {
         }
         //add_action('init', 'migrate_subform_code_to_embedded_number');
 
-        // my-profile scripts
+        // my-profile
         function display_my_profile() {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -175,13 +175,37 @@ if (!class_exists('display_profiles')) {
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
-                    '_employees' => get_current_user_id(),
+                    '_employee' => get_current_user_id(),
                 );
                 $documents_class = new display_documents();
                 $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="my-exception-notification-setting"><?php echo __( 'Exception notification setting: ', 'your-text-domain' );?></label>
+                <div id="my-exception-notification-setting"><?php echo $this->display_my_exception_notification_setting();?></div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function display_my_exception_notification_setting() {
+            ob_start();
+            $current_user_id = get_current_user_id();
+            ?>
+            <fieldset style="margin-top:5px;">
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Device', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Max.', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php    
+                    ?>
+                    </tbody>
+                </table>
+                <div id="new-exception-notification-setting" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             </fieldset>
             <?php
             return ob_get_clean();
