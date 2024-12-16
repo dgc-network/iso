@@ -220,9 +220,9 @@ jQuery(document).ready(function($) {
                                 },
                                 success: function (response) {
                                     console.log(response);
-                                    //window.location.replace(window.location.href);
-                                    $("#my-exception-notification-setting").html(response.html_contain);
-                                    $("#exception-notification-setting-dialog").dialog('close');
+                                    window.location.replace(window.location.href);
+                                    //$("#my-exception-notification-setting").html(response.html_contain);
+                                    //$("#exception-notification-setting-dialog").dialog('close');
                                 },
                                 error: function (error) {
                                     console.error(error);
@@ -280,9 +280,9 @@ jQuery(document).ready(function($) {
                                 },
                                 success: function (response) {
                                     console.log(response);
-                                    $("#my-exception-notification-setting").html(response.html_contain);
-                                    $("#exception-notification-setting-dialog").dialog('close');
-                                    //window.location.replace(window.location.href);
+                                    //$("#my-exception-notification-setting").html(response.html_contain);
+                                    //$("#exception-notification-setting-dialog").dialog('close');
+                                    window.location.replace(window.location.href);
                                 },
                                 error: function (error) {
                                     console.error(error);
@@ -302,9 +302,9 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         console.log(response);
-                                        $("#my-exception-notification-setting").html(response.html_contain);
-                                        $("#exception-notification-setting-dialog").dialog('close');
-                                        //window.location.replace(window.location.href);
+                                        //$("#my-exception-notification-setting").html(response.html_contain);
+                                        //$("#exception-notification-setting-dialog").dialog('close');
+                                        window.location.replace(window.location.href);
                                     },
                                     error: function (error) {
                                         console.error(error);
