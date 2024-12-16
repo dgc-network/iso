@@ -217,58 +217,75 @@ jQuery(document).ready(function($) {
         });
         
         $("#new-exception-notification-setting").on("click", function() {
-            $("#exception-notification-setting-dialog").dialog('open');
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_exception_notification_setting_dialog_data',
+                    //'_field_id': field_id,
+                },
+                success: function (response) {
+                    $("#exception-notification-setting-dialog").html(response.html_contain);
+                    $("#exception-notification-setting-dialog").dialog("option", "buttons", {
+                        "Save": function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_exception_notification_setting_dialog_data',
+                                    '_setting_id': $("#setting-id").val(),
+                                    '_user_id': $("#user-id").val(),
+                                    '_max_temperature': $("#max-temperature").val(),
+                                    '_max_humidity': $("#max-humidity").val(),
+                                },
+                                success: function (response) {
+                                    console.log(response);
+                                    window.location.replace(window.location.href);
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        },
+                        "Delete": function () {
+                            if (window.confirm("Are you sure you want to delete this notification settings?")) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'del_notification_dialog_data',
+                                        '_notification_id': $("#notification-id").val(),
+                                    },
+                                    success: function (response) {
+                                        console.log(response);
+                                        window.location.replace(window.location.href);
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            }
+                        },        
+                    });
+                    $("#exception-notification-setting-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
         });
     
         $("#exception-notification-setting-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_exception_notification_setting_dialog_data',
-                            '_setting_id': $("#setting-id").val(),
-                            '_user_id': $("#user-id").val(),
-                            '_max_temperature': $("#max-temperature").val(),
-                            '_max_humidity': $("#max-humidity").val(),
-                        },
-                        success: function (response) {
-                            console.log(response);
-                            window.location.replace(window.location.href);
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this notification settings?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_notification_dialog_data',
-                                '_notification_id': $("#notification-id").val(),
-                            },
-                            success: function (response) {
-                                console.log(response);
-                                window.location.replace(window.location.href);
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });
 
     }
