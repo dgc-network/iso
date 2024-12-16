@@ -247,9 +247,10 @@ if (!class_exists('iot_messages')) {
             endif;
         }
 
-        function build_notification_message($device_id, $device_number, $sensor_type, $sensor_value, $max_value, $min_value) {
+        function build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value) {
             $formatted_time = wp_date(get_option('date_format')) . ' ' . wp_date(get_option('time_format'));
-        
+            $device_number = get_post_meta($device_id, 'device_number', true);
+
             if ($max_value && $sensor_value > $max_value) {
                 return sprintf(
                     '#%s %s在%s的%s是%s，已經大於設定的%s。',

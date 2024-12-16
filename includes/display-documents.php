@@ -155,8 +155,8 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
+            $doc_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
             $items_class = new sub_items();
-            $doc_category = $_GET['_category'];
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -237,14 +237,14 @@ if (!class_exists('display_documents')) {
                 'compare' => '=',
             );
 
-            $select_category = sanitize_text_field($_GET['_category']);
+            $select_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
             $category_filter = array(
                 'key'     => 'doc_category',
                 'value'   => $select_category,
                 'compare' => '=',
             );
 
-            $search_query = sanitize_text_field($_GET['_search']);
+            $search_query = (isset($_GET['_search'])) ? sanitize_text_field($_GET['_search']) : false;
             $number_filter = array(
                 'key'     => 'doc_number',
                 'value'   => $search_query,
