@@ -182,14 +182,14 @@ if (!class_exists('display_profiles')) {
                 ?>
                 <label for="phone-number"><?php echo __( 'Phone: ', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="my-exception-notification-setting"><?php echo __( 'Exception notification setting: ', 'your-text-domain' );?></label>
-                <div id="my-exception-notification-setting"><?php echo $this->display_my_exception_notification_setting();?></div>
+                <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting: ', 'your-text-domain' );?></label>
+                <div id="my-exception-notification-setting" style="display:none;"><?php echo $this->display_exception_notification_setting_list();?></div>
             </fieldset>
             <?php
             return ob_get_clean();
         }
 
-        function display_my_exception_notification_setting() {
+        function display_exception_notification_setting_list() {
             ob_start();
             $current_user_id = get_current_user_id();
             ?>
@@ -197,18 +197,138 @@ if (!class_exists('display_profiles')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <th><?php echo __( 'Device', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Max.', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Min.', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
-                    <?php    
+                    <?php
+                        $query = $this->retrieve_exception_notification_data();
+                        if ($query->have_posts()) {
+                            while ($query->have_posts()) : $query->the_post();
+                                $device_id = get_post_meta(get_the_ID(), 'device_id', true);
+                                echo '<tr id="edit-exception-notification-'.esc_attr(get_the_ID()).'">';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'device_id', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_max_value', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_min_value', true)).'</td>';
+                                echo '</tr>';
+                                $x += 1;
+                            endwhile;
+                            wp_reset_postdata();
+                        }
                     ?>
                     </tbody>
                 </table>
                 <div id="new-exception-notification-setting" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <div id="exception-notification-setting-dialog"></div>
             </fieldset>
             <?php
             return ob_get_clean();
+        }
+
+        function retrieve_exception_notification_data($device_id = false, $employee_id = false) {
+            
+            if (!$employee_id) $employee_id = get_current_user_id();
+            $args = array(
+                'post_type'      => 'exception-notification',
+                'posts_per_page' => -1, // Retrieve all posts
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'device_id',
+                        'value'   => $device_id,
+                        'compare' => '='
+                    ),
+                    array(
+                        'key'     => 'max_value',
+                        'compare' => 'EXISTS'
+                    )
+                ),
+                //'fields' => 'ids' // Only return post IDs
+            );
+            if ($employee_id!=-1) {
+                $args['meta_query'][] = array(
+                    'key'     => 'employee_id',
+                    'value'   => $employee_id,
+                    'compare' => '='
+                );
+            }
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function display_exception_notification_setting_dialog($setting_id=false) {
+            ob_start();
+            $field_title = get_post_meta($field_id, 'field_title', true);
+            $field_type = get_post_meta($field_id, 'field_type', true);
+            $listing_style = get_post_meta($field_id, 'listing_style', true);
+            $default_value = get_post_meta($field_id, 'default_value', true);
+            $order_field = get_post_meta($field_id, 'order_field', true);
+            ?>
+            <fieldset>
+                <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
+                <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
+                <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
+                <select id="field-type" class="text ui-widget-content ui-corner-all">
+                </select>
+                <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
+                <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
+                <select id="listing-style" class="text ui-widget-content ui-corner-all">
+                    <option value=""></option>
+                    <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'your-text-domain' );?></option>
+                    <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'your-text-domain' );?></option>
+                    <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'your-text-domain' );?></option>
+                </select>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_exception_notification_setting_dialog_data() {
+            $response = array();
+            if( isset($_POST['_setting_id']) ) {
+                $setting_id = sanitize_text_field($_POST['_setting_id']);
+                $response['html_contain'] = $this->display_exception_notification_setting_dialog($setting_id);
+            }
+            wp_send_json($response);
+        }
+
+        function set_exception_notification_setting_dialog_data() {
+            $response = array();
+            if( isset($_POST['_setting_id']) ) {
+                // Update the post
+                $setting_id = sanitize_text_field($_POST['_setting_id']);
+                update_post_meta($setting_id, 'field_title', sanitize_text_field($_POST['_field_title']));
+                update_post_meta($setting_id, 'field_type', sanitize_text_field($_POST['_field_type']));
+                update_post_meta($setting_id, 'default_value', sanitize_text_field($_POST['_default_value']));
+                update_post_meta($setting_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
+                update_post_meta($setting_id, 'order_field', sanitize_text_field($_POST['_order_field']));
+            } else {
+                // Create the post
+                //$current_user_id = get_current_user_id();
+                $new_post = array(
+                    'post_type'     => 'exception-notification',
+                    'post_status'   => 'publish',
+                    'post_author'   => get_current_user_id(),
+                );    
+                $post_id = wp_insert_post($new_post);
+                update_post_meta($post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
+                update_post_meta($post_id, 'field_title', 'Field title');
+                update_post_meta($post_id, 'field_type', 'text');
+                update_post_meta($post_id, 'listing_style', 'center');
+                update_post_meta($post_id, 'sorting_key', 999);
+            }
+            $response['html_contain'] = $this->display_exception_notification_setting_list();
+            wp_send_json($response);
+        }
+
+        function del_exception_notification_setting_dialog_data() {
+            $response = array();
+            wp_delete_post($_POST['_setting_id'], true);
+            $response['html_contain'] = $this->display_exception_notification_setting_list();
+            wp_send_json($response);
         }
 
         function display_my_job_list() {

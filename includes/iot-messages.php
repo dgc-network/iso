@@ -98,37 +98,6 @@ if (!class_exists('iot_messages')) {
             return !empty($query->posts) ? $query->posts[0] : null;
         }
 
-        function retrieve_exception_notification_data($device_id = false, $employee_id = false) {
-            
-            if (!$employee_id) $employee_id = get_current_user_id();
-            $args = array(
-                'post_type'      => 'exception-notification',
-                'posts_per_page' => -1, // Retrieve all posts
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'device_id',
-                        'value'   => $device_id,
-                        'compare' => '='
-                    ),
-                    array(
-                        'key'     => 'max_value',
-                        'compare' => 'EXISTS'
-                    )
-                ),
-                //'fields' => 'ids' // Only return post IDs
-            );
-            if ($employee_id!=-1) {
-                $args['meta_query'][] = array(
-                    'key'     => 'employee_id',
-                    'value'   => $employee_id,
-                    'compare' => '='
-                );
-            }
-            $query = new WP_Query($args);
-            return $query;
-        }
-
         function get_doc_reports_by_doc_field($field_type = false, $field_value = false) {
             $args = array(
                 'post_type'      => 'doc-field',
@@ -264,7 +233,8 @@ if (!class_exists('iot_messages')) {
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
-            $query = $this->retrieve_exception_notification_data($device_id, -1);
+            $profiles_class = new display_profiles();
+            $query = $profiles_class->retrieve_exception_notification_data($device_id, -1);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $max_value = get_post_meta(get_the_id(), '_max_value', true);

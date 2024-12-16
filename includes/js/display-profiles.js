@@ -190,7 +190,7 @@ jQuery(document).ready(function($) {
             }
 
         });
-
+*/
         $('[id^="edit-my-notification-"]').on("click", function () {
             const notification_id = this.id.substring(21);
             $.ajax({
@@ -212,7 +212,15 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#my-notification-dialog").dialog({
+        $("#my-exception-notification-setting-label").on("click", function () {
+            $("#my-exception-notification-setting").toggle();
+        });
+        
+        $("#new-exception-notification-setting").on("click", function() {
+            $("#exception-notification-setting-dialog").dialog('open');
+        });
+    
+        $("#exception-notification-setting-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
@@ -223,8 +231,8 @@ jQuery(document).ready(function($) {
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
-                            'action': 'set_notification_dialog_data',
-                            '_notification_id': $("#notification-id").val(),
+                            'action': 'set_exception_notification_setting_dialog_data',
+                            '_setting_id': $("#setting-id").val(),
                             '_user_id': $("#user-id").val(),
                             '_max_temperature': $("#max-temperature").val(),
                             '_max_humidity': $("#max-humidity").val(),
@@ -262,7 +270,7 @@ jQuery(document).ready(function($) {
                 },
             }
         });
-*/        
+
     }
 
     // site-profile
@@ -458,13 +466,13 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+/*
         $("#new-user-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
         });
-
+*/
         $("#site-user-dialog").dialog({
             width: 390,
             modal: true,
