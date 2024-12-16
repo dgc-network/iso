@@ -234,7 +234,7 @@ if (!class_exists('iot_messages')) {
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
             $profiles_class = new display_profiles();
-            $query = $profiles_class->retrieve_exception_notification_data($device_id, -1);
+            $query = $profiles_class->retrieve_exception_notification_setting_data($device_id, -1);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $max_value = get_post_meta(get_the_id(), '_max_value', true);

@@ -220,7 +220,7 @@ if (!class_exists('display_profiles')) {
                     </thead>
                     <tbody>
                     <?php
-                        $query = $this->retrieve_exception_notification_data();
+                        $query = $this->retrieve_exception_notification_setting_data();
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 $device_id = get_post_meta(get_the_ID(), '_device_id', true);
@@ -243,7 +243,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_exception_notification_data($device_id = false, $employee_id = false) {
+        function retrieve_exception_notification_setting_data($device_id = false, $employee_id = false) {
             
             if (!$employee_id) $employee_id = get_current_user_id();
             $args = array(
@@ -252,17 +252,18 @@ if (!class_exists('display_profiles')) {
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
-                        'key'     => '_device_id',
-                        'value'   => $device_id,
-                        'compare' => '='
-                    ),
-                    array(
                         'key'     => '_max_value',
                         'compare' => 'EXISTS'
                     )
                 ),
-                //'fields' => 'ids' // Only return post IDs
             );
+            if ($device_id) {
+                $args['meta_query'][] = array(
+                    'key'     => '_device_id',
+                    'value'   => $device_id,
+                    'compare' => '='
+                );
+            }
             if ($employee_id!=-1) {
                 $args['meta_query'][] = array(
                     'key'     => '_employee_id',
