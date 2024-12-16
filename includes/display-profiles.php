@@ -224,8 +224,8 @@ if (!class_exists('display_profiles')) {
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 $device_id = get_post_meta(get_the_ID(), '_device_id', true);
-                                echo '<tr id="edit-exception-notification-'.esc_attr(get_the_ID()).'">';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_device_id', true)).'</td>';
+                                echo '<tr id="edit-exception-notification-setting-'.esc_attr(get_the_ID()).'">';
+                                echo '<td style="text-align:center;">'.esc_html(get_the_title($device_id)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_max_value', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_min_value', true)).'</td>';
                                 echo '</tr>';
