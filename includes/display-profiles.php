@@ -10,6 +10,7 @@ if (!class_exists('display_profiles')) {
             add_shortcode( 'display-profiles', array( $this, 'display_profiles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
             //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
+            add_action( 'init', array( $this, 'register_exception_notification_setting_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -19,18 +20,10 @@ if (!class_exists('display_profiles')) {
 
             add_action( 'wp_ajax_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
-
             add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
             add_action( 'wp_ajax_set_my_job_action_dialog_data', array( $this, 'set_my_job_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_job_action_dialog_data', array( $this, 'set_my_job_action_dialog_data' ) );
-
-            add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
-            add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
-            add_action( 'wp_ajax_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
-            add_action( 'wp_ajax_nopriv_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
-            add_action( 'wp_ajax_set_site_user_doc_data', array( $this, 'set_site_user_doc_data' ) );
-            add_action( 'wp_ajax_nopriv_set_site_user_doc_data', array( $this, 'set_site_user_doc_data' ) );
 
             add_action( 'wp_ajax_get_exception_notification_setting_dialog_data', array( $this, 'get_exception_notification_setting_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_exception_notification_setting_dialog_data', array( $this, 'get_exception_notification_setting_dialog_data' ) );
@@ -38,6 +31,13 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_set_exception_notification_setting_dialog_data', array( $this, 'set_exception_notification_setting_dialog_data' ) );
             add_action( 'wp_ajax_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
+
+            add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
+            add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
+            add_action( 'wp_ajax_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
+            add_action( 'wp_ajax_nopriv_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
+            add_action( 'wp_ajax_set_site_user_doc_data', array( $this, 'set_site_user_doc_data' ) );
+            add_action( 'wp_ajax_nopriv_set_site_user_doc_data', array( $this, 'set_site_user_doc_data' ) );
 
             add_action( 'wp_ajax_get_site_user_dialog_data', array( $this, 'get_site_user_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_user_dialog_data', array( $this, 'get_site_user_dialog_data' ) );
@@ -158,6 +158,17 @@ if (!class_exists('display_profiles')) {
         //add_action('init', 'migrate_subform_code_to_embedded_number');
 
         // my-profile
+        function register_exception_notification_setting_post_type() {
+            $labels = array(
+                'menu_name'     => _x('exception_notification', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+            );
+            register_post_type( 'exception-notification', $args );
+        }
+
         function display_my_profile() {
             ob_start();
             $current_user_id = get_current_user_id();
