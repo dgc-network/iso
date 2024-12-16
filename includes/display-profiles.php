@@ -241,12 +241,12 @@ if (!class_exists('display_profiles')) {
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
-                        'key'     => 'device_id',
+                        'key'     => '_device_id',
                         'value'   => $device_id,
                         'compare' => '='
                     ),
                     array(
-                        'key'     => 'max_value',
+                        'key'     => '_max_value',
                         'compare' => 'EXISTS'
                     )
                 ),
@@ -254,7 +254,7 @@ if (!class_exists('display_profiles')) {
             );
             if ($employee_id!=-1) {
                 $args['meta_query'][] = array(
-                    'key'     => 'employee_id',
+                    'key'     => '_employee_id',
                     'value'   => $employee_id,
                     'compare' => '='
                 );
