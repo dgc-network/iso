@@ -158,17 +158,6 @@ if (!class_exists('display_profiles')) {
         //add_action('init', 'migrate_subform_code_to_embedded_number');
 
         // my-profile
-        function register_exception_notification_setting_post_type() {
-            $labels = array(
-                'menu_name'     => _x('notification', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-            );
-            register_post_type( 'notification', $args );
-        }
-
         function display_my_profile() {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -205,6 +194,17 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             <?php
             return ob_get_clean();
+        }
+
+        function register_exception_notification_setting_post_type() {
+            $labels = array(
+                'menu_name'     => _x('notification', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+            );
+            register_post_type( 'notification', $args );
         }
 
         function display_exception_notification_setting_list() {
