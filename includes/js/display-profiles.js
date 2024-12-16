@@ -191,27 +191,6 @@ jQuery(document).ready(function($) {
 
         });
 */
-        $('[id^="edit-my-notification-"]').on("click", function () {
-            const notification_id = this.id.substring(21);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_notification_dialog_data',
-                    '_notification_id': notification_id,
-                },
-                success: function (response) {
-                    $("#my-notification-dialog").html(response.html_contain);
-                    $("#my-notification-dialog").dialog('open');
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-
         $("#my-exception-notification-setting-label").on("click", function () {
             $("#my-exception-notification-setting").toggle();
         });
@@ -223,7 +202,55 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'get_exception_notification_setting_dialog_data',
-                    //'_field_id': field_id,
+                    //'_setting_id': setting_id,
+                },
+                success: function (response) {
+                    $("#exception-notification-setting-dialog").html(response.html_contain);
+                    $("#exception-notification-setting-dialog").dialog("option", "buttons", {
+                        "Add": function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_exception_notification_setting_dialog_data',
+                                    '_device_id': $("#device-id").val(),
+                                    '_max_value': $("#max-value").val(),
+                                    '_min_value': $("#min-value").val(),
+                                },
+                                success: function (response) {
+                                    console.log(response);
+                                    window.location.replace(window.location.href);
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        },
+                        "Cancel": function () {
+                            $("#exception-notification-setting-dialog").dialog('close');
+                            //window.location.replace(window.location.href);
+                        },
+                    });
+                    $("#exception-notification-setting-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+    
+        $('[id^="edit-exception-notification-setting-"]').on("click", function () {
+            const setting_id = this.id.substring(36);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_exception_notification_setting_dialog_data',
+                    '_setting_id': setting_id,
                 },
                 success: function (response) {
                     $("#exception-notification-setting-dialog").html(response.html_contain);
@@ -235,10 +262,10 @@ jQuery(document).ready(function($) {
                                 dataType: "json",
                                 data: {
                                     'action': 'set_exception_notification_setting_dialog_data',
-                                    '_setting_id': $("#setting-id").val(),
-                                    '_user_id': $("#user-id").val(),
-                                    '_max_temperature': $("#max-temperature").val(),
-                                    '_max_humidity': $("#max-humidity").val(),
+                                    '_setting_id': setting_id,
+                                    '_device_id': $("#device-id").val(),
+                                    '_max_value': $("#max-value").val(),
+                                    '_min_value': $("#min-value").val(),
                                 },
                                 success: function (response) {
                                     console.log(response);
@@ -251,14 +278,14 @@ jQuery(document).ready(function($) {
                             });
                         },
                         "Delete": function () {
-                            if (window.confirm("Are you sure you want to delete this notification settings?")) {
+                            if (window.confirm("Are you sure you want to delete this setting?")) {
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
                                     data: {
-                                        'action': 'del_notification_dialog_data',
-                                        '_notification_id': $("#notification-id").val(),
+                                        'action': 'del_exception_notification_setting_dialog_data',
+                                        '_setting_id': setting_id,
                                     },
                                     success: function (response) {
                                         console.log(response);
@@ -280,7 +307,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-    
+
         $("#exception-notification-setting-dialog").dialog({
             width: 390,
             modal: true,

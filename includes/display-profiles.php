@@ -212,9 +212,9 @@ if (!class_exists('display_profiles')) {
                         $query = $this->retrieve_exception_notification_data();
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
-                                $device_id = get_post_meta(get_the_ID(), 'device_id', true);
+                                $device_id = get_post_meta(get_the_ID(), '_device_id', true);
                                 echo '<tr id="edit-exception-notification-'.esc_attr(get_the_ID()).'">';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'device_id', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_device_id', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_max_value', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_min_value', true)).'</td>';
                                 echo '</tr>';
@@ -265,6 +265,8 @@ if (!class_exists('display_profiles')) {
 
         function display_exception_notification_setting_dialog($setting_id=false) {
             ob_start();
+            $iot_messages = new iot_messages();
+            $device_id = get_post_meta($setting_id, '_device_id', true);
             $max_value = get_post_meta($setting_id, '_max_value', true);
             $min_value = get_post_meta($setting_id, '_min_value', true);
             ?>
@@ -272,7 +274,7 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="setting-id" value="<?php echo esc_attr($setting_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="device-id"><?php echo __( 'Device', 'your-text-domain' );?></label>
-                <select id="device-id" class="text ui-widget-content ui-corner-all"></select>                
+                <select id="device-id" class="text ui-widget-content ui-corner-all"><?php echo $iot_messages->select_iot_device_options($device_id);?></select>                
                 <label for="max-value"><?php echo __( 'Max.', 'your-text-domain' );?></label>
                 <input type="text" id="max-value" value="<?php echo esc_attr($max_value);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="min-value"><?php echo __( 'Min', 'your-text-domain' );?></label>
