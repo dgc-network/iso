@@ -246,6 +246,15 @@ jQuery(document).ready(function($) {
     
         $('[id^="edit-exception-notification-setting-"]').on("click", function () {
             const setting_id = this.id.substring(36);
+            // Ensure the dialog is initialized before use
+            if (!$("#exception-notification-setting-dialog").hasClass('ui-dialog-content')) {
+                $("#exception-notification-setting-dialog").dialog({
+                    autoOpen: false, // Start closed
+                    modal: true, // Makes it a modal dialog
+                    width: 390 // Set width or adjust as needed
+                });
+            }
+
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
