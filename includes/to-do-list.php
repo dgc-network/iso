@@ -222,7 +222,7 @@ if (!class_exists('to_do_list')) {
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
-            $search_query = sanitize_text_field($_GET['_search']);
+            $search_query = (isset($_GET['_search'])) ? sanitize_text_field($_GET['_search']) : false;
 
             // Define the WP_Query arguments
             $args = array(
@@ -543,7 +543,7 @@ if (!class_exists('to_do_list')) {
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
-            if (!$search_query) $search_query = sanitize_text_field($_GET['_search']);
+            if (!$search_query && isset($_GET['_search'])) $search_query = sanitize_text_field($_GET['_search']);
             if ($search_query) $paged = 1;
 
             $args = array(

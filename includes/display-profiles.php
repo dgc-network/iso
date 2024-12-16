@@ -10,7 +10,7 @@ if (!class_exists('display_profiles')) {
             add_shortcode( 'display-profiles', array( $this, 'display_profiles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
             //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
-            add_action( 'init', array( $this, 'register_exception_notification_setting_post_type' ) );
+            //add_action( 'init', array( $this, 'register_exception_notification_setting_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -229,7 +229,6 @@ if (!class_exists('display_profiles')) {
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_max_value', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_min_value', true)).'</td>';
                                 echo '</tr>';
-                                $x += 1;
                             endwhile;
                             wp_reset_postdata();
                         }
@@ -1177,9 +1176,10 @@ if (!class_exists('display_profiles')) {
 
             if ($paged==0) $args['posts_per_page'] = -1;
 
-            $search_query = sanitize_text_field($_GET['_search']);
 
-            if ($search_query) {
+            //if ($search_query) {
+            if (isset($_GET['_search'])) {
+                $search_query = sanitize_text_field($_GET['_search']);
                 $args['meta_query'][] = array(
                     'key'     => 'job_number',
                     'value'   => $search_query,
