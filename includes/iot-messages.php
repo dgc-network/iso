@@ -123,7 +123,7 @@ if (!class_exists('iot_messages')) {
                     'key'     => 'employee_id',
                     'value'   => $employee_id,
                     'compare' => '='
-                )
+                );
             }
             $query = new WP_Query($args);
             return $query;
