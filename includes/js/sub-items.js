@@ -14,9 +14,9 @@ jQuery(document).ready(function($) {
 
     // Keyboard navigation
     $(document).on("keydown", function (event) {
-        if (event.key === "ArrowRight" && nextEmbeddedId) {
+        if (event.ctrlKey && event.key === "ArrowRight" && nextEmbeddedId) {
             navigateToEmbedded(nextEmbeddedId); // Move to the next record
-        } else if (event.key === "ArrowLeft" && prevEmbeddedId) {
+        } else if (event.ctrlKey && event.key === "ArrowLeft" && prevEmbeddedId) {
             navigateToEmbedded(prevEmbeddedId); // Move to the previous record
         }
     });

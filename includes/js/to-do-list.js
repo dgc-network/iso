@@ -29,9 +29,9 @@ jQuery(document).ready(function($) {
 
     // Keyboard navigation
     $(document).on("keydown", function (event) {
-        if (event.key === "ArrowRight" && nextJobId) {
+        if (event.ctrlKey && event.key === "ArrowRight" && nextJobId) {
             navigateToJob(nextJobId); // Move to the next record
-        } else if (event.key === "ArrowLeft" && prevJobId) {
+        } else if (event.ctrlKey && event.key === "ArrowLeft" && prevJobId) {
             navigateToJob(prevJobId); // Move to the previous record
         }
     });
@@ -73,9 +73,9 @@ jQuery(document).ready(function($) {
 
     // Keyboard navigation
     $(document).on("keydown", function (event) {
-        if (event.key === "ArrowRight" && nextTodoId) {
+        if (event.ctrlKey && event.key === "ArrowRight" && nextTodoId) {
             navigateToTodo(nextTodoId); // Move to the next record
-        } else if (event.key === "ArrowLeft" && prevTodoId) {
+        } else if (event.ctrlKey && event.key === "ArrowLeft" && prevTodoId) {
             navigateToTodo(prevTodoId); // Move to the previous record
         }
     });
@@ -117,9 +117,9 @@ jQuery(document).ready(function($) {
 
     // Keyboard navigation
     $(document).on("keydown", function (event) {
-        if (event.key === "ArrowRight" && nextLogId) {
+        if (event.ctrlKey && event.key === "ArrowRight" && nextLogId) {
             navigateToLog(nextLogId); // Move to the next record
-        } else if (event.key === "ArrowLeft" && prevLogId) {
+        } else if (event.ctrlKey && event.key === "ArrowLeft" && prevLogId) {
             navigateToLog(prevLogId); // Move to the previous record
         }
     });

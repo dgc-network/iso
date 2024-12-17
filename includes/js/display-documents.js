@@ -28,9 +28,9 @@ jQuery(document).ready(function($) {
 
     // Keyboard navigation
     $(document).on("keydown", function (event) {
-        if (event.key === "ArrowRight" && nextDocId) {
+        if (event.ctrlKey && event.key === "ArrowRight" && nextDocId) {
             navigateToDoc(nextDocId); // Move to the next record
-        } else if (event.key === "ArrowLeft" && prevDocId) {
+        } else if (event.ctrlKey && event.key === "ArrowLeft" && prevDocId) {
             navigateToDoc(prevDocId); // Move to the previous record
         }
     });
@@ -72,9 +72,9 @@ jQuery(document).ready(function($) {
 
     // Keyboard navigation
     $(document).on("keydown", function (event) {
-        if (event.key === "ArrowRight" && nextReportId) {
+        if (event.ctrlKey && event.key === "ArrowRight" && nextReportId) {
             navigateToReport(nextReportId); // Move to the next record
-        } else if (event.key === "ArrowLeft" && prevReportId) {
+        } else if (event.ctrlKey && event.key === "ArrowLeft" && prevReportId) {
             navigateToReport(prevReportId); // Move to the previous record
         }
     });

@@ -13,9 +13,9 @@ jQuery(document).ready(function($) {
 
     // Keyboard navigation
     $(document).on("keydown", function (event) {
-        if (event.key === "ArrowRight" && nextDeviceId) {
+        if (event.ctrlKey && event.key === "ArrowRight" && nextDeviceId) {
             navigateToDevice(nextDeviceId); // Move to the next device
-        } else if (event.key === "ArrowLeft" && prevDeviceId) {
+        } else if (event.ctrlKey && event.key === "ArrowLeft" && prevDeviceId) {
             navigateToDevice(prevDeviceId); // Move to the previous device
         }
     });
