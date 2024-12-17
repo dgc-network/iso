@@ -626,7 +626,7 @@ if (!class_exists('iot_messages')) {
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-                <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($site_id)?></select>
+                <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($site_id);?></select>
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $query = $this->retrieve_iot_message_data($paged, $device_number);

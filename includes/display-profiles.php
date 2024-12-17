@@ -758,7 +758,7 @@ if (!class_exists('display_profiles')) {
                     $current_site_id = get_user_meta($current_user_id, 'site_id', true);
                     ?>
                     <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-                    <select id="select-site" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id)?></select>
+                    <select id="select-site" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id);?></select>
                     <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
                     <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label>
