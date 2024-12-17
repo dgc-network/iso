@@ -921,6 +921,11 @@ if (!class_exists('display_profiles')) {
                 echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
             }
 */
+            $args = array(
+                'post_type'      => 'site-profile',
+                'posts_per_page' => -1,
+            );
+            $query = new WP_Query($args);
             $options = '<option value="">Select site</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';

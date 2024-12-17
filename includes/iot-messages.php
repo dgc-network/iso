@@ -607,7 +607,8 @@ if (!class_exists('iot_messages')) {
             <input type="hidden" id="prev-device-id" value="<?php echo esc_attr($prev_device_id); ?>" />
             <input type="hidden" id="next-device-id" value="<?php echo esc_attr($next_device_id); ?>" />
             <?php
-            $todo_class = new to_do_list();
+            //$todo_class = new to_do_list();
+            $profiles_class = new display_profiles();
             $device_number = get_post_meta($device_id, 'device_number', true);
             $device_title = get_the_title($device_id);
             $device_content = get_post_field('post_content', $device_id);
@@ -626,7 +627,7 @@ if (!class_exists('iot_messages')) {
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-                <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($site_id);?></select>
+                <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $profiles_class->select_site_profile_options($site_id);?></select>
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $query = $this->retrieve_iot_message_data($paged, $device_number);
