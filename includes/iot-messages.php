@@ -249,25 +249,6 @@ if (!class_exists('iot_messages')) {
             endif;
         }
 
-        function send_notification_handler($device_id, $user_id, $message) {
-
-            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-        
-            if ($line_user_id) {
-                error_log("Sending notification to Line User ID: " . print_r($line_user_id, true) . ", Message: " . print_r($message, true));
-        
-                $line_bot_api = new line_bot_api();
-                $flexMessage = $line_bot_api->set_bubble_message([
-                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/iot-device/?id=$device_id")], 'style' => 'primary']],
-                ]);
-                $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
-            } else {
-                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
-            }
-        }
-
         function build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value) {
             $formatted_time = wp_date(get_option('date_format')) . ' ' . wp_date(get_option('time_format'));
             $device_number = get_post_meta($device_id, 'device_number', true);
@@ -297,6 +278,34 @@ if (!class_exists('iot_messages')) {
             return '';
         }
 
+        function send_notification_handler($device_id, $user_id, $message) {
+            $last_notification = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
+            $today = wp_date('Y-m-d');
+        
+            if ($last_notification && wp_date('Y-m-d', $last_notification) === $today) {
+                return; // Notification already sent today
+            }
+        
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+        
+            if ($line_user_id) {
+                error_log("Sending notification to Line User ID: " . print_r($line_user_id, true) . ", Message: " . print_r($message, true));
+        
+                $line_bot_api = new line_bot_api();
+                $flexMessage = $line_bot_api->set_bubble_message([
+                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/iot-device/?id=$device_id")], 'style' => 'primary']],
+                ]);
+                $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
+            } else {
+                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
+            }
+
+            update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
+
+        }
+/*
         function schedule_notification_event($device_id, $user_id, $message) {
             $last_notification = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
             $today = wp_date('Y-m-d');
