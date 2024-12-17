@@ -117,7 +117,7 @@ if (!class_exists('line_bot_api')) {
                     'layout' => 'vertical',
                     'contents' => $body_contents,
                 );
-                $alt_text = $body_contents['text'];
+                $alt_text = $body_contents[0]['text'];
             }
 
             // Add footer contents if not empty
