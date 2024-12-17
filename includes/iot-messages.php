@@ -283,7 +283,7 @@ if (!class_exists('iot_messages')) {
             $today = wp_date('Y-m-d');
         
             if ($last_notification && wp_date('Y-m-d', $last_notification) === $today) {
-                return; // Notification already sent today
+                //return; // Notification already sent today
             }
         
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
