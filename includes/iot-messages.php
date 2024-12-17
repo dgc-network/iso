@@ -611,6 +611,7 @@ if (!class_exists('iot_messages')) {
             $device_number = get_post_meta($device_id, 'device_number', true);
             $device_title = get_the_title($device_id);
             $device_content = get_post_field('post_content', $device_id);
+            $site_id = get_post_meta($device_id, 'site_id', true);
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
@@ -624,6 +625,8 @@ if (!class_exists('iot_messages')) {
                 <input type="text" id="device-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
+                <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
+                <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($site_id)?></select>
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $query = $this->retrieve_iot_message_data($paged, $device_number);
@@ -699,6 +702,7 @@ if (!class_exists('iot_messages')) {
                 $device_id = sanitize_text_field($_POST['_device_id']);
                 $device_number = (isset($_POST['_device_number'])) ? sanitize_text_field($_POST['_device_number']) : '';
                 $device_title = (isset($_POST['_device_title'])) ? sanitize_text_field($_POST['_device_title']) : '';
+                $site_id = (isset($_POST['_site_id'])) ? sanitize_text_field($_POST['_site_id']) : 0;
                 $data = array(
                     'ID'           => $device_id,
                     'post_title'   => $device_title,
@@ -853,7 +857,7 @@ if (!class_exists('iot_messages')) {
                 <label for="min-value"><?php echo __( 'Min', 'your-text-domain' );?></label>
                 <input type="text" id="min-value" value="<?php echo esc_attr($min_value);?>" class="text ui-widget-content ui-corner-all" />
                 <input type="checkbox" id="is-once-daily" <?php echo $is_checked;?> />
-                <label for="is-once-daily"><?php echo __( 'Send once daily', 'your-text-domain' );?></label>
+                <label for="is-once-daily"><?php echo __( 'Only reply once per day.', 'your-text-domain' );?></label>
                 </fieldset>
             <?php
             return ob_get_clean();

@@ -758,20 +758,7 @@ if (!class_exists('display_profiles')) {
                     $current_site_id = get_user_meta($current_user_id, 'site_id', true);
                     ?>
                     <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-                    <select id="select-site" class="text ui-widget-content ui-corner-all" >
-                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-                        <?php
-                        $site_args = array(
-                            'post_type'      => 'site-profile',
-                            'posts_per_page' => -1,
-                        );
-                        $sites = get_posts($site_args);    
-                        foreach ($sites as $site) {
-                            $selected = ($current_site_id == $site->ID) ? 'selected' : '';
-                            echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-                        }
-                        ?>
-                    </select>
+                    <select id="select-site" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id)?></select>
                     <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
                     <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label>
@@ -880,18 +867,6 @@ if (!class_exists('display_profiles')) {
             update_user_meta( $user_id, 'site_admin_ids', $site_admin_ids);
         }
 
-        function is_user_doc($doc_id=false, $user_id=false) {
-            // Get the current user ID
-            if (!$user_id) $user_id = get_current_user_id();    
-            if (is_site_admin($user_id)) return true;
-            // Get the user's doc IDs as an array
-            $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
-            // If $user_doc_ids is not an array, convert it to an array
-            if (!is_array($user_doc_ids)) $user_doc_ids = array();
-            // Check if the current user has the specified doc ID in their metadata
-            return in_array($doc_id, $user_doc_ids);
-        }
-
         function set_site_user_doc_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_doc_id'])) {
@@ -917,6 +892,42 @@ if (!class_exists('display_profiles')) {
                 $response = array('success' => true);
             }
             wp_send_json($response);
+        }
+
+        function is_user_doc($doc_id=false, $user_id=false) {
+            // Get the current user ID
+            if (!$user_id) $user_id = get_current_user_id();    
+            if (is_site_admin($user_id)) return true;
+            // Get the user's doc IDs as an array
+            $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
+            // If $user_doc_ids is not an array, convert it to an array
+            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+            // Check if the current user has the specified doc ID in their metadata
+            return in_array($doc_id, $user_doc_ids);
+        }
+
+        function select_site_profile_options($selected_option=0) {
+/*
+            ?>
+            <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+            <?php
+            $site_args = array(
+                'post_type'      => 'site-profile',
+                'posts_per_page' => -1,
+            );
+            $sites = get_posts($site_args);    
+            foreach ($sites as $site) {
+                $selected = ($current_site_id == $site->ID) ? 'selected' : '';
+                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
+            }
+*/
+            $options = '<option value="">Select site</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
         }
 
         // Site job

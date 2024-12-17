@@ -120,9 +120,9 @@ jQuery(document).ready(function($) {
                     '_device_number': $("#device-number").val(),
                     '_device_title': $("#device-title").val(),
                     '_device_content': $("#device-content").val(),
+                    '_site_id': $("#site-id").val(),
                 },
                 success: function (response) {
-                    //$("#iot-device-dialog").dialog('close');
                     $("#result-container").html(response.html_contain);
                     activate_iot_device_list_data();
                 },
@@ -144,7 +144,6 @@ jQuery(document).ready(function($) {
                         '_device_id': $("#device-id").val(),
                     },
                     success: function (response) {
-                        //$("#iot-device-dialog").dialog('close');
                         $("#result-container").html(response.html_contain);
                         activate_iot_device_list_data();
                     },
