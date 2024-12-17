@@ -295,7 +295,7 @@ if (!class_exists('iot_messages')) {
                 $flexMessage = $line_bot_api->set_bubble_message([
                     'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
                     'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/iot-device/?id=$device_id")], 'style' => 'primary']],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/to-do-list/?_select_todo=iot-devices&_device_id=$device_id")], 'style' => 'primary']],
                 ]);
                 $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
             } else {
