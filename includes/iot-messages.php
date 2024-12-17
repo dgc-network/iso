@@ -493,12 +493,6 @@ if (!class_exists('iot_messages')) {
                 'post_type'      => 'iot-device',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                ),
                 'meta_key'       => 'device_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'ASC', // Sorting order (ascending)
@@ -508,6 +502,15 @@ if (!class_exists('iot_messages')) {
                 $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
             }
         
+            if (!current_user_can('administrator')) {
+                $args['meta_query'] = array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                );
+            }
+
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
