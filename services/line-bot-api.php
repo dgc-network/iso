@@ -90,6 +90,7 @@ if (!class_exists('line_bot_api')) {
         // Flex message
         function set_bubble_message($params) {
             // Initial bubble message structure
+            $alt_text = 'bubble_message';
             $bubble_message = array(
                 'type' => 'flex',
                 'altText' => 'bubble_message',
@@ -116,7 +117,7 @@ if (!class_exists('line_bot_api')) {
                     'layout' => 'vertical',
                     'contents' => $body_contents,
                 );
-                //$bubble_message['altText'] = var_dump($body_contents);
+                $alt_text = $body_contents['text'];
             }
 
             // Add footer contents if not empty
@@ -129,6 +130,7 @@ if (!class_exists('line_bot_api')) {
                 );
             }
 
+            $bubble_message['altText'] = $alt_text;
             return $bubble_message;
         }
 
