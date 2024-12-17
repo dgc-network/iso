@@ -181,7 +181,7 @@ jQuery(document).ready(function($) {
                                     '_device_id': $("#device-id").val(),
                                     '_max_value': $("#max-value").val(),
                                     '_min_value': $("#min-value").val(),
-                                    '_is_once_daily': $("#is-once-daily").val(),
+                                    _is_once_daily : $("#is-once-daily").is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     console.log(response);
@@ -242,7 +242,7 @@ jQuery(document).ready(function($) {
                                     '_device_id': $("#device-id").val(),
                                     '_max_value': $("#max-value").val(),
                                     '_min_value': $("#min-value").val(),
-                                    '_is_once_daily': $("#is-once-daily").val(),
+                                    _is_once_daily : $("#is-once-daily").is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     console.log(response);
