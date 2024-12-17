@@ -19,11 +19,17 @@ if (!class_exists('iot_messages')) {
             add_action( 'wp_ajax_del_iot_device_dialog_data', array( $this, 'del_iot_device_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_iot_device_dialog_data', array( $this, 'del_iot_device_dialog_data' ) );
 
+            add_action( 'wp_ajax_get_exception_notification_setting_dialog_data', array( $this, 'get_exception_notification_setting_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_exception_notification_setting_dialog_data', array( $this, 'get_exception_notification_setting_dialog_data' ) );
+            add_action( 'wp_ajax_set_exception_notification_setting_dialog_data', array( $this, 'set_exception_notification_setting_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_exception_notification_setting_dialog_data', array( $this, 'set_exception_notification_setting_dialog_data' ) );
+            add_action( 'wp_ajax_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
+
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
                 wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
             add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
-            add_action('send_delayed_notification', array( $this, 'send_delayed_notification_handler'));
         }
 
         function enqueue_iot_message_scripts() {
@@ -240,9 +246,9 @@ if (!class_exists('iot_messages')) {
                     $max_value = get_post_meta(get_the_id(), '_max_value', true);
                     $min_value = get_post_meta(get_the_id(), '_min_value', true);
                     $employee_id = get_post_meta(get_the_id(), '_employee_id', true);
+                    $is_once_daily = get_post_meta(get_the_id(), '_is_once_daily', true);
                     $notification_message = $this->build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value);
-                    //$this->schedule_notification_event($device_id, $employee_id, $notification_message);
-                    $this->send_notification_handler($device_id, $employee_id, $notification_message);
+                    $this->send_notification_handler($device_id, $employee_id, $notification_message, $is_once_daily);
                     error_log("Notification message: ".print_r($notification_message, true));
                 endwhile;
                 wp_reset_postdata();
@@ -278,12 +284,12 @@ if (!class_exists('iot_messages')) {
             return '';
         }
 
-        function send_notification_handler($device_id, $user_id, $message) {
+        function send_notification_handler($device_id=false, $user_id=false, $message=false, $is_once_daily=false) {
             $last_notification = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
             $today = wp_date('Y-m-d');
         
-            if ($last_notification && wp_date('Y-m-d', $last_notification) === $today) {
-                //return; // Notification already sent today
+            if ($last_notification && wp_date('Y-m-d', $last_notification) === $today && $is_once_daily) {
+                return; // Notification already sent today
             }
         
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
@@ -305,77 +311,7 @@ if (!class_exists('iot_messages')) {
             update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
 
         }
-/*
-        function schedule_notification_event($device_id, $user_id, $message) {
-            $last_notification = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
-            $today = wp_date('Y-m-d');
-        
-            if ($last_notification && wp_date('Y-m-d', $last_notification) === $today) {
-                //return; // Notification already sent today
-            }
-        
-            wp_schedule_single_event(time() + 300, 'send_delayed_notification', [
-                'device_id'   => $device_id,
-                'user_id'     => $user_id,
-                'message'     => $message,
-            ]);
-        
-            update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
-        }
 
-        function send_delayed_notification_handler($params) {
-            error_log("send_delayed_notification_handler: Params: " . json_encode($params));
-        
-            if (!is_array($params)) {
-                error_log("Params is not an array. Received: " . print_r($params, true));
-                return; // Exit early to prevent further errors
-            }
-        
-            $user_id = isset($params['user_id']) ? $params['user_id'] : null;
-            $message = isset($params['message']) ? $params['message'] : null;
-            $device_id = isset($params['device_id']) ? $params['device_id'] : null;
-        
-            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-        
-            if ($line_user_id) {
-                error_log("Sending notification to Line User ID: " . print_r($line_user_id, true) . ", Message: " . print_r($message, true));
-        
-                $line_bot_api = new line_bot_api();
-                $flexMessage = $line_bot_api->set_bubble_message([
-                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/iot-device/?id=$device_id")], 'style' => 'primary']],
-                ]);
-                $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
-            } else {
-                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
-            }
-        }
-/*        
-        function send_delayed_notification_handler($params) {
-            error_log("send_delayed_notification_handler: Params: " . json_encode($params));
-        
-            $user_id = $params['user_id'];
-            $message = $params['message'];
-            $device_id = $params['device_id'];
-        
-            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-        
-            if ($line_user_id) {
-                error_log("Sending notification to Line User ID: ".print_r($line_user_id, true).", Message: ".print_r($message, true));
-        
-                $line_bot_api = new line_bot_api();
-                $flexMessage = $line_bot_api->set_bubble_message([
-                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/iot-device/?id=$device_id")], 'style' => 'primary']],
-                ]);
-                $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
-            } else {
-                error_log("Line User ID not found for User ID: ".print_r($user_id, true));
-            }
-        }
-*/
         // iot message
         function display_iot_message_list($device_id=false) {
             ob_start();
@@ -820,6 +756,150 @@ if (!class_exists('iot_messages')) {
             return $options;
         }
 
+        // exception notification setting
+        function register_exception_notification_setting_post_type() {
+            $labels = array(
+                'menu_name'     => _x('notification', 'admin menu', 'textdomain'),
+            );
+            $args = array(
+                'labels'        => $labels,
+                'public'        => true,
+            );
+            register_post_type( 'notification', $args );
+        }
+
+        function display_exception_notification_setting_list() {
+            ob_start();
+            $current_user_id = get_current_user_id();
+            ?>
+            <fieldset style="margin-top:5px;">
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Device', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Max.', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Min.', 'your-text-domain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                        $query = $this->retrieve_exception_notification_setting_data();
+                        if ($query->have_posts()) {
+                            while ($query->have_posts()) : $query->the_post();
+                                $device_id = get_post_meta(get_the_ID(), '_device_id', true);
+                                echo '<tr id="edit-exception-notification-setting-'.esc_attr(get_the_ID()).'">';
+                                echo '<td style="text-align:center;">'.esc_html(get_the_title($device_id)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_max_value', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_min_value', true)).'</td>';
+                                echo '</tr>';
+                            endwhile;
+                            wp_reset_postdata();
+                        }
+                    ?>
+                    </tbody>
+                </table>
+                <div id="new-exception-notification-setting" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <div id="exception-notification-setting-dialog" title="exception-notification-setting"></div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_exception_notification_setting_data($device_id = false, $employee_id = false) {
+            
+            if (!$employee_id) $employee_id = get_current_user_id();
+            $args = array(
+                'post_type'      => 'notification',
+                'posts_per_page' => -1, // Retrieve all posts
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => '_max_value',
+                        'compare' => 'EXISTS'
+                    )
+                ),
+            );
+            if ($device_id) {
+                $args['meta_query'][] = array(
+                    'key'     => '_device_id',
+                    'value'   => $device_id,
+                    'compare' => '='
+                );
+            }
+            if ($employee_id!=-1) {
+                $args['meta_query'][] = array(
+                    'key'     => '_employee_id',
+                    'value'   => $employee_id,
+                    'compare' => '='
+                );
+            }
+            $query = new WP_Query($args);
+            return $query;
+        }
+
+        function display_exception_notification_setting_dialog($setting_id=false) {
+            ob_start();
+            //$iot_messages = new iot_messages();
+            $device_id = get_post_meta($setting_id, '_device_id', true);
+            $max_value = get_post_meta($setting_id, '_max_value', true);
+            $min_value = get_post_meta($setting_id, '_min_value', true);
+            $is_once_daily = get_post_meta($setting_id, '_is_once_daily', true);
+            $is_checked = ($is_once_daily==1) ? 'checked' : '';
+            ?>
+            <fieldset>
+                <input type="hidden" id="setting-id" value="<?php echo esc_attr($setting_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
+                <label for="device-id"><?php echo __( 'Device', 'your-text-domain' );?></label>
+                <select id="device-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iot_device_options($device_id);?></select>                
+                <label for="max-value"><?php echo __( 'Max.', 'your-text-domain' );?></label>
+                <input type="text" id="max-value" value="<?php echo esc_attr($max_value);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="min-value"><?php echo __( 'Min', 'your-text-domain' );?></label>
+                <input type="text" id="min-value" value="<?php echo esc_attr($min_value);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="checkbox" id="is-once-daily" <?php echo $is_checked;?> />
+                <label for="is-once-daily"><?php echo __( 'Send once daily', 'your-text-domain' );?></label>
+                </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_exception_notification_setting_dialog_data() {
+            $response = array();
+            $setting_id = isset($_POST['_setting_id']) ? sanitize_text_field($_POST['_setting_id']) : 0;
+            $response['html_contain'] = $this->display_exception_notification_setting_dialog($setting_id);
+            wp_send_json($response);
+        }
+
+        function set_exception_notification_setting_dialog_data() {
+            $response = array();
+            $setting_id = isset($_POST['_setting_id']) ? sanitize_text_field($_POST['_setting_id']) : 0;
+            $device_id = isset($_POST['_device_id']) ? sanitize_text_field($_POST['_device_id']) : 0;
+            $max_value = isset($_POST['_max_value']) ? sanitize_text_field($_POST['_max_value']) : 0;
+            $min_value = isset($_POST['_min_value']) ? sanitize_text_field($_POST['_min_value']) : 0;
+            $is_once_daily = isset($_POST['_is_once_daily']) ? sanitize_text_field($_POST['_is_once_daily']) : 0;
+            if( !isset($_POST['_setting_id']) ) {
+                // Create the post
+                $new_post = array(
+                    'post_type'     => 'notification',
+                    'post_status'   => 'publish',
+                    'post_author'   => get_current_user_id(),
+                );    
+                $setting_id = wp_insert_post($new_post);
+                update_post_meta($setting_id, '_employee_id', get_current_user_id());
+            }
+            update_post_meta($setting_id, '_device_id', $device_id);
+            update_post_meta($setting_id, '_max_value', $max_value);
+            update_post_meta($setting_id, '_min_value', $min_value);
+            update_post_meta($setting_id, '_is_once_daily', $is_once_daily);
+            $response['html_contain'] = $this->display_exception_notification_setting_list();
+            wp_send_json($response);
+        }
+
+        function del_exception_notification_setting_dialog_data() {
+            $response = array();
+            wp_delete_post($_POST['_setting_id'], true);
+            $response['html_contain'] = $this->display_exception_notification_setting_list();
+            wp_send_json($response);
+        }
+
+        
     }
     $iot_messages = new iot_messages();
 }

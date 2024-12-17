@@ -154,43 +154,8 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-/*
-        $("#my-job-action-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-            buttons: {
-                "Action": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_my_job_action_dialog_data',
-                            _action_id: $("#action-id").val(),
-                            _is_action_authorized: $("#is-action-authorized").val(),
-                            _frequence_report_setting: $("#frequence-report-setting").val(),
-                            _frequence_report_start_date: $("#frequence-report-start-date").val(),
-                            _frequence_report_start_time: $("#frequence-report-start-time").val(),
-                            _prev_start_time: $("#prev-start-time").val(),
-                        },
-                        success: function (response) {
-                            console.log(response);
-                            window.location.replace(window.location.href);
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Cancel": function () {
-                    $("#my-job-action-dialog").dialog('close');
-                },
-            }
 
-        });
-*/
+        // exception notifiction
         $("#my-exception-notification-setting-label").on("click", function () {
             $("#my-exception-notification-setting").toggle();
         });
@@ -202,7 +167,6 @@ jQuery(document).ready(function($) {
                 dataType: "json",
                 data: {
                     'action': 'get_exception_notification_setting_dialog_data',
-                    //'_setting_id': setting_id,
                 },
                 success: function (response) {
                     $("#exception-notification-setting-dialog").html(response.html_contain);
@@ -217,6 +181,7 @@ jQuery(document).ready(function($) {
                                     '_device_id': $("#device-id").val(),
                                     '_max_value': $("#max-value").val(),
                                     '_min_value': $("#min-value").val(),
+                                    '_is_once_daily': $("#is-once-daily").val(),
                                 },
                                 success: function (response) {
                                     console.log(response);
@@ -277,6 +242,7 @@ jQuery(document).ready(function($) {
                                     '_device_id': $("#device-id").val(),
                                     '_max_value': $("#max-value").val(),
                                     '_min_value': $("#min-value").val(),
+                                    '_is_once_daily': $("#is-once-daily").val(),
                                 },
                                 success: function (response) {
                                     console.log(response);

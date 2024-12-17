@@ -25,13 +25,6 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_set_my_job_action_dialog_data', array( $this, 'set_my_job_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_job_action_dialog_data', array( $this, 'set_my_job_action_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_exception_notification_setting_dialog_data', array( $this, 'get_exception_notification_setting_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_exception_notification_setting_dialog_data', array( $this, 'get_exception_notification_setting_dialog_data' ) );
-            add_action( 'wp_ajax_set_exception_notification_setting_dialog_data', array( $this, 'set_exception_notification_setting_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_exception_notification_setting_dialog_data', array( $this, 'set_exception_notification_setting_dialog_data' ) );
-            add_action( 'wp_ajax_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
-
             add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
@@ -196,139 +189,13 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function register_exception_notification_setting_post_type() {
-            $labels = array(
-                'menu_name'     => _x('notification', 'admin menu', 'textdomain'),
-            );
-            $args = array(
-                'labels'        => $labels,
-                'public'        => true,
-            );
-            register_post_type( 'notification', $args );
-        }
-
-        function display_exception_notification_setting_list() {
-            ob_start();
+        function set_my_profile_data() {
+            $response = array();
             $current_user_id = get_current_user_id();
-            ?>
-            <fieldset style="margin-top:5px;">
-                <table class="ui-widget" style="width:100%;">
-                    <thead>
-                        <th><?php echo __( 'Device', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Max.', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Min.', 'your-text-domain' );?></th>
-                    </thead>
-                    <tbody>
-                    <?php
-                        $query = $this->retrieve_exception_notification_setting_data();
-                        if ($query->have_posts()) {
-                            while ($query->have_posts()) : $query->the_post();
-                                $device_id = get_post_meta(get_the_ID(), '_device_id', true);
-                                echo '<tr id="edit-exception-notification-setting-'.esc_attr(get_the_ID()).'">';
-                                echo '<td style="text-align:center;">'.esc_html(get_the_title($device_id)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_max_value', true)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_min_value', true)).'</td>';
-                                echo '</tr>';
-                            endwhile;
-                            wp_reset_postdata();
-                        }
-                    ?>
-                    </tbody>
-                </table>
-                <div id="new-exception-notification-setting" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                <div id="exception-notification-setting-dialog" title="exception-notification-setting"></div>
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-
-        function retrieve_exception_notification_setting_data($device_id = false, $employee_id = false) {
-            
-            if (!$employee_id) $employee_id = get_current_user_id();
-            $args = array(
-                'post_type'      => 'notification',
-                'posts_per_page' => -1, // Retrieve all posts
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => '_max_value',
-                        'compare' => 'EXISTS'
-                    )
-                ),
-            );
-            if ($device_id) {
-                $args['meta_query'][] = array(
-                    'key'     => '_device_id',
-                    'value'   => $device_id,
-                    'compare' => '='
-                );
-            }
-            if ($employee_id!=-1) {
-                $args['meta_query'][] = array(
-                    'key'     => '_employee_id',
-                    'value'   => $employee_id,
-                    'compare' => '='
-                );
-            }
-            $query = new WP_Query($args);
-            return $query;
-        }
-
-        function display_exception_notification_setting_dialog($setting_id=false) {
-            ob_start();
-            $iot_messages = new iot_messages();
-            $device_id = get_post_meta($setting_id, '_device_id', true);
-            $max_value = get_post_meta($setting_id, '_max_value', true);
-            $min_value = get_post_meta($setting_id, '_min_value', true);
-            ?>
-            <fieldset>
-                <input type="hidden" id="setting-id" value="<?php echo esc_attr($setting_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="device-id"><?php echo __( 'Device', 'your-text-domain' );?></label>
-                <select id="device-id" class="text ui-widget-content ui-corner-all"><?php echo $iot_messages->select_iot_device_options($device_id);?></select>                
-                <label for="max-value"><?php echo __( 'Max.', 'your-text-domain' );?></label>
-                <input type="text" id="max-value" value="<?php echo esc_attr($max_value);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="min-value"><?php echo __( 'Min', 'your-text-domain' );?></label>
-                <input type="text" id="min-value" value="<?php echo esc_attr($min_value);?>" class="text ui-widget-content ui-corner-all" />
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-
-        function get_exception_notification_setting_dialog_data() {
-            $response = array();
-            $setting_id = isset($_POST['_setting_id']) ? sanitize_text_field($_POST['_setting_id']) : 0;
-            $response['html_contain'] = $this->display_exception_notification_setting_dialog($setting_id);
-            wp_send_json($response);
-        }
-
-        function set_exception_notification_setting_dialog_data() {
-            $response = array();
-            $setting_id = isset($_POST['_setting_id']) ? sanitize_text_field($_POST['_setting_id']) : 0;
-            $device_id = isset($_POST['_device_id']) ? sanitize_text_field($_POST['_device_id']) : 0;
-            $max_value = isset($_POST['_max_value']) ? sanitize_text_field($_POST['_max_value']) : 0;
-            $min_value = isset($_POST['_min_value']) ? sanitize_text_field($_POST['_min_value']) : 0;
-            if( !isset($_POST['_setting_id']) ) {
-                // Create the post
-                $new_post = array(
-                    'post_type'     => 'notification',
-                    'post_status'   => 'publish',
-                    'post_author'   => get_current_user_id(),
-                );    
-                $setting_id = wp_insert_post($new_post);
-                update_post_meta($setting_id, '_employee_id', get_current_user_id());
-            }
-            update_post_meta($setting_id, '_device_id', $device_id);
-            update_post_meta($setting_id, '_max_value', $max_value);
-            update_post_meta($setting_id, '_min_value', $min_value);
-            $response['html_contain'] = $this->display_exception_notification_setting_list();
-            wp_send_json($response);
-        }
-
-        function del_exception_notification_setting_dialog_data() {
-            $response = array();
-            wp_delete_post($_POST['_setting_id'], true);
-            $response['html_contain'] = $this->display_exception_notification_setting_list();
+            wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
+            wp_update_user(array('ID' => $current_user_id, 'user_email' => sanitize_text_field($_POST['_user_email'])));
+            update_user_meta( $current_user_id, 'phone_number', sanitize_text_field($_POST['_phone_number']) );
+            $response = array('success' => true);
             wp_send_json($response);
         }
 
@@ -664,17 +531,7 @@ if (!class_exists('display_profiles')) {
             }
         }
 
-        function set_my_profile_data() {
-            $response = array();
-            $current_user_id = get_current_user_id();
-            wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
-            wp_update_user(array('ID' => $current_user_id, 'user_email' => sanitize_text_field($_POST['_user_email'])));
-            update_user_meta( $current_user_id, 'phone_number', sanitize_text_field($_POST['_phone_number']) );
-            $response = array('success' => true);
-            wp_send_json($response);
-        }
-
-        // site-profile setting scripts
+        // site-profile
         function register_site_profile_post_type() {
             $labels = array(
                 'menu_name'     => _x('Site', 'admin menu', 'textdomain'),
@@ -1065,17 +922,6 @@ if (!class_exists('display_profiles')) {
         function display_site_job_list() {
             ob_start();
             ?>
-<?php /*            
-            <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '工作職掌', 'your-text-domain' );?></h2>
-
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $this->display_select_profile('site-job');?></div>
-                <div style="text-align: right">
-                    <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
-                </div>
-            </div>
-*/?>    
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
@@ -1096,7 +942,6 @@ if (!class_exists('display_profiles')) {
                             $department_id = get_post_meta(get_the_ID(), 'department_id', true);
                             $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
                             $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                            //$content = get_the_content();
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
                             else $doc_title = get_the_content();
                             // display the warning if the job without assigned actions
