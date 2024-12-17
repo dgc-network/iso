@@ -184,7 +184,7 @@ if (!class_exists('display_profiles')) {
                 <label for="phone-number"><?php echo __( 'Phone', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
                 <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting', 'your-text-domain' );?></label>
-                <div id="my-exception-notification-setting" style="display:none;"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
+                <div id="my-exception-notification-setting"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
             </fieldset>
             <?php
             return ob_get_clean();
