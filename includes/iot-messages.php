@@ -297,6 +297,35 @@ if (!class_exists('iot_messages')) {
         function send_delayed_notification_handler($params) {
             error_log("send_delayed_notification_handler: Params: " . json_encode($params));
         
+            if (!is_array($params)) {
+                error_log("Params is not an array. Received: " . print_r($params, true));
+                return; // Exit early to prevent further errors
+            }
+        
+            $user_id = isset($params['user_id']) ? $params['user_id'] : null;
+            $message = isset($params['message']) ? $params['message'] : null;
+            $device_id = isset($params['device_id']) ? $params['device_id'] : null;
+        
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+        
+            if ($line_user_id) {
+                error_log("Sending notification to Line User ID: " . print_r($line_user_id, true) . ", Message: " . print_r($message, true));
+        
+                $line_bot_api = new line_bot_api();
+                $flexMessage = $line_bot_api->set_bubble_message([
+                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/iot-device/?id=$device_id")], 'style' => 'primary']],
+                ]);
+                $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
+            } else {
+                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
+            }
+        }
+/*        
+        function send_delayed_notification_handler($params) {
+            error_log("send_delayed_notification_handler: Params: " . json_encode($params));
+        
             $user_id = $params['user_id'];
             $message = $params['message'];
             $device_id = $params['device_id'];
@@ -317,7 +346,7 @@ if (!class_exists('iot_messages')) {
                 error_log("Line User ID not found for User ID: ".print_r($user_id, true));
             }
         }
-
+*/
         // iot message
         function display_iot_message_list($device_id=false) {
             ob_start();
