@@ -837,7 +837,6 @@ if (!class_exists('iot_messages')) {
 
         function display_exception_notification_setting_dialog($setting_id=false) {
             ob_start();
-            //$iot_messages = new iot_messages();
             $device_id = get_post_meta($setting_id, '_device_id', true);
             $max_value = get_post_meta($setting_id, '_max_value', true);
             $min_value = get_post_meta($setting_id, '_min_value', true);
