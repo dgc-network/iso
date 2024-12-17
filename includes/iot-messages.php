@@ -711,6 +711,7 @@ if (!class_exists('iot_messages')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($device_id, 'device_number', $device_number);
+                update_post_meta($device_id, 'site_id', $site_id);
 
                 $params = array(
                     'log_message' => 'Update an IoT device(#'.$device_number.')',
