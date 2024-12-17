@@ -241,11 +241,31 @@ if (!class_exists('iot_messages')) {
                     $min_value = get_post_meta(get_the_id(), '_min_value', true);
                     $employee_id = get_post_meta(get_the_id(), '_employee_id', true);
                     $notification_message = $this->build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value);
-                    $this->schedule_notification_event($device_id, $employee_id, $notification_message);
+                    //$this->schedule_notification_event($device_id, $employee_id, $notification_message);
+                    $this->send_notification_handler($device_id, $employee_id, $notification_message);
                     error_log("Notification message: ".print_r($notification_message, true));
                 endwhile;
                 wp_reset_postdata();
             endif;
+        }
+
+        function send_notification_handler($device_id, $user_id, $message) {
+
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+        
+            if ($line_user_id) {
+                error_log("Sending notification to Line User ID: " . print_r($line_user_id, true) . ", Message: " . print_r($message, true));
+        
+                $line_bot_api = new line_bot_api();
+                $flexMessage = $line_bot_api->set_bubble_message([
+                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/iot-device/?id=$device_id")], 'style' => 'primary']],
+                ]);
+                $line_bot_api->pushMessage(['to' => $line_user_id, 'messages' => [$flexMessage]]);
+            } else {
+                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
+            }
         }
 
         function build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value) {
