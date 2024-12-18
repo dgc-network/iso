@@ -616,6 +616,8 @@ if (!class_exists('iot_messages')) {
             $device_title = get_the_title($device_id);
             $device_content = get_post_field('post_content', $device_id);
             $site_id = get_post_meta($device_id, 'site_id', true);
+            $temperature_offset = get_post_meta($device_id, 'temperature_offset', true);
+            $record_frequency = get_post_meta($device_id, 'record_frequency', true);
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
@@ -633,13 +635,15 @@ if (!class_exists('iot_messages')) {
                     <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
                     <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $profiles_class->select_site_profile_options($site_id);?></select>
                 <?php }?>
+                <label for="temperature-offset"><?php echo __( 'Temperature offset:', 'your-text-domain' );?></label>
+                <input type="text" id="temperature-offset" value="<?php echo esc_attr($temperature_offset);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="record-frequency"><?php echo __( 'Record frequency:', 'your-text-domain' );?></label>
                 <select id="record-frequency" class="text ui-widget-content ui-corner-all" >
-                    <option value="daily"><?php echo __( '每日記錄一次', 'your-text-domain' );?></option>
-                    <option value="twice-daily"><?php echo __( '12小時記錄一次', 'your-text-domain' );?></option>
-                    <option value="six-hours"><?php echo __( '6小時記錄一次', 'your-text-domain' );?></option>
-                    <option value="three-hours"><?php echo __( '3小時記錄一次', 'your-text-domain' );?></option>
-                    <option value="one-hour"><?php echo __( '1小時記錄一次', 'your-text-domain' );?></option>
+                    <option value="daily" <?php echo ($record_frequency=='daily') ? 'selected' : '';?>><?php echo __( '每日記錄一次', 'your-text-domain' );?></option>
+                    <option value="twice-daily" <?php echo ($record_frequency=='twice-daily') ? 'selected' : '';?>><?php echo __( '12小時記錄一次', 'your-text-domain' );?></option>
+                    <option value="six-hours" <?php echo ($record_frequency=='six-hours') ? 'selected' : '';?>><?php echo __( '6小時記錄一次', 'your-text-domain' );?></option>
+                    <option value="three-hours" <?php echo ($record_frequency=='three-hours') ? 'selected' : '';?>><?php echo __( '3小時記錄一次', 'your-text-domain' );?></option>
+                    <option value="one-hour" <?php echo ($record_frequency=='one-hour') ? 'selected' : '';?>><?php echo __( '1小時記錄一次', 'your-text-domain' );?></option>
                 </select>
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
@@ -717,6 +721,7 @@ if (!class_exists('iot_messages')) {
                 $device_number = (isset($_POST['_device_number'])) ? sanitize_text_field($_POST['_device_number']) : '';
                 $device_title = (isset($_POST['_device_title'])) ? sanitize_text_field($_POST['_device_title']) : '';
                 $site_id = (isset($_POST['_site_id'])) ? sanitize_text_field($_POST['_site_id']) : 0;
+                $temperature_offset = (isset($_POST['_temperature_offset'])) ? sanitize_text_field($_POST['_temperature_offset']) : 0;
                 $record_frequency = (isset($_POST['_record_frequency'])) ? sanitize_text_field($_POST['_record_frequency']) : 'daily';
                 $data = array(
                     'ID'           => $device_id,
@@ -726,6 +731,7 @@ if (!class_exists('iot_messages')) {
                 wp_update_post( $data );
                 update_post_meta($device_id, 'device_number', $device_number);
                 update_post_meta($device_id, 'site_id', $site_id);
+                update_post_meta($device_id, 'temperature_offset', $temperature_offset);
                 update_post_meta($device_id, 'record_frequency', $record_frequency);
 
                 $params = array(
@@ -747,6 +753,7 @@ if (!class_exists('iot_messages')) {
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'device_number', time());
                 update_post_meta($post_id, 'site_id', $site_id);
+                update_post_meta($post_id, 'temperature_offset', 0);
                 update_post_meta($post_id, 'record_frequency', 'daily');
             }
             $response = array('html_contain' => $this->display_iot_device_list());
