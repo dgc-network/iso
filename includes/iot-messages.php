@@ -226,7 +226,7 @@ if (!class_exists('iot_messages')) {
                     $post_id = get_the_ID();
                     $device_number = get_post_meta($post_id, 'device_number', true);
                     $record_frequency = get_post_meta($post_id, 'record_frequency', true);
-                    
+
                     // Ensure $record_frequency is set
                     if (!isset($record_frequency) || !array_key_exists($record_frequency, $record_intervals)) {
                         error_log("Invalid or missing record frequency. Defaulting to 'daily'.");
@@ -242,12 +242,12 @@ if (!class_exists('iot_messages')) {
                         'posts_per_page' => -1,
                         'orderby'        => 'date',
                         'order'          => 'DESC',
+                        'meta_query'     => array(
+                            'key'     => 'device_number',
+                            'value'   => $device_number,
+                            'compare' => '=',
+                        ),
                         'date_query'     => array(
-                            array(
-                                'key'     => 'device_number',
-                                'value'   => $device_number,
-                                'compare' => '=',
-                            ),
                             array(
                                 'before'    => gmdate('Y-m-d H:i:s', time() - $retention_interval),
                                 'inclusive' => true,
