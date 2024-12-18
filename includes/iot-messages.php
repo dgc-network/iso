@@ -227,19 +227,19 @@ if (!class_exists('iot_messages')) {
                     $device_id = get_the_ID();
                     $device_number = get_post_meta($device_id, 'device_number', true);
                     $record_frequency = get_post_meta($device_id, 'record_frequency', true);
-        
+                    error_log("Deleting the posts of device number: $device_number");
+
                     if (!isset($record_frequency) || !array_key_exists($record_frequency, $record_intervals)) {
                         $record_frequency = 'daily'; // Default to daily
                     }
         
                     $retention_interval = $record_intervals[$record_frequency];
-        
+                    error_log("Retention interval is: $retention_interval");
+
                     // Query for retention deletion
                     $delete_args = array(
                         'post_type'      => 'iot-message',
                         'posts_per_page' => -1,
-                        'orderby'        => 'date',
-                        'order'          => 'DESC',
                         'meta_query'     => array(
                             array(
                                 'key'     => 'device_number',
@@ -247,6 +247,8 @@ if (!class_exists('iot_messages')) {
                                 'compare' => '=',
                             ),
                         ),
+                        'orderby'        => 'date',
+                        'order'          => 'DESC',
                         'date_query'     => array(
                             array(
                                 'before'    => gmdate('Y-m-d H:i:s', time() - $retention_interval),
@@ -254,7 +256,6 @@ if (!class_exists('iot_messages')) {
                             ),
                         ),
                     );
-        
                     $delete_query = new WP_Query($delete_args);
         
                     if ($delete_query->have_posts()) {
