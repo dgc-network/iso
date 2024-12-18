@@ -189,6 +189,7 @@ if (!class_exists('iot_messages')) {
         
                     $retention_interval = $record_intervals[$record_frequency];
                     error_log("Retention interval is: $retention_interval");
+                    error_log("Retention Date: " . gmdate('Y-m-d H:i:s', time() - $retention_interval));
 
                     // Query for retention deletion
                     $delete_args = array(
@@ -211,7 +212,9 @@ if (!class_exists('iot_messages')) {
                         ),
                     );
                     $delete_query = new WP_Query($delete_args);
-        
+                    error_log("Delete Query Arguments: " . print_r($delete_args, true));
+                    error_log("Number of posts found: " . $delete_query->post_count);
+                    
                     if ($delete_query->have_posts()) {
                         $last_retained_timestamp = null;
         
