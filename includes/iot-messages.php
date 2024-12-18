@@ -211,6 +211,7 @@ if (!class_exists('iot_messages')) {
                             ),
                         ),
                     );
+                    unset($delete_args['date_query']);
                     $delete_query = new WP_Query($delete_args);
                     error_log("Delete Query Arguments: " . print_r($delete_args, true));
                     error_log("Number of posts found: " . $delete_query->post_count);
