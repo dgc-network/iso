@@ -629,8 +629,18 @@ if (!class_exists('iot_messages')) {
                 <input type="text" id="device-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="device-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
-                <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
-                <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $profiles_class->select_site_profile_options($site_id);?></select>
+                <?php if (current_user_can('administrator')) {?>
+                    <label for="site-id"><?php echo __( 'Site:', 'your-text-domain' );?></label>
+                    <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $profiles_class->select_site_profile_options($site_id);?></select>
+                <?php }?>
+                <label for="record-frequency"><?php echo __( 'Record frequency:', 'your-text-domain' );?></label>
+                <select id="record-frequency" class="text ui-widget-content ui-corner-all" >
+                    <option value="daily"><?php echo __( '每日記錄一次', 'your-text-domain' );?></option>
+                    <option value="twice-daily"><?php echo __( '12小時記錄一次', 'your-text-domain' );?></option>
+                    <option value="six-hours"><?php echo __( '6小時記錄一次', 'your-text-domain' );?></option>
+                    <option value="three-hours"><?php echo __( '3小時記錄一次', 'your-text-domain' );?></option>
+                    <option value="one-hour"><?php echo __( '1小時記錄一次', 'your-text-domain' );?></option>
+                </select>
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $query = $this->retrieve_iot_message_data($paged, $device_number);
@@ -707,6 +717,7 @@ if (!class_exists('iot_messages')) {
                 $device_number = (isset($_POST['_device_number'])) ? sanitize_text_field($_POST['_device_number']) : '';
                 $device_title = (isset($_POST['_device_title'])) ? sanitize_text_field($_POST['_device_title']) : '';
                 $site_id = (isset($_POST['_site_id'])) ? sanitize_text_field($_POST['_site_id']) : 0;
+                $record_frequency = (isset($_POST['_record_frequency'])) ? sanitize_text_field($_POST['_record_frequency']) : 'daily';
                 $data = array(
                     'ID'           => $device_id,
                     'post_title'   => $device_title,
@@ -715,6 +726,7 @@ if (!class_exists('iot_messages')) {
                 wp_update_post( $data );
                 update_post_meta($device_id, 'device_number', $device_number);
                 update_post_meta($device_id, 'site_id', $site_id);
+                update_post_meta($device_id, 'record_frequency', $record_frequency);
 
                 $params = array(
                     'log_message' => 'Update an IoT device(#'.$device_number.')',
@@ -733,8 +745,9 @@ if (!class_exists('iot_messages')) {
                     'post_author'   => $current_user_id,
                 );    
                 $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'device_number', time());
+                update_post_meta($post_id, 'site_id', $site_id);
+                update_post_meta($post_id, 'record_frequency', 'daily');
             }
             $response = array('html_contain' => $this->display_iot_device_list());
             wp_send_json($response);

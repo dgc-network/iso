@@ -121,6 +121,7 @@ jQuery(document).ready(function($) {
                     '_device_title': $("#device-title").val(),
                     '_device_content': $("#device-content").val(),
                     '_site_id': $("#site-id").val(),
+                    '_record_frequency': $("#record-frequency").val(),
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
