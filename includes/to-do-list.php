@@ -905,6 +905,7 @@ if (!class_exists('to_do_list')) {
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
                 $todo_title = get_the_title($doc_id);
             } else {
+                $doc_id = 0;
                 $todo_title = isset($params['log_message']) ? $params['log_message'] : 'No message.'; 
             }
 
