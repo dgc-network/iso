@@ -103,7 +103,7 @@ if (!class_exists('iot_messages')) {
             // Return the ID if a matching post is found, otherwise return null
             return !empty($query->posts) ? $query->posts[0] : null;
         }
-/*
+
         function update_iot_message_meta_data() {
             error_log("update_iot_message_meta_data: Start execution");
 
@@ -235,8 +235,8 @@ if (!class_exists('iot_messages')) {
                 wp_reset_postdata();
             }
         }
-*/        
-
+        
+/*
         function update_iot_message_meta_data() {
             error_log("update_iot_message_meta_data: Start execution");
             
@@ -322,7 +322,7 @@ if (!class_exists('iot_messages')) {
                 error_log("update_iot_message_meta_data: No posts found for deletion");
             }
         }
-
+*/
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
