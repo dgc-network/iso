@@ -103,7 +103,7 @@ if (!class_exists('iot_messages')) {
             // Return the ID if a matching post is found, otherwise return null
             return !empty($query->posts) ? $query->posts[0] : null;
         }
-
+/*
         function get_doc_reports_by_doc_field($field_type = false, $field_value = false) {
             $args = array(
                 'post_type'      => 'doc-field',
@@ -149,7 +149,7 @@ if (!class_exists('iot_messages')) {
             // Return the accumulated post IDs
             return $accumulated_post_ids;
         }
-
+*/
         function update_iot_message_meta_data() {
             error_log("update_iot_message_meta_data: Start execution");
             
@@ -206,6 +206,88 @@ if (!class_exists('iot_messages')) {
                 error_log("update_iot_message_meta_data: No unprocessed posts found");
             }
         
+            // Define the intervals for record frequency
+            $record_intervals = array(
+                'daily'       => DAY_IN_SECONDS,
+                'twice-daily' => 12 * HOUR_IN_SECONDS,
+                'six-hours'   => 6 * HOUR_IN_SECONDS,
+                'three-hours' => 3 * HOUR_IN_SECONDS,
+                'one-hour'    => HOUR_IN_SECONDS,
+            );
+
+            $args = array(
+                'post_type'      => 'iot-device',
+                'posts_per_page' => -1,
+            );        
+            $query = new WP_Query($args);
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $post_id = get_the_ID();
+                    $device_number = get_post_meta($post_id, 'device_number', true);
+                    $record_frequency = get_post_meta($post_id, 'record_frequency', true);
+                    
+                    // Ensure $record_frequency is set
+                    if (!isset($record_frequency) || !array_key_exists($record_frequency, $record_intervals)) {
+                        error_log("Invalid or missing record frequency. Defaulting to 'daily'.");
+                        $record_frequency = 'daily';
+                    }
+                    
+                    // Set the retention interval in seconds based on $record_frequency
+                    $retention_interval = $record_intervals[$record_frequency];
+                    
+                    // Query for 'iot-message' posts older than the retention interval
+                    $delete_args = array(
+                        'post_type'      => 'iot-message',
+                        'posts_per_page' => -1,
+                        'orderby'        => 'date',
+                        'order'          => 'DESC',
+                        'date_query'     => array(
+                            array(
+                                'key'     => 'device_number',
+                                'value'   => $device_number,
+                                'compare' => '=',
+                            ),
+                            array(
+                                'before'    => gmdate('Y-m-d H:i:s', time() - $retention_interval),
+                                'inclusive' => true,
+                            ),
+                        ),
+                    );
+                    
+                    $delete_query = new WP_Query($delete_args);
+                    
+                    if ($delete_query->have_posts()) {
+                        error_log("Found posts exceeding the retention policy for $record_frequency.");
+                    
+                        $last_retained_timestamp = null;
+                    
+                        while ($delete_query->have_posts()) {
+                            $delete_query->the_post();
+                            $post_id = get_the_ID();
+                            $post_date = get_the_date('U'); // Get post timestamp
+                    
+                            // Retain only the most recent post within each interval
+                            if ($last_retained_timestamp === null || $post_date <= $last_retained_timestamp - $retention_interval) {
+                                $last_retained_timestamp = $post_date;
+                                error_log("Retaining post ID: $post_id");
+                            } else {
+                                // Delete posts not needed for retention
+                                wp_delete_post($post_id, true); // Force delete the post
+                                error_log("Deleted post ID: $post_id");
+                            }
+                        }
+                    
+                        wp_reset_postdata();
+                    } else {
+                        error_log("No posts found exceeding the retention policy for $record_frequency.");
+                    }
+        
+                }
+                wp_reset_postdata();
+            }
+
+/*            
             // Delete posts older than 3 days
             $delete_args = array(
                 'post_type'      => 'iot-message',
@@ -234,6 +316,7 @@ if (!class_exists('iot_messages')) {
             } else {
                 error_log("update_iot_message_meta_data: No posts found for deletion");
             }
+*/                
         }
 
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
