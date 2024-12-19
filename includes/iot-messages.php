@@ -49,7 +49,18 @@ if (!class_exists('iot_messages')) {
             // Add Mermaid script
             wp_enqueue_script('mermaid', 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js', array(), null, true);
         }
-
+        function add_mermaid_custom_styles() {
+            echo '<style>
+            .mermaid .node rect {
+                fill: #ffcc00; /* Set the fill color */
+                stroke: #333333; /* Set the stroke color */
+            }
+            .mermaid .edgePath path {
+                stroke: #ff0000; /* Set the line color */
+            }
+            </style>';
+        }
+        add_action('wp_head', array($this, 'add_mermaid_custom_styles'));
         // iot-message operation
         function register_iot_message_post_type() {
             register_post_type('iot-message', array(
