@@ -585,6 +585,12 @@ if (!class_exists('iot_messages')) {
                                     'compare' => '=',
                                 ),
                             ),
+                            'date_query'     => array(
+                                array(
+                                    'before'    => gmdate('Y-m-d H:i:s', time() - 86400),
+                                    'inclusive' => true,
+                                ),
+                            ),
                             'fields'         => 'ids', // We only need the IDs for counting
                         );
         
@@ -603,10 +609,6 @@ if (!class_exists('iot_messages')) {
             error_log("Total matching iot-message posts: $total_count");
             return $total_count;
         }
-        
-        // Example usage
-        //$total_posts = count_matching_iot_messages();
-        //echo "Total matching posts: " . $total_posts;
         
         function retrieve_iot_device_data($paged = 1) {
             $current_user_id = get_current_user_id();
