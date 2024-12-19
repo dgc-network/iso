@@ -183,7 +183,7 @@ if (!class_exists('display_profiles')) {
                 $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 // exception notification setting
                 $iot_messages = new iot_messages();
-                $is_display = ($iot_messages->is_site_with_iot_device()) ? 'display:none;' : '';
+                $is_display = ($iot_messages->is_site_with_iot_device()) ? '' : 'display:none;';
                 ?>
                 <div style=<?php echo $is_display;?>>
                     <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting', 'your-text-domain' );?></label>

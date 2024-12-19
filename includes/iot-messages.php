@@ -486,7 +486,7 @@ if (!class_exists('iot_messages')) {
         }
 
         function is_site_with_iot_device() {
-            $query = $this->retrieve_iot_device_data($paged);
+            $query = $this->retrieve_iot_device_data(0);
             if ($query->have_posts()) :
                 return true;
             endif;
