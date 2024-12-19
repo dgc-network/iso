@@ -56,7 +56,7 @@ if (!class_exists('iot_messages')) {
                 fill: #ffcc00; /* Set the fill color */
                 stroke: #333333; /* Set the stroke color */
             }
-            .mermaid .edgePath path {
+            .mermaid .plot .edgePath path {
                 stroke: #ff0000; /* Set the line color */
             }
             </style>';
