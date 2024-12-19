@@ -76,7 +76,7 @@ if (!class_exists('line_login_api')) {
 
         function line_login_redirect_uri_callback() {
             $value = get_option('line_login_redirect_uri');
-            echo '<input type="text" name="line_login_redirect_uri" style="width:100%;" value="' . esc_attr($value) . '" />';
+            //echo '<input type="text" name="line_login_redirect_uri" style="width:100%;" value="' . esc_attr($value) . '" />';
         }
 
         function line_login_client_id_callback() {
