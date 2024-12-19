@@ -92,14 +92,14 @@ if (!class_exists('display_documents')) {
                 if (isset($_GET['_doc_id'])) {
                     $doc_id = sanitize_text_field($_GET['_doc_id']);
                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                    if (is_site_admin()) echo $this->display_document_dialog($doc_id);
-                    else {
-                        if (isset($_GET['_report_id'])) {
-                            $report_id = sanitize_text_field($_GET['_report_id']);
-                            echo $this->display_doc_report_dialog($report_id);
-                        } else {
+                    if (isset($_GET['_report_id'])) {
+                        $report_id = sanitize_text_field($_GET['_report_id']);
+                        echo $this->display_doc_report_dialog($report_id);
+                    } else {
+                        if (is_site_admin()) echo $this->display_document_dialog($doc_id);
+                        else {
+                            if ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
                             if ($is_doc_report==0) echo $this->display_doc_frame_contain($doc_id);
-                            elseif ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
                         }    
                     }
                 }

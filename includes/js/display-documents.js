@@ -745,6 +745,7 @@ jQuery(document).ready(function($) {
             var url = new URL(currentUrl);
             // Remove the specified parameter
             url.searchParams.delete('_doc_id');
+            url.searchParams.delete('_report_id');
             // Get the modified URL
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
