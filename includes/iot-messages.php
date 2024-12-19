@@ -473,7 +473,7 @@ if (!class_exists('iot_messages')) {
             return $query;
         }
 
-        // iot-device post type
+        // iot-device
         function register_iot_device_post_type() {
             $labels = array(
                 'menu_name'     => _x('IoT devices', 'admin menu', 'textdomain'),
@@ -778,6 +778,9 @@ if (!class_exists('iot_messages')) {
                 ?>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id)?>
+                <div style="background-color:lightblue; text-align:center;">
+                    <?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $total_posts;?>
+                </div>
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(

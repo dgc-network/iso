@@ -1430,6 +1430,8 @@ if (!class_exists('to_do_list')) {
         
         // action_log
         function display_action_log_list() {
+            $query = $this->retrieve_action_log_data(0);
+            $total_posts = $query->found_posts;
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -1442,7 +1444,7 @@ if (!class_exists('to_do_list')) {
                 </div>
                 <?php echo $this->get_action_log();?>
                 <div style="background-color:lightblue; text-align:center;">
-                    <?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $this->count_action_logs();?>
+                    <?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $total_posts;?>
                 </div>
             </div>
             <?php
