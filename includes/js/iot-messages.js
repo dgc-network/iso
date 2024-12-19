@@ -123,6 +123,7 @@ jQuery(document).ready(function($) {
                     '_site_id': $("#site-id").val(),
                     '_temperature_offset': $("#temperature-offset").val(),
                     '_record_frequency': $("#record-frequency").val(),
+                    '_records_removed': $("#records-removed").val(),
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);

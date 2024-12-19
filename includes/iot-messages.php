@@ -168,6 +168,15 @@ if (!class_exists('iot_messages')) {
                 'one-hour'    => HOUR_IN_SECONDS,
             );
         
+            // Define intervals in seconds for $records_removed
+            $records_removed_intervals = array(
+                'one-year'      => 365 * DAY_IN_SECONDS,
+                'two-years'     => 2 * 365 * DAY_IN_SECONDS,
+                'three-years'   => 3 * 365 * DAY_IN_SECONDS,
+                'half-year'     => 6 * 30 * DAY_IN_SECONDS, // Approximation for half a year
+                'three-months'  => 3 * 30 * DAY_IN_SECONDS, // Approximation for three months
+            );
+        
             $device_args = array(
                 'post_type'      => 'iot-device',
                 'posts_per_page' => -1,
@@ -181,13 +190,14 @@ if (!class_exists('iot_messages')) {
                     $device_id = get_the_ID();
                     $device_number = get_post_meta($device_id, 'device_number', true);
                     $record_frequency = get_post_meta($device_id, 'record_frequency', true);
-                    error_log("Deleting the posts of device number: $device_number");
+                    $records_removed = get_post_meta($device_id, 'records_removed', true);
 
                     if (!isset($record_frequency) || !array_key_exists($record_frequency, $record_intervals)) {
                         $record_frequency = 'daily'; // Default to daily
                     }
         
                     $retention_interval = $record_intervals[$record_frequency];
+                    error_log("Deleting the posts of device number: $device_number");
                     error_log("Retention interval is: $retention_interval");
                     error_log("Retention Date: " . gmdate('Y-m-d H:i:s', time() - $retention_interval));
 
@@ -235,11 +245,58 @@ if (!class_exists('iot_messages')) {
                     } else {
                         error_log("No posts exceeding retention policy for $record_frequency.");
                     }
+
+                    // Delete posts older than $records_removed
+                    if (!isset($records_removed) || !array_key_exists($records_removed, $records_removed_intervals)) {
+                        error_log("Invalid records_removed value: $records_removed");
+                        $records_removed = 'one-year'; // Default to daily
+                    }
+        
+                    // Calculate the date threshold
+                    $date_threshold = gmdate('Y-m-d H:i:s', time() - $records_removed_intervals[$records_removed]);
+
+                    $delete_args = array(
+                        'post_type'      => 'iot-message',
+                        'posts_per_page' => -1,
+                        'meta_query'     => array(
+                            array(
+                                'key'     => 'deviceID',
+                                'value'   => $device_number,
+                                'compare' => '=',
+                            ),
+                        ),
+                        'date_query'     => array(
+                            array(
+                                'before'    => $date_threshold,
+                                'inclusive' => true,
+                            ),
+                        ),
+                    );
+                
+                    // Debugging logs
+                    error_log("Deleting records older than: $date_threshold");
+
+                    $delete_query = new WP_Query($delete_args);
+                
+                    if ($delete_query->have_posts()) {
+                        error_log("update_iot_message_meta_data: Found posts older than 3 days for deletion");
+                
+                        while ($delete_query->have_posts()) {
+                            $delete_query->the_post();
+                            $delete_post_id = get_the_ID();
+                            wp_delete_post($delete_post_id, true); // Force delete the post
+                
+                            error_log("Deleted post ID: ".print_r($delete_post_id, true));
+                        }
+                        wp_reset_postdata();
+                    } else {
+                        error_log("update_iot_message_meta_data: No posts found for deletion");
+                    }
+        
                 }
                 wp_reset_postdata();
             }
-        }
-        
+        }        
 /*
         function update_iot_message_meta_data() {
             error_log("update_iot_message_meta_data: Start execution");
@@ -514,6 +571,14 @@ if (!class_exists('iot_messages')) {
             register_post_type( 'iot-device', $args );
         }
 
+        function is_site_with_iot_device() {
+            $query = $this->retrieve_iot_device_data($paged);
+            if ($query->have_posts()) :
+                return true;
+            endif;
+            return false;
+        }
+
         function display_iot_device_list() {
             ob_start();
             $todo_class = new to_do_list();
@@ -634,6 +699,8 @@ if (!class_exists('iot_messages')) {
         }
 
         function get_previous_device_id($current_device_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Get the current device's `device_number`
             $current_device_number = get_post_meta($current_device_id, 'device_number', true);
         
@@ -657,6 +724,13 @@ if (!class_exists('iot_messages')) {
                 ),
             );
         
+            if (!current_user_can('administrator')) {
+                $args['meta_query'][] = array(
+                    'key'   => 'site_id',
+                    'value' => $site_id,
+                );
+            }
+
             $query = new WP_Query($args);
         
             // Return the previous device ID or null if no previous device is found
@@ -664,6 +738,8 @@ if (!class_exists('iot_messages')) {
         }
 
         function get_next_device_id($current_device_id) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Get the current device's `device_number`
             $current_device_number = get_post_meta($current_device_id, 'device_number', true);
         
@@ -687,6 +763,13 @@ if (!class_exists('iot_messages')) {
                 ),
             );
         
+            if (!current_user_can('administrator')) {
+                $args['meta_query'][] = array(
+                    'key'   => 'site_id',
+                    'value' => $site_id,
+                );
+            }
+
             $query = new WP_Query($args);
         
             // Return the next device ID or null if no next device is found
@@ -709,6 +792,7 @@ if (!class_exists('iot_messages')) {
             $site_id = get_post_meta($device_id, 'site_id', true);
             $temperature_offset = get_post_meta($device_id, 'temperature_offset', true);
             $record_frequency = get_post_meta($device_id, 'record_frequency', true);
+            $records_removed = get_post_meta($device_id, 'records_removed', true);
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
@@ -735,6 +819,14 @@ if (!class_exists('iot_messages')) {
                     <option value="six-hours" <?php echo ($record_frequency=='six-hours') ? 'selected' : '';?>><?php echo __( '6小時記錄一次', 'your-text-domain' );?></option>
                     <option value="three-hours" <?php echo ($record_frequency=='three-hours') ? 'selected' : '';?>><?php echo __( '3小時記錄一次', 'your-text-domain' );?></option>
                     <option value="one-hour" <?php echo ($record_frequency=='one-hour') ? 'selected' : '';?>><?php echo __( '1小時記錄一次', 'your-text-domain' );?></option>
+                </select>
+                <label for="records-removed"><?php echo __( 'Records removed:', 'your-text-domain' );?></label>
+                <select id="records-removed" class="text ui-widget-content ui-corner-all" >
+                    <option value="one-year" <?php echo ($records_removed=='one-year') ? 'selected' : '';?>><?php echo __( '一年以上', 'your-text-domain' );?></option>
+                    <option value="two-years" <?php echo ($records_removed=='two-years') ? 'selected' : '';?>><?php echo __( '二年以上', 'your-text-domain' );?></option>
+                    <option value="three-years" <?php echo ($records_removed=='three-years') ? 'selected' : '';?>><?php echo __( '三年以上', 'your-text-domain' );?></option>
+                    <option value="half-year" <?php echo ($records_removed=='half-year') ? 'selected' : '';?>><?php echo __( '六個月以上', 'your-text-domain' );?></option>
+                    <option value="three-months" <?php echo ($records_removed=='three-months') ? 'selected' : '';?>><?php echo __( '三個月以上', 'your-text-domain' );?></option>
                 </select>
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
@@ -814,6 +906,7 @@ if (!class_exists('iot_messages')) {
                 $site_id = (isset($_POST['_site_id'])) ? sanitize_text_field($_POST['_site_id']) : 0;
                 $temperature_offset = (isset($_POST['_temperature_offset'])) ? sanitize_text_field($_POST['_temperature_offset']) : 0;
                 $record_frequency = (isset($_POST['_record_frequency'])) ? sanitize_text_field($_POST['_record_frequency']) : 'daily';
+                $records_removed = (isset($_POST['_records_removed'])) ? sanitize_text_field($_POST['_records_removed']) : 'one-year';
                 $data = array(
                     'ID'           => $device_id,
                     'post_title'   => $device_title,
@@ -824,6 +917,7 @@ if (!class_exists('iot_messages')) {
                 update_post_meta($device_id, 'site_id', $site_id);
                 update_post_meta($device_id, 'temperature_offset', $temperature_offset);
                 update_post_meta($device_id, 'record_frequency', $record_frequency);
+                update_post_meta($device_id, 'records_removed', $records_removed);
 
                 $params = array(
                     'log_message' => 'Update an IoT device(#'.$device_number.')',
@@ -846,6 +940,7 @@ if (!class_exists('iot_messages')) {
                 update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'temperature_offset', 0);
                 update_post_meta($post_id, 'record_frequency', 'daily');
+                update_post_meta($post_id, 'records_removed', 'one-year');
             }
             $response = array('html_contain' => $this->display_iot_device_list());
             wp_send_json($response);

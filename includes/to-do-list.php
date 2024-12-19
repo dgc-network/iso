@@ -46,14 +46,17 @@ if (!class_exists('to_do_list')) {
 
         // Select profile
         function display_select_todo($select_option=false) {
+            $iot_messages = new iot_messages();
             ?>
             <select id="select-todo">
                 <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
                 <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'your-text-domain' );?></option>
                 <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
+                <?php if (current_user_can('administrator') || $iot_messages->is_site_with_iot_device()) {?>
+                    <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'your-text-domain' );?></option>
+                <?php }?>
                 <?php if (current_user_can('administrator')) {?>
-                <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'your-text-domain' );?></option>
-                <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
+                    <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
                 <?php }?>
             </select>
             <?php
