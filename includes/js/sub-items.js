@@ -292,7 +292,7 @@ jQuery(document).ready(function($) {
     }
 
     // sub-item
-    activate_sub_item_list_data($("#embedded-id"));
+    activate_sub_item_list_data($("#embedded-id").val());
     function activate_sub_item_list_data(embedded_id){
         $("#new-sub-item").on("click", function() {
             $.ajax({
