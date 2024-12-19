@@ -700,6 +700,12 @@ if (!class_exists('display_documents')) {
                     'doc_id'     => $doc_id,
                     'search_doc_report' => $search_doc_report,
                 );
+                $paged = max(1, get_query_var('paged')); // Get the current page number
+                $params['paged'] = $paged;
+                $query = $this->retrieve_doc_report_data($params);
+                $total_posts = $query->found_posts;
+                $total_pages = ceil($total_posts / get_option('operation_row_counts'));
+
                 $this->get_doc_report_contain_list($params);
                 $profiles_class = new display_profiles();
                 ?>
@@ -762,11 +768,11 @@ if (!class_exists('display_documents')) {
                 </thead>
                 <tbody>
                     <?php
-                    $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $params['paged'] = $paged;
+                    //$paged = max(1, get_query_var('paged')); // Get the current page number
+                    //$params['paged'] = $paged;
                     $query = $this->retrieve_doc_report_data($params);
-                    $total_posts = $query->found_posts;
-                    $total_pages = ceil($total_posts / get_option('operation_row_counts'));
+                    //$total_posts = $query->found_posts;
+                    //$total_pages = ceil($total_posts / get_option('operation_row_counts'));
         
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
