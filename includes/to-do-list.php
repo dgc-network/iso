@@ -450,20 +450,21 @@ if (!class_exists('to_do_list')) {
         }
         
         function get_todo_dialog_data() {
-            $result = array();
+            $response = array();
             if (isset($_POST['_todo_id'])) {
                 $todo_id = sanitize_text_field($_POST['_todo_id']);
                 //$result['html_contain'] = $this->display_todo_dialog($todo_id);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $documents_class = new display_documents();
-                $result['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
+                $response['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
                 $items_class = new sub_items();
                 $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
             }
-            wp_send_json($result);
+            wp_send_json($response);
         }
         
         function set_todo_dialog_data() {
+            $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $this->create_todo_dialog_and_go_next($action_id);
@@ -735,19 +736,20 @@ if (!class_exists('to_do_list')) {
         }
         
         function get_start_job_dialog_data() {
-            $result = array();
+            $response = array();
             if (isset($_POST['_job_id'])) {
                 $job_id = sanitize_text_field($_POST['_job_id']);
                 //$result['html_contain'] = $this->display_start_job_dialog($job_id);
                 $documents_class = new display_documents();
-                $result['doc_fields'] = $documents_class->get_doc_field_keys($job_id);
+                $response['doc_fields'] = $documents_class->get_doc_field_keys($job_id);
                 $items_class = new sub_items();
                 $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($job_id);
             }
-            wp_send_json($result);
+            wp_send_json($response);
         }
         
         function set_start_job_dialog_data() {
+            $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $this->create_start_job_and_go_next($action_id);
@@ -779,7 +781,7 @@ if (!class_exists('to_do_list')) {
             }
 
             if (!empty($summary_todos) && is_array($summary_todos)) {
-                foreach ($todo_in_summary as $todo_id) {
+                foreach ($summary_todos as $todo_id) {
                     $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                     update_post_meta($report_id, 'todo_status', $next_job);
                 }
@@ -849,7 +851,7 @@ if (!class_exists('to_do_list')) {
                     'post_content' => $_POST['_post_content'],
                 );        
                 wp_update_post($post_data);
-                update_post_meta($report_id, '_post_number', $_POST['_post_number']);
+                update_post_meta($new_report_id, '_post_number', $_POST['_post_number']);
 
                 if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
                     // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
@@ -1397,6 +1399,7 @@ if (!class_exists('to_do_list')) {
                     ),
                 );
 
+                $line_bot_api = new line_bot_api();
                 $line_bot_api->send_bubble_message([
                     'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                     'header_contents' => $header_contents,
@@ -1623,6 +1626,7 @@ if (!class_exists('to_do_list')) {
             <input type="hidden" id="next-log-id" value="<?php echo esc_attr($next_log_id); ?>" />
             <?php
             $documents_class = new display_documents();
+            $submit_time = get_post_meta($log_id, 'submit_time', true);
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>

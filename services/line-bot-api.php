@@ -133,14 +133,14 @@ if (!class_exists('line_bot_api')) {
 
             $bubble_message['altText'] = $alt_text;
 
-            if isset($params['replyToken']) {
+            if (isset($params['replyToken'])) {
                 $replyToken = $params['replyToken'];
                 $message = array(
                     'replyToken' => $replyToken,
                     'messages' => array($bubble_message),
                 );
                 $this->replyMessage($message);
-            } elseif isset($params['to']) {
+            } elseif (isset($params['to'])) {
                 $message = array(
                     'to' => $params['to'],
                     'messages' => array($bubble_message),
