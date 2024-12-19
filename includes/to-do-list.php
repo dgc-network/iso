@@ -1712,14 +1712,11 @@ if (!class_exists('to_do_list')) {
             <?php
             return ob_get_clean();
         }
-        
+/*        
         function count_action_logs(){
             $current_user_id = get_current_user_id();
             $current_site = get_user_meta($current_user_id, 'site_id', true);
             $x = 0;
-            $query = $this->retrieve_action_log_data(0);
-            return $query->found_posts;
-/*            
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -1731,9 +1728,8 @@ if (!class_exists('to_do_list')) {
                 wp_reset_postdata();
             endif;
             return $x;
-*/            
         }
-        
+*/        
         // doc-report frequence setting
         function schedule_event_callback($params) {
             $action_id = $params['action_id'];

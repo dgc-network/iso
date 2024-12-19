@@ -549,12 +549,65 @@ if (!class_exists('iot_messages')) {
                     ?>
                 </div>
             </fieldset>
+            <div style="background-color:lightblue; text-align:center;">
+                <?php 
+                $total_posts = $this->count_matching_iot_messages();
+                echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $total_posts;
+                ?>
+            </div>
             </div>
             <div id="iot-device-dialog" title="IoT device dialog"></div>
             <?php
             return ob_get_clean();
         }
 
+        function count_matching_iot_messages() {
+            // Initialize the total count
+            $total_count = 0;
+        
+            // Step 1: Get all iot-device posts
+            $iot_device_query = $this->retrieve_iot_device_data(0);
+        
+            if ($iot_device_query->have_posts()) {
+                while ($iot_device_query->have_posts()) {
+                    $iot_device_query->the_post();
+                    $device_number = get_post_meta(get_the_ID(), 'deviceID', true);
+        
+                    if (!empty($device_number)) {
+                        // Step 2: Query iot-message posts where device_number matches deviceID
+                        $iot_message_args = array(
+                            'post_type'      => 'iot-message',
+                            'posts_per_page' => -1, // Get all matching posts
+                            'meta_query'     => array(
+                                array(
+                                    'key'   => 'device_number',
+                                    'value' => $device_number,
+                                    'compare' => '=',
+                                ),
+                            ),
+                            'fields'         => 'ids', // We only need the IDs for counting
+                        );
+        
+                        $iot_message_query = new WP_Query($iot_message_args);
+        
+                        // Step 3: Increment the total count by the number of matching posts
+                        $total_count += $iot_message_query->found_posts;
+        
+                        wp_reset_postdata(); // Reset the query
+                    }
+                }
+                wp_reset_postdata(); // Reset the outer loop
+            }
+        
+            // Log or return the total count
+            error_log("Total matching iot-message posts: $total_count");
+            return $total_count;
+        }
+        
+        // Example usage
+        //$total_posts = count_matching_iot_messages();
+        //echo "Total matching posts: " . $total_posts;
+        
         function retrieve_iot_device_data($paged = 1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -778,9 +831,6 @@ if (!class_exists('iot_messages')) {
                 ?>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id);?>
-                <div style="background-color:lightblue; text-align:center;">
-                    <?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $total_posts;?>
-                </div>
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
