@@ -709,9 +709,9 @@ if (!class_exists('display_documents')) {
                 <div class="pagination">
                     <?php
                     // Display pagination links
-                    //if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                    //echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                    //if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
                 </div>
             </fieldset>
@@ -891,9 +891,9 @@ if (!class_exists('display_documents')) {
 
             $args = array(
                 'post_type'      => 'doc-report',
-                'posts_per_page' => -1,
-                //'posts_per_page' => get_option('operation_row_counts'),
-                //'paged'          => $paged,
+                //'posts_per_page' => -1,
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
                 'meta_query'     => $meta_query,
                 'orderby' => 'date',
                 'order' => 'DESC',
