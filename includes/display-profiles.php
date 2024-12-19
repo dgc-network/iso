@@ -153,7 +153,6 @@ if (!class_exists('display_profiles')) {
         // my-profile
         function display_my_profile() {
             ob_start();
-            $iot_messages = new iot_messages();
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
             $phone_number = get_user_meta($current_user_id, 'phone_number', true);
@@ -173,6 +172,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="my-job-list"><?php echo __( 'Jobs & authorizations', 'your-text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
+                <label for="phone-number"><?php echo __( 'Phone', 'your-text-domain' );?></label>
+                <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -180,11 +181,14 @@ if (!class_exists('display_profiles')) {
                 );
                 $documents_class = new display_documents();
                 $documents_class->get_transactions_by_key_value_pair($key_value_pair);
+                // exception notification setting
+                $iot_messages = new iot_messages();
+                $is_display = ($iot_messages->is_site_with_iot_device()) ? 'display:none;' : '';
                 ?>
-                <label for="phone-number"><?php echo __( 'Phone', 'your-text-domain' );?></label>
-                <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
-                <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting', 'your-text-domain' );?></label>
-                <div id="my-exception-notification-setting"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
+                <div style=<?php echo $is_display;?>>
+                    <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting', 'your-text-domain' );?></label>
+                    <div id="my-exception-notification-setting"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
+                </div>
             </fieldset>
             <?php
             return ob_get_clean();
