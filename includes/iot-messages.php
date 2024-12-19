@@ -571,7 +571,7 @@ if (!class_exists('iot_messages')) {
             if ($iot_device_query->have_posts()) {
                 while ($iot_device_query->have_posts()) {
                     $iot_device_query->the_post();
-                    $device_number = get_post_meta(get_the_ID(), 'deviceID', true);
+                    $device_number = get_post_meta(get_the_ID(), 'device_number', true);
         
                     if (!empty($device_number)) {
                         // Step 2: Query iot-message posts where device_number matches deviceID
@@ -580,7 +580,7 @@ if (!class_exists('iot_messages')) {
                             'posts_per_page' => -1, // Get all matching posts
                             'meta_query'     => array(
                                 array(
-                                    'key'   => 'device_number',
+                                    'key'   => 'deviceID',
                                     'value' => $device_number,
                                     'compare' => '=',
                                 ),
