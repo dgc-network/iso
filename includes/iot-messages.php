@@ -777,7 +777,7 @@ if (!class_exists('iot_messages')) {
                 <?php }
                 ?>
                 <label for="iot-message"><?php echo __( 'IoT messages: ', 'your-text-domain' );?></label>
-                <?php echo $this->display_iot_message_list($device_id)?>
+                <?php echo $this->display_iot_message_list($device_id);?>
                 <div style="background-color:lightblue; text-align:center;">
                     <?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $total_posts;?>
                 </div>
