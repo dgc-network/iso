@@ -288,12 +288,11 @@ jQuery(document).ready(function($) {
             urlParams.set("_embedded_id", embedded_id);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-
-            activate_sub_item_list_data(embedded_id);
         });
     }
 
     // sub-item
+    activate_sub_item_list_data($("#embedded-id"));
     function activate_sub_item_list_data(embedded_id){
         $("#new-sub-item").on("click", function() {
             $.ajax({
