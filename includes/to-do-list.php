@@ -1658,11 +1658,13 @@ if (!class_exists('to_do_list')) {
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                            $site_id = get_post_meta($doc_id, 'site_id', true);
+                            //$site_id = get_post_meta($doc_id, 'site_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $todo_title = get_the_title();
                             $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
-                            if ($report_id) $doc_title .= '(#'.$report_id.')';
+                            if ($report_id) {
+                                $doc_title .= '(#'.$report_id.')';
+                            }
                             else {
                                 $doc_title = get_the_title();
                                 $todo_title = 'system';
@@ -1714,6 +1716,8 @@ if (!class_exists('to_do_list')) {
             $current_site = get_user_meta($current_user_id, 'site_id', true);
             $x = 0;
             $query = $this->retrieve_action_log_data(0);
+            return $query->found_posts;
+/*            
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
@@ -1725,6 +1729,7 @@ if (!class_exists('to_do_list')) {
                 wp_reset_postdata();
             endif;
             return $x;
+*/            
         }
         
         // doc-report frequence setting
