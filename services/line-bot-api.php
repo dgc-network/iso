@@ -88,6 +88,67 @@ if (!class_exists('line_bot_api')) {
         }
 
         // Flex message
+        function send_bubble_message($params) {
+            // Initial bubble message structure
+            $alt_text = 'bubble_message';
+            $bubble_message = array(
+                'type' => 'flex',
+                'altText' => 'bubble_message',
+                'contents' => array(
+                    'type' => 'bubble',
+                ),
+            );
+
+            // Add header contents if not empty
+            $header_contents = isset($params['header_contents']) ? $params['header_contents'] : array();
+            if (is_array($header_contents) && !empty($header_contents)) {
+                $bubble_message['contents']['header'] = array(
+                    'type' => 'box',
+                    'layout' => 'vertical',
+                    'contents' => $header_contents,
+                );
+            }
+
+            // Add body contents if not empty
+            $body_contents = isset($params['body_contents']) ? $params['body_contents'] : array();
+            if (is_array($body_contents) && !empty($body_contents)) {
+                $bubble_message['contents']['body'] = array(
+                    'type' => 'box',
+                    'layout' => 'vertical',
+                    'contents' => $body_contents,
+                );
+                $text_message = $body_contents[0]['text'];
+                if ($text_message) $alt_text = $text_message;
+            }
+
+            // Add footer contents if not empty
+            $footer_contents = isset($params['footer_contents']) ? $params['footer_contents'] : array();
+            if (is_array($footer_contents) && !empty($footer_contents)) {
+                $bubble_message['contents']['footer'] = array(
+                    'type' => 'box',
+                    'layout' => 'vertical',
+                    'contents' => $footer_contents,
+                );
+            }
+
+            $bubble_message['altText'] = $alt_text;
+
+            if isset($params['replyToken']) {
+                $replyToken = $params['replyToken'];
+                $message = array(
+                    'replyToken' => $replyToken,
+                    'messages' => array($bubble_message),
+                );
+                $this->replyMessage($message);
+            } elseif isset($params['to']) {
+                $message = array(
+                    'to' => $params['to'],
+                    'messages' => array($bubble_message),
+                );
+                $this->pushMessage($message);
+            }
+        }
+
         function set_bubble_message($params) {
             // Initial bubble message structure
             $alt_text = 'bubble_message';

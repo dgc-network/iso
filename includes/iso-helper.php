@@ -246,6 +246,13 @@ function init_webhook_events() {
                     ),
                 );
 
+                $line_bot_api->send_bubble_message([
+                    'replyToken' => $event['replyToken'],
+                    'header_contents' => $header_contents,
+                    'body_contents' => $body_contents,
+                    'footer_contents' => $footer_contents,
+                ]);
+/*                
                 // Generate the Flex Message
                 $flexMessage = $line_bot_api->set_bubble_message([
                     'header_contents' => $header_contents,
@@ -256,7 +263,8 @@ function init_webhook_events() {
                 $line_bot_api->replyMessage([
                     'replyToken' => $event['replyToken'],
                     'messages' => [$flexMessage],
-                ]);            
+                ]);
+*/                      
             }
         }
         
@@ -312,6 +320,13 @@ function init_webhook_events() {
                             // Reset post data after custom loop
                             wp_reset_postdata();
 
+                            $line_bot_api->send_bubble_message([
+                                'replyToken' => $event['replyToken'],
+                                'header_contents' => $header_contents,
+                                'body_contents' => $body_contents,
+                                'footer_contents' => $footer_contents,
+                            ]);
+/*            
                             // Generate the Flex Message
                             $flexMessage = $line_bot_api->set_bubble_message([
                                 'header_contents' => $header_contents,
@@ -323,6 +338,7 @@ function init_webhook_events() {
                                 'replyToken' => $event['replyToken'],
                                 'messages' => array($flexMessage),
                             ));
+*/
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
