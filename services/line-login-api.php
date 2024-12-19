@@ -109,7 +109,8 @@ if (!class_exists('line_login_api')) {
                     'body' => array(
                         'grant_type'    => 'authorization_code',
                         'code'          => $code,
-                        'redirect_uri'  => get_option('line_login_redirect_uri'),
+                        //'redirect_uri'  => get_option('line_login_redirect_uri'),
+                        'redirect_uri'  => home_url('/line-login'),
                         //'redirect_uri'  => home_url('/oauth-callback'),
                         'client_id'     => get_option('line_login_client_id'),
                         'client_secret' => get_option('line_login_client_secret'),
@@ -199,7 +200,8 @@ if (!class_exists('line_login_api')) {
             set_transient('line_login_state', $state, 3600); // Save it for 1 hour
             $line_auth_url = "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=" . urlencode(get_option('line_login_client_id')) .
                  //"&redirect_uri=" . urlencode(home_url('/oauth-callback')) .
-                 "&redirect_uri=" . urlencode(get_option('line_login_redirect_uri')) .
+                 "&redirect_uri=" . urlencode(home_url('/line-login')) .
+                 //"&redirect_uri=" . urlencode(get_option('line_login_redirect_uri')) .
                  "&state=" . urlencode($state) .
                  "&scope=profile";
             ?>
