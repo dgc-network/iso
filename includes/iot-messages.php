@@ -551,8 +551,8 @@ if (!class_exists('iot_messages')) {
             </fieldset>
             <div style="background-color:lightblue; text-align:center;">
                 <?php 
-                echo __( 'Total Submissions:', 'your-text-domain' );
                 echo $this->count_matching_iot_messages();
+                echo __( ' total submissions', 'your-text-domain' );
                 echo __( ' before today.', 'your-text-domain' );
                 ?>
             </div>
