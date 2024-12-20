@@ -181,7 +181,7 @@ if (!class_exists('display_documents')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_document_list_data($paged);
+                    $query = $this->retrieve_document_data($paged);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts'));
 
@@ -225,7 +225,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
         
-        function retrieve_document_list_data($paged=1, $is_doc_report=2) {
+        function retrieve_document_data($paged=1, $is_doc_report=2) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $site_filter = array(
@@ -768,12 +768,7 @@ if (!class_exists('display_documents')) {
                 </thead>
                 <tbody>
                     <?php
-                    //$paged = max(1, get_query_var('paged')); // Get the current page number
-                    //$params['paged'] = $paged;
                     $query = $this->retrieve_doc_report_data($params);
-                    //$total_posts = $query->found_posts;
-                    //$total_pages = ceil($total_posts / get_option('operation_row_counts'));
-        
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $report_id = get_the_ID();
@@ -1241,7 +1236,7 @@ if (!class_exists('display_documents')) {
 
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                             $items_class = new sub_items();
-                            $inner_query = $items_class->retrieve_sub_item_list_data($default_value);        
+                            $inner_query = $items_class->retrieve_sub_item_data($default_value);        
                             if ($inner_query->have_posts()) {
                                 while ($inner_query->have_posts()) {
                                     $inner_query->the_post();
@@ -1691,7 +1686,7 @@ if (!class_exists('display_documents')) {
                             <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
                             <div id="embedded-subform">
                                 <?php
-                                $inner_query = $items_class->retrieve_sub_item_list_data($field_value);
+                                $inner_query = $items_class->retrieve_sub_item_data($field_value);
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         if ($report_id) {
@@ -1729,7 +1724,7 @@ if (!class_exists('display_documents')) {
                                 <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($field_value);?>" />
                                 <div id="embedded-subform">
                                     <?php
-                                    $inner_query = $items_class->retrieve_sub_item_list_data($field_value);
+                                    $inner_query = $items_class->retrieve_sub_item_data($field_value);
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
                                             if ($report_id) {
@@ -2005,7 +2000,7 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                 if ($default_value) {
                     $items_class = new sub_items();
-                    $inner_query = $items_class->retrieve_sub_item_list_data($field_value);
+                    $inner_query = $items_class->retrieve_sub_item_data($field_value);
                     if ($inner_query->have_posts()) :
                         while ($inner_query->have_posts()) : $inner_query->the_post();
                             $sub_item_value = $_POST[$field_id.get_the_ID()];
@@ -2120,7 +2115,7 @@ if (!class_exists('display_documents')) {
         }
 
         function select_document_list_options($selected_option=0, $is_doc_report=2) {
-            $query = $this->retrieve_document_list_data(0, $is_doc_report);
+            $query = $this->retrieve_document_data(0, $is_doc_report);
             $options = '<option value="">Select document</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -2218,7 +2213,7 @@ if (!class_exists('display_documents')) {
                         <?php
                         if ($paged==1) {
                             $items_class = new sub_items();
-                            $query = $items_class->retrieve_sub_item_list_data($embedded_id);
+                            $query = $items_class->retrieve_sub_item_data($embedded_id);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
                                     $sub_item_value = get_post_meta($site_id, $embedded_id.get_the_ID(), true);

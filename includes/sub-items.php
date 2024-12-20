@@ -485,7 +485,7 @@ if (!class_exists('sub_items')) {
                 update_post_meta($post_id, 'iso_category', $iso_category);
                 update_post_meta($post_id, 'is_private', 1);
 
-                $query = $this->retrieve_sub_item_list_data($embedded_id);
+                $query = $this->retrieve_sub_item_data($embedded_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
@@ -565,7 +565,11 @@ if (!class_exists('sub_items')) {
                 </thead>
                 <tbody id="sortable-sub-item-list">
                 <?php
-                $query = $this->retrieve_sub_item_list_data($embedded_id);
+                $paged = max(1, get_query_var('paged')); // Get the current page number
+                $query = $this->retrieve_sub_item_data($embedded_id, $paged);
+                $total_posts = $query->found_posts;
+                $total_pages = ceil($total_posts / get_option('operation_row_counts'));
+
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $sub_item_title = get_the_title();
@@ -596,21 +600,36 @@ if (!class_exists('sub_items')) {
             <?php if (is_site_admin()) {?>
                 <div id="new-sub-item" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
+            <div class="pagination">
+                <?php
+                // Display pagination links
+                if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                ?>
+            </div>
+
             </fieldset>
             <div id="sub-item-dialog" title="Sub item dialog"></div>
             <?php
             return ob_get_clean();
         }
 
-        function retrieve_sub_item_list_data($embedded_id = false) {
+        function retrieve_sub_item_data($embedded_id=false, $paged=0) {
             $args = array(
                 'post_type'      => 'sub-item',
-                'posts_per_page' => -1,
+                //'posts_per_page' => -1,
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
                 'meta_key'       => 'sorting_key',
                 'orderby'        => 'meta_value_num', // Specify meta value as numeric
                 'order'          => 'ASC', // Sorting order (ascending)
             );
         
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+
             // Initialize meta_query if $embedded_id is provided
             if ($embedded_id !== false) {
                 $args['meta_query'] = array(
@@ -718,7 +737,7 @@ if (!class_exists('sub_items')) {
         }
 
         function select_sub_item_options($selected_option=false, $embedded_id=false) {
-            $query = $this->retrieve_sub_item_list_data($embedded_id);
+            $query = $this->retrieve_sub_item_data($embedded_id);
             $options = '<option value="">Select '.get_the_title($embedded_id).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -819,7 +838,7 @@ if (!class_exists('sub_items')) {
                     if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                         if ($default_value) {
                             $embedded_id = $this->get_embedded_id_by_number($default_value);
-                            $inner_query = $this->retrieve_sub_item_list_data($embedded_id);
+                            $inner_query = $this->retrieve_sub_item_data($embedded_id);
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $_list = array();
@@ -840,7 +859,7 @@ if (!class_exists('sub_items')) {
 
         function get_sub_line_keys($embedded_id=false) {
             $_array = array();
-            $inner_query = $this->retrieve_sub_item_list_data($embedded_id);
+            $inner_query = $this->retrieve_sub_item_data($embedded_id);
             if ($inner_query->have_posts()) :
                 while ($inner_query->have_posts()) : $inner_query->the_post();
                     $_list = array();
@@ -865,7 +884,7 @@ if (!class_exists('sub_items')) {
                 <tr>
                 <th>#</th>
                 <?php                
-                $query = $this->retrieve_sub_item_list_data($embedded_id);
+                $query = $this->retrieve_sub_item_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         ?>
@@ -884,7 +903,7 @@ if (!class_exists('sub_items')) {
                 if ($sub_line_query->have_posts()) :
                     while ($sub_line_query->have_posts()) : $sub_line_query->the_post();
                         ?><tr id="edit-sub-line-<?php the_ID();?>"><td style="text-align:center;"></td><?php
-                        $query = $this->retrieve_sub_item_list_data($embedded_id);
+                        $query = $this->retrieve_sub_item_data($embedded_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $field_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
@@ -937,7 +956,7 @@ if (!class_exists('sub_items')) {
                 <input type="hidden" id="sub-line-id" value="<?php echo esc_attr($sub_line_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <?php
-                $query = $this->retrieve_sub_item_list_data($embedded_id);
+                $query = $this->retrieve_sub_item_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         ?>
@@ -984,7 +1003,7 @@ if (!class_exists('sub_items')) {
             if( isset($_POST['_sub_line_id']) ) {
                 // Update the post
                 $sub_line_id = sanitize_text_field($_POST['_sub_line_id']);
-                $query = $this->retrieve_sub_item_list_data($embedded_id);
+                $query = $this->retrieve_sub_item_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $field_value = $_POST[$embedded_id.get_the_id()];
