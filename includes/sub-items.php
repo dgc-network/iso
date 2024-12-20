@@ -408,7 +408,7 @@ if (!class_exists('sub_items')) {
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="duplicate-embedded-button" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
                     <?php }?>
-                    <input type="button" id="embedded-dialog-exit" value="Exit" style="margin:5px;" />
+                    <input type="button" id="exit-embedded-dialog" value="Exit" style="margin:5px;" />
                     </div>
                 </div>
             </fieldset>
@@ -608,7 +608,6 @@ if (!class_exists('sub_items')) {
                 if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                 ?>
             </div>
-
             </fieldset>
             <div id="sub-item-dialog" title="Sub item dialog"></div>
             <?php

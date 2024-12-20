@@ -267,13 +267,15 @@ jQuery(document).ready(function($) {
 
         });
 
-        $("#embedded-dialog-exit").on("click", function () {
+        $("#exit-embedded-dialog").on("click", function () {
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
             var url = new URL(currentUrl);
             // Remove the specified parameter
             url.searchParams.delete('_embedded_id');
+            // Reset the 'paged' parameter to 1
+            url.searchParams.set('paged', 1);
             // Get the modified URL
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
