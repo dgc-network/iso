@@ -698,7 +698,7 @@ if (!class_exists('display_documents')) {
                 <?php
                 $params = array(
                     'doc_id'     => $doc_id,
-                    'search_doc_report' => $search_doc_report,
+                    //'search_doc_report' => $search_doc_report,
                 );
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $params['paged'] = $paged;
@@ -1240,6 +1240,7 @@ if (!class_exists('display_documents')) {
                         update_post_meta($post_id, $field_id, $default_value);
 
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
+                            $items_class = new sub_items();
                             $inner_query = $items_class->retrieve_sub_item_list_data($default_value);        
                             if ($inner_query->have_posts()) {
                                 while ($inner_query->have_posts()) {
@@ -1264,6 +1265,7 @@ if (!class_exists('display_documents')) {
         }
 
         function duplicate_doc_report_data() {
+            $response = array();
             if( isset($_POST['_report_id']) ) {
                 // Create the post
                 $new_post = array(
