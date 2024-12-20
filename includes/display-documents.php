@@ -951,8 +951,8 @@ if (!class_exists('display_documents')) {
                         }    
                     }
 
-                    if (!empty($params['search_doc_report'])) {
-                        $search_doc_report = $params['search_doc_report'];
+                    if (isset($_GET['_search'])) {
+                        $search_doc_report = sanitize_text_field($_GET['_search']);
                         $args['meta_query'][1][] = array( // Append to the OR relation
                             'key'     => get_the_ID(),
                             'value'   => $search_doc_report,
