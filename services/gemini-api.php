@@ -59,7 +59,58 @@ if (!class_exists('gemini_api')) {
         }
 
         public function generateContent($userMessage) {
+            // gemini generate the content
+            $header = array(
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $this->gemini_api_key,
+            );
 
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+
+            $data = array(
+                "contents" => array(
+                    array(
+                        "parts" => array(
+                            array(
+                                "text" => $userMessage,
+                            )
+                        )
+                    )
+                )
+            );
+
+            $json_data = json_encode($data);
+
+            $ch = curl_init($url);
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Set to true to return the response
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
+
+            $response = curl_exec($ch);
+
+            if (curl_errno($ch)) {
+                echo 'Error:' . curl_error($ch);
+            } else {
+                $decoded_response = json_decode($response, true);
+
+                // Access the generated text here
+                if (isset($decoded_response['generated_texts'][0]['text'])) {
+                    $generated_text = $decoded_response['generated_texts'][0]['text'];
+                    echo $generated_text;
+                } else {
+                    echo "Failed to generate text.";
+                }
+            }
+
+            curl_close($ch);
+
+
+            
+        
+
+/*
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $this->gemini_api_key;
             
             $data = array(
@@ -100,6 +151,7 @@ if (!class_exists('gemini_api')) {
             }
             
             curl_close($ch);
+*/            
         }
     }
     $gemini_api = new gemini_api();
