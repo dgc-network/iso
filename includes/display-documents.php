@@ -2200,7 +2200,7 @@ if (!class_exists('display_documents')) {
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
                 $iso_category_title = get_the_title($iso_category_id);
                 $gemini_api = new gemini_api();
-                $response = $gemini_api->createChatCompletion($iso_category_title);
+                $response = $gemini_api->generateContent($iso_category_title);
                 echo $response;
                 ?>
                 <div class="ui-widget" id="result-container">

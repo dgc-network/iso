@@ -58,7 +58,7 @@ if (!class_exists('gemini_api')) {
             echo '<input type="text" id="gemini_api_key" name="gemini_api_key" style="width:100%;" value="' . esc_attr($value) . '" />';
         }
 
-        public function createChatCompletion($userMessage) {
+        public function generateContent($userMessage) {
 
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $this->gemini_api_key;
             
@@ -81,6 +81,7 @@ if (!class_exists('gemini_api')) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Set to true to return the response
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
             
             $response = curl_exec($ch);
             
