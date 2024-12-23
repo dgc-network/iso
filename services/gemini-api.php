@@ -58,7 +58,7 @@ if (!class_exists('gemini_api')) {
             echo '<input type="text" id="gemini_api_key" name="gemini_api_key" style="width:100%;" value="' . esc_attr($value) . '" />';
         }
 
-        public function generateContent($userMessage) {
+        public function generate_content($userMessage) {
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $this->gemini_api_key;
             
             $data = array(
