@@ -66,7 +66,7 @@ if (!class_exists('gemini_api')) {
                 array(
                   "parts" => array(
                     array(
-                      "text" => $userMessage,
+                      "text" => $userMessage.'文件列表',
                     )
                   )
                 )
