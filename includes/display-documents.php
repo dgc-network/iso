@@ -2204,6 +2204,10 @@ if (!class_exists('display_documents')) {
                 echo $response;
                 ?>
                 <div class="ui-widget" id="result-container">
+                    <input type="text" id="ask-gemini" class="text ui-widget-content ui-corner-all" />
+                </div>
+
+                <div class="ui-widget" id="result-container">
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div>
                             <?php echo display_iso_helper_logo();?>
