@@ -59,6 +59,7 @@ if (!class_exists('gemini_api')) {
         }
 
         public function generateContent($userMessage) {
+/*            
             // gemini generate the content
             $header = array(
                 'Content-Type: application/json',
@@ -99,12 +100,12 @@ if (!class_exists('gemini_api')) {
             }
 
             curl_close($ch);
-
+*/
 
 
         
 
-/*
+
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $this->gemini_api_key;
             
             $data = array(
@@ -131,10 +132,11 @@ if (!class_exists('gemini_api')) {
             $response = curl_exec($ch);
             
             if (curl_errno($ch)) {
-              echo 'Error:' . curl_error($ch);
+                echo 'Error:' . curl_error($ch);
             } else {
-              $decoded_response = json_decode($response, true);
-              
+                $decoded_response = json_decode($response, true);
+                echo print_r($decoded_response, true);
+/*
               // Access the generated text here
               if (isset($decoded_response['generated_texts'][0]['text'])) {
                 $generated_text = $decoded_response['generated_texts'][0]['text'];
@@ -142,10 +144,11 @@ if (!class_exists('gemini_api')) {
               } else {
                 echo "Failed to generate text.";
               }
+*/
             }
             
             curl_close($ch);
-*/            
+
         }
     }
     $gemini_api = new gemini_api();
