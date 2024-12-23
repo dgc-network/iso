@@ -66,7 +66,7 @@ if (!class_exists('gemini_api')) {
                 array(
                   "parts" => array(
                     array(
-                      "text" => $userMessage.'程序書列表',
+                      "text" => $userMessage.'表單列表',
                     )
                   )
                 )
@@ -159,7 +159,7 @@ if (!class_exists('gemini_api')) {
             $content = str_replace("\n", '<br>', $content); // Line breaks
             $content = preg_replace('/<\/ul>\s*<ul>/', '', $content); // Clean nested lists
         
-            return $content;
+            //return $content;
 
             // Combine the CSS and content in a div
             $styled_html = $css . "<div class='content'>" . $content . "</div>";
