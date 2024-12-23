@@ -101,6 +101,39 @@ if (!class_exists('gemini_api')) {
         }
 
         function convert_text_to_html($text) {
+            // Escape special HTML characters
+            $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+        
+            // Convert bullet points and sub-bullet points into nested lists
+            $text = preg_replace('/^\* \*\*(.+?)\*\*: (.+)$/m', '<li><strong>$1:</strong> $2</li>', $text); // Bold headers
+            $text = preg_replace('/^\* (.+)$/m', '<li>$1</li>', $text); // Regular list items
+        
+            // Wrap <li> items with <ul> tags
+            $text = preg_replace_callback(
+                '/(<li>.*?<\/li>)/s',
+                function ($matches) {
+                    return "<ul>{$matches[1]}</ul>";
+                },
+                $text
+            );
+        
+            // Convert paragraphs and line breaks
+            $text = preg_replace('/\n{2,}/', '</p><p>', $text); // Separate paragraphs
+            $text = '<p>' . $text . '</p>'; // Wrap entire content in paragraph tags
+            $text = str_replace("\n", '<br>', $text); // Add line breaks for single newlines
+        
+            // Clean up nested <ul> tags
+            $text = preg_replace('/<\/ul>\s*<ul>/', '', $text); // Remove consecutive <ul> tags
+        
+            return $text;
+        }
+/*        
+        // Add a shortcode to use the function
+        add_shortcode('text_to_html', function ($atts, $content = '') {
+            return convert_text_to_html($content);
+        });
+        
+        function convert_text_to_html($text) {
             // Basic HTML tags replacement
             $html = '<p>' . nl2br($text) . '</p>'; // Wrap in paragraph tags and handle line breaks
             
