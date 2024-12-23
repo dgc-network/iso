@@ -66,7 +66,7 @@ if (!class_exists('gemini_api')) {
                 array(
                   "parts" => array(
                     array(
-                      "text" => $userMessage.'文件列表',
+                      "text" => $userMessage.'程序書及電子表單列表',
                     )
                   )
                 )
@@ -80,7 +80,7 @@ if (!class_exists('gemini_api')) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Set to true to return the response
-            curl_setopt($ch, CURLOPT_VERBOSE, true);
+            //curl_setopt($ch, CURLOPT_VERBOSE, true);
             
             $response = curl_exec($ch);
             
@@ -91,7 +91,8 @@ if (!class_exists('gemini_api')) {
 
                 if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
                     $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
-                    echo $this->convert_markdown_to_html($generated_text);
+                    //echo $this->convert_markdown_to_html($generated_text);
+                    echo $generated_text;
                 } else {
                     echo "Failed to generate text.";
                 }
