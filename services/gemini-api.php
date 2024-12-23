@@ -59,53 +59,6 @@ if (!class_exists('gemini_api')) {
         }
 
         public function generateContent($userMessage) {
-/*            
-            // gemini generate the content
-            $header = array(
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $this->gemini_api_key,
-            );
-
-            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
-
-            $data = array(
-                "contents" => array(
-                    array(
-                        "parts" => array(
-                            array(
-                                "text" => $userMessage,
-                            )
-                        )
-                    )
-                )
-            );
-
-            $json_data = json_encode($data);
-
-            $ch = curl_init($url);
-
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Set to true to return the response
-            curl_setopt($ch, CURLOPT_VERBOSE, true);
-
-            $response = curl_exec($ch);
-
-            if (curl_errno($ch)) {
-                echo 'Error:' . curl_error($ch);
-            } else {
-                $decoded_response = json_decode($response, true);
-                echo print_r($decoded_response, true);
-
-            }
-
-            curl_close($ch);
-*/
-
-
-        
-
-
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $this->gemini_api_key;
             
             $data = array(
@@ -138,30 +91,33 @@ if (!class_exists('gemini_api')) {
 
                 if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
                     $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
-                    echo $generated_text;
+                    echo $this->convert_text_to_html($generated_text);
                 } else {
                     echo "Failed to generate text.";
                 }
-                                
-
-
-
-//$decoded_response = json_decode($response, true);
-//echo print_r($decoded_response, true);
-/*
-              // Access the generated text here
-              if (isset($decoded_response['generated_texts'][0]['text'])) {
-                $generated_text = $decoded_response['generated_texts'][0]['text'];
-                echo $generated_text;
-              } else {
-                echo "Failed to generate text.";
-              }
-*/
-            }
-            
             curl_close($ch);
 
         }
+
+        function convert_text_to_html($text) {
+            // Basic HTML tags replacement
+            $html = '<p>' . nl2br($text) . '</p>'; // Wrap in paragraph tags and handle line breaks
+            
+            // Convert bullet points to HTML list
+            $html = preg_replace('/\* \*\*(.*?)\*\*: (.*?)\n/', '<li><strong>$1:</strong> $2</li>', $html);
+            
+            // Wrap lists with <ul> tags
+            $html = preg_replace('/(<li>.*<\/li>)/s', '<ul>$1</ul>', $html);
+        
+            // Return the formatted HTML
+            return $html;
+        }
+/*        
+        // Example usage
+        add_shortcode('text_to_html', function($atts, $content = '') {
+            return convert_text_to_html($content);
+        });
+        */
     }
     $gemini_api = new gemini_api();
 }
