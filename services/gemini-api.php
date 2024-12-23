@@ -144,6 +144,7 @@ if (!class_exists('gemini_api')) {
         
             // Replace markdown-like elements with HTML
             $content = htmlspecialchars($content, ENT_NOQUOTES, 'UTF-8');
+            $content = preg_replace('/\#\#([^\#]+)\#\#/', '<h2>$1</h2>', $content); // Headings
             $content = preg_replace('/\*\*([^\*]+)\*\*/', '<strong>$1</strong>', $content); // Bold
             $content = preg_replace('/\*([^\*]+)\*/', '<em>$1</em>', $content);           // Italic
             $content = preg_replace('/^\s*\*\s(.+)$/m', '<li>$1</li>', $content);         // List items
