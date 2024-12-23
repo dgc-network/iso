@@ -91,7 +91,7 @@ if (!class_exists('gemini_api')) {
 
                 if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
                     $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
-                    echo $this->convert_text_to_html($generated_text);
+                    echo $this->convert_markdown_to_html($generated_text);
                 } else {
                     echo "Failed to generate text.";
                 }
@@ -100,6 +100,40 @@ if (!class_exists('gemini_api')) {
 
         }
 
+        function convert_markdown_to_html($markdown) {
+            // Convert special HTML characters
+            $markdown = htmlspecialchars($markdown, ENT_NOQUOTES, 'UTF-8');
+        
+            // Convert headers
+            $markdown = preg_replace('/^\* \*\*(.+?)\*\*: (.+)$/m', '<li><strong>$1:</strong> $2</li>', $markdown); // Bold items with description
+            $markdown = preg_replace('/^\* \*\*(.+?)\*\*/m', '<li><strong>$1</strong></li>', $markdown); // Bold items without description
+            $markdown = preg_replace('/^\* (.+)$/m', '<li>$1</li>', $markdown); // Regular list items
+        
+            // Wrap <li> items in <ul> tags
+            $markdown = preg_replace_callback(
+                '/(<li>.*?<\/li>)+/s',
+                function ($matches) {
+                    return '<ul>' . $matches[0] . '</ul>';
+                },
+                $markdown
+            );
+        
+            // Convert paragraphs (two newlines separate paragraphs)
+            $markdown = preg_replace('/\n{2,}/', '</p><p>', $markdown); // Create paragraphs
+            $markdown = '<p>' . $markdown . '</p>'; // Wrap the entire content with <p> tags
+            $markdown = str_replace("\n", '<br>', $markdown); // Convert single newlines to <br> tags
+        
+            // Clean up nested lists
+            $markdown = preg_replace('/<\/ul>\s*<ul>/', '', $markdown); // Remove redundant <ul> tags
+        
+            return $markdown;
+        }
+/*        
+        // Add shortcode to use the function in WordPress
+        add_shortcode('markdown_to_html', function ($atts, $content = '') {
+            return convert_markdown_to_html($content);
+        });
+/*        
         function convert_text_to_html($text) {
             // Escape special HTML characters
             $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
