@@ -135,7 +135,19 @@ if (!class_exists('gemini_api')) {
                 echo 'Error:' . curl_error($ch);
             } else {
                 $decoded_response = json_decode($response, true);
-                echo print_r($decoded_response, true);
+
+                if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
+                    $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
+                    echo $generated_text;
+                } else {
+                    echo "Failed to generate text.";
+                }
+                                
+
+
+
+//$decoded_response = json_decode($response, true);
+//echo print_r($decoded_response, true);
 /*
               // Access the generated text here
               if (isset($decoded_response['generated_texts'][0]['text'])) {
