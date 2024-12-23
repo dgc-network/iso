@@ -95,6 +95,7 @@ if (!class_exists('gemini_api')) {
                 } else {
                     echo "Failed to generate text.";
                 }
+            }
             curl_close($ch);
 
         }
