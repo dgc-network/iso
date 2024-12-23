@@ -105,6 +105,35 @@ if (!class_exists('gemini_api')) {
             $markdown = htmlspecialchars($markdown, ENT_NOQUOTES, 'UTF-8');
         
             // Convert headers
+            $markdown = preg_replace('/^\* \*\*(.+?)\*\*: (.+)$/m', '<li style="margin-bottom: 10px;"><strong style="color: #000;">$1:</strong> $2</li>', $markdown); // Bold items with description
+            $markdown = preg_replace('/^\* \*\*(.+?)\*\*/m', '<li style="margin-bottom: 10px;"><strong style="color: #000;">$1</strong></li>', $markdown); // Bold items without description
+            $markdown = preg_replace('/^\* (.+)$/m', '<li style="margin-bottom: 10px;">$1</li>', $markdown); // Regular list items
+        
+            // Wrap <li> items in <ul> tags
+            $markdown = preg_replace_callback(
+                '/(<li.*?>.*?<\/li>)+/s',
+                function ($matches) {
+                    return '<ul style="margin: 10px 0 20px 20px;">' . $matches[0] . '</ul>';
+                },
+                $markdown
+            );
+        
+            // Convert paragraphs (two newlines separate paragraphs)
+            $markdown = preg_replace('/\n{2,}/', '</p><p>', $markdown); // Create paragraphs
+            $markdown = '<p style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">' . $markdown . '</p>'; // Wrap the entire content with <p> tags
+            $markdown = str_replace("\n", '<br>', $markdown); // Convert single newlines to <br> tags
+        
+            // Clean up nested lists
+            $markdown = preg_replace('/<\/ul>\s*<ul>/', '', $markdown); // Remove redundant <ul> tags
+        
+            return $markdown;
+        }
+/*        
+        function convert_markdown_to_html($markdown) {
+            // Convert special HTML characters
+            $markdown = htmlspecialchars($markdown, ENT_NOQUOTES, 'UTF-8');
+        
+            // Convert headers
             $markdown = preg_replace('/^\* \*\*(.+?)\*\*: (.+)$/m', '<li><strong>$1:</strong> $2</li>', $markdown); // Bold items with description
             $markdown = preg_replace('/^\* \*\*(.+?)\*\*/m', '<li><strong>$1</strong></li>', $markdown); // Bold items without description
             $markdown = preg_replace('/^\* (.+)$/m', '<li>$1</li>', $markdown); // Regular list items
