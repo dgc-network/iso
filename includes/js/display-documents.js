@@ -110,7 +110,7 @@ jQuery(document).ready(function($) {
         // Remove the specified parameter
         //url.searchParams.delete('_embedded_id');
         // Set the specified parameter
-        url.searchParams.set('_prompt', this.val());
+        url.searchParams.set('_prompt', $(this).val());
         // Get the modified URL
         var modifiedUrl = url.toString();
         // Reload the page with the modified URL
