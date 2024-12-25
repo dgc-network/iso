@@ -2366,6 +2366,7 @@ if (!class_exists('display_documents')) {
                 $response = array('success' => true, 'data' => $processedKeyValuePairs);
 
             } elseif (isset($_POST['_draft_title']) && isset($_POST['_draft_content'])) {
+            } elseif (isset($_POST['_draft_title'])) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $draft_title = sanitize_text_field($_POST['_draft_title']);
