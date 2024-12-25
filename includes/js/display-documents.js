@@ -116,6 +116,8 @@ jQuery(document).ready(function($) {
     })
 
     $("#save-draft").on("click", function () {
+        console.log($("#draft-title").val());
+        console.log($("#draft-content").val());
         $.ajax({
             type: 'POST',
             url: ajax_object.ajax_url,
