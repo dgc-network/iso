@@ -27,8 +27,6 @@ if (!class_exists('gemini_api')) {
         public function __construct($gemini_api_key='') {
             add_action('admin_init', array( $this, 'gemini_register_settings' ) );
             //$this->gemini_api_key = get_option('gemini_api_key');
-            $current_user_id = get_current_user_id();
-            $this->$gemini_api_key = get_user_meta($current_user_id, 'gemini_api_key', true);
         }
     
         function gemini_register_settings() {
@@ -61,6 +59,8 @@ if (!class_exists('gemini_api')) {
         }
 
         public function generate_content($userMessage) {
+            $current_user_id = get_current_user_id();
+            $this->$gemini_api_key = get_user_meta($current_user_id, 'gemini_api_key', true);
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $this->gemini_api_key;
             
             $data = array(
