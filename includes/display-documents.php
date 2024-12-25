@@ -2213,9 +2213,11 @@ if (!class_exists('display_documents')) {
                     <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
                     <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
                     <fieldset>
-                        <?php echo $gemini_api->generate_content($iso_category_title.'適用性聲明書');?>
                         <?php
                         if ($paged==1) {
+                            $gemini_api = new gemini_api();
+                            echo $gemini_api->generate_content($iso_category_title.'適用性聲明書');
+/*                            
                             $items_class = new sub_items();
                             $query = $items_class->retrieve_sub_item_data($embedded_id);
                             if ($query->have_posts()) :
@@ -2225,7 +2227,7 @@ if (!class_exists('display_documents')) {
                                 endwhile;
                                 wp_reset_postdata();
                             endif;
-    
+*/    
                         } else {
                             echo __( 'Copy the below checked documents from iso-helper.com', 'your-text-domain' );
                             $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
