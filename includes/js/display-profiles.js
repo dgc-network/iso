@@ -34,6 +34,7 @@ jQuery(document).ready(function($) {
                     '_display_name': $("#display-name").val(),
                     '_user_email': $("#user-email").val(),
                     '_phone_number': $("#phone-number").val(),
+                    '_gemini_api_key': $("#gemini-api-key").val(),
                 },
                 success: function (response) {
                     console.log(response);

@@ -156,6 +156,7 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             $current_user = get_userdata( $current_user_id );
             $phone_number = get_user_meta($current_user_id, 'phone_number', true);
+            $gemini_api_key = get_user_meta($current_user_id, 'gemini_api_key', true);
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
@@ -174,6 +175,8 @@ if (!class_exists('display_profiles')) {
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
                 <label for="phone-number"><?php echo __( 'Phone', 'your-text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
+                <label for="gemini-api-key"><?php echo __( 'Gemini API key', 'your-text-domain' );?></label>
+                <input type="password" id="gemini-api-key" value="<?php echo $gemini_api_key;?>" class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
                 $key_value_pair = array(
@@ -197,9 +200,10 @@ if (!class_exists('display_profiles')) {
         function set_my_profile_data() {
             $response = array();
             $current_user_id = get_current_user_id();
-            wp_update_user(array('ID' => $current_user_id, 'display_name' => sanitize_text_field($_POST['_display_name'])));
-            wp_update_user(array('ID' => $current_user_id, 'user_email' => sanitize_text_field($_POST['_user_email'])));
-            update_user_meta( $current_user_id, 'phone_number', sanitize_text_field($_POST['_phone_number']) );
+            wp_update_user(array('ID' => $current_user_id, 'display_name' => $_POST['_display_name']));
+            wp_update_user(array('ID' => $current_user_id, 'user_email' => $_POST['_user_email']));
+            update_user_meta( $current_user_id, 'phone_number', $_POST['_phone_number']);
+            update_user_meta( $current_user_id, 'gemini_api_key', $_POST['_gemini_api_key']);
             $response = array('success' => true);
             wp_send_json($response);
         }
@@ -240,7 +244,6 @@ if (!class_exists('display_profiles')) {
                                     'job_number' => $job_number,
                                     'job_title' => $job_title,
                                     'doc_title' => $doc_title,
-                                    //'job_content' => $job_content,
                                     'is_checked' => $is_checked
                                 );
                             }
