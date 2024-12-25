@@ -162,7 +162,7 @@ if (!class_exists('gemini_api')) {
         
             // Combine the CSS and content in a div
             $styled_html = $css . "<div class='content ui-widget'>" . $content;
-            $styled_html .= '<input type="text" id="drfat-title" value="'.'" />';
+            $styled_html .= '<input type="text" id="drfat-title" value="'.'" class="text ui-widget-content ui-corner-all" />';
             $styled_html .= '<textarea id="draft-content" rows="5" style="width:100%;">'.$content.'</textarea>';
             $styled_html .= '<input type="button" id="save-draft" value="Save draft" />';
             $styled_html .= '<div style="padding:10px; border:solid; border-radius:1.5rem;"><input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" /></div>';
