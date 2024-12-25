@@ -2381,8 +2381,8 @@ if (!class_exists('display_documents')) {
                 $draft_id = wp_insert_post($draft_post);
                 update_post_meta($draft_id, 'site_id', $site_id);
                 update_post_meta($draft_id, 'doc_title', $draft_title);
-                update_post_meta($draft_id, 'doc_number', 'DRAFT');
-                update_post_meta($draft_id, 'doc_revision', 'DRAFT');
+                update_post_meta($draft_id, 'doc_number', '-');
+                update_post_meta($draft_id, 'doc_revision', 'draft');
                 $response = array('success' => true, 'data' => $draft_id);
 
             } elseif (isset($_POST['_duplicated_ids'])) {
