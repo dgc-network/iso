@@ -86,15 +86,15 @@ if (!class_exists('gemini_api')) {
             $response = curl_exec($ch);
             
             if (curl_errno($ch)) {
-                echo 'Error:' . curl_error($ch);
+                return 'Error:' . curl_error($ch);
             } else {
                 $decoded_response = json_decode($response, true);
 
                 if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
                     $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
-                    echo $this->convert_content_to_styled_html($generated_text);
+                    return $this->convert_content_to_styled_html($generated_text);
                 } else {
-                    echo "Failed to generate text.";
+                    return "Failed to generate text.";
                 }
             }
             curl_close($ch);
@@ -159,7 +159,8 @@ if (!class_exists('gemini_api')) {
             $content = '<p>' . $content . '</p>'; // Wrap in paragraph tags
             $content = str_replace("\n", '<br>', $content); // Line breaks
             $content = preg_replace('/<\/ul>\s*<ul>/', '', $content); // Clean nested lists
-        
+            return $content;
+
             // Combine the CSS and content in a div
             $styled_html = $css . "<div class='content ui-widget'>" . $content;
             $styled_html .= '<fieldset>';

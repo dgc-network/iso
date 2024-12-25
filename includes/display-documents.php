@@ -2207,7 +2207,7 @@ if (!class_exists('display_documents')) {
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div>
                             <?php echo display_iso_helper_logo();?>
-                            <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'適用性聲明書');?></h2>
+                            <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'啟動AI輔導');?></h2>
                         </div>
                     </div>
                     <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
@@ -2216,7 +2216,58 @@ if (!class_exists('display_documents')) {
                         <?php
                         if ($paged==1) {
                             $gemini_api = new gemini_api();
-                            echo $gemini_api->generate_content($iso_category_title.'適用性聲明書');
+                            $content = $gemini_api->generate_content($iso_category_title.'適用性聲明書');
+                            // Define the inline CSS
+                            $css = "
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    line-height: 1.6;
+                                    color: #333;
+                                    margin: 20px;
+                                    background-color: #f9f9f9;
+                                }
+                                .content {
+                                    max-width: 800px;
+                                    margin: auto;
+                                    background: #fff;
+                                    padding: 20px;
+                                    border-radius: 8px;
+                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                }
+                                h2 {
+                                    color: #0056b3;
+                                    border-bottom: 2px solid #ddd;
+                                    padding-bottom: 5px;
+                                }
+                                ul {
+                                    margin: 10px 0 20px 20px;
+                                    padding-left: 20px;
+                                }
+                                ul li {
+                                    margin-bottom: 10px;
+                                }
+                                strong {
+                                    color: #000;
+                                }
+                                em {
+                                    color: #0056b3;
+                                }
+                            </style>
+                            ";
+                            // Combine the CSS and content in a div
+                            $styled_html = $css . "<div class='content ui-widget'>" . $content;
+                            $styled_html .= '<fieldset>';
+                            $styled_html .= '<p>Title:<input type="text" id="drfat-title" value="'.'" class="text ui-widget-content ui-corner-all" /></p>';
+                            $styled_html .= '<p>Content:<textarea id="draft-content" rows="5" style="width:100%;">'.$content.'</textarea></p>';
+                            $styled_html .= '<p><input type="button" id="save-draft" value="Save draft" /></p>';
+                            $styled_html .= '</fieldset>';
+                            $styled_html .= '<div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">';
+                            $styled_html .= '<input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />';
+                            $styled_html .= '</div>';
+                            $styled_html .= '</div>';
+                            echo $styled_html;
+
 /*                            
                             $items_class = new sub_items();
                             $query = $items_class->retrieve_sub_item_data($embedded_id);
