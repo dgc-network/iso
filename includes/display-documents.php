@@ -2303,11 +2303,11 @@ if (!class_exists('display_documents')) {
                                             <?php
                                         endwhile;
                                         wp_reset_postdata();
+                                        if (is_site_admin()) {?>
+                                            <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );?></button>
+                                        <?php }
                                     endif;
                                     ?>
-                                    <?php if (is_site_admin()) {?>
-                                        <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );?></button>
-                                    <?php }?>
                                 </fieldset>
                                 <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
                                     <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
