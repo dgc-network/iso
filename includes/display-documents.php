@@ -2352,7 +2352,6 @@ if (!class_exists('display_documents')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $keyValuePairs = $_POST['_keyValuePairs'];
                 $processedKeyValuePairs = [];
-
                 foreach ($keyValuePairs as $pair) {
                     foreach ($pair as $field_key => $field_value) {
                         // Sanitize the key and value
@@ -2364,8 +2363,8 @@ if (!class_exists('display_documents')) {
                         $processedKeyValuePairs[$field_key] = $field_value;
                     }
                 }
-                // Prepare the response
                 $response = array('success' => true, 'data' => $processedKeyValuePairs);
+
             } elseif (isset($_POST['_draft_title']) && isset($_POST['_draft_content'])) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
