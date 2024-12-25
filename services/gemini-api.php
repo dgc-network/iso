@@ -102,45 +102,6 @@ if (!class_exists('gemini_api')) {
         }
         
         function convert_content_to_styled_html($content) {
-            // Define the inline CSS
-            $css = "
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                    margin: 20px;
-                    background-color: #f9f9f9;
-                }
-                .content {
-                    max-width: 800px;
-                    margin: auto;
-                    background: #fff;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
-                h2 {
-                    color: #0056b3;
-                    border-bottom: 2px solid #ddd;
-                    padding-bottom: 5px;
-                }
-                ul {
-                    margin: 10px 0 20px 20px;
-                    padding-left: 20px;
-                }
-                ul li {
-                    margin-bottom: 10px;
-                }
-                strong {
-                    color: #000;
-                }
-                em {
-                    color: #0056b3;
-                }
-            </style>
-            ";
-        
             // Replace markdown-like elements with HTML
             $content = htmlspecialchars($content, ENT_NOQUOTES, 'UTF-8');
             // Headings (## Heading ## or ## Heading)
@@ -160,20 +121,6 @@ if (!class_exists('gemini_api')) {
             $content = str_replace("\n", '<br>', $content); // Line breaks
             $content = preg_replace('/<\/ul>\s*<ul>/', '', $content); // Clean nested lists
             return $content;
-
-            // Combine the CSS and content in a div
-            $styled_html = $css . "<div class='content ui-widget'>" . $content;
-            $styled_html .= '<fieldset>';
-            $styled_html .= '<p>Title:<input type="text" id="drfat-title" value="'.'" class="text ui-widget-content ui-corner-all" /></p>';
-            $styled_html .= '<p>Content:<textarea id="draft-content" rows="5" style="width:100%;">'.$content.'</textarea></p>';
-            $styled_html .= '<p><input type="button" id="save-draft" value="Save draft" /></p>';
-            $styled_html .= '</fieldset>';
-            $styled_html .= '<div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">';
-            $styled_html .= '<input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />';
-            $styled_html .= '</div>';
-            $styled_html .= '</div>';
-
-            return $styled_html;
         }
     }
     $gemini_api = new gemini_api();

@@ -2370,12 +2370,12 @@ if (!class_exists('display_documents')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $draft_title = sanitize_text_field($_POST['_draft_title']);
-                $draft_content = sanitize_text_field($_POST['_draft_content']);
+                $draft_content = $_POST['_draft_content'];
                 $draft_post = array(
                     'post_type'    => 'document',
                     'post_title'   => $draft_title,
                     'post_content' => $draft_content,
-                    'post_status'  => 'draft',
+                    'post_status'  => 'publish',
                     'post_author'  => $current_user_id,
                 );
                 $draft_id = wp_insert_post($draft_post);
