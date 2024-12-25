@@ -89,6 +89,7 @@ if (!class_exists('gemini_api')) {
                 echo 'Error:' . curl_error($ch);
             } else {
                 $decoded_response = json_decode($response, true);
+                echo print_r($decoded_response, true);
 
                 if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
                     $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
