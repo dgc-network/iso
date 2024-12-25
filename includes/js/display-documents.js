@@ -107,14 +107,34 @@ jQuery(document).ready(function($) {
         var currentUrl = window.location.href;
         // Create a URL object
         var url = new URL(currentUrl);
-        // Remove the specified parameter
-        //url.searchParams.delete('_embedded_id');
         // Set the specified parameter
         url.searchParams.set('_prompt', $(this).val());
         // Get the modified URL
         var modifiedUrl = url.toString();
         // Reload the page with the modified URL
         window.location.replace(modifiedUrl);
+    })
+
+    $("#save-draft").on("click", function () {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_iso_document_statement',
+                _draft_title : $("#draft-title").val(),
+                _draft_content : $("#draft-content").val(),
+            },
+            success: function (response) {
+                console.log(response)
+                iso_category_id = $("#iso-category-id").val();
+                window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
+            },
+            error: function(error){
+                console.error(error); 
+                alert(error);
+            }
+        });
     })
 
     $("#exit-statement").on("click", function () {

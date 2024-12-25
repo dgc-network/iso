@@ -2366,21 +2366,38 @@ if (!class_exists('display_documents')) {
                 }
                 // Prepare the response
                 $response = array('success' => true, 'data' => $processedKeyValuePairs);
-            } else {
-                if (isset($_POST['_duplicated_ids'])) {
-                    $duplicated_ids = $_POST['_duplicated_ids'];
-                    foreach ($duplicated_ids as $duplicated_id) {
-                        if ($this->current_site_is_iso_helper()) {
-                            if (current_user_can('administrator')) {
-                                $this->generate_draft_document($duplicated_id);
-                            }
-                        }
-                        else {
+            } elseif (isset($_POST['_draft_title']) && isset($_POST['_draft_content'])) {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                $draft_title = sanitize_text_field($_POST['_draft_title']);
+                $draft_content = sanitize_text_field($_POST['_draft_content']);
+                $draft_post = array(
+                    'post_type'    => 'document',
+                    'post_title'   => $draft_title,
+                    'post_content' => $draft_content,
+                    'post_status'  => 'draft',
+                    'post_author'  => $current_user_id,
+                );
+                $draft_id = wp_insert_post($draft_post);
+                update_post_meta($draft_id, 'site_id', $site_id);
+                update_post_meta($draft_id, 'doc_title', $draft_title);
+                update_post_meta($draft_id, 'doc_number', 'DRAFT');
+                update_post_meta($draft_id, 'doc_revision', 'DRAFT');
+                $response = array('success' => true, 'data' => $draft_id);
+
+            } elseif (isset($_POST['_duplicated_ids'])) {
+                $duplicated_ids = $_POST['_duplicated_ids'];
+                foreach ($duplicated_ids as $duplicated_id) {
+                    if ($this->current_site_is_iso_helper()) {
+                        if (current_user_can('administrator')) {
                             $this->generate_draft_document($duplicated_id);
                         }
                     }
-                    $response = array('success' => true, 'data' => $duplicated_ids);
+                    else {
+                        $this->generate_draft_document($duplicated_id);
+                    }
                 }
+                $response = array('success' => true, 'data' => $duplicated_ids);
             }
             wp_send_json($response);
         }
