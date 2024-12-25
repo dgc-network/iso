@@ -2215,7 +2215,7 @@ if (!class_exists('display_documents')) {
                     <fieldset>
                         <?php
                         if ($paged==1) {
-                            $gemini_api = new gemini_api();
+                            //$gemini_api = new gemini_api();
                             $content = $gemini_api->generate_content($iso_category_title.'適用性聲明書');
                             // Define the inline CSS
                             $css = "
@@ -2280,6 +2280,16 @@ if (!class_exists('display_documents')) {
                             endif;
 */    
                         } else {
+                            $content = $gemini_api->generate_content($iso_category_title.'文件明細列表');
+                            $styled_html = $css . "<div class='content ui-widget'>" . $content;
+                            $styled_html .= '<fieldset>';
+                            $styled_html .= '</fieldset>';
+                            $styled_html .= '<div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">';
+                            $styled_html .= '<input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />';
+                            $styled_html .= '</div>';
+                            $styled_html .= '</div>';
+                            echo $styled_html;
+
                             echo __( 'Copy the below checked documents from iso-helper.com', 'your-text-domain' );
                             $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
                             if ($query->have_posts()) :
