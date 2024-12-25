@@ -2281,35 +2281,35 @@ if (!class_exists('display_documents')) {
 */    
                         } else {
                             $content = $gemini_api->generate_content($iso_category_title.'文件明細列表');
-                            $styled_html = $css . "<div class='content ui-widget'>" . $content;
-                            $styled_html .= '<fieldset>';
-                            $styled_html .= '</fieldset>';
-                            $styled_html .= '<div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">';
-                            $styled_html .= '<input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />';
-                            $styled_html .= '</div>';
-                            $styled_html .= '</div>';
-                            echo $styled_html;
-
-                            echo __( 'Copy the below checked documents from iso-helper.com', 'your-text-domain' );
-                            $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
-                            if ($query->have_posts()) :
-                                while ($query->have_posts()) : $query->the_post();
-                                    $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                                    $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                                    $doc_category = get_post_meta(get_the_ID(), 'doc_category', true);
-                                    $site_id = get_post_meta(get_the_ID(), 'site_id', true);
-                                    ?>
-                                    <div>
-                                        <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
-                                        <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
-                                    </div>
+                            ?>
+                            <div class='content ui-widget'>
+                                <?php echo $content;?>
+                                <fieldset>
                                     <?php
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-                            echo '<button id="proceed-copy-statement" class="button" style="margin:5px;">';
-                            echo __( 'Copy', 'your-text-domain' );
-                            echo '</button>';
+                                    $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
+                                    if ($query->have_posts()) :
+                                        while ($query->have_posts()) : $query->the_post();
+                                            $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                                            $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                                            $doc_category = get_post_meta(get_the_ID(), 'doc_category', true);
+                                            $site_id = get_post_meta(get_the_ID(), 'site_id', true);
+                                            ?>
+                                            <div>
+                                                <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
+                                                <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
+                                            </div>
+                                            <?php
+                                        endwhile;
+                                        wp_reset_postdata();
+                                    endif;
+                                    ?>
+                                    <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );?></button>
+                                </fieldset>
+                                <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                                    <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                                </div>
+                            </div>
+                            <?php
                         }
                         ?>
                     </fieldset>
