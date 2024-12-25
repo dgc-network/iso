@@ -127,8 +127,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 console.log(response)
-                iso_category_id = $("#iso-category-id").val();
-                window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
+                window.location.replace(window.location.href);
             },
             error: function(error){
                 console.error(error); 
