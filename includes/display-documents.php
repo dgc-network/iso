@@ -2251,13 +2251,14 @@ if (!class_exists('display_documents')) {
                     <fieldset>
                         <?php
                         if ($paged==1) {
-                            $content = $gemini_api->generate_content($iso_category_title.'適用性聲明書');
+                            $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '適用性聲明書';
+                            $content = $gemini_api->generate_content($iso_category_title.$prompt);
                             echo $css;
                             ?>
                             <div class='content'>
                                 <?php echo $content;?>
                                 <fieldset>
-                                    <p>Title:<input type="text" id="drfat-title" value="<?php echo $iso_category_title.'適用性聲明書';?>" class="text ui-widget-content ui-corner-all" /></p>
+                                    <p>Title:<input type="text" id="drfat-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
                                     <p>Content:<textarea id="draft-content" rows="5" style="width:100%;"><?php echo $content;?></textarea></p>
                                     <?php if (is_site_admin()) {?>
                                         <p><input type="button" id="save-draft" value="Save draft" /></p>
@@ -2281,7 +2282,8 @@ if (!class_exists('display_documents')) {
                             endif;
 */    
                         } else {
-                            $content = $gemini_api->generate_content($iso_category_title.'文件明細列表');
+                            $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '文件明細列表';
+                            $content = $gemini_api->generate_content($iso_category_title.$prompt);
                             echo $css;
                             ?>
                             <div class='content'>

@@ -102,6 +102,21 @@ jQuery(document).ready(function($) {
     }
 
     // statement
+    $("#ask-gemini").on("change", function () {
+        // Get the current URL
+        var currentUrl = window.location.href;
+        // Create a URL object
+        var url = new URL(currentUrl);
+        // Remove the specified parameter
+        //url.searchParams.delete('_embedded_id');
+        // Set the specified parameter
+        url.searchParams.set('_prompt', this.val());
+        // Get the modified URL
+        var modifiedUrl = url.toString();
+        // Reload the page with the modified URL
+        window.location.replace(modifiedUrl);
+    })
+
     $("#exit-statement").on("click", function () {
         window.location.replace('/');
     })
