@@ -2257,8 +2257,8 @@ if (!class_exists('display_documents')) {
                             <div class='content'>
                                 <?php echo $content;?>
                                 <fieldset>
-                                    <p>Title:<input type="text" id="drfat-title" value="'.$iso_category_title.'適用性聲明書'.'" class="text ui-widget-content ui-corner-all" /></p>
-                                    <p>Content:<textarea id="draft-content" rows="5" style="width:100%;">'.$content.'</textarea></p>
+                                    <p>Title:<input type="text" id="drfat-title" value="<?php echo $iso_category_title.'適用性聲明書';?>" class="text ui-widget-content ui-corner-all" /></p>
+                                    <p>Content:<textarea id="draft-content" rows="5" style="width:100%;"><?php echo $content;?></textarea></p>
                                     <?php if (is_site_admin()) {?>
                                         <p><input type="button" id="save-draft" value="Save draft" /></p>
                                     <?php }?>
