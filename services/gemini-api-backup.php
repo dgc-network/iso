@@ -27,6 +27,8 @@ if (!class_exists('gemini_api')) {
         public function __construct($gemini_api_key='') {
             add_action('admin_init', array( $this, 'gemini_register_settings' ) );
             $this->gemini_api_key = get_option('gemini_api_key');
+            $current_user_id = get_current_user_id();
+            $this->gemini_api_key = get_user_meta($current_user_id, 'gemini_api_key', true);
         }
     
         function gemini_register_settings() {
@@ -58,7 +60,8 @@ if (!class_exists('gemini_api')) {
             echo '<input type="text" id="gemini_api_key" name="gemini_api_key" style="width:100%;" value="' . esc_attr($value) . '" />';
         }
 
-        public function generate_content($userMessage) {
+        public function generate_content($userMessag) {
+
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $this->gemini_api_key;
             
             $data = array(
@@ -87,6 +90,8 @@ if (!class_exists('gemini_api')) {
                 echo 'Error:' . curl_error($ch);
             } else {
                 $decoded_response = json_decode($response, true);
+                echo print_r($decoded_response, true);
+                //echo print_r('api key: ' . $this->gemini_api_key, true);
 
                 if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
                     $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
