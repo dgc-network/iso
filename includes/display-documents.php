@@ -2258,7 +2258,7 @@ if (!class_exists('display_documents')) {
                             <div class='content'>
                                 <?php echo $content;?>
                                 <fieldset>
-                                    <p>Title:<input type="text" id="drfat-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
+                                    <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
                                     <p>Content:<textarea id="draft-content" rows="5" style="width:100%;"><?php echo $content;?></textarea></p>
                                     <?php if (is_site_admin()) {?>
                                         <p><input type="button" id="save-draft" value="Save draft" /></p>
@@ -2366,7 +2366,6 @@ if (!class_exists('display_documents')) {
                 $response = array('success' => true, 'data' => $processedKeyValuePairs);
 
             } elseif (isset($_POST['_draft_title']) && isset($_POST['_draft_content'])) {
-            } elseif (isset($_POST['_draft_title'])) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $draft_title = sanitize_text_field($_POST['_draft_title']);
