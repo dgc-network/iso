@@ -436,13 +436,8 @@ jQuery(document).ready(function($) {
                 $(this).remove();
             });
         });
-/*
-        $("#action-log-button").on("click", function () {
-            $("#action-log-div").toggle()
-        });
-*/
+
         $("#exit-doc-frame").on("click", function () {
-            //window.location.replace(window.location.href);
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object

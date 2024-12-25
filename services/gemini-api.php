@@ -167,7 +167,9 @@ if (!class_exists('gemini_api')) {
             $styled_html .= '<p>Content:<textarea id="draft-content" rows="5" style="width:100%;">'.$content.'</textarea></p>';
             $styled_html .= '<p><input type="button" id="save-draft" value="Save draft" /></p>';
             $styled_html .= '</fieldset>';
-            $styled_html .= '<div style="padding:10px; border:solid; border-radius:1.5rem;"><input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" /></div>';
+            $styled_html .= '<div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">';
+            $styled_html .= '<input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />';
+            $styled_html .= '</div>';
             $styled_html .= '</div>';
 
             return $styled_html;
