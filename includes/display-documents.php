@@ -660,6 +660,7 @@ if (!class_exists('display_documents')) {
 
         function display_doc_report_list($params) {
             ob_start();
+            $profiles_class = new display_profiles();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -707,11 +708,10 @@ if (!class_exists('display_documents')) {
                 $total_pages = ceil($total_posts / get_option('operation_row_counts'));
 
                 $this->get_doc_report_contain_list($params);
-                $profiles_class = new display_profiles();
                 ?>
-                <?php if ($profiles_class->is_user_doc($doc_id)) {?>
+                <?php /* if ($profiles_class->is_user_doc($doc_id)) {?>
                     <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                <?php }?>
+                <?php }*/?>
                 <div class="pagination">
                     <?php
                     // Display pagination links
@@ -1080,7 +1080,22 @@ if (!class_exists('display_documents')) {
                     'report_id' => $report_id,
                 );                
                 $this->get_doc_field_contains($params);
+
+                $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '';
+                $gemini_api = new gemini_api();
+                if ($prompt) $content = $gemini_api->generate_content($doc_title.$prompt);
+                //echo $css;
+                ?>
+                <div class='content'>
+                    <?php echo $content;?>
+                    <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                        <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                </div>
+                <?php
+
             ?>
+            
             <hr>
             <?php
             // Action buttons
