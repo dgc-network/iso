@@ -90,6 +90,7 @@ if (!class_exists('gemini_api')) {
             } else {
                 $decoded_response = json_decode($response, true);
                 echo print_r($decoded_response, true);
+                echo print_r('api key: ' . $this->gemini_api_key, true);
 
                 if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
                     $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
