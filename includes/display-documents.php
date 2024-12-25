@@ -2194,7 +2194,7 @@ if (!class_exists('display_documents')) {
         }
 
         function display_iso_statement_content($iso_category_id=false, $paged=1) {
-            if (is_site_admin()) {
+            //if (is_site_admin()) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
@@ -2251,20 +2251,23 @@ if (!class_exists('display_documents')) {
                     <fieldset>
                         <?php
                         if ($paged==1) {
-                            //$gemini_api = new gemini_api();
                             $content = $gemini_api->generate_content($iso_category_title.'適用性聲明書');
-                            // Combine the CSS and content in a div
-                            $styled_html = $css . "<div class='content ui-widget'>" . $content;
-                            $styled_html .= '<fieldset>';
-                            $styled_html .= '<p>Title:<input type="text" id="drfat-title" value="'.$iso_category_title.'適用性聲明書'.'" class="text ui-widget-content ui-corner-all" /></p>';
-                            $styled_html .= '<p>Content:<textarea id="draft-content" rows="5" style="width:100%;">'.$content.'</textarea></p>';
-                            $styled_html .= '<p><input type="button" id="save-draft" value="Save draft" /></p>';
-                            $styled_html .= '</fieldset>';
-                            $styled_html .= '<div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">';
-                            $styled_html .= '<input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />';
-                            $styled_html .= '</div>';
-                            $styled_html .= '</div>';
-                            echo $styled_html;
+                            echo $css;
+                            ?>
+                            <div class='content'>
+                                <?php echo $content;?>
+                                <fieldset>
+                                    <p>Title:<input type="text" id="drfat-title" value="'.$iso_category_title.'適用性聲明書'.'" class="text ui-widget-content ui-corner-all" /></p>
+                                    <p>Content:<textarea id="draft-content" rows="5" style="width:100%;">'.$content.'</textarea></p>
+                                    <?php if (is_site_admin()) {?>
+                                        <p><input type="button" id="save-draft" value="Save draft" /></p>
+                                    <?php }?>
+                                </fieldset>
+                                <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                                    <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                                </div>
+                            </div>
+                            <?php
 
 /*                            
                             $items_class = new sub_items();
@@ -2302,7 +2305,9 @@ if (!class_exists('display_documents')) {
                                         wp_reset_postdata();
                                     endif;
                                     ?>
-                                    <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );?></button>
+                                    <?php if (is_site_admin()) {?>
+                                        <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );?></button>
+                                    <?php }?>
                                 </fieldset>
                                 <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
                                     <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
@@ -2332,9 +2337,9 @@ if (!class_exists('display_documents')) {
                 </div>
                 <?php
     
-            } else {
-                echo 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
-            }
+            //} else {
+            //    echo 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
+            //}
         }
 
         function set_iso_document_statement() {
