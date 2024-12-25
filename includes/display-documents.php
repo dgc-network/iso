@@ -2200,8 +2200,44 @@ if (!class_exists('display_documents')) {
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
                 $iso_category_title = get_the_title($iso_category_id);
                 $gemini_api = new gemini_api();
-                //$response = $gemini_api->generate_content($iso_category_title.'適用性聲明書');
-                //echo $response;
+                // Define the inline CSS
+                $css = "
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        line-height: 1.6;
+                        color: #333;
+                        margin: 20px;
+                        background-color: #f9f9f9;
+                    }
+                    .content {
+                        max-width: 800px;
+                        margin: auto;
+                        background: #fff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    }
+                    h2 {
+                        color: #0056b3;
+                        border-bottom: 2px solid #ddd;
+                        padding-bottom: 5px;
+                    }
+                    ul {
+                        margin: 10px 0 20px 20px;
+                        padding-left: 20px;
+                    }
+                    ul li {
+                        margin-bottom: 10px;
+                    }
+                    strong {
+                        color: #000;
+                    }
+                    em {
+                        color: #0056b3;
+                    }
+                </style>
+                ";
                 ?>
                 <div class="ui-widget" id="result-container">
                     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -2217,48 +2253,10 @@ if (!class_exists('display_documents')) {
                         if ($paged==1) {
                             //$gemini_api = new gemini_api();
                             $content = $gemini_api->generate_content($iso_category_title.'適用性聲明書');
-                            // Define the inline CSS
-                            $css = "
-                            <style>
-                                body {
-                                    font-family: Arial, sans-serif;
-                                    line-height: 1.6;
-                                    color: #333;
-                                    margin: 20px;
-                                    background-color: #f9f9f9;
-                                }
-                                .content {
-                                    max-width: 800px;
-                                    margin: auto;
-                                    background: #fff;
-                                    padding: 20px;
-                                    border-radius: 8px;
-                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                                }
-                                h2 {
-                                    color: #0056b3;
-                                    border-bottom: 2px solid #ddd;
-                                    padding-bottom: 5px;
-                                }
-                                ul {
-                                    margin: 10px 0 20px 20px;
-                                    padding-left: 20px;
-                                }
-                                ul li {
-                                    margin-bottom: 10px;
-                                }
-                                strong {
-                                    color: #000;
-                                }
-                                em {
-                                    color: #0056b3;
-                                }
-                            </style>
-                            ";
                             // Combine the CSS and content in a div
                             $styled_html = $css . "<div class='content ui-widget'>" . $content;
                             $styled_html .= '<fieldset>';
-                            $styled_html .= '<p>Title:<input type="text" id="drfat-title" value="'.'" class="text ui-widget-content ui-corner-all" /></p>';
+                            $styled_html .= '<p>Title:<input type="text" id="drfat-title" value="'.$iso_category_title.'適用性聲明書'.'" class="text ui-widget-content ui-corner-all" /></p>';
                             $styled_html .= '<p>Content:<textarea id="draft-content" rows="5" style="width:100%;">'.$content.'</textarea></p>';
                             $styled_html .= '<p><input type="button" id="save-draft" value="Save draft" /></p>';
                             $styled_html .= '</fieldset>';
@@ -2281,8 +2279,9 @@ if (!class_exists('display_documents')) {
 */    
                         } else {
                             $content = $gemini_api->generate_content($iso_category_title.'文件明細列表');
+                            echo $css;
                             ?>
-                            <div class='content ui-widget'>
+                            <div class='content'>
                                 <?php echo $content;?>
                                 <fieldset>
                                     <?php
