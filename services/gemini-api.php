@@ -162,7 +162,7 @@ if (!class_exists('gemini_api')) {
         
             // Combine the CSS and content in a div
             $styled_html = $css . "<div class='content ui-widget'>" . $content;
-            $styled_html .= '<input type="text" id="ask-gemini" class="text ui-widget-content ui-corner-all" />';
+            $styled_html .= '<div style="padding:10px; border:solid; border-radius:5%;"><input type="text" id="ask-gemini" class="text ui-widget-content ui-corner-all" /></div>';
             $styled_html .= "</div>";
 
             return $styled_html;
