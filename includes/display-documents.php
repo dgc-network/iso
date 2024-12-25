@@ -2246,24 +2246,26 @@ if (!class_exists('display_documents')) {
                                 endwhile;
                                 wp_reset_postdata();
                             endif;
-    
+                            echo '<button id="proceed-copy-statement" class="button" style="margin:5px;">';
+                            echo __( 'Copy', 'your-text-domain' );
+                            echo '</button>';
                         }
                         ?>
                     </fieldset>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <?php if ($paged==1) {?>
                             <div>
-                                <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
+                                <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Back', 'your-text-domain' );?></button>
                             </div>
                             <div style="text-align: right">
-                                <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+                                <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
                             </div>
                         <?php } else {?>
                             <div>
-                                <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Prev', 'your-text-domain' );?></button>
+                                <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Back', 'your-text-domain' );?></button>
                             </div>
                             <div style="text-align: right">
-                                <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy', 'your-text-domain' );?></button>
+                                <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Done', 'your-text-domain' );?></button>
                             </div>
                         <?php }?>
                     </div>
