@@ -434,8 +434,8 @@ if (!class_exists('display_documents')) {
                     <?php }?>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                     <label for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
-                    <?php $doc_content = str_replace("\n", '<br>', $doc_content); // Line breaks?>
-                    <div class="content"><?php echo $doc_content;?></div>                    
+                    <?php $content = str_replace("\n", '<br>', $doc_content); // Line breaks?>
+                    <div class="content"><?php echo $content;?></div>                    
                     <textarea id="doc-content" rows="5" style="width:100%;"><?php echo $doc_content;?></textarea>
                 </div>
 
@@ -2267,7 +2267,6 @@ if (!class_exists('display_documents')) {
                         } else {
                             $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '文件明細列表';
                             $content = $gemini_api->generate_content($iso_category_title.$prompt);
-                            //echo $css;
                             ?>
                             <div class="content">
                                 <?php echo $content;?>
