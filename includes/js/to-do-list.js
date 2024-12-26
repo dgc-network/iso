@@ -187,6 +187,7 @@ jQuery(document).ready(function($) {
 
     activate_start_job_dialog_data();
     function activate_start_job_dialog_data(){
+/*        
         const canvas = document.getElementById('signature-pad');
         if (canvas) {
             canvas.width = window.innerWidth-10;
@@ -224,7 +225,7 @@ jQuery(document).ready(function($) {
                     y: touch.clientY - rect.top
                 };
             };
-    
+
             // Touch start event
             canvas.addEventListener('touchstart', function(e) {
                 e.preventDefault();
@@ -247,7 +248,7 @@ jQuery(document).ready(function($) {
             $(document).on('touchend', function() {
                 isDrawing = false;
             });
-            
+
             // Clear button functionality
             $('#clear-signature').click(function() {
                 context.clearRect(0, 0, canvas.width, canvas.height);
@@ -259,7 +260,7 @@ jQuery(document).ready(function($) {
                 $('#signature-image-div').hide();
             });
         }
-
+*/
         $('[id^="start-job-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(24);
             const ajaxData = {
