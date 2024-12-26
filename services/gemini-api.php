@@ -94,7 +94,7 @@ if (!class_exists('gemini_api')) {
                     $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
                     return $this->convert_content_to_styled_html($generated_text);
                 } else {
-                    return "Failed to generate text.";
+                    return "Failed to generate text. Please enter the API key in my-profile page first.";
                 }
             }
             curl_close($ch);

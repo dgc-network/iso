@@ -102,9 +102,9 @@ if (!class_exists('display_documents')) {
                             if ($is_doc_report==0) {
                                 $doc_content = get_post_field('post_content', $doc_id);
                                 if ($doc_content) {
-                                    echo $this->display_doc_frame_contain($doc_id);
-                                } else {
                                     echo $this->display_doc_content($doc_id);
+                                } else {
+                                    echo $this->display_doc_frame_contain($doc_id);
                                 }
                             }
                         }    
@@ -640,7 +640,7 @@ if (!class_exists('display_documents')) {
 
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
 
-            <fieldset style="overflow-x:auto; white-space:nowrap;">
+            <fieldset>
                 <?php echo $content;?>
             </fieldset>
 
