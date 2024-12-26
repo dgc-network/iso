@@ -342,6 +342,30 @@ jQuery(document).ready(function($) {
             $("#job-setting-div").toggle();
         });
 
+        $("#doc-report-preview").on("click", function () {
+            get_doc_report_list_data(doc_id);
+        });
+
+        $("#doc-frame-preview").on("click", function () {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: 'json',
+                data: {
+                    action: 'get_doc_frame_contain',
+                    _doc_id: doc_id,
+                },
+                success: function(response) {
+                    $('#result-container').html(response.html_contain);
+                    activate_doc_frame_contain_data(doc_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
         $("#save-document-button").on("click", function() {
             const ajaxData = {
                 'action': 'set_document_dialog_data',
@@ -372,6 +396,7 @@ jQuery(document).ready(function($) {
                     var url = new URL(currentUrl);
                     // Remove the specified parameter
                     url.searchParams.delete('_doc_id');
+                    url.searchParams.delete('_prompt');
                     // Get the modified URL
                     var modifiedUrl = url.toString();
                     // Reload the page with the modified URL
@@ -401,6 +426,7 @@ jQuery(document).ready(function($) {
                         var url = new URL(currentUrl);
                         // Remove the specified parameter
                         url.searchParams.delete('_doc_id');
+                        url.searchParams.delete('_prompt');
                         // Get the modified URL
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
@@ -412,30 +438,6 @@ jQuery(document).ready(function($) {
                     }
                 });
             }
-        });
-
-        $("#doc-report-preview").on("click", function () {
-            get_doc_report_list_data(doc_id);
-        });
-
-        $("#doc-frame-preview").on("click", function () {
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: 'json',
-                data: {
-                    action: 'get_doc_frame_contain',
-                    _doc_id: doc_id,
-                },
-                success: function(response) {
-                    $('#result-container').html(response.html_contain);
-                    activate_doc_frame_contain_data(doc_id);
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });
         });
 
         $("#exit-document-dialog").on("click", function () {
