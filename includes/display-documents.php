@@ -488,7 +488,16 @@ if (!class_exists('display_documents')) {
                 <?php
                     // transaction data vs card key/value
                     $this->get_transactions_by_key_value_pair(array('_document' => $doc_id));
-                ?>
+
+                    $gemini_api = new gemini_api();
+                    $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
+                    ?>
+                    <div class='content'>
+                        <?php echo $content;?>
+                        <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                            <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                        </div>
+                    </div>            
 
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
