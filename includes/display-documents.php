@@ -1058,13 +1058,13 @@ if (!class_exists('display_documents')) {
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_title .= '('.$doc_number.')';
+            //$doc_title .= '('.$doc_number.')';
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php echo display_iso_helper_logo();?>
-                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+                    <h2 style="display:inline;"><?php echo esc_html($doc_title.'('.$doc_number.')');?></h2>
                 </div>
                 <div style="text-align:right; display:flex;">
                     <span id='reset-doc-report-<?php echo esc_attr($report_id);?>' style='margin-left:5px;' class='dashicons dashicons-trash button'></span>
@@ -1084,6 +1084,7 @@ if (!class_exists('display_documents')) {
                 $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '';
                 $gemini_api = new gemini_api();
                 if ($prompt) $content = $gemini_api->generate_content($doc_title.$prompt);
+                $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 //echo $css;
                 ?>
                 <div class='content'>
