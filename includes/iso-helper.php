@@ -492,3 +492,25 @@ function enqueue_export_scripts() {
     );
 }
 add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
+
+function enqueue_editor_scripts() {
+    if (!is_page('editor-page-slug')) { // Replace with the specific page slug or condition
+        return;
+    }
+
+    // Enqueue TinyMCE or CKEditor assets
+    wp_enqueue_script('wp-tinymce'); // WordPress built-in TinyMCE
+    wp_enqueue_script(
+        'front-end-editor',
+        get_template_directory_uri() . '/js/front-end-editor.js', // Adjust the path
+        ['jquery', 'wp-tinymce'],
+        null,
+        true
+    );
+
+    wp_enqueue_style(
+        'front-end-editor-styles',
+        get_template_directory_uri() . '/css/front-end-editor.css' // Optional, for custom styles
+    );
+}
+add_action('wp_enqueue_scripts', 'enqueue_editor_scripts');
