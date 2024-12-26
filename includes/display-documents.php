@@ -1058,7 +1058,6 @@ if (!class_exists('display_documents')) {
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            //$doc_title .= '('.$doc_number.')';
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1074,72 +1073,65 @@ if (!class_exists('display_documents')) {
             <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             <fieldset>
-            <?php
+                <?php
                 $params = array(
                     'doc_id'    => $doc_id,
                     'report_id' => $report_id,
                 );                
                 $this->get_doc_field_contains($params);
 
-                $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '';
                 $gemini_api = new gemini_api();
-                if ($prompt) $content = $gemini_api->generate_content($doc_title.$prompt);
                 $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
-                //echo $css;
                 ?>
                 <div class='content'>
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
                         <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
                     </div>
-                </div>
-                <?php
-
-            ?>
-            
+                </div>            
             <hr>
-            <?php
-            // Action buttons
-            if (empty($todo_status)){
-                ?>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
                 <?php
-                $profiles_class = new display_profiles();
-                $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        if ($profiles_class->is_user_doc($doc_id)) {
-                            echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
-                        }
-                    endwhile;
-                    wp_reset_postdata();
+                // Action buttons
+                if (empty($todo_status)){
+                    ?>
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                    <?php
+                    $profiles_class = new display_profiles();
+                    $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+                    if ($query->have_posts()) {
+                        while ($query->have_posts()) : $query->the_post();
+                            if ($profiles_class->is_user_doc($doc_id)) {
+                                echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                            }
+                        endwhile;
+                        wp_reset_postdata();
+                    }
+                    ?>
+                    </div>
+                    <div style="text-align:right; display:flex;">
+                    <?php if ($profiles_class->is_user_doc($doc_id)) {?>
+                        <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                    <?php }?>                    
+                        <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                    </div>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <input type="button" id="action-log-button" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
+                        <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+                    </div>
+                    <div style="text-align:right;">
+                        <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
+                    </div>
+                    </div>
+                    <?php
                 }
                 ?>
-                </div>
-                <div style="text-align:right; display:flex;">
-                <?php if ($profiles_class->is_user_doc($doc_id)) {?>
-                    <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-                    <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
-                <?php }?>                    
-                    <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
-                </div>
-                </div>
-                <?php
-            } else {
-                ?>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <input type="button" id="action-log-button" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
-                    <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
-                </div>
-                <div style="text-align:right;">
-                    <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
-                </div>
-                </div>
-                <?php
-            }
-            ?>
             </fieldset>
 
             <div id="report-action-log-div" style="display:none;">
@@ -2210,50 +2202,11 @@ if (!class_exists('display_documents')) {
         }
 
         function display_iso_statement_content($iso_category_id=false, $paged=1) {
-            //if (is_site_admin()) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
                 $iso_category_title = get_the_title($iso_category_id);
                 $gemini_api = new gemini_api();
-                // Define the inline CSS
-                $css = "
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        line-height: 1.6;
-                        color: #333;
-                        margin: 20px;
-                        background-color: #f9f9f9;
-                    }
-                    .content {
-                        max-width: 800px;
-                        margin: auto;
-                        background: #fff;
-                        padding: 20px;
-                        border-radius: 8px;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                    }
-                    h2 {
-                        color: #0056b3;
-                        border-bottom: 2px solid #ddd;
-                        padding-bottom: 5px;
-                    }
-                    ul {
-                        margin: 10px 0 20px 20px;
-                        padding-left: 20px;
-                    }
-                    ul li {
-                        margin-bottom: 10px;
-                    }
-                    strong {
-                        color: #000;
-                    }
-                    em {
-                        color: #0056b3;
-                    }
-                </style>
-                ";
                 ?>
                 <div class="ui-widget" id="result-container">
                     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -2269,7 +2222,7 @@ if (!class_exists('display_documents')) {
                         if ($paged==1) {
                             $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '適用性聲明書';
                             $content = $gemini_api->generate_content($iso_category_title.$prompt);
-                            echo $css;
+                            //echo $css;
                             ?>
                             <div class='content'>
                                 <?php echo $content;?>
@@ -2300,7 +2253,7 @@ if (!class_exists('display_documents')) {
                         } else {
                             $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '文件明細列表';
                             $content = $gemini_api->generate_content($iso_category_title.$prompt);
-                            echo $css;
+                            //echo $css;
                             ?>
                             <div class='content'>
                                 <?php echo $content;?>
@@ -2354,10 +2307,6 @@ if (!class_exists('display_documents')) {
                     </div>
                 </div>
                 <?php
-    
-            //} else {
-            //    echo 'You are not site administrator! Apply to existing administrator for the rights. <button id="apply-site-admin">Apply</button><br>';
-            //}
         }
 
         function set_iso_document_statement() {

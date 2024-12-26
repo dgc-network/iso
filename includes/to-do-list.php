@@ -707,10 +707,19 @@ if (!class_exists('to_do_list')) {
             <h2 style="display:inline;"><?php echo esc_html('Start job: '.get_the_title($doc_id));?></h2>
             <input type="hidden" id="job-id" value="<?php echo $doc_id;?>" />
             <fieldset>
-            <?php
+                <?php
                 $documents_class = new display_documents();
                 $documents_class->get_doc_field_contains(array('doc_id' => $doc_id));
-            ?>
+                $gemini_api = new gemini_api();
+                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
+                ?>
+                <div class='content'>
+                    <?php echo $content;?>
+                    <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                        <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                </div>            
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
