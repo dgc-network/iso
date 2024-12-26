@@ -479,8 +479,8 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                        <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
-                        <textarea id="job-content" rows="3" style="width:100%;"><?php echo $job_content;?></textarea>
+                        <label for="doc-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
+                        <textarea id="doc-content" rows="3" style="width:100%;"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                     </div>
@@ -555,7 +555,7 @@ if (!class_exists('display_documents')) {
                 $doc_post_args = array(
                     'ID'           => $doc_id,
                     'post_title'   => $job_title,
-                    'post_content' => $_POST['_job_content'],
+                    'post_content' => $_POST['_doc_content'],
                 );
                 wp_update_post($doc_post_args);
                 if ($job_number) update_post_meta($doc_id, 'job_number', $job_number);

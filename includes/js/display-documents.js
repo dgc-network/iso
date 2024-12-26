@@ -355,6 +355,7 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_title'] = $("#doc-title").val();
             ajaxData['_doc_revision'] = $("#doc-revision").val();
             ajaxData['_doc_category'] = $("#doc-category").val();
+            ajaxData['_doc_content'] = $("#doc-content").val();
             ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
             ajaxData['_system_doc'] = $("#system-doc").val();
