@@ -99,7 +99,14 @@ if (!class_exists('display_documents')) {
                         if (is_site_admin()) echo $this->display_document_dialog($doc_id);
                         else {
                             if ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
-                            if ($is_doc_report==0) echo $this->display_doc_frame_contain($doc_id);
+                            if ($is_doc_report==0) {
+                                $doc_content = get_post_field('post_content', $doc_id);
+                                if ($doc_content) {
+                                    echo $this->display_doc_frame_contain($doc_id);
+                                } else {
+                                    echo $this->display_doc_content($doc_id);
+                                }
+                            }
                         }    
                     }
                 }
@@ -609,7 +616,47 @@ if (!class_exists('display_documents')) {
             wp_delete_post($_POST['_doc_id'], true);
             wp_send_json($response);
         }
-        
+
+        // doc-content
+        function display_doc_content($doc_id=false) {
+            ob_start();
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            $doc_content = get_post_field('post_content', $doc_id);
+            $content = str_replace("\n", '<br>', $doc_content); // Line breaks
+            ?>
+            <div class="ui-widget" id="result-container">
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <?php echo display_iso_helper_logo();?>
+                    <span><?php echo esc_html($doc_number);?></span>
+                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+                    <span><?php echo esc_html($doc_revision);?></span>
+                </div>
+                <div style="text-align:right; display:flex;">
+                </div>
+            </div>
+
+            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+
+            <fieldset style="overflow-x:auto; white-space:nowrap;">
+                <?php echo $content;?>
+            </fieldset>
+
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
+                </div>
+                <div style="text-align:right; display:flex;">
+                    <input type="button" id="exit-doc-frame" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                </div>
+            </div>
+            </div>
+            <?php
+            return ob_get_clean();
+        }
+
         // doc-frame
         function display_doc_frame_contain($doc_id=false) {
             ob_start();
@@ -648,7 +695,7 @@ if (!class_exists('display_documents')) {
             <?php
             return ob_get_clean();
         }
-        
+
         function get_doc_frame_contain() {
             $result = array();
             if (isset($_POST['_doc_id'])) {
@@ -659,7 +706,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($result);
         }
-        
+
         // doc-report
         function register_doc_report_post_type() {
             $labels = array(
