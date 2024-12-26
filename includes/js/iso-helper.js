@@ -8,58 +8,6 @@ jQuery(document).ready(function($) {
         $('.desktop-content').show();
     }
 
-    // Flag to track drawing state
-    let isDrawing = false;
-
-    // Add event listeners for touch events
-    canvas.addEventListener(
-        'touchstart',
-        (e) => {
-            e.preventDefault();
-            isDrawing = true;
-    
-            // Get the touch position and start a new path
-            const touchPosition = getCanvasPosition(e.touches[0]);
-            context.beginPath();
-            context.moveTo(touchPosition.x, touchPosition.y);
-        },
-        { passive: false }
-    );
-    
-    canvas.addEventListener(
-        'touchmove',
-        (e) => {
-            e.preventDefault();
-            if (isDrawing) {
-                // Draw to the current touch position
-                const touchPosition = getCanvasPosition(e.touches[0]);
-                context.lineTo(touchPosition.x, touchPosition.y);
-                context.stroke();
-            }
-        },
-        { passive: false }
-    );
-    
-    // Add a touchend event to stop drawing
-    canvas.addEventListener(
-        'touchend',
-        (e) => {
-            e.preventDefault();
-            isDrawing = false; // Stop drawing
-        },
-        { passive: false }
-    );
-    
-    // Add a touchcancel event for robustness
-    canvas.addEventListener(
-        'touchcancel',
-        (e) => {
-            e.preventDefault();
-            isDrawing = false; // Stop drawing
-        },
-        { passive: false }
-    );
-    
     $("#user-email-input").on( "change", function() {
         $.ajax({
             type: 'POST',
