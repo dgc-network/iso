@@ -318,6 +318,10 @@ jQuery(document).ready(function($) {
         activate_doc_action_list_data(doc_id);
         activate_doc_field_list_data(doc_id);
 
+        $("#doc-content-label").on("click", function () {
+            $("#doc-content").toggle();
+        });
+
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
             $("#doc-frame-div").toggle();
@@ -757,8 +761,9 @@ jQuery(document).ready(function($) {
             const report_id = this.id.substring(16);
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            // Add or update the `_device_id` parameter
+            // Add or update the parameter
             urlParams.set("_report_id", report_id);
+            urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });            

@@ -440,10 +440,10 @@ if (!class_exists('display_documents')) {
                         <input type="button" id="doc-frame-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-                    <label for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
+                    <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
                     <?php $content = str_replace("\n", '<br>', $doc_content); // Line breaks?>
                     <div class="content"><?php echo $content;?></div>                    
-                    <textarea id="doc-content" rows="5" style="width:100%;"><?php echo $doc_content;?></textarea>
+                    <textarea id="doc-content" rows="5" style="width:100%; display:none;"><?php echo $doc_content;?></textarea>
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
