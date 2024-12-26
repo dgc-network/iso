@@ -710,7 +710,6 @@ if (!class_exists('to_do_list')) {
                 <?php
                 $documents_class = new display_documents();
                 $documents_class->get_doc_field_contains(array('doc_id' => $doc_id));
-                //$gemini_api = new gemini_api();
                 $doc_title = get_post_meta($doc_id, 'doc_title', true);
                 $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
