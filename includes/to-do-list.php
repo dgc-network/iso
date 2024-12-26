@@ -714,7 +714,7 @@ if (!class_exists('to_do_list')) {
                 $doc_title = get_post_meta($doc_id, 'doc_title', true);
                 $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
-                <div class='content'>
+                <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
                         <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />

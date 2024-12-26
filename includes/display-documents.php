@@ -435,7 +435,7 @@ if (!class_exists('display_documents')) {
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                     <label for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
                     <?php $doc_content = str_replace("\n", '<br>', $doc_content); // Line breaks?>
-                    <div><?php echo $doc_content;?></div>                    
+                    <div class="content"><?php echo $doc_content;?></div>                    
                     <textarea id="doc-content" rows="5" style="width:100%;"><?php echo $doc_content;?></textarea>
                 </div>
 
@@ -497,7 +497,7 @@ if (!class_exists('display_documents')) {
                     $gemini_api = new gemini_api();
                     $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
                     ?>
-                    <div class='content'>
+                    <div class="content">
                         <?php echo $content;?>
                         <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
                             <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
@@ -1097,7 +1097,7 @@ if (!class_exists('display_documents')) {
                 $gemini_api = new gemini_api();
                 $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
-                <div class='content'>
+                <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
                         <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
@@ -2238,7 +2238,7 @@ if (!class_exists('display_documents')) {
                             $content = $gemini_api->generate_content($iso_category_title.$prompt);
                             //echo $css;
                             ?>
-                            <div class='content'>
+                            <div class="content">
                                 <?php echo $content;?>
                                 <fieldset>
                                     <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
@@ -2269,7 +2269,7 @@ if (!class_exists('display_documents')) {
                             $content = $gemini_api->generate_content($iso_category_title.$prompt);
                             //echo $css;
                             ?>
-                            <div class='content'>
+                            <div class="content">
                                 <?php echo $content;?>
                                 <fieldset>
                                     <?php
