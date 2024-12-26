@@ -208,6 +208,88 @@ jQuery(document).ready(function($) {
         }
     });
 
+    $(document).ready(function () {
+        const canvas = document.getElementById('signature-pad');
+        if (canvas) {
+            canvas.width = window.innerWidth - 10;
+    
+            const context = canvas.getContext('2d');
+            let isDrawing = false;
+    
+            // Configure drawing styles
+            context.strokeStyle = "#000000";
+            context.lineWidth = 2;
+    
+            // Helper function to get touch position
+            const getCanvasPosition = (touch) => {
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: touch.clientX - rect.left,
+                    y: touch.clientY - rect.top,
+                };
+            };
+    
+            // Mouse Events
+            $('#signature-pad').on('mousedown', function (e) {
+                isDrawing = true;
+                context.beginPath();
+                context.moveTo(e.offsetX, e.offsetY);
+            });
+    
+            $('#signature-pad').on('mousemove', function (e) {
+                if (isDrawing) {
+                    context.lineTo(e.offsetX, e.offsetY);
+                    context.stroke();
+                }
+            });
+    
+            $(document).on('mouseup', function () {
+                isDrawing = false;
+            });
+    
+            // Touch Events
+            canvas.addEventListener(
+                'touchstart',
+                (e) => {
+                    e.preventDefault();
+                    isDrawing = true;
+                    const touchPosition = getCanvasPosition(e.touches[0]);
+                    context.beginPath();
+                    context.moveTo(touchPosition.x, touchPosition.y);
+                },
+                { passive: false }
+            );
+    
+            canvas.addEventListener(
+                'touchmove',
+                (e) => {
+                    e.preventDefault();
+                    if (isDrawing) {
+                        const touchPosition = getCanvasPosition(e.touches[0]);
+                        context.lineTo(touchPosition.x, touchPosition.y);
+                        context.stroke();
+                    }
+                },
+                { passive: false }
+            );
+    
+            $(document).on('touchend', function () {
+                isDrawing = false;
+            });
+    
+            // Clear button functionality
+            $('#clear-signature').on('click', function () {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            });
+    
+            // Redraw button functionality
+            $('#redraw-signature').on('click', function () {
+                $('#signature-pad-div').show();
+                $('#signature-image-div').hide();
+            });
+        }
+    });
+/*    
     const canvas = document.getElementById('signature-pad');
     if (canvas) {
         // Set canvas dimensions
