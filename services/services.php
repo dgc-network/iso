@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once plugin_dir_path( __FILE__ ) . 'line-bot-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'line-login-api.php';
 require_once plugin_dir_path( __FILE__ ) . 'open-ai-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'gemini-api.php';
+//require_once plugin_dir_path( __FILE__ ) . 'gemini-api.php';
 
 function web_service_menu() {
     add_options_page(

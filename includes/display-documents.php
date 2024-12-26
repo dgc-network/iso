@@ -501,8 +501,8 @@ if (!class_exists('display_documents')) {
                     // transaction data vs card key/value
                     $this->get_transactions_by_key_value_pair(array('_document' => $doc_id));
 
-                    $gemini_api = new gemini_api();
-                    $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
+                    //$gemini_api = new gemini_api();
+                    $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
                     ?>
                     <div class="content">
                         <?php echo $content;?>
@@ -1141,8 +1141,8 @@ if (!class_exists('display_documents')) {
                 );                
                 $this->get_doc_field_contains($params);
 
-                $gemini_api = new gemini_api();
-                $content = (isset($_GET['_prompt'])) ? $gemini_api->generate_content($doc_title.' '.$_GET['_prompt']) : '';
+                //$gemini_api = new gemini_api();
+                $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
                 <div class="content">
                     <?php echo $content;?>
@@ -2267,7 +2267,7 @@ if (!class_exists('display_documents')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
                 $iso_category_title = get_the_title($iso_category_id);
-                $gemini_api = new gemini_api();
+                //$gemini_api = new gemini_api();
                 ?>
                 <div class="ui-widget" id="result-container">
                     <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -2282,7 +2282,7 @@ if (!class_exists('display_documents')) {
                         <?php
                         if ($paged==1) {
                             $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '適用性聲明書';
-                            $content = $gemini_api->generate_content($iso_category_title.$prompt);
+                            $content = generate_content($iso_category_title.$prompt);
                             //echo $css;
                             ?>
                             <div class="content">
@@ -2313,7 +2313,7 @@ if (!class_exists('display_documents')) {
 */    
                         } else {
                             $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '文件明細列表';
-                            $content = $gemini_api->generate_content($iso_category_title.$prompt);
+                            $content = generate_content($iso_category_title.$prompt);
                             ?>
                             <div class="content">
                                 <?php echo $content;?>

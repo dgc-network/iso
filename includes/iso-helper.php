@@ -116,16 +116,6 @@ function get_NDA_assignment($user_id=false) {
         </div>
         <div>
             <label for="identify-number"><?php echo __( '簽名：', 'your-text-domain' );?></label>
-<?php /*            
-            <div id="signature-image-div">
-                <?php if ($field_value) {?>
-                    <div><img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" /></div>
-                <?php }?>
-                <button id="redraw-signature" style="margin:3px;">Redraw</button>
-            </div>
-
-            <div style="display:none;" id="signature-pad-div">
-*/?>            
             <div id="signature-pad-div">
                 <div>
                     <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
@@ -252,19 +242,6 @@ function init_webhook_events() {
                     'body_contents' => $body_contents,
                     'footer_contents' => $footer_contents,
                 ]);
-/*                
-                // Generate the Flex Message
-                $flexMessage = $line_bot_api->set_bubble_message([
-                    'header_contents' => $header_contents,
-                    'body_contents' => $body_contents,
-                    'footer_contents' => $footer_contents,
-                ]);
-                // Send the Flex Message via LINE API
-                $line_bot_api->replyMessage([
-                    'replyToken' => $event['replyToken'],
-                    'messages' => [$flexMessage],
-                ]);
-*/                      
             }
         }
         
@@ -317,7 +294,6 @@ function init_webhook_events() {
                                 );
                                 $footer_contents[] = $footer_content;
                             } 
-                            // Reset post data after custom loop
                             wp_reset_postdata();
 
                             $line_bot_api->send_bubble_message([
@@ -326,19 +302,6 @@ function init_webhook_events() {
                                 'body_contents' => $body_contents,
                                 'footer_contents' => $footer_contents,
                             ]);
-/*            
-                            // Generate the Flex Message
-                            $flexMessage = $line_bot_api->set_bubble_message([
-                                'header_contents' => $header_contents,
-                                'body_contents' => $body_contents,
-                                'footer_contents' => $footer_contents,
-                            ]);
-                            // Send the Flex Message via LINE API
-                            $line_bot_api->replyMessage(array(
-                                'replyToken' => $event['replyToken'],
-                                'messages' => array($flexMessage),
-                            ));
-*/
                         } else {
                             // Open-AI auto reply
                             $response = $open_ai_api->createChatCompletion($message['text']);
@@ -365,6 +328,70 @@ function init_webhook_events() {
     }
 }
 add_action( 'parse_request', 'init_webhook_events' );
+
+function generate_content($userMessage) {
+    $gemini_api_key = get_user_meta($current_user_id, 'gemini_api_key', true);
+    $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $gemini_api_key;
+    
+    $data = array(
+      "contents" => array(
+        array(
+          "parts" => array(
+            array(
+              "text" => $userMessage,
+            )
+          )
+        )
+      )
+    );
+    
+    $json_data = json_encode($data);
+    
+    $ch = curl_init($url);
+    
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Set to true to return the response
+    
+    $response = curl_exec($ch);
+    
+    if (curl_errno($ch)) {
+        return 'Error:' . curl_error($ch);
+    } else {
+        $decoded_response = json_decode($response, true);
+
+        if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
+            $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
+            return convert_content_to_styled_html($generated_text);
+        } else {
+            return "Failed to generate text. Please enter the API key in my-profile page first.";
+        }
+    }
+    curl_close($ch);
+
+}
+
+function convert_content_to_styled_html($content) {
+    // Replace markdown-like elements with HTML
+    $content = htmlspecialchars($content, ENT_NOQUOTES, 'UTF-8');
+    // Headings (## Heading ## or ## Heading)
+    $content = preg_replace('/^\#\#\s*(.+?)\s*$/um', '<h2>$1</h2>', $content);
+    $content = preg_replace('/\*\*([^\*]+)\*\*/', '<strong>$1</strong>', $content); // Bold
+    $content = preg_replace('/\*([^\*]+)\*/', '<em>$1</em>', $content);           // Italic
+    $content = preg_replace('/^\s*\*\s(.+)$/m', '<li>$1</li>', $content);         // List items
+    $content = preg_replace_callback(
+        '/(<li>.*?<\/li>)+/s',
+        function ($matches) {
+            return '<ul>' . $matches[0] . '</ul>';
+        },
+        $content
+    );
+    $content = preg_replace('/\n{2,}/', '</p><p>', $content); // Paragraphs
+    $content = '<p>' . $content . '</p>'; // Wrap in paragraph tags
+    $content = str_replace("\n", '<br>', $content); // Line breaks
+    $content = preg_replace('/<\/ul>\s*<ul>/', '', $content); // Clean nested lists
+    return $content;
+}
 
 // Convert the bubble message to email-friendly HTML and send it
 function send_bubble_message_email($params, $to_email, $subject = 'New Message') {
@@ -453,8 +480,8 @@ function select_cron_schedules_option($selected_option = false) {
     return $options;
 }
 
+// Add a custom schedule for weekdays (every 24 hours, skipping weekends)
 function add_weekday_only_cron_schedule($schedules) {
-    // Add a custom schedule for weekdays (every 24 hours, skipping weekends)
     $schedules['weekday_daily'] = array(
         'interval' => 86400, // 24 hours in seconds
         'display'  => __('Once Daily on Weekdays Only'),
@@ -505,65 +532,7 @@ register_activation_hook(__FILE__, function() {
 register_deactivation_hook(__FILE__, function() {
     wp_clear_scheduled_hook('five_minutes_action_process_event');
 });
-/*
-function delete_iot_messages_after_date() {
-    // Define the date after which posts should be deleted
-    $cutoff_date = '2024-11-14 23:59:59';
 
-    // Query for posts of type 'iot-message' after the specified date
-    $args = array(
-        'post_type'      => 'iot-message',
-        'post_status'    => 'any',
-        'date_query'     => array(
-            array(
-                'after'     => $cutoff_date,
-                'inclusive' => false,
-            ),
-        ),
-        'posts_per_page' => -1,
-        'fields'         => 'ids', // Retrieve only post IDs for performance
-    );
-
-    $query = new WP_Query($args);
-
-    // Delete each post
-    if ($query->have_posts()) {
-        foreach ($query->posts as $post_id) {
-            wp_delete_post($post_id, true); // True for force delete (skip trash)
-        }
-    }
-}
-
-// Hook to run on admin init (or call the function manually)
-add_action('admin_init', 'delete_iot_messages_after_date');
-
-/*
-function flush_iot_message_rewrites() {
-    register_iot_message_post_type(); // Re-register post type
-    flush_rewrite_rules();            // Flush rules
-}
-add_action('init', 'flush_iot_message_rewrites');
-
-/*
-function every_five_minutes_cron_schedules($schedules) {
-    if (!isset($schedules['every_five_minutes'])) {
-        $schedules['every_five_minutes'] = array(
-            'interval' => 300, // 300 seconds = 5 minutes
-            'display' => __('Every Five Minutes')
-        );
-    }
-    return $schedules;
-}
-add_filter('cron_schedules', 'every_five_minutes_cron_schedules');
-
-function every_five_minutes_cron_deactivation() {
-    $timestamp = wp_next_scheduled('five_minutes_action_process_event');
-    if ($timestamp) {
-        wp_unschedule_event($timestamp, 'five_minutes_action_process_event');
-    }
-}
-register_deactivation_hook(__FILE__, 'every_five_minutes_cron_deactivation');
-*/
 function remove_weekday_event() {
     $timestamp = wp_next_scheduled('my_weekday_event');
     if ($timestamp) {
