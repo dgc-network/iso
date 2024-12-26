@@ -437,13 +437,14 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#document-dialog-exit").on("click", function () {
+        $("#exit-document-dialog").on("click", function () {
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
             var url = new URL(currentUrl);
             // Remove the specified parameter
             url.searchParams.delete('_doc_id');
+            url.searchParams.delete('_prompt');
             // Get the modified URL
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL

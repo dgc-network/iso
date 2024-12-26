@@ -394,6 +394,7 @@ if (!class_exists('display_documents')) {
             $department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
 
+            $doc_content = get_post_field('post_content', $doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
@@ -432,6 +433,9 @@ if (!class_exists('display_documents')) {
                         <input type="button" id="doc-frame-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
+                    <label for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
+                    <div><?php echo $doc_content;?></div>
+                    <textarea id="doc-content" rows="5" style="width:100%;"><?php echo $doc_content;?></textarea>
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
@@ -508,7 +512,7 @@ if (!class_exists('display_documents')) {
                         <?php }?>
                     </div>
                     <div style="text-align: right">
-                        <input type="button" id="document-dialog-exit" value="Exit" style="margin:5px;" />
+                        <input type="button" id="exit-document-dialog" value="Exit" style="margin:5px;" />
                     </div>
                 </div>
             </fieldset>
