@@ -2273,7 +2273,7 @@ if (!class_exists('display_documents')) {
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div>
                             <?php echo display_iso_helper_logo();?>
-                            <h2 style="display:inline;"><?php echo esc_html($iso_category_title.'啟動AI輔導');?></h2>
+                            <h2 style="display:inline;"><?php echo esc_html($iso_category_title.' 啟動AI輔導');?></h2>
                         </div>
                     </div>
                     <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
