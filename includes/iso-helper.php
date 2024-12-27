@@ -22,6 +22,20 @@ function wp_enqueue_scripts_and_styles() {
             selector: ".editor-content", // Replace with your editor ID
             height: 400,
             plugins: "lists link image charmap fullscreen media paste",
+            toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | visualblocks",
+            setup: function (editor) {
+                editor.on("change", function () {
+                    editor.save();
+                });
+            }
+        });
+    ');
+/*
+    wp_add_inline_script('wp-tinymce', '
+        tinymce.init({
+            selector: ".editor-content", // Replace with your editor ID
+            height: 400,
+            plugins: "lists link image charmap fullscreen media paste",
             toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | visualblocks"
             setup: function (editor) {
                 editor.on('change', function () {
@@ -30,7 +44,7 @@ function wp_enqueue_scripts_and_styles() {
             }
         });
     ');
-
+*/
     wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __DIR__), '', time());
 
     wp_enqueue_script('iso-helper', plugins_url('js/iso-helper.js', __FILE__), array('jquery'), time());
