@@ -441,10 +441,12 @@ if (!class_exists('display_documents')) {
                     <?php }?>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
                     <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
+                    <textarea id="doc-content" class="editor-content"><?php echo $doc_content;?></textarea>
+<?php /*                    
                     <?php $content = str_replace("\n", '<br>', $doc_content); // Line breaks?>
                     <div class="content"><?php echo $content;?></div>                    
                     <textarea id="doc-content" rows="5" style="width:100%; display:none;"><?php echo $doc_content;?></textarea>
-                    <textarea id="editor-content"><?php echo $doc_content;?></textarea>
+*/?>                    
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
