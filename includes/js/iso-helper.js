@@ -5,6 +5,30 @@ jQuery(document).ready(function ($) {
             height: 400,
             menubar: true,
             plugins: [
+                'advlist autolink lists link image charmap print anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste help wordcount'
+            ],
+            toolbar:
+                'undo redo | formatselect | bold italic backcolor | ' +
+                'alignleft aligncenter alignright alignjustify | ' +
+                'bullist numlist outdent indent | removeformat | help',
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
+        });
+    }
+});
+/*
+jQuery(document).ready(function ($) {
+    if (typeof tinymce !== 'undefined') {
+        tinymce.init({
+            selector: '.editor-content', // Target the textarea by ID
+            height: 400,
+            menubar: true,
+            plugins: [
                 'advlist autolink lists link image charmap print preview anchor',
                 'searchreplace visualblocks code fullscreen',
                 'insertdatetime media table paste code help wordcount'
@@ -21,7 +45,7 @@ jQuery(document).ready(function ($) {
         });
     }
 });
-
+*/
 jQuery(document).ready(function($) {
     // JavaScript to detect mobile browser
     if (/Mobi/.test(navigator.userAgent)) {
