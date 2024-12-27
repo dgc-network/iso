@@ -20,7 +20,8 @@ function wp_enqueue_scripts_and_styles() {
     wp_add_inline_script('wp-tinymce', '
         tinymce.init({
             selector: ".editor-content", // Replace with your editor ID
-            plugins: "advlist autolink lists link image charmap anchor visualblocks fullscreen print media table paste",
+            height: 400,
+            plugins: "lists link image charmap fullscreen media paste",
             toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | visualblocks"
         });
     ');
