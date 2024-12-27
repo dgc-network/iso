@@ -161,6 +161,14 @@ function set_NDA_assignment() {
         update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
         update_user_meta( $user_id, 'signature_image', $_POST['_signature_image']);
         update_user_meta( $user_id, 'nda_date', sanitize_text_field($_POST['_nda_date']));
+
+        $user_name = get_user_meta($user_id, 'display_name', true);
+        $params = array(
+            'log_message' => $user_name.' has signed the NDA agreement.',
+        );
+        $todo_class = new to_do_list();
+        $todo_class->create_action_log_and_go_next($params);    
+
     }
     wp_send_json($response);
 }

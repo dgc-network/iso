@@ -336,13 +336,13 @@ jQuery(document).ready(function($) {
             $("#doc-frame-div").toggle();
             $("#is-doc-report").val(0)
         });
-
+/*
         $("#doc-frame-job-setting").on("click", function () {
             $("#doc-frame-job-setting").toggle()
             $(".mermaid").toggle()
             $("#job-setting-div").toggle();
         });
-
+*/
         $("#doc-report-job-setting").on("click", function () {
             $("#doc-report-job-setting").toggle();
             $(".mermaid").toggle()
@@ -352,7 +352,7 @@ jQuery(document).ready(function($) {
         $("#doc-report-preview").on("click", function () {
             get_doc_report_list_data(doc_id);
         });
-
+/*
         $("#doc-frame-preview").on("click", function () {
             $.ajax({
                 type: 'POST',
@@ -372,7 +372,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+*/
         $("#save-document-button").on("click", function() {
             const ajaxData = {
                 'action': 'set_document_dialog_data',

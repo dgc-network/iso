@@ -21,10 +21,10 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_document_dialog_data', array( $this, 'set_document_dialog_data' ) );
             add_action( 'wp_ajax_del_document_dialog_data', array( $this, 'del_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_document_dialog_data', array( $this, 'del_document_dialog_data' ) );
-
+/*
             add_action( 'wp_ajax_get_doc_frame_contain', array( $this, 'get_doc_frame_contain' ) );
             add_action( 'wp_ajax_nopriv_get_doc_frame_contain', array( $this, 'get_doc_frame_contain' ) );
-
+*/
             add_action( 'wp_ajax_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
 
@@ -582,7 +582,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'system_doc', $system_doc);
 
                 $params = array(
-                    'log_message' => 'Update a Document(#'.$doc_number.')',
+                    'log_message' => $doc_title.'(#'.$doc_number.') is updated',
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -610,9 +610,10 @@ if (!class_exists('display_documents')) {
         function del_document_dialog_data() {
             $response = array();
             $doc_id = (isset($_POST['_doc_id'])) ? sanitize_text_field($_POST['_doc_id']) : 0;
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $params = array(
-                'log_message' => 'Delete a Document(#'.$doc_number.')',
+                'log_message' => $doc_title.'(#'.$doc_number.') is deleted',
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    
@@ -699,7 +700,7 @@ if (!class_exists('display_documents')) {
             <?php
             return ob_get_clean();
         }
-
+/*
         function get_doc_frame_contain() {
             $result = array();
             if (isset($_POST['_doc_id'])) {
@@ -710,7 +711,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($result);
         }
-
+*/
         // doc-report
         function register_doc_report_post_type() {
             $labels = array(
