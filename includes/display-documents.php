@@ -628,7 +628,7 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_content = get_post_field('post_content', $doc_id);
-            $content = str_replace("\n", '<br>', $doc_content); // Line breaks
+            //$content = str_replace("\n", '<br>', $doc_content); // Line breaks
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -645,7 +645,7 @@ if (!class_exists('display_documents')) {
             <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
 
             <fieldset>
-                <?php echo $content;?>
+                <?php echo $doc_content;?>
             </fieldset>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">

@@ -5,7 +5,6 @@ if (!defined('ABSPATH')) {
 require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
-//require_once plugin_dir_path( __FILE__ ) . 'erp-cards.php';
 require_once plugin_dir_path( __FILE__ ) . 'sub-items.php';
 require_once plugin_dir_path( __FILE__ ) . 'iot-messages.php';
 
@@ -13,7 +12,6 @@ function wp_enqueue_scripts_and_styles() {
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
 
-    //wp_enqueue_script('wp-tinymce'); // WordPress built-in TinyMCE
     // Enqueue the TinyMCE CDN script
     wp_enqueue_script('wp-tinymce', 'https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js', array(), null, true);
     // You can also enqueue the TinyMCE configuration script if needed
@@ -30,21 +28,7 @@ function wp_enqueue_scripts_and_styles() {
             }
         });
     ');
-/*
-    wp_add_inline_script('wp-tinymce', '
-        tinymce.init({
-            selector: ".editor-content", // Replace with your editor ID
-            height: 400,
-            plugins: "lists link image charmap fullscreen media paste",
-            toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | visualblocks"
-            setup: function (editor) {
-                editor.on('change', function () {
-                    editor.save();
-                });
-            }
-        });
-    ');
-*/
+
     wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __DIR__), '', time());
 
     wp_enqueue_script('iso-helper', plugins_url('js/iso-helper.js', __FILE__), array('jquery'), time());
@@ -362,6 +346,7 @@ function init_webhook_events() {
 }
 add_action( 'parse_request', 'init_webhook_events' );
 
+// Google Gemini AI
 function generate_content($userMessage) {
     $gemini_api_key = get_user_meta(get_current_user_id(), 'gemini_api_key', true);
     $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $gemini_api_key;
@@ -525,25 +510,3 @@ function enqueue_export_scripts() {
     );
 }
 add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
-
-function enqueue_editor_scripts() {
-    if (!is_page('editor-page-slug')) { // Replace with the specific page slug or condition
-        return;
-    }
-
-    // Enqueue TinyMCE or CKEditor assets
-    wp_enqueue_script('wp-tinymce'); // WordPress built-in TinyMCE
-    wp_enqueue_script(
-        'front-end-editor',
-        get_template_directory_uri() . '/js/front-end-editor.js', // Adjust the path
-        ['jquery', 'wp-tinymce'],
-        null,
-        true
-    );
-
-    wp_enqueue_style(
-        'front-end-editor-styles',
-        get_template_directory_uri() . '/css/front-end-editor.css' // Optional, for custom styles
-    );
-}
-//add_action('wp_enqueue_scripts', 'enqueue_editor_scripts');
