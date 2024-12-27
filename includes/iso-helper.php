@@ -12,7 +12,19 @@ require_once plugin_dir_path( __FILE__ ) . 'iot-messages.php';
 function wp_enqueue_scripts_and_styles() {
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
-    wp_enqueue_script('wp-tinymce'); // WordPress built-in TinyMCE
+
+    //wp_enqueue_script('wp-tinymce'); // WordPress built-in TinyMCE
+    // Enqueue the TinyMCE CDN script
+    wp_enqueue_script('wp-tinymce', 'https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js', array(), null, true);
+    // You can also enqueue the TinyMCE configuration script if needed
+    wp_add_inline_script('wp-tinymce', '
+        tinymce.init({
+            selector: ".editor-content", // Replace with your editor ID
+            plugins: "advlist autolink lists link image charmap anchor visualblocks fullscreen print media table paste",
+            toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | visualblocks"
+        });
+    ');
+
     wp_enqueue_style('wp-enqueue-css', plugins_url('/assets/css/wp-enqueue.css', __DIR__), '', time());
 
     wp_enqueue_script('iso-helper', plugins_url('js/iso-helper.js', __FILE__), array('jquery'), time());

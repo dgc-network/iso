@@ -1,3 +1,4 @@
+/*
 jQuery(document).ready(function ($) {
     if (typeof tinymce !== 'undefined') {
         tinymce.init({
@@ -5,9 +6,9 @@ jQuery(document).ready(function ($) {
             height: 400,
             menubar: true,
             plugins: [
-                'advlist autolink lists link image charmap print anchor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table paste help wordcount'
+                'advlist autolink lists link image charmap anchor',
+                'visualblocks fullscreen',
+                'media paste'
             ],
             toolbar:
                 'undo redo | formatselect | bold italic backcolor | ' +
