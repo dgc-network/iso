@@ -444,7 +444,7 @@ if (!class_exists('display_documents')) {
                     <?php $content = str_replace("\n", '<br>', $doc_content); // Line breaks?>
                     <div class="content"><?php echo $content;?></div>                    
                     <textarea id="doc-content" rows="5" style="width:100%; display:none;"><?php echo $doc_content;?></textarea>
-                    <textarea class="editor-content"><?php echo $doc_content;?></textarea>
+                    <textarea id="editor-content"><?php echo $doc_content;?></textarea>
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">

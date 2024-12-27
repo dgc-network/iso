@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
     if (typeof tinymce !== 'undefined') {
         tinymce.init({
-            selector: '.editor-content', // Target the textarea by ID
+            selector: '#editor-content', // Target the textarea by ID
             height: 400,
             menubar: true,
             plugins: [
