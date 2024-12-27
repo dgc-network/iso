@@ -435,11 +435,13 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 
                 <div id="doc-frame-div" style="<?php echo $is_frame_display;?>">
+<?php /*                    
                     <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="doc-frame-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
+*/?>                    
                     <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
                     <textarea id="doc-content" class="editor-content"><?php echo $doc_content;?></textarea>
 <?php /*                    
