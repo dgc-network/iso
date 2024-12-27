@@ -23,6 +23,11 @@ function wp_enqueue_scripts_and_styles() {
             height: 400,
             plugins: "lists link image charmap fullscreen media paste",
             toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | visualblocks"
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
         });
     ');
 
