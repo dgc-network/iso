@@ -319,7 +319,10 @@ jQuery(document).ready(function($) {
         activate_doc_field_list_data(doc_id);
 
         $("#doc-content-label").on("click", function () {
-            $("#doc-content").toggle();
+            //$("#doc-content").toggle();
+            $("#doc-report-div").toggle();
+            $("#doc-frame-div").toggle();
+            $("#is-doc-report").val(1)
         });
 
         $("#doc-frame-label").on("click", function () {
