@@ -125,6 +125,7 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'set_iso_document_statement',
                 _draft_title : $("#draft-title").val(),
+                _draft_category : $("#draft-category").val(),
                 _draft_content : $("#draft-content").val(),
             },
             success: function (response) {

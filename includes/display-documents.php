@@ -2292,6 +2292,8 @@ if (!class_exists('display_documents')) {
                                 <?php echo $content;?>
                                 <fieldset>
                                     <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
+                                    <label for="draft-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+                                    <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
                                     <p>Content:<textarea id="draft-content" class="editor-content"><?php echo $content;?></textarea></p>
                                     <?php if (is_site_admin()) {?>
                                         <p><input type="button" id="save-draft" value="Save draft" /></p>
@@ -2397,6 +2399,7 @@ if (!class_exists('display_documents')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $draft_title = sanitize_text_field($_POST['_draft_title']);
+                $draft_category = sanitize_text_field($_POST['_draft_category']);
                 $draft_content = $_POST['_draft_content'];
                 $draft_post = array(
                     'post_type'    => 'document',
@@ -2410,6 +2413,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_title', $draft_title);
                 update_post_meta($draft_id, 'doc_number', '-');
                 update_post_meta($draft_id, 'doc_revision', 'draft');
+                update_post_meta($draft_id, 'doc_category', $draft_category);
                 $response = array('success' => true, 'data' => $draft_id);
 
             } elseif (isset($_POST['_duplicated_ids'])) {
