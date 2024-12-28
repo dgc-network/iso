@@ -129,7 +129,22 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 console.log(response)
-                //window.location.replace(window.location.href);
+
+                // Show the custom alert message
+                var alertBox = $("<div class='custom-alert'>Generate "+$("#draft-title").val()+" success!</div>");
+                $("body").append(alertBox);
+
+                // Center the alert box
+                alertBox.css({
+                    position: "fixed",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                });
+
+                alertBox.fadeIn(500).delay(3000).fadeOut(500, function() {
+                    $(this).remove();
+                });
             },
             error: function(error){
                 console.error(error); 

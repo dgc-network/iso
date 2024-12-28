@@ -38,6 +38,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     console.log(response);
+
                     // Show the custom alert message
                     var alertBox = $("<div class='custom-alert'>Data update success!</div>");
                     $("body").append(alertBox);
