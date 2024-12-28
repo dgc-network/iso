@@ -2292,7 +2292,7 @@ if (!class_exists('display_documents')) {
                                 <?php echo $content;?>
                                 <fieldset>
                                     <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
-                                    <p>Content:<textarea id="draft-content" rows="5" style="width:100%;"><?php echo $content;?></textarea></p>
+                                    <p>Content:<textarea id="draft-content" class="editor-content"><?php echo $content;?></textarea></p>
                                     <?php if (is_site_admin()) {?>
                                         <p><input type="button" id="save-draft" value="Save draft" /></p>
                                     <?php }?>
