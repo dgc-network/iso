@@ -17,7 +17,7 @@ function wp_enqueue_scripts_and_styles() {
     // You can also enqueue the TinyMCE configuration script if needed
     wp_add_inline_script('wp-tinymce', '
         tinymce.init({
-            selector: ".editor-content", // Replace with your editor ID
+            selector: ".visual-editor", // Replace with your editor ID
             height: 400,
             plugins: "lists link image charmap fullscreen media paste",
             toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | visualblocks",

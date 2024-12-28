@@ -443,7 +443,7 @@ if (!class_exists('display_documents')) {
                     <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
 */?>                    
                     <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
-                    <textarea id="doc-content" class="editor-content"><?php echo $doc_content;?></textarea>
+                    <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
 <?php /*                    
                     <?php $content = str_replace("\n", '<br>', $doc_content); // Line breaks?>
                     <div class="content"><?php echo $content;?></div>                    
@@ -493,7 +493,7 @@ if (!class_exists('display_documents')) {
                         <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="doc-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
-                        <textarea id="doc-content" class="editor-content"><?php echo $doc_content;?></textarea>
+                        <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                     </div>
@@ -2294,7 +2294,7 @@ if (!class_exists('display_documents')) {
                                     <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
                                     <label for="draft-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
                                     <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
-                                    <p>Content:<textarea id="draft-content" class="editor-content"><?php echo $content;?></textarea></p>
+                                    <p>Content:<textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea></p>
                                     <?php if (is_site_admin()) {?>
                                         <p><input type="button" id="save-draft" value="Save draft" /></p>
                                     <?php }?>
