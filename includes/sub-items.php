@@ -1163,11 +1163,11 @@ if (!class_exists('sub_items')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
-                    'post_title'    => 'New category',
+                    'post_type'     => 'doc-category',
+                    'post_title'    => '-',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'doc-category',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
@@ -1379,11 +1379,11 @@ if (!class_exists('sub_items')) {
             } else {
                 $current_user_id = get_current_user_id();
                 $new_post = array(
-                    'post_title'    => 'New category',
+                    'post_type'     => 'iso-category',
+                    'post_title'    => '-',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'iso-category',
                 );    
                 $post_id = wp_insert_post($new_post);
             }
