@@ -2286,7 +2286,7 @@ if (!class_exists('display_documents')) {
                         if ($paged==1) {
                             $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '適用性聲明書';
                             $content = generate_content($iso_category_title.$prompt);
-                            //echo $css;
+                            $items_class = new sub_items();
                             ?>
                             <div class="content">
                                 <?php echo $content;?>
