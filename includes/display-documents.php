@@ -99,7 +99,7 @@ if (!class_exists('display_documents')) {
                         if (is_site_admin()) echo $this->display_document_dialog($doc_id);
                         else {
                             if ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
-                            if ($is_doc_report==0) {
+                            else {
                                 $doc_content = get_post_field('post_content', $doc_id);
                                 if ($doc_content) {
                                     echo $this->display_doc_content($doc_id);
@@ -493,7 +493,7 @@ if (!class_exists('display_documents')) {
                         <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="doc-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
-                        <textarea id="doc-content" rows="3" style="width:100%;"><?php echo $doc_content;?></textarea>
+                        <textarea id="doc-content" class="editor-content"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                     </div>
