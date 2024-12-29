@@ -2296,7 +2296,7 @@ if (!class_exists('display_documents')) {
                                     <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
                                     <p>Content:<textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea></p>
                                     <?php if (is_site_admin()) {?>
-                                        <p><input type="button" id="save-draft" value="Save draft" /></p>
+                                        <p><input type="button" id="save-draft" value="Generate draft" /></p>
                                     <?php }?>
                                 </fieldset>
                                 <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
