@@ -2289,9 +2289,9 @@ if (!class_exists('display_documents')) {
                             $items_class = new sub_items();
                             ?>
                             <div class="content">
-                                <?php echo $content;?>
+                                <?php //echo $content;?>
                                 <fieldset>
-                                    <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
+                                    <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title;?>" class="text ui-widget-content ui-corner-all" /></p>
                                     <label for="draft-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
                                     <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
                                     <p>Content:<textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea></p>
