@@ -123,7 +123,7 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'set_iso_document_statement',
+                'action': 'set_iso_statement_data',
                 _draft_title : $("#draft-title").val(),
                 _draft_category : $("#draft-category").val(),
                 _draft_content : $("#draft-content").val(),
@@ -185,7 +185,7 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'set_iso_document_statement',
+                'action': 'set_iso_statement_data',
                 _keyValuePairs : keyValuePairs,
             },
             success: function (response) {
@@ -256,7 +256,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_iso_document_statement',
+                    'action': 'set_iso_statement_data',
                     _duplicated_ids : duplicated_ids,
                 },
                 success: function (response) {

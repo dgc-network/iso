@@ -1154,7 +1154,7 @@ if (!class_exists('sub_items')) {
                 update_post_meta($category_id, 'iso_category', $iso_category);
 
                 $params = array(
-                    'log_message' => 'Update a Category('.$category_title.')',
+                    'log_message' => 'Category('.$category_title.') has been updated',
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -1179,7 +1179,7 @@ if (!class_exists('sub_items')) {
         function del_doc_category_dialog_data() {
             $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
             $params = array(
-                'log_message' => 'Delete a Category('.get_the_title($category_id).')',
+                'log_message' => 'Category('.get_the_title($category_id).') has been deleted',
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    
@@ -1631,7 +1631,7 @@ if (!class_exists('sub_items')) {
                 update_post_meta($department_id, 'department_number', $department_number);
 
                 $params = array(
-                    'log_message' => 'Update a Department('.$department_title.')',
+                    'log_message' => 'Department('.$department_title.') has been updated',
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -1657,7 +1657,7 @@ if (!class_exists('sub_items')) {
         function del_department_card_dialog_data() {
             $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
             $params = array(
-                'log_message' => 'Delete a Department('.get_the_title($department_id).')',
+                'log_message' => 'Department('.get_the_title($department_id).') has been deleted',
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    

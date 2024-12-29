@@ -51,8 +51,8 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_reset_doc_report_todo_status', array( $this, 'reset_doc_report_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_doc_report_todo_status', array( $this, 'reset_doc_report_todo_status' ) );                                                                    
 
-            add_action( 'wp_ajax_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
-            add_action( 'wp_ajax_nopriv_set_iso_document_statement', array( $this, 'set_iso_document_statement' ) );
+            add_action( 'wp_ajax_set_iso_statement_data', array( $this, 'set_iso_statement_data' ) );
+            add_action( 'wp_ajax_nopriv_set_iso_statement_data', array( $this, 'set_iso_statement_data' ) );
         }
 
         function enqueue_display_document_scripts() {
@@ -114,7 +114,7 @@ if (!class_exists('display_documents')) {
                 // Get shared document if shared doc ID is existed
                 if (isset($_GET['_duplicate_document'])) {
                     $doc_id = sanitize_text_field($_GET['_duplicate_document']);
-                    $this->generate_draft_document($doc_id);
+                    $this->generate_draft_document_data($doc_id);
                 }
 
                 // Display document list if no specific document IDs are existed
@@ -582,7 +582,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'system_doc', $system_doc);
 
                 $params = array(
-                    'log_message' => $doc_title.'(#'.$doc_number.') is updated',
+                    'log_message' => $doc_title.'(#'.$doc_number.') has been updated',
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -613,7 +613,7 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $params = array(
-                'log_message' => $doc_title.'(#'.$doc_number.') is deleted',
+                'log_message' => $doc_title.'(#'.$doc_number.') has been deleted',
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    
@@ -2374,7 +2374,7 @@ if (!class_exists('display_documents')) {
                 <?php
         }
 
-        function set_iso_document_statement() {
+        function set_iso_statement_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
 
             if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
@@ -2414,6 +2414,13 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_number', '-');
                 update_post_meta($draft_id, 'doc_revision', 'draft');
                 update_post_meta($draft_id, 'doc_category', $draft_category);
+
+                $params = array(
+                    'log_message' => 'Generate the draft of '.get_the_title($doc_id),
+                );
+                $todo_class = new to_do_list();
+                $todo_class->create_action_log_and_go_next($params);
+
                 $response = array('success' => true, 'data' => $draft_id);
 
             } elseif (isset($_POST['_duplicated_ids'])) {
@@ -2421,11 +2428,11 @@ if (!class_exists('display_documents')) {
                 foreach ($duplicated_ids as $duplicated_id) {
                     if ($this->current_site_is_iso_helper()) {
                         if (current_user_can('administrator')) {
-                            $this->generate_draft_document($duplicated_id);
+                            $this->generate_draft_document_data($duplicated_id);
                         }
                     }
                     else {
-                        $this->generate_draft_document($duplicated_id);
+                        $this->generate_draft_document_data($duplicated_id);
                     }
                 }
                 $response = array('success' => true, 'data' => $duplicated_ids);
@@ -2453,7 +2460,7 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function generate_draft_document($doc_id=false){
+        function generate_draft_document_data($doc_id=false){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $job_number = get_post_meta($doc_id, 'job_number', true);
