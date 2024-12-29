@@ -163,7 +163,6 @@ if (!class_exists('display_profiles')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('my-profile');?></div>
                 <div style="text-align: right">
-                    <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
                 </div>
             </div>    
             <fieldset>
@@ -193,6 +192,7 @@ if (!class_exists('display_profiles')) {
                     <div id="my-exception-notification-setting"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
                 </div>
             </fieldset>
+            <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
             <?php
             return ob_get_clean();
         }
