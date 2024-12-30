@@ -1691,7 +1691,10 @@ if (!class_exists('display_profiles')) {
                 $post = get_post($site_id);
         
                 if($post && $post->post_type == 'site-profile') {
-                    wp_send_json_success(array('content' => apply_filters('the_content', $post->post_content)));
+                    wp_send_json_success(array(
+                        'content' => apply_filters('the_content', $post->post_content),
+                        'unified_number' => get_post_meta($site_id, 'unified_number', true);,
+                    ));
                 } else {
                     wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
                 }
@@ -1703,7 +1706,7 @@ if (!class_exists('display_profiles')) {
         function approve_NDA_assignment($user_id=false) {
             if (empty($user_id)) $user_id=get_current_user_id();
             $user = get_userdata($user_id);
-            $site_id = get_user_meta($user_id, 'site_id', true);            
+            $site_id = get_user_meta($user_id, 'site_id', true);
             ?>
             <div class="ui-widget" id="result-container">
                 <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>

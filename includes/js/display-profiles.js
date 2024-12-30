@@ -943,6 +943,7 @@ jQuery(document).ready(function($) {
                     if(response.success) {
                         // Display the post content in a designated div or element
                         $("#site-content").html(response.data.content);
+                        $("#unified-number").val(response.data.unified_number);
                         console.log(response.data.content);
                     } else {
                         // Handle the case where no content is returned or an error occurred
