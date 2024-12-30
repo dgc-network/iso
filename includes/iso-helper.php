@@ -74,9 +74,11 @@ function is_site_not_configured($user_id=false) {
     $user = get_userdata($user_id);
     // Get the site_id meta for the user
     $site_id = get_user_meta($user_id, 'site_id', true);
-    
+    $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
+    $user_exists = in_array($user_id, $activated_site_users);
+
     // Check if site_id does not exist or is empty
-    if (empty($site_id)) {
+    if (empty($site_id) || !$user_exists) {
         return true;
     }
     return false;
