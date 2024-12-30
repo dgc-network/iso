@@ -79,10 +79,10 @@ function is_site_not_configured($user_id=false) {
     $user_exists = in_array($user_id, $activated_site_users);
 
     // Check if site_id does not exist or is empty
-    if (empty($site_id) || !$user_exists) {
-        return true;
+    if ($site_id && $user_exists) {
+        return false;
     }
-    return false;
+    return true;
 }
         
 function display_NDA_assignment($user_id=false) {
