@@ -1725,6 +1725,7 @@ if (!class_exists('display_profiles')) {
                     <input type="text" id="display-name" value="<?php echo $display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <label for="identity-number"><?php echo __( '身分證號碼：', 'your-text-domain' );?></label>
                     <input type="text" id="identity-number" value="<?php echo $identity_number;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
                 <div id="nda-content"><?php echo $nda_content;?></div>
                 <div style="display:flex;">
