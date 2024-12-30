@@ -1830,6 +1830,7 @@ if (!class_exists('display_profiles')) {
                 $activated_site_users[] = $user_id;
                 update_user_meta( $user_id, 'approve_id', get_current_user_id());
                 update_user_meta( $user_id, 'approve_date', $_POST['_approve_date']);
+                update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
                 $line_user_id = get_user_meta($user_id, 'line_user_id', true);
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
@@ -1837,7 +1838,6 @@ if (!class_exists('display_profiles')) {
                     'body_contents'   => [['type' => 'text', 'text' => 'NDA of '.$user->display_name.' has been approved. Check your profile.', 'wrap' => true]],
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
                 ]);
-
             }
 
             if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_identity_number'])) {
