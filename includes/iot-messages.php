@@ -372,7 +372,7 @@ if (!class_exists('iot_messages')) {
                 error_log("Sending notification to Line User ID: " . print_r($line_user_id, true) . ", Message: " . print_r($message, true));
         
                 $line_bot_api = new line_bot_api();
-                $line_bot_api->send_bubble_message([
+                $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
                     'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],

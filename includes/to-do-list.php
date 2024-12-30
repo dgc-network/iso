@@ -1202,7 +1202,7 @@ if (!class_exists('to_do_list')) {
                     ),
                 );
 
-                $line_bot_api->send_bubble_message([
+                $line_bot_api->send_flex_message([
                     'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                     'header_contents' => $header_contents,
                     'body_contents' => $body_contents,
@@ -1247,7 +1247,7 @@ if (!class_exists('to_do_list')) {
                             ),
                         );
         
-                        $line_bot_api->send_bubble_message([
+                        $line_bot_api->send_flex_message([
                             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                             'header_contents' => $header_contents,
                             'body_contents' => $body_contents,
@@ -1291,7 +1291,7 @@ if (!class_exists('to_do_list')) {
                             ),
                         );
         
-                        $line_bot_api->send_bubble_message([
+                        $line_bot_api->send_flex_message([
                             'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                             'header_contents' => $header_contents,
                             'body_contents' => $body_contents,
@@ -1369,7 +1369,7 @@ if (!class_exists('to_do_list')) {
                 );
 
                 $line_bot_api = new line_bot_api();
-                $line_bot_api->send_bubble_message([
+                $line_bot_api->send_flex_message([
                     'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                     'header_contents' => $header_contents,
                     'body_contents' => $body_contents,

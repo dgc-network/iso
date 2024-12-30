@@ -132,7 +132,7 @@ function get_NDA_assignment($user_id=false) {
             <!-- The site content will be displayed here -->
         </div>
         <div>
-            <label for="identify-number"><?php echo __( '簽名：', 'your-text-domain' );?></label>
+            <label for="signature-pad"><?php echo __( '簽名：', 'your-text-domain' );?></label>
             <div id="signature-pad-div">
                 <div>
                     <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
@@ -157,10 +157,31 @@ function set_NDA_assignment() {
         $user_id = intval($_POST['_user_id']);        
         $site_id = intval($_POST['_site_id']);        
         update_user_meta( $user_id, 'site_id', $site_id);
-        update_user_meta( $user_id, 'display_name', sanitize_text_field($_POST['_display_name']));
-        update_user_meta( $user_id, 'identity_number', sanitize_text_field($_POST['_identity_number']));
+        update_user_meta( $user_id, 'display_name', $_POST['_display_name']);
+        update_user_meta( $user_id, 'identity_number', $_POST['_identity_number']);
         update_user_meta( $user_id, 'signature_image', $_POST['_signature_image']);
-        update_user_meta( $user_id, 'nda_date', sanitize_text_field($_POST['_nda_date']));
+        update_user_meta( $user_id, 'nda_date', $_POST['_nda_date']);
+
+        $line_bot_api = new line_bot_api();
+        $site_admin_ids = get_site_admin_ids_for_site($site_id);
+        foreach ($site_admin_ids as $site_admin_id) {
+            $line_user_id = get_user_meta($site_admin_id, 'line_user_id', true);
+            $line_bot_api->send_flex_message([
+                'to' => $line_user_id,
+                'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                'body_contents'   => [['type' => 'text', 'text' => 'A new user has signed the NDA agreement.', 'wrap' => true]],
+                'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=site-profile&_user_id=$user_id")], 'style' => 'primary']],
+            ]);
+        }
+/*
+        $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+        $line_bot_api = new line_bot_api();
+        $line_bot_api->send_flex_message([
+            'to' => $line_user_id,
+            'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+            'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
+            'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/to-do-list/?_select_todo=iot-devices&_device_id=$device_id")], 'style' => 'primary']],
+        ]);
 
         $user_name = get_user_meta($user_id, 'display_name', true);
         $params = array(
@@ -168,13 +189,56 @@ function set_NDA_assignment() {
         );
         $todo_class = new to_do_list();
         $todo_class->create_action_log_and_go_next($params);    
-
+*/
     }
     wp_send_json($response);
 }
 add_action( 'wp_ajax_set_NDA_assignment', 'set_NDA_assignment' );
 add_action( 'wp_ajax_nopriv_set_NDA_assignment', 'set_NDA_assignment' );
 
+function get_site_admin_ids_for_site($site_id) {
+    // Step 1: Get all users who are linked to this site ID
+    $args = array(
+        'meta_query' => array(
+            array(
+                'key'     => 'site_id',    // User meta key where site_id is stored
+                'value'   => $site_id,    // Match the provided site ID
+                'compare' => '=',         // Comparison operator
+            ),
+        ),
+    );
+
+    $users = get_users($args);
+
+    if (!empty($users)) {
+        // Step 2: Collect all "site_admin_ids" from matching users
+        $site_admin_ids = array();
+
+        foreach ($users as $user) {
+            $user_site_admin_ids = get_user_meta($user->ID, 'site_admin_ids', true);
+
+            if (!empty($user_site_admin_ids) && is_array($user_site_admin_ids)) {
+                $site_admin_ids = array_merge($site_admin_ids, $user_site_admin_ids);
+            }
+        }
+
+        // Remove duplicates and return the result
+        return array_unique($site_admin_ids);
+    }
+
+    return false; // Return false if no users found
+}
+/*
+// Example Usage
+$site_id = 123; // Replace with the actual site ID you're looking for
+$site_admin_ids = get_site_admin_ids_for_site($site_id);
+
+if ($site_admin_ids) {
+    echo 'Site Admin IDs: ' . implode(', ', $site_admin_ids);
+} else {
+    echo 'No site admin IDs found for site ID ' . $site_id;
+}
+*/
 function get_site_profile_content() {
     // Check if the site_id is passed
     if(isset($_POST['site_id'])) {
@@ -261,7 +325,7 @@ function init_webhook_events() {
                     ),
                 );
 
-                $line_bot_api->send_bubble_message([
+                $line_bot_api->send_flex_message([
                     'replyToken' => $event['replyToken'],
                     'header_contents' => $header_contents,
                     'body_contents' => $body_contents,
@@ -321,7 +385,7 @@ function init_webhook_events() {
                             } 
                             wp_reset_postdata();
 
-                            $line_bot_api->send_bubble_message([
+                            $line_bot_api->send_flex_message([
                                 'replyToken' => $event['replyToken'],
                                 'header_contents' => $header_contents,
                                 'body_contents' => $body_contents,

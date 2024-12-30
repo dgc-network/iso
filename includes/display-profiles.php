@@ -101,7 +101,10 @@ if (!class_exists('display_profiles')) {
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
-                if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
+                if ($_GET['_select_profile']=='site-profile') {
+                    if (isset($_GET['_user_id'])) echo get_NDA_assignment($_GET['_user_id']);
+                    else echo $this->display_site_profile();                    
+                }
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(0);
 
@@ -551,7 +554,7 @@ if (!class_exists('display_profiles')) {
             register_post_type( 'site-profile', $args );
         }
 
-        function display_site_profile() {
+        function display_site_profile($_user_id=false) {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -566,9 +569,6 @@ if (!class_exists('display_profiles')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('site-profile');?></div>
                 <div style="text-align: right">
-                    <?php if (is_site_admin()) {?>
-                    <button type="submit" id="site-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
-                    <?php }?>
                 </div>
             </div>        
 
@@ -613,6 +613,9 @@ if (!class_exists('display_profiles')) {
                 <?php echo $this->display_site_job_list();?>
 
             </fieldset>
+            <?php if (is_site_admin()) {?>
+                <button type="submit" id="site-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+            <?php }?>
             <?php
             return ob_get_clean();
         }
@@ -730,7 +733,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <?php if ($site_id==$user_site) {?>
+                <?php //if ($site_id==$user_site) {?>
                     <label for="job-list"><?php echo __( 'Job list:', 'your-text-domain' );?></label>
                     <fieldset>
                         <table class="ui-widget" style="width:100%;">
@@ -758,7 +761,7 @@ if (!class_exists('display_profiles')) {
                             </tbody>
                         </table>
                     </fieldset>
-                <?php }?>
+                <?php //}?>
                 <?php
                 $current_user_id = get_current_user_id();
                 $current_site_id = get_user_meta($current_user_id, 'site_id', true);

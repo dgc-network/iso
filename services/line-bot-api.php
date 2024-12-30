@@ -88,7 +88,7 @@ if (!class_exists('line_bot_api')) {
         }
 
         // Flex message
-        function send_bubble_message($params) {
+        function send_flex_message($params) {
             // Initial bubble message structure
             $alt_text = 'bubble_message';
             $bubble_message = array(
