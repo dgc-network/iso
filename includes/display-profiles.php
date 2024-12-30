@@ -107,8 +107,9 @@ if (!class_exists('display_profiles')) {
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') {
-                    if (isset($_GET['_user_id'])) echo $this->approve_NDA_assignment($_GET['_user_id']);
-                    else echo $this->display_site_profile();                    
+                    //if (isset($_GET['_user_id'])) echo $this->approve_NDA_assignment($_GET['_user_id']);
+                    //else 
+                    echo $this->display_site_profile();                    
                 }
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(0);
@@ -1705,14 +1706,14 @@ if (!class_exists('display_profiles')) {
         
         function approve_NDA_assignment($user_id=false) {
             if (empty($user_id)) $user_id=get_current_user_id();
-            $user = get_userdata($user_id);
             $site_id = get_user_meta($user_id, 'site_id', true);
             $site_title = get_thetitle($site_id);
             $unified_number = get_post_meta($site_id, 'unified_number', true);
+            $user = get_userdata($user_id);
             $display_name = $user->display_name;
             $identify_number = get_user_meta($user_id, 'identify_number', true);
-            $nda_content = get_post_meta($user_id, 'nda_content', true);
-            $nda_date = get_post_meta($user_id, 'nda_date', true);
+            $nda_content = get_user_meta($user_id, 'nda_content', true);
+            $nda_date = get_user_meta($user_id, 'nda_date', true);
             ?>
             <div class="ui-widget" id="result-container">
                 <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
