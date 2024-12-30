@@ -1693,7 +1693,7 @@ if (!class_exists('display_profiles')) {
                 if($post && $post->post_type == 'site-profile') {
                     wp_send_json_success(array(
                         'content' => apply_filters('the_content', $post->post_content),
-                        'unified_number' => get_post_meta($site_id, 'unified_number', true);,
+                        'unified_number' => get_post_meta($site_id, 'unified_number', true),
                     ));
                 } else {
                     wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
