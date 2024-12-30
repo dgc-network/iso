@@ -1729,9 +1729,7 @@ if (!class_exists('display_profiles')) {
                     <label for="identify-number"><?php echo __( '身分證號碼：', 'your-text-domain' );?></label>
                     <input type="text" id="identify-number" value="<?php echo $identify_number;?>" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
-                <div id="nda-content">
-                    <!-- The site content will be displayed here -->
-                </div>
+                <div id="nda-content"><?php echo $nda_content;?></div>
                 <div>
                     <label for="signature-pad"><?php echo __( '簽名：', 'your-text-domain' );?></label>
                     <div id="signature-pad-div">
