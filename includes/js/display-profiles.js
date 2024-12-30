@@ -1007,7 +1007,7 @@ jQuery(document).ready(function($) {
                 'action': 'set_NDA_assignment',
                 '_user_id': $("#user-id").val(),
                 '_site_id': $("#select-nda-site").val(),
-                '_approve_id': $("#approve-id").val(),
+                '_approve_date': $("#approve-date").val(),
             },
             success: function (response) {
                 console.log(response);

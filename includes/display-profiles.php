@@ -1833,14 +1833,15 @@ if (!class_exists('display_profiles')) {
         function set_NDA_assignment() {
             $response = array();
             $line_bot_api = new line_bot_api();
-            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_approve_id'])) {
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_approve_date'])) {
                 $user_id = intval($_POST['_user_id']);
                 $user = get_userdata($user_id);
                 $site_id = intval($_POST['_site_id']);
                 $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
                 if (!is_array($activated_site_users)) $activated_site_users = array();
                 $activated_site_users[] = $user_id;
-                update_user_meta( $user_id, 'approve_id', $approve_id);
+                update_user_meta( $user_id, 'approve_id', get_current_user_id());
+                update_user_meta( $user_id, 'approve_date', $_POST['_approve_date']);
                 $line_user_id = get_user_meta($user_id, 'line_user_id', true);
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
