@@ -85,6 +85,10 @@ function is_site_not_configured($user_id=false) {
 }
         
 function display_NDA_assignment($user_id=false) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
     if (empty($user_id)) $user_id=get_current_user_id();
     $profiles_class = new display_profiles();
     $profiles_class->get_NDA_assignment($user_id);
