@@ -892,7 +892,7 @@ jQuery(document).ready(function($) {
     }
 
     // NDA assignment
-    $(document).ready(function () {
+    //$(document).ready(function () {
         const canvas = document.getElementById('signature-pad');
         if (canvas) {
             canvas.width = window.innerWidth - 10;
@@ -964,7 +964,7 @@ jQuery(document).ready(function($) {
                 $('#signature-image-div').hide();
             });
         }
-    });
+    //});
 
     $("#nda-submit").on("click", function () {
         const dataURL = canvas.toDataURL('image/png');
