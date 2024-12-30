@@ -1740,8 +1740,21 @@ if (!class_exists('display_profiles')) {
                     </div>
                 </div>
                 <div style="display:flex;">
-                    <?php echo __( '日期：', 'your-text-domain' );?>
+                    <?php echo __( '簽核日期：', 'your-text-domain' );?>
                     <input type="text" id="nda-date" value="<?php echo $nda_date;?>" disabled />
+                </div>
+                <div>
+                    <label for="signature-pad"><?php echo __( '同意者簽名：', 'your-text-domain' );?></label>
+                    <div id="signature-pad-div">
+                        <div>
+                            <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
+                        </div>
+                        <button id="clear-signature" style="margin:3px;">Clear signature</button>
+                    </div>
+                </div>
+                <div style="display:flex;">
+                    <?php echo __( '同意日期：', 'your-text-domain' );?>
+                    <input type="date" id="approve-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
                 </div>
                 <hr>
                 <button type="submit" id="nda-approve"><?php echo __( 'Approve', 'your-text-domain' );?></button>
