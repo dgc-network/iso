@@ -32,6 +32,11 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_set_site_user_doc_data', array( $this, 'set_site_user_doc_data' ) );
             add_action( 'wp_ajax_nopriv_set_site_user_doc_data', array( $this, 'set_site_user_doc_data' ) );
 
+            add_action( 'wp_ajax_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
+            add_action( 'wp_ajax_nopriv_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
+            add_action( 'wp_ajax_set_NDA_assignment', array( $this, 'set_NDA_assignment' ) );
+            add_action( 'wp_ajax_nopriv_set_NDA_assignment', array( $this, 'set_NDA_assignment' ) );
+
             add_action( 'wp_ajax_get_site_user_dialog_data', array( $this, 'get_site_user_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_user_dialog_data', array( $this, 'get_site_user_dialog_data' ) );
             add_action( 'wp_ajax_set_site_user_dialog_data', array( $this, 'set_site_user_dialog_data' ) );
@@ -95,14 +100,14 @@ if (!class_exists('display_profiles')) {
         function display_profiles() {
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();                
-            elseif (is_site_not_configured()) get_NDA_assignment();
+            elseif (is_site_not_configured()) display_NDA_assignment();
             else {
                 echo '<div class="ui-widget" id="result-container">';
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') {
-                    if (isset($_GET['_user_id'])) echo display_NDA_assignment($_GET['_user_id']);
+                    if (isset($_GET['_user_id'])) echo $this->approve_NDA_assignment($_GET['_nda_id']);
                     else echo $this->display_site_profile();                    
                 }
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
@@ -1676,6 +1681,154 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
+
+        function get_site_profile_content() {
+            // Check if the site_id is passed
+            if(isset($_POST['site_id'])) {
+                $site_id = intval($_POST['site_id']);
+        
+                // Retrieve the post content
+                $post = get_post($site_id);
+        
+                if($post && $post->post_type == 'site-profile') {
+                    wp_send_json_success(array('content' => apply_filters('the_content', $post->post_content)));
+                } else {
+                    wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
+                }
+            } else {
+                wp_send_json_error(array('message' => 'No site ID provided.'));
+            }
+        }
+        
+        function approve_NDA_assignment($user_id=false) {
+            if (empty($user_id)) $user_id=get_current_user_id();
+            $user = get_userdata($user_id);
+            $site_id = get_user_meta($user_id, 'site_id', true);            
+            ?>
+            <div class="ui-widget" id="result-container">
+                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+                <div>
+                    <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+                </div>
+                <hr>
+                <button type="submit" id="nda-approve"><?php echo __( 'Approve', 'your-text-domain' );?></button>
+                <button type="submit" id="nda-reject"><?php echo __( 'Reject', 'your-text-domain' );?></button>
+            </div>
+            <?php
+        }
+        
+        function get_NDA_assignment($user_id=false) {
+            $user = get_userdata($user_id);
+            //$site_id = get_user_meta($user_id, 'site_id', true);
+            ?>
+            <div class="ui-widget" id="result-container">
+                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+                <div>
+                    <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+                    <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
+                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                        <?php
+                            $site_args = array(
+                                'post_type'      => 'site-profile',
+                                'posts_per_page' => -1,
+                            );
+                            $sites = get_posts($site_args);
+        
+                            // Check if "site-profile" posts are empty
+                            if (empty($sites)) {
+                                // Insert a new "site-profile" post with the title "iso-helper.com"
+                                $new_site_id = wp_insert_post(array(
+                                    'post_title'  => 'iso-helper.com',
+                                    'post_type'   => 'site-profile',
+                                    'post_status' => 'publish',
+                                ));
+                                // Retrieve the updated list of "site-profile" posts
+                                $sites = get_posts($site_args);
+                            }
+        
+                            // Display the options in a dropdown
+                            foreach ($sites as $site) {
+                                echo '<option value="' . esc_attr($site->ID) . '">' . esc_html($site->post_title) . '</option>';
+                            }
+                        ?>
+                    </select>
+                    <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+                    <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
+                </div>
+                <div>
+                    <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
+                    <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
+                    <label for="identify-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
+                    <input type="text" id="identify-number" class="text ui-widget-content ui-corner-all" />
+                    <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
+                </div>
+                <div id="site-content">
+                    <!-- The site content will be displayed here -->
+                </div>
+                <div>
+                    <label for="signature-pad"><?php echo __( '簽名：', 'your-text-domain' );?></label>
+                    <div id="signature-pad-div">
+                        <div>
+                            <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
+                        </div>
+                        <button id="clear-signature" style="margin:3px;">Clear</button>
+                    </div>
+                </div>
+                <div style="display:flex;">
+                    <?php echo __( '日期：', 'your-text-domain' );?>
+                    <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
+                </div>
+                <hr>
+                <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+                <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+            </div>
+            <?php
+        }
+        
+        function set_NDA_assignment() {
+            $response = array();
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
+                $user_id = intval($_POST['_user_id']);        
+                $site_id = intval($_POST['_site_id']);        
+                update_user_meta( $user_id, 'site_id', $site_id);
+                update_user_meta( $user_id, 'display_name', $_POST['_display_name']);
+                update_user_meta( $user_id, 'identity_number', $_POST['_identity_number']);
+                update_user_meta( $user_id, 'signature_image', $_POST['_signature_image']);
+                update_user_meta( $user_id, 'nda_date', $_POST['_nda_date']);
+        
+                $line_bot_api = new line_bot_api();
+                $site_admin_ids = get_site_admin_ids_for_site($site_id);
+                foreach ($site_admin_ids as $site_admin_id) {
+                    $line_user_id = get_user_meta($site_admin_id, 'line_user_id', true);
+                    $line_bot_api->send_flex_message([
+                        'to' => $line_user_id,
+                        'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                        'body_contents'   => [['type' => 'text', 'text' => 'A new user has signed the NDA agreement.', 'wrap' => true]],
+                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=site-profile&_nda_id=$user_id")], 'style' => 'primary']],
+                    ]);
+                }
+        /*
+                $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+                $line_bot_api = new line_bot_api();
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/to-do-list/?_select_todo=iot-devices&_device_id=$device_id")], 'style' => 'primary']],
+                ]);
+        
+                $user_name = get_user_meta($user_id, 'display_name', true);
+                $params = array(
+                    'log_message' => $user_name.' has signed the NDA agreement.',
+                );
+                $todo_class = new to_do_list();
+                $todo_class->create_action_log_and_go_next($params);    
+        */
+            }
+            wp_send_json($response);
+        }
+        
+        
     }
     $profiles_class = new display_profiles();
 }
