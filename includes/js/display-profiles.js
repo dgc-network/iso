@@ -974,17 +974,17 @@ jQuery(document).ready(function($) {
             dataType: "json",
             data: {
                 'action': 'set_NDA_assignment',
+                '_user_id': $("#user-id").val(),
                 '_site_id': $("#select-nda-site").val(),
                 '_display_name': $("#display-name").val(),
                 '_identity_number': $("#identity-number").val(),
                 '_nda_signature': dataURL,
                 '_nda_content': $("#site-content").val(),
                 '_nda_date': $("#nda-date").val(),
-                '_user_id': $("#user-id").val(),
             },
             success: function (response) {
                 console.log(response);
-                window.location.replace('/');
+                //window.location.replace('/');
             },
             error: function (error) {
                 console.error(error);
