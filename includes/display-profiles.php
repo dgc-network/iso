@@ -1707,7 +1707,7 @@ if (!class_exists('display_profiles')) {
             $unified_number = get_post_meta($site_id, 'unified_number', true);
             $user = get_userdata($user_id);
             $display_name = $user->display_name;
-            $identify_number = get_user_meta($user_id, 'identify_number', true);
+            $identity_number = get_user_meta($user_id, 'identity_number', true);
             $nda_content = get_user_meta($user_id, 'nda_content', true);
             $nda_signature = get_user_meta($user_id, 'nda_signature', true);
             $nda_date = get_user_meta($user_id, 'nda_date', true);
@@ -1723,8 +1723,8 @@ if (!class_exists('display_profiles')) {
                 <div>
                     <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="identify-number"><?php echo __( '身分證號碼：', 'your-text-domain' );?></label>
-                    <input type="text" id="identify-number" value="<?php echo $identify_number;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <label for="identity-number"><?php echo __( '身分證號碼：', 'your-text-domain' );?></label>
+                    <input type="text" id="identity-number" value="<?php echo $identity_number;?>" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
                 <div id="nda-content"><?php echo $nda_content;?></div>
                 <div style="display:flex;">
@@ -1791,8 +1791,8 @@ if (!class_exists('display_profiles')) {
                 <div>
                     <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="identify-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
-                    <input type="text" id="identify-number" class="text ui-widget-content ui-corner-all" />
+                    <label for="identity-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
+                    <input type="text" id="identity-number" class="text ui-widget-content ui-corner-all" />
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
                 <div id="site-content">
