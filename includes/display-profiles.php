@@ -1847,7 +1847,7 @@ if (!class_exists('display_profiles')) {
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
 
-                $response = array('nda'=>'approved');
+                $response = array('nda'=>'approved', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
             }
 
             if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_identity_number'])) {
