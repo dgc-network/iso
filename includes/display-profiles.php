@@ -107,7 +107,7 @@ if (!class_exists('display_profiles')) {
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') {
-                    if (isset($_GET['_user_id'])) echo $this->approve_NDA_assignment($_GET['_nda_id']);
+                    if (isset($_GET['_user_id'])) echo $this->approve_NDA_assignment($_GET['_user_id']);
                     else echo $this->display_site_profile();                    
                 }
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
@@ -1707,11 +1707,41 @@ if (!class_exists('display_profiles')) {
             if (empty($user_id)) $user_id=get_current_user_id();
             $user = get_userdata($user_id);
             $site_id = get_user_meta($user_id, 'site_id', true);
+            $site_title = get_thetitle($site_id);
+            $unified_number = get_post_meta($site_id, 'unified_number', true);
+            $display_name = $user->display_name;
+            $identify_number = get_user_meta($user_id, 'identify_number', true);
+            $nda_content = get_post_meta($user_id, 'nda_content', true);
+            $nda_date = get_post_meta($user_id, 'nda_date', true);
             ?>
             <div class="ui-widget" id="result-container">
                 <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
                 <div>
-                    <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+                    <label for="site-title"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+                    <input type="text" id="nda-site" value="<?php echo $site_title;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+                    <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" disabled />
+                </div>
+                <div>
+                    <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
+                    <input type="text" id="display-name" value="<?php echo $display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <label for="identify-number"><?php echo __( '身分證號碼：', 'your-text-domain' );?></label>
+                    <input type="text" id="identify-number" value="<?php echo $identify_number;?>" class="text ui-widget-content ui-corner-all" disabled />
+                </div>
+                <div id="nda-content">
+                    <!-- The site content will be displayed here -->
+                </div>
+                <div>
+                    <label for="signature-pad"><?php echo __( '簽名：', 'your-text-domain' );?></label>
+                    <div id="signature-pad-div">
+                        <div>
+                            <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;">
+                    <?php echo __( '日期：', 'your-text-domain' );?>
+                    <input type="text" id="nda-date" value="<?php echo $nda_date;?>"/>
                 </div>
                 <hr>
                 <button type="submit" id="nda-approve"><?php echo __( 'Approve', 'your-text-domain' );?></button>
@@ -1756,7 +1786,7 @@ if (!class_exists('display_profiles')) {
                         ?>
                     </select>
                     <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
-                    <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" />
+                    <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
                 <div>
                     <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
@@ -1774,7 +1804,7 @@ if (!class_exists('display_profiles')) {
                         <div>
                             <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
                         </div>
-                        <button id="clear-signature" style="margin:3px;">Clear</button>
+                        <button id="clear-signature" style="margin:3px;">Clear signature</button>
                     </div>
                 </div>
                 <div style="display:flex;">
@@ -1791,8 +1821,9 @@ if (!class_exists('display_profiles')) {
         function set_NDA_assignment() {
             $response = array();
             if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
-                $user_id = intval($_POST['_user_id']);        
-                $site_id = intval($_POST['_site_id']);        
+                $user_id = intval($_POST['_user_id']);
+                $user = get_userdata($user_id);
+                $site_id = intval($_POST['_site_id']);
                 update_user_meta( $user_id, 'site_id', $site_id);
                 update_user_meta( $user_id, 'display_name', $_POST['_display_name']);
                 update_user_meta( $user_id, 'identity_number', $_POST['_identity_number']);
@@ -1806,8 +1837,8 @@ if (!class_exists('display_profiles')) {
                     $line_bot_api->send_flex_message([
                         'to' => $line_user_id,
                         'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
-                        'body_contents'   => [['type' => 'text', 'text' => 'A new user has signed the NDA agreement.', 'wrap' => true]],
-                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=site-profile&_nda_id=$user_id")], 'style' => 'primary']],
+                        'body_contents'   => [['type' => 'text', 'text' => 'A new user '.$user->display_name.' has signed the NDA agreement.', 'wrap' => true]],
+                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=site-profile&_usr_id=$user_id")], 'style' => 'primary']],
                     ]);
                 }
         /*
