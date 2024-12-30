@@ -1831,6 +1831,7 @@ if (!class_exists('display_profiles')) {
                 update_user_meta( $user_id, 'approve_id', get_current_user_id());
                 update_user_meta( $user_id, 'approve_date', $_POST['_approve_date']);
                 update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
+
                 $line_user_id = get_user_meta($user_id, 'line_user_id', true);
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
@@ -1838,6 +1839,14 @@ if (!class_exists('display_profiles')) {
                     'body_contents'   => [['type' => 'text', 'text' => 'NDA of '.$user->display_name.' has been approved. Check your profile.', 'wrap' => true]],
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
                 ]);
+
+                $params = array(
+                    'log_message' => $user->display_name.' has signed the NDA agreement.',
+                );
+                $todo_class = new to_do_list();
+                $todo_class->create_action_log_and_go_next($params);    
+
+                $response = array('nda'=>'approved');
             }
 
             if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_identity_number'])) {
@@ -1858,26 +1867,10 @@ if (!class_exists('display_profiles')) {
                         'to' => $line_user_id,
                         'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
                         'body_contents'   => [['type' => 'text', 'text' => 'A new user '.$user->display_name.' has signed the NDA agreement.', 'wrap' => true]],
-                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=site-profile&_usr_id=$user_id")], 'style' => 'primary']],
+                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_nda_usr_id=$user_id")], 'style' => 'primary']],
                     ]);
                 }
-        /*
-                $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-                $line_bot_api = new line_bot_api();
-                $line_bot_api->send_flex_message([
-                    'to' => $line_user_id,
-                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => $message, 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/to-do-list/?_select_todo=iot-devices&_device_id=$device_id")], 'style' => 'primary']],
-                ]);
-        
-                $user_name = get_user_meta($user_id, 'display_name', true);
-                $params = array(
-                    'log_message' => $user_name.' has signed the NDA agreement.',
-                );
-                $todo_class = new to_do_list();
-                $todo_class->create_action_log_and_go_next($params);    
-        */
+                $response = array('nda'=>'submitted');
             }
             wp_send_json($response);
         }
