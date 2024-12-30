@@ -1713,6 +1713,7 @@ if (!class_exists('display_profiles')) {
             $display_name = $user->display_name;
             $identify_number = get_user_meta($user_id, 'identify_number', true);
             $nda_content = get_user_meta($user_id, 'nda_content', true);
+            $nda_signature = get_user_meta($user_id, 'nda_signature', true);
             $nda_date = get_user_meta($user_id, 'nda_date', true);
             ?>
             <div class="ui-widget" id="result-container">
@@ -1734,13 +1735,13 @@ if (!class_exists('display_profiles')) {
                     <label for="signature-pad"><?php echo __( '簽名：', 'your-text-domain' );?></label>
                     <div id="signature-pad-div">
                         <div>
-                            <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
+                            <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"><?php echo $nda_signature;?></canvas>
                         </div>
                     </div>
                 </div>
                 <div style="display:flex;">
                     <?php echo __( '日期：', 'your-text-domain' );?>
-                    <input type="text" id="nda-date" value="<?php echo $nda_date;?>"/>
+                    <input type="text" id="nda-date" value="<?php echo $nda_date;?>" disabled />
                 </div>
                 <hr>
                 <button type="submit" id="nda-approve"><?php echo __( 'Approve', 'your-text-domain' );?></button>
@@ -1751,7 +1752,6 @@ if (!class_exists('display_profiles')) {
         
         function get_NDA_assignment($user_id=false) {
             $user = get_userdata($user_id);
-            //$site_id = get_user_meta($user_id, 'site_id', true);
             ?>
             <div class="ui-widget" id="result-container">
                 <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
@@ -1819,17 +1819,36 @@ if (!class_exists('display_profiles')) {
         
         function set_NDA_assignment() {
             $response = array();
-            if(isset($_POST['_user_id']) && isset($_POST['_site_id'])) {
+            $line_bot_api = new line_bot_api();
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_approve_id'])) {
+                $user_id = intval($_POST['_user_id']);
+                $user = get_userdata($user_id);
+                $site_id = intval($_POST['_site_id']);
+                $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
+                if (!is_array($activated_site_users)) $activated_site_users = array();
+                $activated_site_users[] = $user_id;
+                update_user_meta( $user_id, 'approve_id', $approve_id);
+                $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => 'NDA of '.$user->display_name.' has been approved. Check your profile.', 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
+                ]);
+
+            }
+
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_identity_number'])) {
                 $user_id = intval($_POST['_user_id']);
                 $user = get_userdata($user_id);
                 $site_id = intval($_POST['_site_id']);
                 update_user_meta( $user_id, 'site_id', $site_id);
                 update_user_meta( $user_id, 'display_name', $_POST['_display_name']);
                 update_user_meta( $user_id, 'identity_number', $_POST['_identity_number']);
-                update_user_meta( $user_id, 'signature_image', $_POST['_signature_image']);
+                update_user_meta( $user_id, 'nda_content', $_POST['_nda_content']);
+                update_user_meta( $user_id, 'nda_signature', $_POST['_nda_signature']);
                 update_user_meta( $user_id, 'nda_date', $_POST['_nda_date']);
         
-                $line_bot_api = new line_bot_api();
                 $site_admin_ids = get_site_admin_ids_for_site($site_id);
                 foreach ($site_admin_ids as $site_admin_id) {
                     $line_user_id = get_user_meta($site_admin_id, 'line_user_id', true);
