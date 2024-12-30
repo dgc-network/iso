@@ -75,6 +75,7 @@ function is_site_not_configured($user_id=false) {
     // Get the site_id meta for the user
     $site_id = get_user_meta($user_id, 'site_id', true);
     $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
+    if (!is_array($activated_site_users)) $activated_site_users = array();
     $user_exists = in_array($user_id, $activated_site_users);
 
     // Check if site_id does not exist or is empty
@@ -91,7 +92,7 @@ function display_NDA_assignment($user_id=false) {
 
     if (empty($user_id)) $user_id=get_current_user_id();
     $profiles_class = new display_profiles();
-    //$profiles_class->get_NDA_assignment($user_id);
+    $profiles_class->get_NDA_assignment($user_id);
 }
 
 function get_site_admin_ids_for_site($site_id) {
