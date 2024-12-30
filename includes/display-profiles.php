@@ -106,11 +106,7 @@ if (!class_exists('display_profiles')) {
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
-                if ($_GET['_select_profile']=='site-profile') {
-                    //if (isset($_GET['_user_id'])) echo $this->approve_NDA_assignment($_GET['_user_id']);
-                    //else 
-                    echo $this->display_site_profile();                    
-                }
+                if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(0);
 
@@ -1705,7 +1701,7 @@ if (!class_exists('display_profiles')) {
         }
         
         function approve_NDA_assignment($user_id=false) {
-            if (empty($user_id)) $user_id=get_current_user_id();
+            if (empty($user_id)) return;
             $site_id = get_user_meta($user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
             $unified_number = get_post_meta($site_id, 'unified_number', true);
@@ -1731,14 +1727,6 @@ if (!class_exists('display_profiles')) {
                     <input type="text" id="identify-number" value="<?php echo $identify_number;?>" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
                 <div id="nda-content"><?php echo $nda_content;?></div>
-                <div>
-                    <label for="signature-pad"><?php echo __( '簽名：', 'your-text-domain' );?></label>
-                    <div id="signature-pad-div">
-                        <div>
-                            <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"><?php echo $nda_signature;?></canvas>
-                        </div>
-                    </div>
-                </div>
                 <div style="display:flex;">
                     <?php echo __( '簽核日期：', 'your-text-domain' );?>
                     <input type="text" id="nda-date" value="<?php echo $nda_date;?>" disabled />

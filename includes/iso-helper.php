@@ -88,7 +88,8 @@ function is_site_not_configured($user_id=false) {
 function display_NDA_assignment($user_id=false) {
     $profiles_class = new display_profiles();
     if (isset($_GET['_user_id'])) {
-        $profiles_class->approve_NDA_assignment($_GET['_user_id']);
+        $user_id = intval($_POST['_user_id']);
+        $profiles_class->approve_NDA_assignment($user_id);
     } else {
         if (empty($user_id)) $user_id=get_current_user_id();
         $profiles_class->get_NDA_assignment($user_id);
