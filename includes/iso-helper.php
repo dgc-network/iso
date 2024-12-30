@@ -82,6 +82,23 @@ function is_site_not_configured($user_id=false) {
     return false;
 }
 
+function display_NDA_assignment($user_id=false) {
+    if (empty($user_id)) $user_id=get_current_user_id();
+    $user = get_userdata($user_id);
+    $site_id = get_user_meta($user_id, 'site_id', true);            
+    ?>
+    <div class="ui-widget" id="result-container">
+        <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+        <div>
+            <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+        </div>
+        <hr>
+        <button type="submit" id="nda-accept"><?php echo __( 'Accept', 'your-text-domain' );?></button>
+        <button type="submit" id="nda-reject"><?php echo __( 'Reject', 'your-text-domain' );?></button>
+    </div>
+    <?php
+}
+
 function get_NDA_assignment($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
     $user = get_userdata($user_id);

@@ -102,7 +102,7 @@ if (!class_exists('display_profiles')) {
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') {
-                    if (isset($_GET['_user_id'])) echo get_NDA_assignment($_GET['_user_id']);
+                    if (isset($_GET['_user_id'])) echo display_NDA_assignment($_GET['_user_id']);
                     else echo $this->display_site_profile();                    
                 }
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
