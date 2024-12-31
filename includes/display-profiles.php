@@ -1716,9 +1716,10 @@ if (!class_exists('display_profiles')) {
                 <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
                 <div>
                     <label for="site-title"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
-                    <input type="text" id="nda-site" value="<?php echo $site_title;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <input type="text" id="site-title" value="<?php echo $site_title;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
                     <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" disabled />
+                    <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
                 </div>
                 <div>
                     <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
@@ -1828,10 +1829,10 @@ if (!class_exists('display_profiles')) {
                 $site_id = intval($_POST['_site_id']);
                 $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
                 if (!is_array($activated_site_users)) $activated_site_users = array();
-                //$activated_site_users[] = $user_id;
+                $activated_site_users[] = $user_id;
                 update_user_meta( $user_id, 'reject_id', get_current_user_id());
                 update_user_meta( $user_id, 'reject_date', $_POST['_reject_date']);
-                update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
+                //update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
 
                 $line_user_id = get_user_meta($user_id, 'line_user_id', true);
                 $line_bot_api->send_flex_message([

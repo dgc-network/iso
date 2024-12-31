@@ -1005,7 +1005,7 @@ jQuery(document).ready(function($) {
             data: {
                 'action': 'set_NDA_assignment',
                 '_user_id': $("#user-id").val(),
-                '_site_id': $("#nda-site").val(),
+                '_site_id': $("#site-id").val(),
                 '_approve_date': $("#nda-date").val(),
             },
             success: function (response) {
@@ -1032,7 +1032,7 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 console.log(response);
-                //window.location.replace('/');
+                window.location.replace('/');
             },
             error: function (error) {
                 console.error(error);
