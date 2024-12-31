@@ -331,7 +331,6 @@ function generate_content($userMessage) {
         }
     }
     curl_close($ch);
-
 }
 
 function convert_content_to_styled_html($content) {
