@@ -980,7 +980,7 @@ jQuery(document).ready(function($) {
                 '_identity_number': $("#identity-number").val(),
                 '_nda_signature': dataURL,
                 '_nda_content': $("#site-content").val(),
-                '_nda_date': $("#nda-date").val(),
+                '_submit_date': $("#submit-date").val(),
             },
             success: function (response) {
                 console.log(response);
@@ -997,7 +997,6 @@ jQuery(document).ready(function($) {
         window.location.replace('/');
     });
 
-
     $("#nda-approve").on("click", function () {
         $.ajax({
             type: 'POST',
@@ -1007,7 +1006,29 @@ jQuery(document).ready(function($) {
                 'action': 'set_NDA_assignment',
                 '_user_id': $("#user-id").val(),
                 '_site_id': $("#nda-site").val(),
-                '_approve_date': $("#approve-date").val(),
+                '_approve_date': $("#nda-date").val(),
+            },
+            success: function (response) {
+                console.log(response);
+                window.location.replace('/');
+            },
+            error: function (error) {
+                console.error(error);
+                alert(error);
+            }
+        });            
+    });
+    
+    $("#nda-reject").on("click", function () {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'set_NDA_assignment',
+                '_user_id': $("#user-id").val(),
+                '_site_id': $("#nda-site").val(),
+                '_reject_date': $("#nda-date").val(),
             },
             success: function (response) {
                 console.log(response);
@@ -1039,7 +1060,7 @@ jQuery(document).ready(function($) {
                         // Display the post content in a designated div or element
                         $("#site-content").html(response.data.content);
                         $("#unified-number").val(response.data.unified_number);
-                        console.log(response.data.content);
+                        //console.log(response.data.content);
                     } else {
                         // Handle the case where no content is returned or an error occurred
                         $("#site-content").html('<p>No content found for the selected site.</p>');

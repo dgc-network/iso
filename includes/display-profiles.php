@@ -1730,10 +1730,10 @@ if (!class_exists('display_profiles')) {
                 <div id="nda-content"><?php echo $nda_content;?></div>
                 <div style="display:flex;">
                     <?php echo __( '簽核日期：', 'your-text-domain' );?>
-                    <input type="text" id="nda-date" value="<?php echo $nda_date;?>" disabled />
+                    <input type="text" id="submit-date" value="<?php echo $nda_date;?>" disabled />
                 </div>
                 <div>
-                    <label for="signature-pad"><?php echo __( '同意者簽名：', 'your-text-domain' );?></label>
+                    <label for="signature-pad"><?php echo __( '審核簽名：', 'your-text-domain' );?></label>
                     <div id="signature-pad-div">
                         <div>
                             <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
@@ -1742,8 +1742,8 @@ if (!class_exists('display_profiles')) {
                     </div>
                 </div>
                 <div style="display:flex;">
-                    <?php echo __( '同意日期：', 'your-text-domain' );?>
-                    <input type="date" id="approve-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
+                    <?php echo __( '審核日期：', 'your-text-domain' );?>
+                    <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
                 </div>
                 <hr>
                 <button type="submit" id="nda-approve"><?php echo __( 'Approve', 'your-text-domain' );?></button>
@@ -1810,7 +1810,7 @@ if (!class_exists('display_profiles')) {
                 </div>
                 <div style="display:flex;">
                     <?php echo __( '日期：', 'your-text-domain' );?>
-                    <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
+                    <input type="date" id="submit-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
                 </div>
                 <hr>
                 <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
@@ -1822,6 +1822,34 @@ if (!class_exists('display_profiles')) {
         function set_NDA_assignment() {
             $response = array();
             $line_bot_api = new line_bot_api();
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_reject_date'])) {
+                $user_id = intval($_POST['_user_id']);
+                $user = get_userdata($user_id);
+                $site_id = intval($_POST['_site_id']);
+                $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
+                if (!is_array($activated_site_users)) $activated_site_users = array();
+                //$activated_site_users[] = $user_id;
+                update_user_meta( $user_id, 'reject_id', get_current_user_id());
+                update_user_meta( $user_id, 'reject_date', $_POST['_reject_date']);
+                update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
+
+                $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => 'The NDA of '.$user->display_name.' has been rejected. Check the administrator.', 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
+                ]);
+
+                $params = array(
+                    'log_message' => 'The NDA of '.$user->display_name.' has been rejected by '.get_current_user()->display_name,
+                );
+                $todo_class = new to_do_list();
+                $todo_class->create_action_log_and_go_next($params);    
+
+                $response = array('nda'=>'rejected', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
+            }
+
             if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_approve_date'])) {
                 $user_id = intval($_POST['_user_id']);
                 $user = get_userdata($user_id);
@@ -1859,7 +1887,7 @@ if (!class_exists('display_profiles')) {
                 update_user_meta( $user_id, 'identity_number', $_POST['_identity_number']);
                 update_user_meta( $user_id, 'nda_content', $_POST['_nda_content']);
                 update_user_meta( $user_id, 'nda_signature', $_POST['_nda_signature']);
-                update_user_meta( $user_id, 'nda_date', $_POST['_nda_date']);
+                update_user_meta( $user_id, 'submit_date', $_POST['_submit_date']);
         
                 $site_admin_ids = get_site_admin_ids_for_site($site_id);
                 foreach ($site_admin_ids as $site_admin_id) {
