@@ -660,7 +660,7 @@ jQuery(document).ready(function($) {
                                         '_doc_id': $("#doc-id").val(),
                                         '_job_number': $("#job-number").val(),
                                         '_job_title': $("#job-title").val(),
-                                        '_job_content': $("#job-content").val(),
+                                        '_doc_content': $("#doc-content").val(),
                                         '_department_id': $("#department-id").val(),
                                         '_is_summary_job': $("#is-summary-job").is(":checked") ? 1 : 0,
                                     },

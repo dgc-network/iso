@@ -396,7 +396,6 @@ if (!class_exists('display_documents')) {
             $profiles_class = new display_profiles();
 
             $job_title = get_the_title($doc_id);
-            $job_content = get_post_field('post_content', $doc_id);
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
@@ -2051,21 +2050,13 @@ if (!class_exists('display_documents')) {
             }
 
             if ($field_type=='_employee'){
-                //update_post_meta($report_id, $field_id, array($field_value));
                 update_post_meta($report_id, '_employee', $field_value);
             }
 
             if ($field_type=='_document'){
                 update_post_meta($report_id, '_document', $field_value);
             }
-/*            
-            if ($field_type=='_max_value'){
-                update_post_meta($report_id, '_max_value', $field_value);
-            }
-            if ($field_type=='_min_value'){
-                update_post_meta($report_id, '_min_value', $field_value);
-            }
-*/                
+
             if ($field_type=='_department'){
                 update_post_meta($report_id, '_department', $field_value);
             }
@@ -2289,7 +2280,6 @@ if (!class_exists('display_documents')) {
                             $items_class = new sub_items();
                             ?>
                             <div class="content">
-                                <?php //echo $content;?>
                                 <fieldset>
                                     <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
                                     <label for="draft-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
@@ -2304,18 +2294,6 @@ if (!class_exists('display_documents')) {
                                 </div>
                             </div>
                             <?php
-
-/*                            
-                            $items_class = new sub_items();
-                            $query = $items_class->retrieve_sub_item_data($embedded_id);
-                            if ($query->have_posts()) :
-                                while ($query->have_posts()) : $query->the_post();
-                                    $sub_item_value = get_post_meta($site_id, $embedded_id.get_the_ID(), true);
-                                    $items_class->get_sub_item_contains($embedded_id, get_the_ID(), $sub_item_value);
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;
-*/    
                         } else {
                             $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '文件明細列表';
                             $content = generate_content($iso_category_title.$prompt);

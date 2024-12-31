@@ -237,11 +237,11 @@ if (!class_exists('display_profiles')) {
                             if ($doc_site == $site_id) {
                                 $job_number = get_post_meta($doc_id, 'job_number', true);
                                 $job_title = get_the_title($doc_id).'('.$job_number.')';
-                                $job_content = get_post_field('post_content', $doc_id);
+                                $doc_content = get_post_field('post_content', $doc_id);
                                 $doc_number = get_post_meta($doc_id, 'doc_number', true);
                                 $doc_title = get_post_meta($doc_id, 'doc_title', true);
                                 if ($doc_number) $doc_title.='('.$doc_number.')';
-                                else $doc_title=$job_content;
+                                else $doc_title=$doc_content;
                                 $is_checked = $this->is_doc_authorized($doc_id) ? 'checked' : '';
                                 // Add to documents array
                                 $documents[] = array(
@@ -1087,7 +1087,7 @@ if (!class_exists('display_profiles')) {
             $items_class = new sub_items();
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
-            $job_content = get_post_field('post_content', $doc_id);
+            $doc_content = get_post_field('post_content', $doc_id);
             $department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
             $is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
@@ -1099,8 +1099,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( 'Title:', 'your-text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
-                <textarea id="job-content" class="visual-editor"><?php echo esc_attr($job_content);?></textarea>
+                <label for="doc-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
+                <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                 <label for="action-list"><?php echo __( 'Action list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
@@ -1132,7 +1132,7 @@ if (!class_exists('display_profiles')) {
                 $data = array(
                     'ID'           => $job_id,
                     'post_title'   => $job_title,
-                    'post_content' => $_POST['_job_content'],
+                    'post_content' => $_POST['_doc_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($job_id, 'job_number', $job_number);
