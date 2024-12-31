@@ -119,6 +119,10 @@ function get_site_admin_ids_for_site($site_id) {
             if (!empty($user_site_admin_ids) && is_array($user_site_admin_ids)) {
                 $site_admin_ids = array_merge($site_admin_ids, $user_site_admin_ids);
             }
+
+            if (user_can($user->ID, 'administrator')) {
+                $site_admin_ids[] = $user->ID;
+            }
         }
 
         // Remove duplicates and return the result
