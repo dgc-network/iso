@@ -1710,7 +1710,7 @@ if (!class_exists('display_profiles')) {
             $identity_number = get_user_meta($user_id, 'identity_number', true);
             $nda_content = get_user_meta($user_id, 'nda_content', true);
             $nda_signature = get_user_meta($user_id, 'nda_signature', true);
-            $nda_date = get_user_meta($user_id, 'nda_date', true);
+            $submit_date = get_user_meta($user_id, 'submit_date', true);
             ?>
             <div class="ui-widget" id="result-container">
                 <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
@@ -1731,7 +1731,7 @@ if (!class_exists('display_profiles')) {
                 <div id="nda-content"><?php echo $nda_content;?></div>
                 <div style="display:flex;">
                     <?php echo __( '簽核日期：', 'your-text-domain' );?>
-                    <input type="text" id="submit-date" value="<?php echo $nda_date;?>" disabled />
+                    <input type="text" id="submit-date" value="<?php echo $submit_date;?>" disabled />
                 </div>
                 <div>
                     <label for="signature-pad"><?php echo __( '審核簽名：', 'your-text-domain' );?></label>
