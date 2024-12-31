@@ -2258,98 +2258,98 @@ if (!class_exists('display_documents')) {
         }
 
         function display_iso_statement_content($iso_category_id=false, $paged=1) {
-                $current_user_id = get_current_user_id();
-                $site_id = get_user_meta($current_user_id, 'site_id', true);
-                $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
-                $iso_category_title = get_the_title($iso_category_id);
-                ?>
-                <div class="ui-widget" id="result-container">
-                    <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <div>
-                            <?php echo display_iso_helper_logo();?>
-                            <h2 style="display:inline;"><?php echo esc_html($iso_category_title.' 啟動AI輔導');?></h2>
-                        </div>
-                    </div>
-                    <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
-                    <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
-                    <fieldset>
-                        <?php
-                        if ($paged==1) {
-                            $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '適用性聲明書';
-                            $content = generate_content($iso_category_title.$prompt);
-                            $items_class = new sub_items();
-                            ?>
-                            <div class="content">
-                                <fieldset>
-                                    <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
-                                    <label for="draft-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
-                                    <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
-                                    <p>Content:<textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea></p>
-                                    <?php if (is_site_admin()) {?>
-                                        <p><input type="button" id="save-draft" value="Generate draft" /></p>
-                                    <?php }?>
-                                </fieldset>
-                                <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                                    <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
-                                </div>
-                            </div>
-                            <?php
-                        } else {
-                            $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '文件明細列表';
-                            $content = generate_content($iso_category_title.$prompt);
-                            ?>
-                            <div class="content">
-                                <?php echo $content;?>
-                                <fieldset>
-                                    <?php
-                                    $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
-                                    if ($query->have_posts()) :
-                                        while ($query->have_posts()) : $query->the_post();
-                                            $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                                            $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                                            $doc_category = get_post_meta(get_the_ID(), 'doc_category', true);
-                                            $site_id = get_post_meta(get_the_ID(), 'site_id', true);
-                                            ?>
-                                            <div>
-                                                <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
-                                                <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
-                                            </div>
-                                            <?php
-                                        endwhile;
-                                        wp_reset_postdata();
-                                        if (is_site_admin()) {?>
-                                            <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );?></button>
-                                        <?php }
-                                    endif;
-                                    ?>
-                                </fieldset>
-                                <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                                    <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
-                                </div>
-                            </div>
-                            <?php
-                        }
-                        ?>
-                    </fieldset>
-                    <div style="display:flex; justify-content:space-between; margin:5px;">
-                        <?php if ($paged==1) {?>
-                            <div>
-                                <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Back', 'your-text-domain' );?></button>
-                            </div>
-                            <div style="text-align: right">
-                                <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
-                            </div>
-                        <?php } else {?>
-                            <div>
-                                <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Back', 'your-text-domain' );?></button>
-                            </div>
-                            <div style="text-align: right">
-                                <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Done', 'your-text-domain' );?></button>
-                            </div>
-                        <?php }?>
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
+            $iso_category_title = get_the_title($iso_category_id);
+            ?>
+            <div class="ui-widget" id="result-container">
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <?php echo display_iso_helper_logo();?>
+                        <h2 style="display:inline;"><?php echo esc_html($iso_category_title.' 啟動AI輔導');?></h2>
                     </div>
                 </div>
-                <?php
+                <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
+                <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
+                <fieldset>
+                    <?php
+                    if ($paged==1) {
+                        $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '適用性聲明書';
+                        $content = generate_content($iso_category_title.$prompt);
+                        $items_class = new sub_items();
+                        ?>
+                        <div class="content">
+                            <fieldset>
+                                <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
+                                <label for="draft-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+                                <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
+                                <p>Content:<textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea></p>
+                                <?php if (is_site_admin()) {?>
+                                    <p><input type="button" id="save-draft" value="Generate draft" /></p>
+                                <?php }?>
+                            </fieldset>
+                            <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                                <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                            </div>
+                        </div>
+                        <?php
+                    } else {
+                        $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : '文件明細列表';
+                        $content = generate_content($iso_category_title.$prompt);
+                        ?>
+                        <div class="content">
+                            <?php echo $content;?>
+                            <fieldset>
+                                <?php
+                                $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
+                                if ($query->have_posts()) :
+                                    while ($query->have_posts()) : $query->the_post();
+                                        $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                                        $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
+                                        $doc_category = get_post_meta(get_the_ID(), 'doc_category', true);
+                                        $site_id = get_post_meta(get_the_ID(), 'site_id', true);
+                                        ?>
+                                        <div>
+                                            <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
+                                            <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
+                                        </div>
+                                        <?php
+                                    endwhile;
+                                    wp_reset_postdata();
+                                    if (is_site_admin()) {?>
+                                        <button id="proceed-copy-statement" class="button" style="margin:5px;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );?></button>
+                                    <?php }
+                                endif;
+                                ?>
+                            </fieldset>
+                            <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                                <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </fieldset>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <?php if ($paged==1) {?>
+                        <div>
+                            <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Back', 'your-text-domain' );?></button>
+                        </div>
+                        <div style="text-align: right">
+                            <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
+                        </div>
+                    <?php } else {?>
+                        <div>
+                            <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Back', 'your-text-domain' );?></button>
+                        </div>
+                        <div style="text-align: right">
+                            <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Done', 'your-text-domain' );?></button>
+                        </div>
+                    <?php }?>
+                </div>
+            </div>
+            <?php
         }
 
         function set_iso_statement_data() {

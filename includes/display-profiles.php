@@ -731,6 +731,7 @@ if (!class_exists('display_profiles')) {
             ?>
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
@@ -1099,8 +1100,10 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( 'Title:', 'your-text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
+<?php /*                
                 <label for="doc-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
                 <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
+*/?>                
                 <label for="action-list"><?php echo __( 'Action list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
@@ -1324,14 +1327,15 @@ if (!class_exists('display_profiles')) {
         }
 
         function display_doc_action_dialog($action_id=false){
+            ob_start();
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-            ob_start();
             ?>
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="action-title">Title:</label>
                 <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-content">Content:</label>

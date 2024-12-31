@@ -67,25 +67,7 @@ ol ol {
     list-style-type: lower-alpha; /* Use lower-alpha for second-level list items (1.1, 1.2, etc.) */
     margin-left: 20px; /* Adjust the margin as needed */
 }
-/*
-.prev,
-.next {
-    position: absolute;
-    top: 50%;
-    font-size: 25px;
-    color: #fff;
-    cursor: pointer;
-    transform: translateY(-50%);
-}
 
-.prev {
-    left: 15px;
-}
-
-.next {
-    right: 15px;
-}
-*/
 @media (max-width: 600px) {
     .ui-dialog {
         width: 100% !important;
