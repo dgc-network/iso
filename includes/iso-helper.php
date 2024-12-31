@@ -78,7 +78,7 @@ function is_site_not_configured($user_id=false) {
     if (!is_array($activated_site_users)) $activated_site_users = array();
     $user_exists = in_array($user_id, $activated_site_users);
 
-    echo print_r('$activated_site_users: '$activated_site_users, true);
+    echo print_r('$activated_site_users: '.$activated_site_users, true);
     // Check if site_id does not exist or is empty
     //if ($site_id) {
 
