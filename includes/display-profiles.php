@@ -197,7 +197,7 @@ if (!class_exists('display_profiles')) {
                     <div id="my-exception-notification-setting"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
                 </div>
             </fieldset>
-            <button type="submit" id="my-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+            <button type="submit" id="my-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'your-text-domain' );?></button>
             <?php
             return ob_get_clean();
         }
@@ -616,7 +616,7 @@ if (!class_exists('display_profiles')) {
 
             </fieldset>
             <?php if (is_site_admin()) {?>
-                <button type="submit" id="site-profile-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+                <button type="submit" id="site-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'your-text-domain' );?></button>
             <?php }?>
             <?php
             return ob_get_clean();

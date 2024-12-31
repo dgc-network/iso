@@ -674,6 +674,59 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#doc-action-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#doc-action-dialog").dialog("option", "buttons", {
+                            "Save": function() {
+                                jQuery.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_doc_action_dialog_data',
+                                        '_doc_id': doc_id,
+                                        '_action_id': $("#action-id").val(),
+                                        '_action_title': $("#action-title").val(),
+                                        '_action_content': $("#action-content").val(),
+                                        '_next_job': $("#next-job").val(),
+                                        '_next_leadtime': $("#next-leadtime").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#doc-action-dialog").dialog('close');
+                                        $("#doc-action-list").html(response.html_contain);
+                                        activate_doc_action_list_data(doc_id);
+                                    },
+                                    error: function (error) {
+                                        console.error(error);                    
+                                        alert(error);
+                                    }
+                                });            
+                            },
+                            "Delete": function() {
+                                if (window.confirm("Are you sure you want to delete this doc action?")) {
+                                    jQuery.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_doc_action_dialog_data',
+                                            '_doc_id': doc_id,
+                                            '_action_id': $("#action-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#doc-action-dialog").dialog('close');
+                                            $("#doc-action-list").html(response.html_contain);
+                                            activate_doc_action_list_data(doc_id);
+                                        },
+                                        error: function(error){
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
+
                     $("#doc-action-dialog").dialog('open');
                 },
                 error: function (error) {
@@ -687,56 +740,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function() {
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_doc_action_dialog_data',
-                            '_doc_id': doc_id,
-                            '_action_id': $("#action-id").val(),
-                            '_action_title': $("#action-title").val(),
-                            '_action_content': $("#action-content").val(),
-                            '_next_job': $("#next-job").val(),
-                            '_next_leadtime': $("#next-leadtime").val(),
-                        },
-                        success: function (response) {
-                            $("#doc-action-dialog").dialog('close');
-                            $("#doc-action-list").html(response.html_contain);
-                            activate_doc_action_list_data(doc_id);
-                        },
-                        error: function (error) {
-                            console.error(error);                    
-                            alert(error);
-                        }
-                    });            
-                },
-                "Delete": function() {
-                    if (window.confirm("Are you sure you want to delete this doc action?")) {
-                        jQuery.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_doc_action_dialog_data',
-                                '_doc_id': doc_id,
-                                '_action_id': $("#action-id").val(),
-                            },
-                            success: function (response) {
-                                $("#doc-action-dialog").dialog('close');
-                                $("#doc-action-list").html(response.html_contain);
-                                activate_doc_action_list_data(doc_id);
-                            },
-                            error: function(error){
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                }
-            }
+            buttons: {}
         });
     }
 

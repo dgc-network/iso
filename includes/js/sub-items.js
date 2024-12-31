@@ -349,6 +349,58 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#sub-item-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#sub-item-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_sub_item_dialog_data',
+                                        '_embedded_id': $("#embedded-id").val(),
+                                        '_sub_item_id': $("#sub-item-id").val(),
+                                        '_sub_item_title': $("#sub-item-title").val(),
+                                        '_sub_item_type': $("#sub-item-type").val(),
+                                        '_sub_item_default': $("#sub-item-default").val(),
+                                        '_sub_item_code': $("#sub-item-code").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#sub-item-dialog").dialog('close');
+                                        $("#sub-item-list").html(response.html_contain);
+                                        activate_sub_item_list_data(embedded_id)
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this item?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_sub_item_dialog_data',
+                                            '_embedded_id': $("#embedded-id").val(),
+                                            '_sub_item_id': $("#sub-item-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#sub-item-dialog").dialog('close');
+                                            $("#sub-item-list").html(response.html_contain);
+                                            activate_sub_item_list_data(embedded_id)
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#sub-item-dialog").dialog('open');
                 },
                 error: function (error) {
@@ -362,56 +414,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_sub_item_dialog_data',
-                            '_embedded_id': $("#embedded-id").val(),
-                            '_sub_item_id': $("#sub-item-id").val(),
-                            '_sub_item_title': $("#sub-item-title").val(),
-                            '_sub_item_type': $("#sub-item-type").val(),
-                            '_sub_item_default': $("#sub-item-default").val(),
-                            '_sub_item_code': $("#sub-item-code").val(),
-                        },
-                        success: function (response) {
-                            $("#sub-item-dialog").dialog('close');
-                            $("#sub-item-list").html(response.html_contain);
-                            activate_sub_item_list_data(embedded_id)
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this item?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_sub_item_dialog_data',
-                                '_embedded_id': $("#embedded-id").val(),
-                                '_sub_item_id': $("#sub-item-id").val(),
-                            },
-                            success: function (response) {
-                                $("#sub-item-dialog").dialog('close');
-                                $("#sub-item-list").html(response.html_contain);
-                                activate_sub_item_list_data(embedded_id)
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });
     }
 
@@ -464,6 +467,57 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#iso-category-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#iso-category-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_iso_category_dialog_data',
+                                        '_category_id': $("#category-id").val(),
+                                        '_category_title': $("#category-title").val(),
+                                        '_category_content': $("#category-content").val(),
+                                        '_category_url': $("#category-url").val(),
+                                        '_parent_category': $("#parent-category").val(),
+                                        '_embedded': $("#embedded").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#iso-category-dialog").dialog('close');
+                                        $("#result-container").html(response.html_contain);
+                                        activate_iso_category_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this iso category?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_iso_category_dialog_data',
+                                            '_category_id': $("#category-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#iso-category-dialog").dialog('close');
+                                            $("#result-container").html(response.html_contain);
+                                            activate_iso_category_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
                     $("#iso-category-dialog").dialog('open');
                 },
                 error: function (error) {
@@ -477,55 +531,7 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {
-                "Save": function () {
-                    $.ajax({
-                        type: 'POST',
-                        url: ajax_object.ajax_url,
-                        dataType: "json",
-                        data: {
-                            'action': 'set_iso_category_dialog_data',
-                            '_category_id': $("#category-id").val(),
-                            '_category_title': $("#category-title").val(),
-                            '_category_content': $("#category-content").val(),
-                            '_category_url': $("#category-url").val(),
-                            '_parent_category': $("#parent-category").val(),
-                            '_embedded': $("#embedded").val(),
-                        },
-                        success: function (response) {
-                            $("#iso-category-dialog").dialog('close');
-                            $("#result-container").html(response.html_contain);
-                            activate_iso_category_list_data();
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert(error);
-                        }
-                    });
-                },
-                "Delete": function () {
-                    if (window.confirm("Are you sure you want to delete this iso category?")) {
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'del_iso_category_dialog_data',
-                                '_category_id': $("#category-id").val(),
-                            },
-                            success: function (response) {
-                                $("#iso-category-dialog").dialog('close');
-                                $("#result-container").html(response.html_contain);
-                                activate_iso_category_list_data();
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    }
-                },
-            }
+            buttons: {}
         });
     }
 
