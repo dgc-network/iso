@@ -1847,7 +1847,7 @@ if (!class_exists('display_profiles')) {
                 ]);
 
                 $params = array(
-                    'log_message' => 'The NDA of '.$user->display_name.' has been rejected by '.get_current_user()->display_name,
+                    'log_message' => 'The NDA of '.$user->display_name.' has been rejected by '.wp_get_current_user()->display_name,
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -1875,7 +1875,7 @@ if (!class_exists('display_profiles')) {
                 ]);
 
                 $params = array(
-                    'log_message' => 'The NDA of '.$user->display_name.' has been approved by '.get_current_user()->display_name,
+                    'log_message' => 'The NDA of '.$user->display_name.' has been approved by '.wp_get_current_user()->display_name,
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
