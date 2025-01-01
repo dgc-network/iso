@@ -1184,7 +1184,7 @@ jQuery(document).ready(function($) {
                     '_embedded_id': $("#embedded-id").val(),
                 },
                 success: function (set_response) {
-                    $("#sub-line-list").html(set_response.html_contain);
+                    $("#embedded-list").html(set_response.html_contain);
                     //activate_doc_report_dialog_data(response);
                 },
                 error: function(error){
@@ -1232,7 +1232,7 @@ jQuery(document).ready(function($) {
                                     data: ajaxData,
                                     success: function(set_response) {
                                         $("#sub-line-dialog").dialog('close');
-                                        $('#sub-line-list').html(set_response.html_contain);
+                                        $('#embedded-list').html(set_response.html_contain);
                                         //activate_doc_report_dialog_data(response);
                                     },
                                     error: function(error) {
@@ -1255,7 +1255,7 @@ jQuery(document).ready(function($) {
                                         },
                                         success: function (del_response) {
                                             $("#sub-line-dialog").dialog('close');
-                                            $('#sub-line-list').html(del_response.html_contain);
+                                            $('#embedded-list').html(del_response.html_contain);
                                             //activate_doc_report_dialog_data(response);
                                         },
                                         error: function(error){
