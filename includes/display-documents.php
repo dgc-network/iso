@@ -2394,7 +2394,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_category', $draft_category);
 
                 $params = array(
-                    'log_message' => 'Generate the draft of '.get_the_title($doc_id),
+                    'log_message' => 'Generate the draft of '.$draft_title,
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);
@@ -2465,7 +2465,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(
-                'log_message' => 'Generate the draft of '.get_the_title($doc_id),
+                'log_message' => 'Generate the draft of '.$doc_title,
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);
