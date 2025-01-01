@@ -1760,8 +1760,11 @@ if (!class_exists('display_documents')) {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <div id="embedded-list">
-                                        <?php if ($report_id) echo $items_class->display_sub_line_list($embedded_id, $report_id);?>
-                                        <?php if ($prev_report_id) echo $items_class->display_sub_line_list($embedded_id, $prev_report_id);?>
+                                        <?php 
+                                        if ($report_id) echo $items_class->display_sub_line_list($embedded_id, $report_id);
+                                        elseif ($prev_report_id) echo $items_class->display_sub_line_list($embedded_id, $prev_report_id);
+                                        else echo $items_class->display_sub_line_list($embedded_id);
+                                        ?>
                                     </div>
                                     <?php
                                 }
