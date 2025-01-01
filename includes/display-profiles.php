@@ -101,7 +101,7 @@ if (!class_exists('display_profiles')) {
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();                
             if (is_site_not_configured()) display_NDA_assignment();
-            if ($_GET['_nda_user_id']) $this->approve_NDA_assignment($_GET['_nda_user_id']);
+            if ($_GET['_nda_user_id']) echo $this->approve_NDA_assignment($_GET['_nda_user_id']);
             else {
 
                 echo '<div class="ui-widget" id="result-container">';
