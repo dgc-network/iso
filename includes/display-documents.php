@@ -881,7 +881,8 @@ if (!class_exists('display_documents')) {
                                                 echo 'User not found for ID: ' . esc_html($field_value);
                                             }
                                         }
-                                    } elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                                    //} elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                                    } elseif ($field_type=='_embedded') {
                                         echo esc_html(get_the_title($field_value).'('.$field_value.')');
                                     } elseif ($field_type=='_document') {
                                         $doc_title = get_post_meta($field_value, 'doc_title', true);
@@ -1306,6 +1307,28 @@ if (!class_exists('display_documents')) {
                         $default_value = $this->get_doc_field_default_value($field_id);
                         update_post_meta($post_id, $field_id, $default_value);
 
+                        if ($field_type == '_embedded') {
+                            $items_class = new sub_items();
+                            if (strpos($default_value, '=') !== false) {
+                                list($key, $value) = explode('=', $default_value, 2);
+                                if ($key=='_list') {
+                                }
+                                if ($key=='_form') {
+                                    $embedded_id = $this->get_embedded_id_by_number($value);
+                                    $inner_query = $items_class->retrieve_sub_item_data($embedded_id);
+                                    if ($inner_query->have_posts()) :
+                                        while ($inner_query->have_posts()) : $inner_query->the_post();
+                                            $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                                            update_post_meta($post_id, $field_id . get_the_ID(), $sub_item_default);
+                                        endwhile;
+                                        wp_reset_postdata();
+                                    endif;
+                                }
+                                if ($key=='_select') {
+                                }
+                            }
+                        }
+/*                        
                         if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                             $items_class = new sub_items();
                             $inner_query = $items_class->retrieve_sub_item_data($default_value);        
@@ -1318,6 +1341,7 @@ if (!class_exists('display_documents')) {
                                 wp_reset_postdata();
                             }
                         }
+*/
                     }
                     wp_reset_postdata();
                 }
@@ -1697,11 +1721,12 @@ if (!class_exists('display_documents')) {
             // Get and sanitize the field name and default value
             $default_value = sanitize_text_field(get_post_meta($field_id, 'default_value', true));
             $field_type = sanitize_text_field(get_post_meta($field_id, 'field_type', true));
+/*            
             if (in_array($field_type, array('_embedded', '_planning', '_select')) && $default_value) {
                 $items_class = new sub_items();
                 $default_value = $items_class->get_embedded_id_by_number($default_value);
             }
-
+*/
             if ($field_type=='date' && $default_value === 'today') $default_value = wp_date('Y-m-d', time());
             if ($field_type=='_employee' && $default_value === 'me') $default_value = $user_id;
             if ($field_type=='_employees' && $default_value === 'me') $default_value = array($user_id);
@@ -2089,6 +2114,28 @@ if (!class_exists('display_documents')) {
                 update_post_meta($report_id, '_department', $field_value);
             }
 
+            if ($field_type=='_embedded'){
+                $items_class = new sub_items();
+                if (strpos($default_value, '=') !== false) {
+                    list($key, $value) = explode('=', $default_value, 2);
+                    if ($key=='_list') {
+                    }
+                    if ($key=='_form') {
+                        $embedded_id = $this->get_embedded_id_by_number($value);
+                        $inner_query = $items_class->retrieve_sub_item_data($embedded_id);
+                        if ($inner_query->have_posts()) :
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $sub_item_value = $_POST[$field_id.get_the_ID()];
+                                update_post_meta($report_id, $field_id.get_the_ID(), $sub_item_value);
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                    }
+                    if ($key=='_select') {
+                    }
+                }
+            }
+/*            
             if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                 if ($default_value) {
                     $items_class = new sub_items();
@@ -2115,6 +2162,7 @@ if (!class_exists('display_documents')) {
                     }    
                 }
             }
+*/                
         }
         
         // document misc

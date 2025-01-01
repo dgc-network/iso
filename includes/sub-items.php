@@ -834,6 +834,25 @@ if (!class_exists('sub_items')) {
                     $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
 
+                    if ($field_type=='_embedded'){
+                        $items_class = new sub_items();
+                        if (strpos($default_value, '=') !== false) {
+                            list($key, $value) = explode('=', $default_value, 2);
+                            $embedded_id = $this->get_embedded_id_by_number($value);
+                            $inner_query = $this->retrieve_sub_item_data($embedded_id);
+                            if ($inner_query->have_posts()) :
+                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    $_list = array();
+                                    $_list["embedded_id"] = $embedded_id;
+                                    $_list["sub_item_id"] = get_the_ID();
+                                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                                    array_push($_array, $_list);
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;    
+                        }
+                    }
+/*        
                     if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
                         if ($default_value) {
                             $embedded_id = $this->get_embedded_id_by_number($default_value);
@@ -850,6 +869,7 @@ if (!class_exists('sub_items')) {
                             endif;    
                         }
                     }
+*/
                 endwhile;
                 wp_reset_postdata();
             }    
