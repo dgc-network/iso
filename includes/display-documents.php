@@ -1771,9 +1771,10 @@ if (!class_exists('display_documents')) {
                                 if ($key=='_form') {
                                     $embedded_id = $items_class->get_embedded_id_by_number($value);
                                     ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html(get_the_title($embedded_id));?></label>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
                                     <div id="embedded-form">
+                                        <fieldset>
                                         <?php
                                         $inner_query = $items_class->retrieve_sub_item_data($embedded_id);
                                         if ($inner_query->have_posts()) :
@@ -1790,6 +1791,7 @@ if (!class_exists('display_documents')) {
                                             wp_reset_postdata();
                                         endif;
                                         ?>
+                                        </fieldset>
                                     </div>
                                     <?php        
                                 }

@@ -927,7 +927,7 @@ if (!class_exists('sub_items')) {
                 <div id="new-sub-line" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
-            <div id="sub-line-dialog" title="Sub report dialog"></div>
+            <div id="sub-line-dialog" title="Sub line dialog"></div>
             <?php
             return ob_get_clean();
         }
