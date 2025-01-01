@@ -102,7 +102,7 @@ if (!class_exists('display_profiles')) {
             if (!is_user_logged_in()) user_is_not_logged_in();                
             elseif (is_site_not_configured()) display_NDA_assignment();
             else {
-                if ($_GET['_nda_user_id']) $this-approve_NDA_assignment($_GET['_nda_user_id']);
+                if ($_GET['_nda_user_id']) $this->approve_NDA_assignment($_GET['_nda_user_id']);
 
                 echo '<div class="ui-widget" id="result-container">';
 
@@ -1708,7 +1708,7 @@ if (!class_exists('display_profiles')) {
         
         function approve_NDA_assignment($user_id=false) {
             if (empty($user_id)) return;
-            //if (is_site_admin()) {}
+            if (is_site_admin()) return;
             $site_id = get_user_meta($user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
             $unified_number = get_post_meta($site_id, 'unified_number', true);
