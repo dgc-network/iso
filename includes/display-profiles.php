@@ -102,6 +102,8 @@ if (!class_exists('display_profiles')) {
             if (!is_user_logged_in()) user_is_not_logged_in();                
             elseif (is_site_not_configured()) display_NDA_assignment();
             else {
+                if ($_GET['_nda_user_id']) echo $this-approve_NDA_assignment($_GET['_nda_user_id']);
+
                 echo '<div class="ui-widget" id="result-container">';
 
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
@@ -1706,6 +1708,7 @@ if (!class_exists('display_profiles')) {
         
         function approve_NDA_assignment($user_id=false) {
             if (empty($user_id)) return;
+            if (!is_site_admin()) return;
             $site_id = get_user_meta($user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
             $unified_number = get_post_meta($site_id, 'unified_number', true);
@@ -1901,7 +1904,7 @@ if (!class_exists('display_profiles')) {
                         'to' => $line_user_id,
                         'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
                         'body_contents'   => [['type' => 'text', 'text' => 'A new user '.$user->display_name.' has signed the NDA agreement.', 'wrap' => true]],
-                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_nda_usr_id=$user_id")], 'style' => 'primary']],
+                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_nda_user_id=$user_id")], 'style' => 'primary']],
                     ]);
                 }
                 $response = array('nda'=>'submitted');
