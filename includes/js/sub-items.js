@@ -745,4 +745,121 @@ jQuery(document).ready(function($) {
             autoOpen: false,
         });    
     }
+
+    // sub-line
+    activate_sub_line_list_data();
+    function activate_sub_line_list_data(){
+        $("#new-sub-line").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_sub_line_dialog_data',
+                    '_report_id': $("#report-id").val(),
+                    '_embedded_id': $("#embedded-id").val(),
+                },
+                success: function (set_response) {
+                    $("#embedded-list").html(set_response.html_contain);
+                    //activate_doc_report_dialog_data(response);
+                },
+                error: function(error){
+                    console.error(error);
+                }
+            });
+        });
+
+        $('[id^="edit-sub-line-"]').on( "click", function() {
+            const sub_line_id = this.id.substring(14);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_sub_line_dialog_data',
+                    '_sub_line_id': sub_line_id,
+                    '_embedded_id': $("#embedded-id").val(),
+                },
+                success: function (get_response) {
+                    $("#sub-line-dialog").html(get_response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#sub-line-dialog").dialog("option", "buttons", {
+                            "Save": function() {
+                                const ajaxData = {
+                                    'action': 'set_sub_line_dialog_data',
+                                };
+                                ajaxData['_sub_line_id'] = sub_line_id;
+                                ajaxData['_report_id'] = $("#report-id").val();
+                                ajaxData['_embedded_id'] = $("#embedded-id").val();
+                                field_id = $("#embedded-id").val();
+                                $.each(get_response.sub_line_fields, function(index, inner_value) {
+                                    const sub_line_field = field_id + inner_value.sub_item_id;
+                                    const sub_line_field_tag = '#' + field_id + inner_value.sub_item_id;
+                                    if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
+                                        ajaxData[sub_line_field] = $(sub_line_field_tag).is(":checked") ? 1 : 0;
+                                    } else {
+                                        ajaxData[sub_line_field] = $(sub_line_field_tag).val();
+                                    }
+                                });
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: ajaxData,
+                                    success: function(set_response) {
+                                        $("#sub-line-dialog").dialog('close');
+                                        $('#embedded-list').html(set_response.html_contain);
+                                        activate_sub_line_list_data();
+                                        //activate_doc_report_dialog_data(response);
+                                    },
+                                    error: function(error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });                    
+                            },
+                            "Delete": function() {
+                                if (window.confirm("Are you sure you want to delete this sub-line?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_sub_line_dialog_data',
+                                            '_sub_line_id': sub_line_id,
+                                            '_report_id': $("#report-id").val(),
+                                            '_embedded_id': $("#embedded-id").val(),
+                                        },
+                                        success: function (del_response) {
+                                            $("#sub-line-dialog").dialog('close');
+                                            $('#embedded-list').html(del_response.html_contain);
+                                            activate_sub_line_list_data();
+                                            //activate_doc_report_dialog_data(response);
+                                        },
+                                        error: function(error){
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    $("#sub-line-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);                
+                    alert(error);
+                }
+            });
+        });
+    
+        $("#sub-line-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {}
+        });
+
+    }
 });
