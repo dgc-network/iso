@@ -154,6 +154,55 @@ if (!class_exists('display_profiles')) {
         //add_action('init', 'change_post_type_sub_item_to_embedded_item');
         
         function migrate_embedded_code_to_embedded_number() {
+            // Query all posts of post type "embedded-item"
+            $args = array(
+                'post_type'      => 'embedded-item',
+                'posts_per_page' => -1, // Retrieve all posts
+                'post_status'    => 'any',
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    $post_id = get_the_ID();
+        
+                    // Get the old 'sub_item' meta values
+                    $sub_item_type = get_post_meta($post_id, 'sub_item_type', true);
+                    $sub_item_default = get_post_meta($post_id, 'sub_item_default', true);
+                    $sub_item_code = get_post_meta($post_id, 'sub_item_code', true);
+        
+                    // Check if any of the old meta values exist
+                    if (!empty($sub_item_type) || !empty($sub_item_default) || !empty($sub_item_code)) {
+                        // Update the meta keys to use the new 'embedded_item' prefix
+                        if (!empty($sub_item_type)) {
+                            update_post_meta($post_id, 'embedded_item_type', $sub_item_type);
+                            delete_post_meta($post_id, 'sub_item_type');
+                        }
+        
+                        if (!empty($sub_item_default)) {
+                            update_post_meta($post_id, 'embedded_item_default', $sub_item_default);
+                            delete_post_meta($post_id, 'sub_item_default');
+                        }
+        
+                        if (!empty($sub_item_code)) {
+                            update_post_meta($post_id, 'embedded_item_code', $sub_item_code);
+                            delete_post_meta($post_id, 'sub_item_code');
+                        }
+                    }
+                }
+                wp_reset_postdata();
+            } else {
+                echo 'No posts found for post type "embedded-item".';
+            }
+        }
+/*        
+        // Call this function only when needed (e.g., via an admin action or manually).
+        add_action('init', 'migrate_embedded_code_to_embedded_number');
+        
+        function migrate_embedded_code_to_embedded_number() {
             // Query all posts of post type "embedded"
             $args = array(
                 'post_type'      => 'embedded-item',
@@ -188,7 +237,7 @@ if (!class_exists('display_profiles')) {
             }
         }
         //add_action('init', 'migrate_subform_code_to_embedded_number');
-
+*/
         // my-profile
         function display_my_profile() {
             ob_start();
