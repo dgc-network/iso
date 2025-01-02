@@ -168,6 +168,7 @@ jQuery(document).ready(function($) {
         // Remove or Add the parameters
         urlParams.set("paged", 1);
         urlParams.delete("_statement");
+        urlParams.delete("_prompt");
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
 
@@ -210,8 +211,9 @@ jQuery(document).ready(function($) {
                 // Get existing URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 // Remove or Add the parameters
-                urlParams.set("paged", 2);
+                urlParams.set("_paged", 2);
                 urlParams.set("_statement", iso_category_id);
+                urlParams.delete("_prompt");
                 // Redirect to the updated URL
                 window.location.href = "?" + urlParams.toString();
         
@@ -229,8 +231,9 @@ jQuery(document).ready(function($) {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         // Remove or Add the parameters
-        urlParams.set("paged", 1);
+        urlParams.set("_paged", 1);
         urlParams.set("_statement", iso_category_id);
+        urlParams.delete("_prompt");
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
 
