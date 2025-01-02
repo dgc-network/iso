@@ -1311,7 +1311,7 @@ if (!class_exists('display_documents')) {
                                 if ($key=='_list') {
                                 }
                                 if ($key=='_form') {
-                                    $embedded_id = $this->get_embedded_id_by_number($value);
+                                    $embedded_id = $items_class->get_embedded_id_by_number($value);
                                     $inner_query = $items_class->retrieve_sub_item_data($embedded_id);
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -2118,7 +2118,7 @@ if (!class_exists('display_documents')) {
                     if ($key=='_list') {
                     }
                     if ($key=='_form') {
-                        $embedded_id = $this->get_embedded_id_by_number($value);
+                        $embedded_id = $items_class->get_embedded_id_by_number($value);
                         $inner_query = $items_class->retrieve_sub_item_data($embedded_id);
                         if ($inner_query->have_posts()) :
                             while ($inner_query->have_posts()) : $inner_query->the_post();
