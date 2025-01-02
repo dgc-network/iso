@@ -10,7 +10,8 @@ jQuery(document).ready(function($) {
     $("#select-profile").on("change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        // Add or update the parameters
+        // Remove or Add the parameters
+        urlParams.delete("_search");
         urlParams.set("_select_profile", $(this).val());
         urlParams.set("paged", 1);
         // Redirect to the updated URL
@@ -567,8 +568,8 @@ jQuery(document).ready(function($) {
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             var selectValue = $("#select-profile").val();
+            // Remove or Add the parameters
             if (selectValue) urlParams.set("_select_profile", selectValue);
-            // Add or update the parameters
             urlParams.set("_search", $(this).val());
             urlParams.set("paged", 1);
             // Redirect to the updated URL

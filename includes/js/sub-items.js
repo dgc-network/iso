@@ -556,6 +556,15 @@ jQuery(document).ready(function($) {
         });
 */
         $("#search-department").on( "change", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            var selectValue = $("#select-profile").val();
+            // Remove or Add the parameters
+            if (selectValue) urlParams.set("_select_profile", selectValue);
+            urlParams.set("_search", $(this).val());
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*
             // Initialize an empty array to store query parameters
             var queryParams = [];
             // Check the selected value for each select element and add it to the queryParams array
@@ -573,6 +582,7 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + queryString;
             // Clear the values of all select elements after redirection
             $("#search-department").val('');
+*/
         });
 
         $("#new-department-card").on("click", function() {

@@ -3,7 +3,8 @@ jQuery(document).ready(function($) {
     $("#select-todo").on("change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        // Add or update the parameters
+        // Remove or Add the parameters
+        urlParams.delete("_search");
         urlParams.set("_select_todo", $(this).val());
         urlParams.set("paged", 1);
         // Redirect to the updated URL
@@ -144,8 +145,18 @@ jQuery(document).ready(function($) {
 
     // start-job
     $("#search-start-job").on( "change", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        var selectValue = $("#select-todo").val();
+        // Remove or Add the parameters
+        if (selectValue) urlParams.set("_select_todo", selectValue);
+        urlParams.set("_search", $(this).val());
+        urlParams.set("paged", 1);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+/*
         window.location.replace("?_select_todo=start-job&_search="+$(this).val()+"&paged=1");
         $(this).val('');
+*/
     });
 
     $('[id^="edit-start-job-"]').on("click", function () {
@@ -308,6 +319,13 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function (response) {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or Add the parameters
+                        urlParams.delete("_job_id");
+                        urlParams.set("paged", 1);
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
+/*
                         // Get the current URL
                         var currentUrl = window.location.href;
                         // Create a URL object
@@ -318,6 +336,7 @@ jQuery(document).ready(function($) {
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
                         window.location.replace(modifiedUrl);
+*/
                     },
                     error: function(error){
                         console.error(error);
@@ -328,6 +347,14 @@ jQuery(document).ready(function($) {
         });
 
         $("#exit-start-job").on("click", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            // Remove or Add the parameters
+            urlParams.delete("_job_id");
+            urlParams.delete("_prompt");
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -338,13 +365,24 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
+*/
         });
     }
 
     // todo-list
     $("#search-todo").on( "change", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        var selectValue = $("#select-todo").val();
+        // Remove or Add the parameters
+        if (selectValue) urlParams.set("_select_todo", selectValue);
+        urlParams.set("_search", $(this).val());
+        urlParams.set("paged", 1);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+/*
         window.location.replace("?_search="+$(this).val()+"&paged=1");
         $(this).val('');
+*/
     });
 
     $('[id^="edit-todo-"]').on("click", function () {
@@ -405,6 +443,14 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function (response) {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or Add the parameters
+                        urlParams.delete("_todo_id");
+                        urlParams.delete("_prompt");
+                        urlParams.set("paged", 1);
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
+/*
                         // Get the current URL
                         var currentUrl = window.location.href;
                         // Create a URL object
@@ -415,6 +461,7 @@ jQuery(document).ready(function($) {
                         var modifiedUrl = url.toString();
                         // Reload the page with the modified URL
                         window.location.replace(modifiedUrl);
+*/                        
                     },
                     error: function(error){
                         console.error(error);
@@ -425,6 +472,14 @@ jQuery(document).ready(function($) {
         });
 
         $("#todo-dialog-exit").on("click", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            // Remove or Add the parameters
+            urlParams.delete("_todo_id");
+            urlParams.delete("_prompt");
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -435,6 +490,7 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
+*/
         });
     }
 
@@ -452,6 +508,13 @@ jQuery(document).ready(function($) {
     activate_action_log_dialog_data();
     function activate_action_log_dialog_data(){
         $("#action-log-exit").on("click", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            // Remove or Add the parameters
+            urlParams.delete("_log_id");
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -462,6 +525,7 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
+*/
         });
     }
 })
