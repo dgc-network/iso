@@ -96,6 +96,7 @@ if (!class_exists('sub_items')) {
             ob_start();
             $profiles_class = new display_profiles();
             ?>
+            <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
 
@@ -149,9 +150,7 @@ if (!class_exists('sub_items')) {
                     ?>
                 </div>
             </fieldset>
-<?php /*            
-            <div id="embedded-dialog" title="Sub form dialog"></div>
-*/?>            
+            </div>
             <?php
             return ob_get_clean();
         }
@@ -1220,7 +1219,7 @@ if (!class_exists('sub_items')) {
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
-            $selected = ($select_option=="embedded") ? 'selected' : '';
+            $selected = ($selected_option=="embedded") ? 'selected' : '';
             $options .= '<option value="embedded" '.$selected.'>'.__( '嵌入項目', 'your-text-domain' ).'</option>';
             return $options;
         }
