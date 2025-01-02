@@ -102,10 +102,11 @@ if (!class_exists('sub_items')) {
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <?php //$profiles_class->display_select_profile('embedded');?>
                     <select id="select-category"><?php echo $this->select_doc_category_options('embedded');?></select>
-                    </div>
-                <div style="text-align: right"></div>                        
+                </div>
+                <div style="text-align: right">
+                    <input type="text" id="search-embedded" placeholder="<?php echo __( 'Search...', 'your-text-domain' );?>" style="margin:5px;" />
+                </div>                        
             </div>
 
             <fieldset>

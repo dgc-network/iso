@@ -45,6 +45,7 @@ jQuery(document).ready(function($) {
     // iot-device scripts
     activate_iot_device_list_data();
     function activate_iot_device_list_data(){
+/*        
         $("#select-todo").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -58,7 +59,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#search-device").on( "change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];

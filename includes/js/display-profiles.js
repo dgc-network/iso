@@ -8,6 +8,14 @@ jQuery(document).ready(function($) {
     }
 
     $("#select-profile").on("change", function() {
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        // Add or update the parameters
+        urlParams.set("_select_profile", $(this).val());
+        urlParams.set("paged", 1);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+/*
         // Initialize an empty array to store query parameters
         var queryParams = [];
         // Check the selected value for each select element and add it to the queryParams array
@@ -19,6 +27,7 @@ jQuery(document).ready(function($) {
         var queryString = queryParams.join("&");
         // Redirect to the new URL with all combined query parameters
         window.location.href = "?" + queryString;
+*/
     });
 
     // my-profile

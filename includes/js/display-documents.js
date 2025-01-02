@@ -280,8 +280,17 @@ jQuery(document).ready(function($) {
 
     // document
     $("#select-category").on( "change", function() {
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        // Add or update the parameters
+        urlParams.set("_category", $(this).val());
+        urlParams.set("paged", 1);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+/*
         window.location.replace("?_category="+$(this).val()+"&paged=1");
         $(this).val('');
+*/        
     });
 
     $("#search-document").on( "change", function() {

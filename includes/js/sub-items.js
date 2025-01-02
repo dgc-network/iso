@@ -46,6 +46,7 @@ jQuery(document).ready(function($) {
     // doc-category
     activate_doc_category_list_data();
     function activate_doc_category_list_data(){
+/*        
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -59,7 +60,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#new-doc-category").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -160,6 +161,7 @@ jQuery(document).ready(function($) {
     // embedded
     activate_embedded_list_data()
     function activate_embedded_list_data(){
+/*        
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -173,7 +175,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#new-embedded").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -421,7 +423,7 @@ jQuery(document).ready(function($) {
     // iso-category
     activate_iso_category_list_data();
     function activate_iso_category_list_data(){
-
+/*
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -435,7 +437,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#new-iso-category").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -538,6 +540,7 @@ jQuery(document).ready(function($) {
     // department
     activate_department_card_list_data();
     function activate_department_card_list_data(){
+/*        
         $("#select-profile").on("change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
@@ -551,7 +554,7 @@ jQuery(document).ready(function($) {
             // Redirect to the new URL with all combined query parameters
             window.location.href = "?" + queryString;
         });
-
+*/
         $("#search-department").on( "change", function() {
             // Initialize an empty array to store query parameters
             var queryParams = [];
