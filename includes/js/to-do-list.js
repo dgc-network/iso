@@ -271,7 +271,7 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
 
             get_start_job_dialog_data($("#job-id").val(), function (error, response) {
-                $.each(response.doc_fields, function(index, value) {
+                $.each(response.doc_field_keys, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
@@ -295,7 +295,7 @@ jQuery(document).ready(function($) {
                         }
     
                         if (value.field_type === '_embedded') {
-                            $.each(response.embedded_item_fields, function(index, inner_value) {
+                            $.each(response.embedded_item_keys, function(index, inner_value) {
                                 const embedded_field = String(value.field_id) + String(inner_value.embedded_item_id);
                                 const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
                                 if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
@@ -399,7 +399,7 @@ jQuery(document).ready(function($) {
             ajaxData['_action_id'] = action_id;
 
             get_todo_dialog_data($("#todo-id").val(), function (error, response) {
-                $.each(response.doc_fields, function(index, value) {
+                $.each(response.doc_field_keys, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;

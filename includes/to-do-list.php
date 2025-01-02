@@ -456,9 +456,9 @@ if (!class_exists('to_do_list')) {
                 //$result['html_contain'] = $this->display_todo_dialog($todo_id);
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $documents_class = new display_documents();
-                $response['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
+                $response['doc_field_keys'] = $documents_class->get_doc_field_keys($doc_id);
                 $items_class = new embedded_items();
-                $response['embedded_item_fields'] = $items_class->get_embedded_item_field_keys($doc_id);
+                $response['embedded_item_keys'] = $items_class->get_embedded_item_keys($doc_id);
             }
             wp_send_json($response);
         }
@@ -724,7 +724,7 @@ if (!class_exists('to_do_list')) {
                 <div>
                 <?php
                     $profiles_class = new display_profiles();
-                    $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+                    $query = $profiles_class->retrieve_doc_action_data($doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             echo '<input type="button" id="start-job-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
@@ -748,9 +748,9 @@ if (!class_exists('to_do_list')) {
             if (isset($_POST['_job_id'])) {
                 $job_id = sanitize_text_field($_POST['_job_id']);
                 $documents_class = new display_documents();
-                $response['doc_fields'] = $documents_class->get_doc_field_keys($job_id);
+                $response['doc_field_keys'] = $documents_class->get_doc_field_keys($job_id);
                 $items_class = new embedded_items();
-                $response['embedded_item_fields'] = $items_class->get_embedded_item_field_keys($job_id);
+                $response['embedded_item_keys'] = $items_class->get_embedded_item_keys($job_id);
             }
             wp_send_json($response);
         }
@@ -1119,7 +1119,7 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) {
                 // Create the new Action list for next_job 
                 $profiles_class = new display_profiles();
-                $query = $profiles_class->retrieve_doc_action_list_data($next_job);
+                $query = $profiles_class->retrieve_doc_action_data($next_job);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $new_post = array(
@@ -1586,10 +1586,10 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2><?php echo esc_html(get_the_title($log_id));?></h2>
+            <h2 style="display:inline;"><?php echo esc_html(get_the_title($log_id));?></h2>
             
             <fieldset>
-            <?php echo 'log time: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?>            
+            <div><?php echo 'log time: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></div>
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);

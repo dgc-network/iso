@@ -948,7 +948,7 @@ jQuery(document).ready(function($) {
             ajaxData['_proceed_to_todo'] = 1;
 
             get_doc_report_dialog_data($("#report-id").val(), function (error, response) {
-                $.each(response.doc_fields, function(index, value) {
+                $.each(response.doc_field_keys, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
@@ -972,7 +972,7 @@ jQuery(document).ready(function($) {
                         }
     
                         if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
-                            $.each(response.embedded_item_fields, function(index, inner_value) {
+                            $.each(response.embedded_item_keys, function(index, inner_value) {
                                 const embedded_field = String(value.field_id) + String(inner_value.embedded_item_id);
                                 const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
                                 if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
@@ -1009,7 +1009,7 @@ jQuery(document).ready(function($) {
             ajaxData['_report_id'] = report_id;
 
             get_doc_report_dialog_data($("#report-id").val(), function (error, response) {
-                $.each(response.doc_fields, function(index, value) {
+                $.each(response.doc_field_keys, function(index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
@@ -1033,7 +1033,7 @@ jQuery(document).ready(function($) {
                         }
     
                         if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
-                            $.each(response.embedded_item_fields, function(index, inner_value) {
+                            $.each(response.embedded_item_keys, function(index, inner_value) {
                                 const embedded_field = String(value.field_id) + String(inner_value.embedded_item_id);
                                 const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
                                 if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
@@ -1093,14 +1093,14 @@ jQuery(document).ready(function($) {
             ajaxData['_report_id'] = report_id;
 
             get_doc_report_dialog_data($("#report-id").val(), function (error, response) {
-                $.each(response.doc_fields, function (index, value) {
+                $.each(response.doc_field_keys, function (index, value) {
                     const field_id_tag = '#' + value.field_id;
                     if (value.field_type === 'checkbox' || value.field_type === 'radio') {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                     } else {
                         ajaxData[value.field_id] = $(field_id_tag).val();
                         if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
-                            $.each(response.embedded_item_fields, function(index, inner_value) {
+                            $.each(response.embedded_item_keys, function(index, inner_value) {
                                 const embedded_field = value.field_id + inner_value.embedded_item_id;
                                 const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
                                 if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {

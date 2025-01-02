@@ -297,7 +297,7 @@ if (!class_exists('display_profiles')) {
                 </thead>
                 <tbody>
                 <?php
-                $query = $this->retrieve_doc_action_list_data($doc_id);
+                $query = $this->retrieve_doc_action_data($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $is_checked = $this->is_action_authorized(get_the_ID()) ? 'checked' : '';
@@ -403,7 +403,7 @@ if (!class_exists('display_profiles')) {
 
                 // update the other actions
                 $doc_id = get_post_meta($action_id, 'doc_id', true);
-                $query = $this->retrieve_doc_action_list_data($doc_id);
+                $query = $this->retrieve_doc_action_data($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         if (get_the_ID()!=$action_id){
@@ -518,7 +518,7 @@ if (!class_exists('display_profiles')) {
         }
 
         function is_doc_authorized($doc_id=false) {
-            $query = $this->retrieve_doc_action_list_data($doc_id);
+            $query = $this->retrieve_doc_action_data($doc_id);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     if ($this->is_action_authorized(get_the_ID())) return true;
@@ -971,7 +971,7 @@ if (!class_exists('display_profiles')) {
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
                             else $doc_title = get_the_content();
                             // display the warning if the job without assigned actions
-                            $action_query = $this->retrieve_doc_action_list_data(get_the_ID());
+                            $action_query = $this->retrieve_doc_action_data(get_the_ID());
                             $action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                             // display the warning if the job without assigned users
                             $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
@@ -1202,7 +1202,7 @@ if (!class_exists('display_profiles')) {
                 </thead>
                 <tbody>
                 <?php
-                $query = $this->retrieve_doc_action_list_data($doc_id);
+                $query = $this->retrieve_doc_action_data($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $action_title = get_the_title();
@@ -1302,7 +1302,7 @@ if (!class_exists('display_profiles')) {
             return $query;
         }
 
-        function retrieve_doc_action_list_data($doc_id = false, $is_nest = false) {
+        function retrieve_doc_action_data($doc_id = false, $is_nest = false) {
             // Initial query arguments
             $args = array(
                 'post_type'      => 'action',

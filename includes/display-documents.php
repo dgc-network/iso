@@ -468,7 +468,7 @@ if (!class_exists('display_documents')) {
                         <pre class="mermaid">
                             graph TD 
                             <?php                        
-                            $query = $profiles_class->retrieve_doc_action_list_data($doc_id, true);
+                            $query = $profiles_class->retrieve_doc_action_data($doc_id, true);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
                                     $action_title = get_the_title();
@@ -1160,7 +1160,7 @@ if (!class_exists('display_documents')) {
                     <div>
                     <?php
                     $profiles_class = new display_profiles();
-                    $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+                    $query = $profiles_class->retrieve_doc_action_data($doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             if ($profiles_class->is_user_doc($doc_id)) {
@@ -1231,9 +1231,9 @@ if (!class_exists('display_documents')) {
                     }
                 } else {
                     $doc_id = get_post_meta($report_id, 'doc_id', true);
-                    $response['doc_fields'] = $this->get_doc_field_keys($doc_id);
+                    $response['doc_field_keys'] = $this->get_doc_field_keys($doc_id);
                     $items_class = new embedded_items();
-                    $response['embedded_item_fields'] = $items_class->get_embedded_item_field_keys($doc_id);
+                    $response['embedded_item_keys'] = $items_class->get_embedded_item_keys($doc_id);
                 }
             }
             // Return JSON response
@@ -1763,11 +1763,11 @@ if (!class_exists('display_documents')) {
                                     $embedded_id = $items_class->get_embedded_id_by_number($value);
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <div id="embedded-line-list">
-                                        <?php echo $items_class->display_embedded_line_list($embedded_id);
-                                        //if ($report_id) echo $items_class->display_embedded_line_list($embedded_id, $report_id);
-                                        //elseif ($prev_report_id) echo $items_class->display_embedded_line_list($embedded_id, $prev_report_id);
-                                        //else echo $items_class->display_embedded_line_list($embedded_id);
+                                    <div id="line-report-list">
+                                        <?php echo $items_class->display_line_report_list($embedded_id);
+                                        //if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
+                                        //elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
+                                        //else echo $items_class->display_line_report_list($embedded_id);
                                         ?>
                                     </div>
                                     <?php
@@ -2465,7 +2465,7 @@ if (!class_exists('display_documents')) {
 
             // Create the Action list for $post_id
             $profiles_class = new display_profiles();
-            $query = $profiles_class->retrieve_doc_action_list_data($doc_id);
+            $query = $profiles_class->retrieve_doc_action_data($doc_id);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $new_post = array(
