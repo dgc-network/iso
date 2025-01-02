@@ -590,7 +590,7 @@ if (!class_exists('embedded_items')) {
                             $embedded_item_default='';
                         }
                         ?>
-                        <tr id="edit-embedded-item-<?php the_ID();?>" data-embedded-item-id="<?php echo esc_attr(get_the_ID());?>">
+                        <tr id="edit-item-<?php the_ID();?>" data-embedded-item-id="<?php echo esc_attr(get_the_ID());?>">
                             <td><?php echo $embedded_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($embedded_item_type);?></td>
                             <td style="text-align:center;"><?php echo esc_html($embedded_item_default);?></td>

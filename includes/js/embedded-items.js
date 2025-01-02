@@ -316,8 +316,8 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $('[id^="edit-embedded-item-"]').on("click", function () {
-            const embedded_item_id = this.id.substring(19);
+        $('[id^="edit-item-"]').on("click", function () {
+            const embedded_item_id = this.id.substring(10);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
