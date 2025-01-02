@@ -160,6 +160,14 @@ jQuery(document).ready(function($) {
         });
 
         $("#iot-dialog-exit").on("click", function () {
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Remove or Add the parameters
+            urlParams.delete("_device_id");
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*    
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -172,6 +180,7 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
+*/            
         });
     }
 });

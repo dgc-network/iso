@@ -282,7 +282,8 @@ jQuery(document).ready(function($) {
     $("#select-category").on( "change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        // Add or update the parameters
+        // Remove or Add the parameters
+        urlParams.delete("_search");
         urlParams.set("_category", $(this).val());
         urlParams.set("paged", 1);
         // Redirect to the updated URL
