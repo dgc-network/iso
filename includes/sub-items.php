@@ -926,12 +926,13 @@ if (!class_exists('sub_items')) {
                 $sub_line_query = $this->retrieve_sub_line_list_data($report_id);
                 if ($sub_line_query->have_posts()) :
                     while ($sub_line_query->have_posts()) : $sub_line_query->the_post();
+                        $sub_line_id = get_the_ID();
                         ?><tr id="edit-sub-line-<?php the_ID();?>"><td style="text-align:center;"></td><?php
                         $query = $this->retrieve_sub_item_data($embedded_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $field_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                                $field_value = get_post_meta(get_the_ID(), $embedded_id.get_the_ID(), true);
+                                $field_value = get_post_meta($sub_line_id, $embedded_id.get_the_ID(), true);
                                 $field_value = ($field_value) ? $field_value : $embedded_id.get_the_ID();
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
                                 if ($field_type=='_product') {
