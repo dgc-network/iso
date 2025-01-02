@@ -272,10 +272,10 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // sub-item
+    // embedded-item
     activate_embedded_item_list_data($("#embedded-id").val());
     function activate_embedded_item_list_data(embedded_id){
-        $("#new-sub-item").on("click", function() {
+        $("#new-embedded-item").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -285,7 +285,7 @@ jQuery(document).ready(function($) {
                     '_embedded_id': embedded_id,
                 },
                 success: function (response) {
-                    $("#sub-item-list").html(response.html_contain);
+                    $("#embedded-item-list").html(response.html_contain);
                     activate_embedded_item_list_data(embedded_id);
                 },
                 error: function(error){
@@ -295,9 +295,9 @@ jQuery(document).ready(function($) {
             });    
         });
     
-        $('#sortable-sub-item-list').sortable({
+        $('#sortable-embedded-item-list').sortable({
             update: function(event, ui) {
-                const embedded_item_id_array = $(this).sortable('toArray', { attribute: 'data-sub-item-id' });                
+                const embedded_item_id_array = $(this).sortable('toArray', { attribute: 'data-embedded-item-id' });                
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
@@ -316,7 +316,7 @@ jQuery(document).ready(function($) {
             }
         });
 
-        $('[id^="edit-sub-item-"]').on("click", function () {
+        $('[id^="edit-embedded-item-"]').on("click", function () {
             const embedded_item_id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
@@ -327,9 +327,9 @@ jQuery(document).ready(function($) {
                     '_embedded_item_id': embedded_item_id,
                 },
                 success: function (response) {
-                    $("#sub-item-dialog").html(response.html_contain);
+                    $("#embedded-item-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        $("#sub-item-dialog").dialog("option", "buttons", {
+                        $("#embedded-item-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
                                     type: 'POST',
@@ -338,15 +338,15 @@ jQuery(document).ready(function($) {
                                     data: {
                                         'action': 'set_embedded_item_dialog_data',
                                         '_embedded_id': $("#embedded-id").val(),
-                                        '_embedded_item_id': $("#sub-item-id").val(),
-                                        '_embedded_item_title': $("#sub-item-title").val(),
-                                        '_embedded_item_type': $("#sub-item-type").val(),
-                                        '_embedded_item_default': $("#sub-item-default").val(),
-                                        '_embedded_item_code': $("#sub-item-code").val(),
+                                        '_embedded_item_id': $("#embedded-item-id").val(),
+                                        '_embedded_item_title': $("#embedded-item-title").val(),
+                                        '_embedded_item_type': $("#embedded-item-type").val(),
+                                        '_embedded_item_default': $("#embedded-item-default").val(),
+                                        '_embedded_item_code': $("#embedded-item-code").val(),
                                     },
                                     success: function (response) {
-                                        $("#sub-item-dialog").dialog('close');
-                                        $("#sub-item-list").html(response.html_contain);
+                                        $("#embedded-item-dialog").dialog('close');
+                                        $("#embedded-item-list").html(response.html_contain);
                                         activate_embedded_item_list_data(embedded_id)
                                     },
                                     error: function (error) {
@@ -364,11 +364,11 @@ jQuery(document).ready(function($) {
                                         data: {
                                             'action': 'del_embedded_item_dialog_data',
                                             '_embedded_id': $("#embedded-id").val(),
-                                            '_embedded_item_id': $("#sub-item-id").val(),
+                                            '_embedded_item_id': $("#embedded-item-id").val(),
                                         },
                                         success: function (response) {
-                                            $("#sub-item-dialog").dialog('close');
-                                            $("#sub-item-list").html(response.html_contain);
+                                            $("#embedded-item-dialog").dialog('close');
+                                            $("#embedded-item-list").html(response.html_contain);
                                             activate_embedded_item_list_data(embedded_id)
                                         },
                                         error: function (error) {
@@ -380,7 +380,7 @@ jQuery(document).ready(function($) {
                             },
                         });
                     }
-                    $("#sub-item-dialog").dialog('open');
+                    $("#embedded-item-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.error(error);
@@ -389,7 +389,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#sub-item-dialog").dialog({
+        $("#embedded-item-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,

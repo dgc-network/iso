@@ -238,7 +238,7 @@ jQuery(document).ready(function($) {
         // Initialize an empty array to store the key-value pairs
         const keyValuePairs = [];
         // Select all elements with the specified class and iterate over them
-        $('.sub-item-class').each(function() {
+        $('.embedded-item-class').each(function() {
             // Use the 'id' attribute as the key
             const key = $(this).attr('id');
             let value;

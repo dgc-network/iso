@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 require_once plugin_dir_path( __FILE__ ) . 'display-documents.php';
 require_once plugin_dir_path( __FILE__ ) . 'to-do-list.php';
 require_once plugin_dir_path( __FILE__ ) . 'display-profiles.php';
-require_once plugin_dir_path( __FILE__ ) . 'sub-items.php';
+require_once plugin_dir_path( __FILE__ ) . 'embedded-items.php';
 require_once plugin_dir_path( __FILE__ ) . 'iot-messages.php';
 
 function wp_enqueue_scripts_and_styles() {

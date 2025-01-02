@@ -437,7 +437,7 @@ jQuery(document).ready(function($) {
             const keyValuePairs = [];
 
             // Select all elements with the specified class and iterate over them
-            $('.sub-item-class').each(function() {
+            $('.embedded-item-class').each(function() {
                 // Get the key from the data attribute
                 const key = $(this).data('key');
                 let value;

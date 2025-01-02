@@ -1037,7 +1037,7 @@ if (!class_exists('to_do_list')) {
             }
             if (!$is_updated) $this->create_new_todo_for_next_job($params);
 /*
-            // Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
+            // Create the new To-do with embedded-item If meta "_planning" of $prev_report_id is present
             if ($prev_report_id) $embedded_item_ids = get_post_meta($prev_report_id, '_planning', true);
             if ($prev_report_id) $embedded = get_post_meta($prev_report_id, '_embedded', true);
             if ($prev_report_id) $select = get_post_meta($prev_report_id, '_select', true);

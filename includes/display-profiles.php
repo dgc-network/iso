@@ -110,25 +110,56 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(-1);
-
-                //if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
-
                 $items_class = new embedded_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
 
+                if ($_GET['_select_profile']=='change_post_type_sub_item_to_embedded_item') echo $this->change_post_type_sub_item_to_embedded_item();
+                if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
+
                 echo '</div>';
             }
         }
 
+        function change_post_type_sub_item_to_embedded_item() {
+            global $wpdb;
+        
+            // Get all posts with post type 'sub-item'
+            $sub_items = $wpdb->get_results("
+                SELECT ID 
+                FROM $wpdb->posts 
+                WHERE post_type = 'sub-item'
+            ");
+        
+            if (!empty($sub_items)) {
+                foreach ($sub_items as $sub_item) {
+                    // Update the post type to 'embedded-item'
+                    $wpdb->update(
+                        $wpdb->posts,
+                        array('post_type' => 'embedded-item'), // New post type
+                        array('ID' => $sub_item->ID) // Target post ID
+                    );
+        
+                    // Optional: Clear the cache for the post
+                    clean_post_cache($sub_item->ID);
+                }
+                echo count($sub_items) . " posts have been updated from 'sub-item' to 'embedded-item'.";
+            } else {
+                echo "No posts found with the post type 'sub-item'.";
+            }
+        }
+        
+        // Trigger the function
+        //add_action('init', 'change_post_type_sub_item_to_embedded_item');
+        
         function migrate_embedded_code_to_embedded_number() {
             // Query all posts of post type "embedded"
             $args = array(
-                'post_type'      => 'embedded',
+                'post_type'      => 'embedded-item',
                 'posts_per_page' => -1, // Retrieve all posts
                 'post_status'    => 'any',
-                'meta_key'       => 'embedded_code', // Only query posts with 'subform_code'
+                //'meta_key'       => 'embedded_code', // Only query posts with 'subform_code'
             );
             $query = new WP_Query($args);
         
@@ -137,14 +168,20 @@ if (!class_exists('display_profiles')) {
                     $query->the_post();
         
                     // Get the old 'subform_code' meta value
-                    $old_meta_value = get_post_meta(get_the_ID(), 'embedded_code', true);
+                    $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                    $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                    $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
         
                     if ($old_meta_value) {
                         // Update the meta to use 'embedded_number' instead
-                        update_post_meta(get_the_ID(), 'embedded_number', $old_meta_value);
+                        update_post_meta(get_the_ID(), 'embedded_item_type', $sub_item_type);
+                        update_post_meta(get_the_ID(), 'embedded_item_default', $sub_item_default);
+                        update_post_meta(get_the_ID(), 'embedded_item_code', $sub_item_code);
         
                         // Optionally, delete the old 'subform_code' meta to avoid duplication
-                        delete_post_meta(get_the_ID(), 'embedded_code');
+                        delete_post_meta(get_the_ID(), 'sub_item_type');
+                        delete_post_meta(get_the_ID(), 'sub_item_default');
+                        delete_post_meta(get_the_ID(), 'sub_item_code');
                     }
                 }
                 wp_reset_postdata();
