@@ -91,9 +91,6 @@ if (!class_exists('display_profiles')) {
                 <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
-<?php /*                
-                <option value="embedded" <?php echo ($select_option=="embedded") ? 'selected' : ''?>><?php echo __( '嵌入項目', 'your-text-domain' );?></option>
-*/?>                
             </select>
             <?php
         }
@@ -120,10 +117,6 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
-                if ($_GET['_select_profile']=='embedded') {
-                    if (isset($_GET['_embedded_id'])) echo $items_class->display_embedded_dialog($_GET['_embedded_id']);
-                    else echo $items_class->display_embedded_list();
-                }
 
                 echo '</div>';
             }
