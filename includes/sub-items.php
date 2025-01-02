@@ -1032,11 +1032,11 @@ if (!class_exists('sub_items')) {
                 endif;
             } else {
                 // Create the post
-                $current_user_id = get_current_user_id();
+                //$current_user_id = get_current_user_id();
                 $new_post = array(
-                    'post_status'   => 'publish',
-                    'post_author'   => $current_user_id,
                     'post_type'     => 'sub-line',
+                    'post_status'   => 'publish',
+                    'post_author'   => get_current_user_id(),
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'report_id', $report_id);
@@ -1217,6 +1217,8 @@ if (!class_exists('sub_items')) {
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
+            $selected = ($select_option=="embedded") ? 'selected' : '';
+            $options .= '<option value="embedded" '.$selected.'>'.__( '嵌入項目', 'your-text-domain' ).'</option>';
             return $options;
         }
         

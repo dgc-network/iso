@@ -77,7 +77,14 @@ if (!class_exists('display_documents')) {
             if (!is_user_logged_in()) user_is_not_logged_in();
             elseif (is_site_not_configured()) display_NDA_assignment();
             else {
+                // Display document list if no specific parameters are existed
+                if (($_GET['_category']!='embedded') && !isset($_GET['_doc_id']) && !isset($_GET['_report_id']) && !isset($_GET['_duplicate_document']) && !isset($_GET['_statement'])) {
+                    echo $this->display_document_list();
+                }
 
+                $items_class = new sub_items();
+                if ($_GET['_category']=='embedded') echo $items_class->display_embedded_list();
+                
                 // Display ISO statement
                 if (isset($_GET['_statement'])) {
                     $iso_category_id = sanitize_text_field($_GET['_statement']);
@@ -117,10 +124,6 @@ if (!class_exists('display_documents')) {
                     $this->generate_draft_document_data($doc_id);
                 }
 
-                // Display document list if no specific document IDs are existed
-                if (!isset($_GET['_doc_id']) && !isset($_GET['_doc_report']) && !isset($_GET['_doc_frame']) && !isset($_GET['_statement'])) {
-                    echo $this->display_document_list();
-                }
             }
         }
 

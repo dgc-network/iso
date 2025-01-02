@@ -761,6 +761,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (set_response) {
                     $("#embedded-list").html(set_response.html_contain);
+                    activate_sub_line_list_data();
                     //activate_doc_report_dialog_data(response);
                 },
                 error: function(error){
