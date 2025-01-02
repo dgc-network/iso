@@ -295,10 +295,10 @@ jQuery(document).ready(function($) {
                         }
     
                         if (value.field_type === '_embedded') {
-                            $.each(response.sub_item_fields, function(index, inner_value) {
-                                const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
-                                const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
-                                if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
+                            $.each(response.embedded_item_fields, function(index, inner_value) {
+                                const embedded_field = String(value.field_id) + String(inner_value.embedded_item_id);
+                                const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
+                                if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
                                     ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
                                 } else {
                                     ajaxData[embedded_field] = $(embedded_field_tag).val();
@@ -318,6 +318,7 @@ jQuery(document).ready(function($) {
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or Update the parameters
                         urlParams.delete("_job_id");
+                        urlParams.delete("_prompt");
                         urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
@@ -413,10 +414,10 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function (response) {
+                        // Get existing URL parameters
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or Update the parameters
                         urlParams.delete("_todo_id");
-                        urlParams.delete("_prompt");
                         urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
@@ -430,10 +431,10 @@ jQuery(document).ready(function($) {
         });
 
         $("#todo-dialog-exit").on("click", function () {
+            // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Update the parameters
             urlParams.delete("_todo_id");
-            urlParams.delete("_prompt");
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
@@ -454,6 +455,7 @@ jQuery(document).ready(function($) {
     activate_action_log_dialog_data();
     function activate_action_log_dialog_data(){
         $("#action-log-exit").on("click", function () {
+            // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Update the parameters
             urlParams.delete("_log_id");

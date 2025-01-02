@@ -113,7 +113,7 @@ if (!class_exists('display_profiles')) {
 
                 //if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
 
-                $items_class = new sub_items();
+                $items_class = new embedded_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
@@ -1081,7 +1081,7 @@ if (!class_exists('display_profiles')) {
 
         function display_site_job_dialog($doc_id=false) {
             ob_start();
-            $items_class = new sub_items();
+            $items_class = new embedded_items();
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
             $doc_content = get_post_field('post_content', $doc_id);

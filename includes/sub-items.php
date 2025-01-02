@@ -3,11 +3,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if (!class_exists('sub_items')) {
-    class sub_items {
+if (!class_exists('embedded_items')) {
+    class embedded_items {
         // Class constructor
         public function __construct() {
-            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_sub_items_scripts' ) );
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_embedded_items_scripts' ) );
             //add_action( 'init', array( $this, 'register_embedded_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_category_post_type' ) );
 
@@ -21,22 +21,22 @@ if (!class_exists('sub_items')) {
             add_action( 'wp_ajax_duplicate_embedded_dialog_data', array( $this, 'duplicate_embedded_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_duplicate_embedded_dialog_data', array( $this, 'duplicate_embedded_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_sub_item_dialog_data', array( $this, 'get_sub_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_sub_item_dialog_data', array( $this, 'get_sub_item_dialog_data' ) );
-            add_action( 'wp_ajax_set_sub_item_dialog_data', array( $this, 'set_sub_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_sub_item_dialog_data', array( $this, 'set_sub_item_dialog_data' ) );
-            add_action( 'wp_ajax_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_sub_item_dialog_data', array( $this, 'del_sub_item_dialog_data' ) );
+            add_action( 'wp_ajax_get_embedded_item_dialog_data', array( $this, 'get_embedded_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_embedded_item_dialog_data', array( $this, 'get_embedded_item_dialog_data' ) );
+            add_action( 'wp_ajax_set_embedded_item_dialog_data', array( $this, 'set_embedded_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_embedded_item_dialog_data', array( $this, 'set_embedded_item_dialog_data' ) );
+            add_action( 'wp_ajax_del_embedded_item_dialog_data', array( $this, 'del_embedded_item_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_embedded_item_dialog_data', array( $this, 'del_embedded_item_dialog_data' ) );
 
-            add_action( 'wp_ajax_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
-            add_action( 'wp_ajax_nopriv_sort_sub_item_list_data', array( $this, 'sort_sub_item_list_data' ) );
+            add_action( 'wp_ajax_sort_embedded_item_list_data', array( $this, 'sort_embedded_item_list_data' ) );
+            add_action( 'wp_ajax_nopriv_sort_embedded_item_list_data', array( $this, 'sort_embedded_item_list_data' ) );
 
-            add_action( 'wp_ajax_get_sub_line_dialog_data', array( $this, 'get_sub_line_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_sub_line_dialog_data', array( $this, 'get_sub_line_dialog_data' ) );
-            add_action( 'wp_ajax_set_sub_line_dialog_data', array( $this, 'set_sub_line_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_sub_line_dialog_data', array( $this, 'set_sub_line_dialog_data' ) );
-            add_action( 'wp_ajax_del_sub_line_dialog_data', array( $this, 'del_sub_line_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_sub_line_dialog_data', array( $this, 'del_sub_line_dialog_data' ) );
+            add_action( 'wp_ajax_get_embedded_line_dialog_data', array( $this, 'get_embedded_line_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_embedded_line_dialog_data', array( $this, 'get_embedded_line_dialog_data' ) );
+            add_action( 'wp_ajax_set_embedded_line_dialog_data', array( $this, 'set_embedded_line_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_embedded_line_dialog_data', array( $this, 'set_embedded_line_dialog_data' ) );
+            add_action( 'wp_ajax_del_embedded_line_dialog_data', array( $this, 'del_embedded_line_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_embedded_line_dialog_data', array( $this, 'del_embedded_line_dialog_data' ) );
 
             add_action( 'wp_ajax_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_category_dialog_data', array( $this, 'get_doc_category_dialog_data' ) );
@@ -69,7 +69,7 @@ if (!class_exists('sub_items')) {
             add_action( 'wp_ajax_nopriv_del_department_user_dialog_data', array( $this, 'del_department_user_dialog_data' ) );
         }
 
-        function enqueue_sub_items_scripts() {
+        function enqueue_embedded_items_scripts() {
             wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
             wp_enqueue_script('jquery-ui', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), null, true);
 
@@ -390,7 +390,7 @@ if (!class_exists('sub_items')) {
                 <input type="text" id="embedded-title" value="<?php echo esc_attr($embedded_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
                 <div id="sub-item-list">
-                    <?php echo $this->display_sub_item_list($embedded_id);?>
+                    <?php echo $this->display_embedded_item_list($embedded_id);?>
                 </div>
                 <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
@@ -490,26 +490,26 @@ if (!class_exists('sub_items')) {
                 update_post_meta($post_id, 'iso_category', $iso_category);
                 update_post_meta($post_id, 'is_private', 1);
 
-                $query = $this->retrieve_sub_item_data($embedded_id);
+                $query = $this->retrieve_embedded_item_data($embedded_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                        $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
+                        $embedded_item_type = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                        $embedded_item_default = get_post_meta(get_the_ID(), 'embedded_item_default', true);
+                        $embedded_item_code = get_post_meta(get_the_ID(), 'embedded_item_code', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
-                        $new_sub_item = array(
+                        $new_embedded_item = array(
                             'post_type'     => 'sub-item',
                             'post_title'    => get_the_title(),
                             'post_content'  => get_the_content(),
                             'post_status'   => 'publish',
                             'post_author'   => $current_user_id,
                         );    
-                        $sub_item_id = wp_insert_post($new_sub_item);
-                        update_post_meta($sub_item_id, 'sub_item_type', $sub_item_type);
-                        update_post_meta($sub_item_id, 'sub_item_default', $sub_item_default);
-                        update_post_meta($sub_item_id, 'sub_item_code', $sub_item_code);
-                        update_post_meta($sub_item_id, 'sorting_key', $sorting_key);
-                        update_post_meta($sub_item_id, 'embedded_id', $post_id);
+                        $embedded_item_id = wp_insert_post($new_embedded_item);
+                        update_post_meta($embedded_item_id, 'embedded_item_type', $embedded_item_type);
+                        update_post_meta($embedded_item_id, 'embedded_item_default', $embedded_item_default);
+                        update_post_meta($embedded_item_id, 'embedded_item_code', $embedded_item_code);
+                        update_post_meta($embedded_item_id, 'sorting_key', $sorting_key);
+                        update_post_meta($embedded_item_id, 'embedded_id', $post_id);
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -545,7 +545,7 @@ if (!class_exists('sub_items')) {
         }
 
         // sub-item
-        function register_sub_item_post_type() {
+        function register_embedded_item_post_type() {
             $labels = array(
                 'menu_name'     => _x('sub-item', 'admin menu', 'textdomain'),
             );
@@ -556,7 +556,7 @@ if (!class_exists('sub_items')) {
             register_post_type( 'sub-item', $args );
         }
 
-        function display_sub_item_list($embedded_id=false) {
+        function display_embedded_item_list($embedded_id=false) {
             ob_start();
             ?>
             <fieldset>
@@ -571,29 +571,29 @@ if (!class_exists('sub_items')) {
                 <tbody id="sortable-sub-item-list">
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
-                $query = $this->retrieve_sub_item_data($embedded_id, $paged);
+                $query = $this->retrieve_embedded_item_data($embedded_id, $paged);
                 $total_posts = $query->found_posts;
                 $total_pages = ceil($total_posts / get_option('operation_row_counts'));
 
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $sub_item_title = get_the_title();
-                        $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
-                        $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                        $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                        if ($sub_item_type=='heading') {
-                            if (!$sub_item_default) {
-                                $sub_item_code = '<b>'.$sub_item_code.'</b>';
-                                $sub_item_title = '<b>'.$sub_item_title.'</b>';    
+                        $embedded_item_title = get_the_title();
+                        $embedded_item_code = get_post_meta(get_the_ID(), 'embedded_item_code', true);
+                        $embedded_item_type = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                        $embedded_item_default = get_post_meta(get_the_ID(), 'embedded_item_default', true);
+                        if ($embedded_item_type=='heading') {
+                            if (!$embedded_item_default) {
+                                $embedded_item_code = '<b>'.$embedded_item_code.'</b>';
+                                $embedded_item_title = '<b>'.$embedded_item_title.'</b>';    
                             }
-                            $sub_item_type='';
-                            $sub_item_default='';
+                            $embedded_item_type='';
+                            $embedded_item_default='';
                         }
                         ?>
                         <tr id="edit-sub-item-<?php the_ID();?>" data-sub-item-id="<?php echo esc_attr(get_the_ID());?>">
-                            <td><?php echo $sub_item_title;?></td>
-                            <td style="text-align:center;"><?php echo esc_html($sub_item_type);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($sub_item_default);?></td>
+                            <td><?php echo $embedded_item_title;?></td>
+                            <td style="text-align:center;"><?php echo esc_html($embedded_item_type);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($embedded_item_default);?></td>
                         </tr>
                         <?php
                     endwhile;
@@ -619,7 +619,7 @@ if (!class_exists('sub_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_sub_item_data($embedded_id=false, $paged=0) {
+        function retrieve_embedded_item_data($embedded_id=false, $paged=0) {
             $args = array(
                 'post_type'      => 'sub-item',
                 //'posts_per_page' => -1,
@@ -650,59 +650,59 @@ if (!class_exists('sub_items')) {
             return $query;
         }
 
-        function display_sub_item_dialog($sub_item_id=false) {
+        function display_embedded_item_dialog($embedded_item_id=false) {
             ob_start();
-            $sub_item_title = get_the_title($sub_item_id);
-            $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
-            $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
-            $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
+            $embedded_item_title = get_the_title($embedded_item_id);
+            $embedded_item_type = get_post_meta($embedded_item_id, 'embedded_item_type', true);
+            $embedded_item_default = get_post_meta($embedded_item_id, 'embedded_item_default', true);
+            $embedded_item_code = get_post_meta($embedded_item_id, 'embedded_item_code', true);
             ?>
             <fieldset>
-                <input type="hidden" id="sub-item-id" value="<?php echo esc_attr($sub_item_id);?>" />
+                <input type="hidden" id="sub-item-id" value="<?php echo esc_attr($embedded_item_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="sub-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
-                <textarea id="sub-item-title" rows="3" style="width:100%;"><?php echo $sub_item_title;?></textarea>
+                <textarea id="sub-item-title" rows="3" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
                 <label for="sub-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="sub-item-type" class="text ui-widget-content ui-corner-all">
-                    <option value="heading" <?php echo ($sub_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
-                    <option value="checkbox" <?php echo ($sub_item_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
-                    <option value="text" <?php echo ($sub_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
-                    <option value="textarea" <?php echo ($sub_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
-                    <option value="number" <?php echo ($sub_item_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
-                    <option value="radio" <?php echo ($sub_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
-                    <option value="_product" <?php echo ($sub_item_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
+                    <option value="heading" <?php echo ($embedded_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="checkbox" <?php echo ($embedded_item_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
+                    <option value="text" <?php echo ($embedded_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
+                    <option value="textarea" <?php echo ($embedded_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                    <option value="number" <?php echo ($embedded_item_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($embedded_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="_product" <?php echo ($embedded_item_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
                 </select>
                 <label for="sub-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
-                <input type="text" id="sub-item-default" value="<?php echo esc_attr($sub_item_default);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="sub-item-default" value="<?php echo esc_attr($embedded_item_default);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="sub-item-code"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
-                <input type="text" id="sub-item-code" value="<?php echo esc_attr($sub_item_code);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="sub-item-code" value="<?php echo esc_attr($embedded_item_code);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
         }
 
-        function get_sub_item_dialog_data() {
+        function get_embedded_item_dialog_data() {
             $response = array();
-            $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
-            $response['html_contain'] = $this->display_sub_item_dialog($sub_item_id);
+            $embedded_item_id = sanitize_text_field($_POST['_embedded_item_id']);
+            $response['html_contain'] = $this->display_embedded_item_dialog($embedded_item_id);
             wp_send_json($response);
         }
 
-        function set_sub_item_dialog_data() {
+        function set_embedded_item_dialog_data() {
             $embedded_id = sanitize_text_field($_POST['_embedded_id']);
-            if( isset($_POST['_sub_item_id']) ) {
-                $sub_item_id = sanitize_text_field($_POST['_sub_item_id']);
-                $sub_item_code = sanitize_text_field($_POST['_sub_item_code']);
-                $sub_item_type = sanitize_text_field($_POST['_sub_item_type']);
-                $sub_item_default = sanitize_text_field($_POST['_sub_item_default']);
+            if( isset($_POST['_embedded_item_id']) ) {
+                $embedded_item_id = sanitize_text_field($_POST['_embedded_item_id']);
+                $embedded_item_code = sanitize_text_field($_POST['_embedded_item_code']);
+                $embedded_item_type = sanitize_text_field($_POST['_embedded_item_type']);
+                $embedded_item_default = sanitize_text_field($_POST['_embedded_item_default']);
                 $data = array(
-                    'ID'           => $sub_item_id,
-                    'post_title'   => sanitize_text_field($_POST['_sub_item_title']),
+                    'ID'           => $embedded_item_id,
+                    'post_title'   => sanitize_text_field($_POST['_embedded_item_title']),
                 );
                 wp_update_post( $data );
-                update_post_meta($sub_item_id, 'sub_item_code', $sub_item_code);
-                update_post_meta($sub_item_id, 'sub_item_type', $sub_item_type);
-                update_post_meta($sub_item_id, 'sub_item_default', $sub_item_default);
+                update_post_meta($embedded_item_id, 'embedded_item_code', $embedded_item_code);
+                update_post_meta($embedded_item_id, 'embedded_item_type', $embedded_item_type);
+                update_post_meta($embedded_item_id, 'embedded_item_default', $embedded_item_default);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -717,94 +717,94 @@ if (!class_exists('sub_items')) {
                 update_post_meta($post_id, 'embedded_id', $embedded_id);
                 update_post_meta($post_id, 'sorting_key', 999);
             }
-            $response = array('html_contain' => $this->display_sub_item_list($embedded_id));
+            $response = array('html_contain' => $this->display_embedded_item_list($embedded_id));
             wp_send_json($response);
         }
 
-        function del_sub_item_dialog_data() {
+        function del_embedded_item_dialog_data() {
             $embedded_id = sanitize_text_field($_POST['_embedded_id']);
-            wp_delete_post($_POST['_sub_item_id'], true);
-            $response = array('html_contain' => $this->display_sub_item_list($embedded_id));
+            wp_delete_post($_POST['_embedded_item_id'], true);
+            $response = array('html_contain' => $this->display_embedded_item_list($embedded_id));
             wp_send_json($response);
         }
 
-        function sort_sub_item_list_data() {
+        function sort_embedded_item_list_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
-            if (isset($_POST['_sub_item_id_array']) && is_array($_POST['_sub_item_id_array'])) {
-                $sub_item_id_array = array_map('absint', $_POST['_sub_item_id_array']);        
-                foreach ($sub_item_id_array as $index => $sub_item_id) {
-                    update_post_meta($sub_item_id, 'sorting_key', $index);
+            if (isset($_POST['_embedded_item_id_array']) && is_array($_POST['_embedded_item_id_array'])) {
+                $embedded_item_id_array = array_map('absint', $_POST['_embedded_item_id_array']);        
+                foreach ($embedded_item_id_array as $index => $embedded_item_id) {
+                    update_post_meta($embedded_item_id, 'sorting_key', $index);
                 }
                 $response = array('success' => true);
             }
             wp_send_json($response);
         }
 
-        function select_sub_item_options($selected_option=false, $embedded_id=false) {
-            $query = $this->retrieve_sub_item_data($embedded_id);
+        function select_embedded_item_options($selected_option=false, $embedded_id=false) {
+            $query = $this->retrieve_embedded_item_data($embedded_id);
             $options = '<option value="">Select '.get_the_title($embedded_id).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
-                $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                if ($sub_item_type=='heading'){
-                    $sub_item_title = '<b>'.get_the_title().'</b>';
+                $embedded_item_code = get_post_meta(get_the_ID(), 'embedded_item_code', true);
+                $embedded_item_type = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                if ($embedded_item_type=='heading'){
+                    $embedded_item_title = '<b>'.get_the_title().'</b>';
                 } else {
-                    $sub_item_title = $sub_item_code.' '.get_the_title();
-                    $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $sub_item_title . '</option>';
+                    $embedded_item_title = $embedded_item_code.' '.get_the_title();
+                    $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $embedded_item_title . '</option>';
                 }
             endwhile;
             wp_reset_postdata();
             return $options;
         }
 
-        function get_sub_item_contains($field_id=false, $sub_item_id=false, $sub_item_value=false) {
-            $sub_item_title = get_the_title($sub_item_id);
-            $sub_item_code = get_post_meta($sub_item_id, 'sub_item_code', true);
-            $sub_item_type = get_post_meta($sub_item_id, 'sub_item_type', true);
-            $sub_item_default = get_post_meta($sub_item_id, 'sub_item_default', true);
-            if ($sub_item_type=='heading') {
-                $sub_item_default = ($sub_item_default) ? $sub_item_default : 'b';
+        function get_embedded_item_contains($field_id=false, $embedded_item_id=false, $embedded_item_value=false) {
+            $embedded_item_title = get_the_title($embedded_item_id);
+            $embedded_item_code = get_post_meta($embedded_item_id, 'embedded_item_code', true);
+            $embedded_item_type = get_post_meta($embedded_item_id, 'embedded_item_type', true);
+            $embedded_item_default = get_post_meta($embedded_item_id, 'embedded_item_default', true);
+            if ($embedded_item_type=='heading') {
+                $embedded_item_default = ($embedded_item_default) ? $embedded_item_default : 'b';
                 ?>
-                <div><<?php echo esc_html($sub_item_default);?>><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></<?php echo esc_html($sub_item_default);?>></div>
+                <div><<?php echo esc_html($embedded_item_default);?>><?php echo esc_html($embedded_item_title.' '.$embedded_item_code);?></<?php echo esc_html($embedded_item_default);?>></div>
                 <?php
-            } elseif ($sub_item_type=='checkbox') {
-                $is_checked = ($sub_item_value==1) ? 'checked' : '';
+            } elseif ($embedded_item_type=='checkbox') {
+                $is_checked = ($embedded_item_value==1) ? 'checked' : '';
                 ?>
                 <div>
-                <input type="checkbox" class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" <?php echo $is_checked;?> /> <?php echo $sub_item_code.' '.$sub_item_title?>
+                <input type="checkbox" class="sub-item-class" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" <?php echo $is_checked;?> /> <?php echo $embedded_item_code.' '.$embedded_item_title?>
                 </div>
                 <?php
-            } elseif ($sub_item_type=='textarea') {
+            } elseif ($embedded_item_type=='textarea') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <textarea class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($sub_item_value);?></textarea>
+                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$embedded_item_code);?></label>
+                <textarea class="sub-item-class" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($embedded_item_value);?></textarea>
                 <?php
-            } elseif ($sub_item_type=='text') {
+            } elseif ($embedded_item_type=='text') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <input type="text" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="text ui-widget-content ui-corner-all sub-item-class" />
+                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$embedded_item_code);?></label>
+                <input type="text" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" value="<?php echo esc_html($embedded_item_value);?>" class="text ui-widget-content ui-corner-all sub-item-class" />
                 <?php
-            } elseif ($sub_item_type=='number') {
+            } elseif ($embedded_item_type=='number') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$sub_item_id);?>"><?php echo esc_html($sub_item_title.' '.$sub_item_code);?></label>
-                <input type="number" id="<?php echo esc_attr($field_id.$sub_item_id);?>" value="<?php echo esc_html($sub_item_value);?>" class="number ui-widget-content ui-corner-all sub-item-class" />
+                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$embedded_item_code);?></label>
+                <input type="number" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" value="<?php echo esc_html($embedded_item_value);?>" class="number ui-widget-content ui-corner-all sub-item-class" />
                 <?php
-            } elseif ($sub_item_type=='radio') {
-                $is_checked = ($sub_item_value==1) ? 'checked' : '';
+            } elseif ($embedded_item_type=='radio') {
+                $is_checked = ($embedded_item_value==1) ? 'checked' : '';
                 ?>
                 <div>
-                <input type="radio" class="sub-item-class" id="<?php echo esc_attr($field_id.$sub_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $sub_item_title.' '.$sub_item_code?>
+                <input type="radio" class="sub-item-class" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $embedded_item_title.' '.$embedded_item_code?>
                 </div>
                 <?php
             } else {
                 ?>
-                <div><?php echo $sub_item_title.' '.$sub_item_code?></div>
+                <div><?php echo $embedded_item_title.' '.$embedded_item_code?></div>
                 <?php
             }
         }
 
-        function get_sub_item_ids($embedded_id=false) {
+        function get_embedded_item_ids($embedded_id=false) {
             $args = array(
                 'post_type'  => 'sub-item',
                 'posts_per_page' => -1,
@@ -815,7 +815,7 @@ if (!class_exists('sub_items')) {
                         'compare' => '='
                     ),
                     array(
-                        'key'   => 'sub_item_type',
+                        'key'   => 'embedded_item_type',
                         'value' => 'heading',
                         'compare' => '!='
                     )
@@ -829,7 +829,7 @@ if (!class_exists('sub_items')) {
             return $post_ids;
         }
 
-        function get_sub_item_field_keys($doc_id=false) {
+        function get_embedded_item_field_keys($doc_id=false) {
             if ($doc_id) $params = array('doc_id' => $doc_id);
             $documents_class = new display_documents();
             $query = $documents_class->retrieve_doc_field_data($params);
@@ -840,55 +840,37 @@ if (!class_exists('sub_items')) {
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
 
                     if ($field_type=='_embedded'){
-                        $items_class = new sub_items();
+                        $items_class = new embedded_items();
                         if (strpos($default_value, '=') !== false) {
                             list($key, $value) = explode('=', $default_value, 2);
                             $embedded_id = $this->get_embedded_id_by_number($value);
-                            $inner_query = $this->retrieve_sub_item_data($embedded_id);
+                            $inner_query = $this->retrieve_embedded_item_data($embedded_id);
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $_list = array();
                                     $_list["embedded_id"] = $embedded_id;
-                                    $_list["sub_item_id"] = get_the_ID();
-                                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                                    $_list["embedded_item_id"] = get_the_ID();
+                                    $_list["embedded_item_type"] = get_post_meta(get_the_ID(), 'embedded_item_type', true);
                                     array_push($_array, $_list);
                                 endwhile;
                                 wp_reset_postdata();
                             endif;    
                         }
                     }
-/*        
-                    if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
-                        if ($default_value) {
-                            $embedded_id = $this->get_embedded_id_by_number($default_value);
-                            $inner_query = $this->retrieve_sub_item_data($embedded_id);
-                            if ($inner_query->have_posts()) :
-                                while ($inner_query->have_posts()) : $inner_query->the_post();
-                                    $_list = array();
-                                    $_list["embedded_id"] = $embedded_id;
-                                    $_list["sub_item_id"] = get_the_ID();
-                                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                                    array_push($_array, $_list);
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;    
-                        }
-                    }
-*/
                 endwhile;
                 wp_reset_postdata();
             }    
             return $_array;
         }
 
-        function get_sub_line_keys($embedded_id=false) {
+        function get_embedded_line_field_keys($embedded_id=false) {
             $_array = array();
-            $inner_query = $this->retrieve_sub_item_data($embedded_id);
+            $inner_query = $this->retrieve_embedded_item_data($embedded_id);
             if ($inner_query->have_posts()) :
                 while ($inner_query->have_posts()) : $inner_query->the_post();
                     $_list = array();
-                    $_list["sub_item_id"] = get_the_ID();
-                    $_list["sub_item_type"] = get_post_meta(get_the_ID(), 'sub_item_type', true);
+                    $_list["embedded_item_id"] = get_the_ID();
+                    $_list["embedded_item_type"] = get_post_meta(get_the_ID(), 'embedded_item_type', true);
                     array_push($_array, $_list);
 
                 endwhile;
@@ -897,8 +879,8 @@ if (!class_exists('sub_items')) {
             return $_array;
         }
 
-        // sub-line
-        function display_sub_line_list($embedded_id=false, $report_id=false) {
+        // embedded-line
+        function display_embedded_line_list($embedded_id=false, $report_id=false) {
             ob_start();
             ?>
             <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>">
@@ -909,7 +891,7 @@ if (!class_exists('sub_items')) {
                 <tr>
                 <th>#</th>
                 <?php                
-                $query = $this->retrieve_sub_item_data($embedded_id);
+                $query = $this->retrieve_embedded_item_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         ?>
@@ -924,16 +906,17 @@ if (!class_exists('sub_items')) {
 
                 <tbody>
                 <?php
-                $sub_line_query = $this->retrieve_sub_line_list_data($report_id);
-                if ($sub_line_query->have_posts()) :
-                    while ($sub_line_query->have_posts()) : $sub_line_query->the_post();
-                        $sub_line_id = get_the_ID();
-                        ?><tr id="edit-sub-line-<?php the_ID();?>"><td style="text-align:center;"></td><?php
-                        $query = $this->retrieve_sub_item_data($embedded_id);
+                //$embedded_line_query = $this->retrieve_embedded_line_list_data($report_id);
+                $embedded_line_query = $this->retrieve_embedded_line_data($embedded_id);
+                if ($embedded_line_query->have_posts()) :
+                    while ($embedded_line_query->have_posts()) : $embedded_line_query->the_post();
+                        $embedded_line_id = get_the_ID();
+                        ?><tr id="edit-embedded-line-<?php the_ID();?>"><td style="text-align:center;"></td><?php
+                        $query = $this->retrieve_embedded_item_data($embedded_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-                                $field_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                                $field_value = get_post_meta($sub_line_id, $embedded_id.get_the_ID(), true);
+                                $field_type = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                                $field_value = get_post_meta($embedded_line_id, $embedded_id.get_the_ID(), true);
                                 $field_value = ($field_value) ? $field_value : $embedded_id.get_the_ID();
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
                                 if ($field_type=='_product') {
@@ -952,17 +935,32 @@ if (!class_exists('sub_items')) {
                 </tbody>
             </table>
             <?php if (is_site_admin()) {?>
-                <div id="new-sub-line" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <div id="new-embedded-line" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
-            <div id="sub-line-dialog" title="Sub line dialog"></div>
+            <div id="embedded-line-dialog" title="Sub line dialog"></div>
             <?php
             return ob_get_clean();
         }
 
-        function retrieve_sub_line_list_data($report_id=false) {
+        function retrieve_embedded_line_data($embedded_id=false) {
             $args = array(
-                'post_type'      => 'sub-line',
+                'post_type'      => 'embedded-line',
+                'posts_per_page' => -1,
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'embedded_id',
+                        'value' => $embedded_id,
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
+            return $query;
+        }
+/*
+        function retrieve_embedded_line_list_data($report_id=false) {
+            $args = array(
+                'post_type'      => 'embedded-line',
                 'posts_per_page' => -1,
                 'meta_query'     => array(
                     array(
@@ -974,27 +972,27 @@ if (!class_exists('sub_items')) {
             $query = new WP_Query($args);
             return $query;
         }
-
-        function display_sub_line_dialog($sub_line_id=false, $embedded_id=false) {
+*/
+        function display_embedded_line_dialog($embedded_line_id=false, $embedded_id=false) {
             ob_start();
-            $report_id = get_post_meta($sub_line_id, 'report_id', true);
+            $report_id = get_post_meta($embedded_line_id, 'report_id', true);
             ?>
             <fieldset>
-                <input type="hidden" id="sub-line-id" value="<?php echo esc_attr($sub_line_id);?>" />
+                <input type="hidden" id="embedded-line-id" value="<?php echo esc_attr($embedded_line_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <?php
-                $query = $this->retrieve_sub_item_data($embedded_id);
+                $query = $this->retrieve_embedded_item_data($embedded_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         ?>
                         <label for="<?php echo esc_attr($embedded_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
                         <?php
-                        if ($sub_line_id) {
-                            $field_value = get_post_meta($sub_line_id, $embedded_id.get_the_ID(), true);
+                        if ($embedded_line_id) {
+                            $field_value = get_post_meta($embedded_line_id, $embedded_id.get_the_ID(), true);
                         } else {
-                            $field_value = get_post_meta(get_the_ID(), 'sub_item_default', true);
+                            $field_value = get_post_meta(get_the_ID(), 'embedded_item_default', true);
                         }
-                        $field_type = get_post_meta(get_the_id(), 'sub_item_type', true);
+                        $field_type = get_post_meta(get_the_id(), 'embedded_item_type', true);
                         $documents_class = new display_documents();
                         $get_system_doc_id = $documents_class->get_system_doc_id($field_type);
                         if ($get_system_doc_id) {
@@ -1016,50 +1014,52 @@ if (!class_exists('sub_items')) {
             return ob_get_clean();
         }
 
-        function get_sub_line_dialog_data() {
-            $sub_line_id = (isset($_POST['_sub_line_id'])) ? sanitize_text_field($_POST['_sub_line_id']) : 0;
+        function get_embedded_line_dialog_data() {
+            $response = array();
+            $embedded_line_id = (isset($_POST['_embedded_line_id'])) ? sanitize_text_field($_POST['_embedded_line_id']) : 0;
             $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
-            $response = array('html_contain' => $this->display_sub_line_dialog($sub_line_id, $embedded_id));
-            $response['sub_line_fields'] = $this->get_sub_line_keys($embedded_id);
+            $response['html_contain'] = $this->display_embedded_line_dialog($embedded_line_id, $embedded_id);
+            $response['embedded_line_fields'] = $this->get_embedded_line_field_keys($embedded_id);
             wp_send_json($response);
         }
 
-        function set_sub_line_dialog_data() {
-            $report_id = (isset($_POST['_report_id'])) ? sanitize_text_field($_POST['_report_id']) : 0;
+        function set_embedded_line_dialog_data() {
+            //$report_id = (isset($_POST['_report_id'])) ? sanitize_text_field($_POST['_report_id']) : 0;
             $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
-            if( !isset($_POST['_sub_line_id']) ) {
+            if( !isset($_POST['_embedded_line_id']) ) {
                 // Create the post
                 $new_post = array(
-                    'post_type'     => 'sub-line',
+                    'post_type'     => 'embedded-line',
                     'post_status'   => 'publish',
                     'post_author'   => get_current_user_id(),
                 );    
-                $sub_line_id = wp_insert_post($new_post);
-                update_post_meta($sub_line_id, 'report_id', $report_id);
+                $embedded_line_id = wp_insert_post($new_post);
+                //update_post_meta($embedded_line_id, 'report_id', $report_id);
+                update_post_meta($embedded_line_id, 'embedded_id', $embedded_id);
             } else {
-                $sub_line_id = sanitize_text_field($_POST['_sub_line_id']);
+                $embedded_line_id = sanitize_text_field($_POST['_embedded_line_id']);
             }
             // Update the post
-            $query = $this->retrieve_sub_item_data($embedded_id);
+            $query = $this->retrieve_embedded_item_data($embedded_id);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $field_value = $_POST[$embedded_id.get_the_id()];
-                    update_post_meta($sub_line_id, $embedded_id.get_the_id(), $field_value);
+                    update_post_meta($embedded_line_id, $embedded_id.get_the_id(), $field_value);
                 endwhile;
                 wp_reset_postdata();
             endif;
 
-            $response = array('html_contain' => $this->display_sub_line_list($embedded_id, $report_id));
+            //$response = array('html_contain' => $this->display_embedded_line_list($embedded_id, $report_id));
+            $response = array('html_contain' => $this->display_embedded_line_list($embedded_id));
             wp_send_json($response);
         }
 
-        function del_sub_line_dialog_data() {
-            wp_delete_post($_POST['_sub_line_id'], true);
-            //$embedded_id = sanitize_text_field($_POST['_embedded_id']);
-            //$report_id = sanitize_text_field($_POST['_report_id']);
-            $report_id = (isset($_POST['_report_id'])) ? sanitize_text_field($_POST['_report_id']) : 0;
+        function del_embedded_line_dialog_data() {
+            wp_delete_post($_POST['_embedded_line_id'], true);
+            //$report_id = (isset($_POST['_report_id'])) ? sanitize_text_field($_POST['_report_id']) : 0;
             $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
-            $response = array('html_contain' => $this->display_sub_line_list($embedded_id, $report_id));
+            //$response = array('html_contain' => $this->display_embedded_line_list($embedded_id, $report_id));
+            $response = array('html_contain' => $this->display_embedded_line_list($embedded_id));
             wp_send_json($response);
         }
 
@@ -1845,5 +1845,5 @@ if (!class_exists('sub_items')) {
             wp_send_json($response);
         }
     }
-    $items_class = new sub_items();
+    $items_class = new embedded_items();
 }

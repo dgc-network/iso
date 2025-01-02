@@ -273,20 +273,20 @@ jQuery(document).ready(function($) {
     }
 
     // sub-item
-    activate_sub_item_list_data($("#embedded-id").val());
-    function activate_sub_item_list_data(embedded_id){
+    activate_embedded_item_list_data($("#embedded-id").val());
+    function activate_embedded_item_list_data(embedded_id){
         $("#new-sub-item").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_sub_item_dialog_data',
+                    'action': 'set_embedded_item_dialog_data',
                     '_embedded_id': embedded_id,
                 },
                 success: function (response) {
                     $("#sub-item-list").html(response.html_contain);
-                    activate_sub_item_list_data(embedded_id);
+                    activate_embedded_item_list_data(embedded_id);
                 },
                 error: function(error){
                     console.error(error);
@@ -297,14 +297,14 @@ jQuery(document).ready(function($) {
     
         $('#sortable-sub-item-list').sortable({
             update: function(event, ui) {
-                const sub_item_id_array = $(this).sortable('toArray', { attribute: 'data-sub-item-id' });                
+                const embedded_item_id_array = $(this).sortable('toArray', { attribute: 'data-sub-item-id' });                
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,
                     dataType: 'json',
                     data: {
-                        action: 'sort_sub_item_list_data',
-                        _sub_item_id_array: sub_item_id_array,
+                        action: 'sort_embedded_item_list_data',
+                        _embedded_item_id_array: embedded_item_id_array,
                     },
                     success: function(response) {
                         console.log(response);
@@ -317,14 +317,14 @@ jQuery(document).ready(function($) {
         });
 
         $('[id^="edit-sub-item-"]').on("click", function () {
-            const sub_item_id = this.id.substring(14);
+            const embedded_item_id = this.id.substring(14);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_sub_item_dialog_data',
-                    '_sub_item_id': sub_item_id,
+                    'action': 'get_embedded_item_dialog_data',
+                    '_embedded_item_id': embedded_item_id,
                 },
                 success: function (response) {
                     $("#sub-item-dialog").html(response.html_contain);
@@ -336,18 +336,18 @@ jQuery(document).ready(function($) {
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
                                     data: {
-                                        'action': 'set_sub_item_dialog_data',
+                                        'action': 'set_embedded_item_dialog_data',
                                         '_embedded_id': $("#embedded-id").val(),
-                                        '_sub_item_id': $("#sub-item-id").val(),
-                                        '_sub_item_title': $("#sub-item-title").val(),
-                                        '_sub_item_type': $("#sub-item-type").val(),
-                                        '_sub_item_default': $("#sub-item-default").val(),
-                                        '_sub_item_code': $("#sub-item-code").val(),
+                                        '_embedded_item_id': $("#sub-item-id").val(),
+                                        '_embedded_item_title': $("#sub-item-title").val(),
+                                        '_embedded_item_type': $("#sub-item-type").val(),
+                                        '_embedded_item_default': $("#sub-item-default").val(),
+                                        '_embedded_item_code': $("#sub-item-code").val(),
                                     },
                                     success: function (response) {
                                         $("#sub-item-dialog").dialog('close');
                                         $("#sub-item-list").html(response.html_contain);
-                                        activate_sub_item_list_data(embedded_id)
+                                        activate_embedded_item_list_data(embedded_id)
                                     },
                                     error: function (error) {
                                         console.error(error);
@@ -362,14 +362,14 @@ jQuery(document).ready(function($) {
                                         url: ajax_object.ajax_url,
                                         dataType: "json",
                                         data: {
-                                            'action': 'del_sub_item_dialog_data',
+                                            'action': 'del_embedded_item_dialog_data',
                                             '_embedded_id': $("#embedded-id").val(),
-                                            '_sub_item_id': $("#sub-item-id").val(),
+                                            '_embedded_item_id': $("#sub-item-id").val(),
                                         },
                                         success: function (response) {
                                             $("#sub-item-dialog").dialog('close');
                                             $("#sub-item-list").html(response.html_contain);
-                                            activate_sub_item_list_data(embedded_id)
+                                            activate_embedded_item_list_data(embedded_id)
                                         },
                                         error: function (error) {
                                             console.error(error);
@@ -687,58 +687,36 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    // sub-line
-    activate_sub_line_list_data();
-    function activate_sub_line_list_data(){
-/*        
-        $("#new-sub-line").on("click", function() {
+    // embedded-line
+    activate_embedded_line_list_data();
+    function activate_embedded_line_list_data(){
+        $("#new-embedded-line").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_sub_line_dialog_data',
-                    '_report_id': $("#report-id").val(),
-                    '_embedded_id': $("#embedded-id").val(),
-                },
-                success: function (set_response) {
-                    $("#embedded-list").html(set_response.html_contain);
-                    activate_sub_line_list_data();
-                },
-                error: function(error){
-                    console.error(error);
-                }
-            });
-        });
-*/
-        $("#new-sub-line").on("click", function() {
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_sub_line_dialog_data',
+                    'action': 'get_embedded_line_dialog_data',
                     '_embedded_id': $("#embedded-id").val(),
                 },
                 success: function (get_response) {
-                    $("#sub-line-dialog").html(get_response.html_contain);
+                    $("#embedded-line-dialog").html(get_response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        $("#sub-line-dialog").dialog("option", "buttons", {
+                        $("#embedded-line-dialog").dialog("option", "buttons", {
                             "Add": function() {
                                 const ajaxData = {
-                                    'action': 'set_sub_line_dialog_data',
+                                    'action': 'set_embedded_line_dialog_data',
                                 };
-                                //ajaxData['_sub_line_id'] = sub_line_id;
                                 ajaxData['_report_id'] = $("#report-id").val();
                                 ajaxData['_embedded_id'] = $("#embedded-id").val();
                                 field_id = $("#embedded-id").val();
-                                $.each(get_response.sub_line_fields, function(index, inner_value) {
-                                    const sub_line_field = field_id + inner_value.sub_item_id;
-                                    const sub_line_field_tag = '#' + field_id + inner_value.sub_item_id;
-                                    if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                        ajaxData[sub_line_field] = $(sub_line_field_tag).is(":checked") ? 1 : 0;
+                                $.each(get_response.embedded_line_fields, function(index, inner_value) {
+                                    const embedded_line_field = field_id + inner_value.embedded_item_id;
+                                    const embedded_line_field_tag = '#' + field_id + inner_value.embedded_item_id;
+                                    if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
+                                        ajaxData[embedded_line_field] = $(embedded_line_field_tag).is(":checked") ? 1 : 0;
                                     } else {
-                                        ajaxData[sub_line_field] = $(sub_line_field_tag).val();
+                                        ajaxData[embedded_line_field] = $(embedded_line_field_tag).val();
                                     }
                                 });
                                 $.ajax({
@@ -747,9 +725,9 @@ jQuery(document).ready(function($) {
                                     dataType: "json",
                                     data: ajaxData,
                                     success: function(set_response) {
-                                        $("#sub-line-dialog").dialog('close');
-                                        $('#embedded-list').html(set_response.html_contain);
-                                        activate_sub_line_list_data();
+                                        $("#embedded-line-dialog").dialog('close');
+                                        $('#embedded-line-list').html(set_response.html_contain);
+                                        activate_embedded_line_list_data();
                                     },
                                     error: function(error) {
                                         console.error(error);
@@ -758,11 +736,11 @@ jQuery(document).ready(function($) {
                                 });                    
                             },
                             "Cancel": function() {
-                                $("#sub-line-dialog").dialog('close');
+                                $("#embedded-line-dialog").dialog('close');
                             }
                         });
                     }
-                    $("#sub-line-dialog").dialog('open');
+                    $("#embedded-line-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.error(error);                
@@ -771,36 +749,36 @@ jQuery(document).ready(function($) {
             });
         });
     
-        $('[id^="edit-sub-line-"]').on( "click", function() {
-            const sub_line_id = this.id.substring(14);
+        $('[id^="edit-embedded-line-"]').on( "click", function() {
+            const embedded_line_id = this.id.substring(19);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_sub_line_dialog_data',
-                    '_sub_line_id': sub_line_id,
+                    'action': 'get_embedded_line_dialog_data',
+                    '_embedded_line_id': embedded_line_id,
                     '_embedded_id': $("#embedded-id").val(),
                 },
                 success: function (get_response) {
-                    $("#sub-line-dialog").html(get_response.html_contain);
+                    $("#embedded-line-dialog").html(get_response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        $("#sub-line-dialog").dialog("option", "buttons", {
+                        $("#embedded-line-dialog").dialog("option", "buttons", {
                             "Save": function() {
                                 const ajaxData = {
-                                    'action': 'set_sub_line_dialog_data',
+                                    'action': 'set_embedded_line_dialog_data',
                                 };
-                                ajaxData['_sub_line_id'] = sub_line_id;
+                                ajaxData['_embedded_line_id'] = embedded_line_id;
                                 ajaxData['_report_id'] = $("#report-id").val();
                                 ajaxData['_embedded_id'] = $("#embedded-id").val();
                                 field_id = $("#embedded-id").val();
-                                $.each(get_response.sub_line_fields, function(index, inner_value) {
-                                    const sub_line_field = field_id + inner_value.sub_item_id;
-                                    const sub_line_field_tag = '#' + field_id + inner_value.sub_item_id;
-                                    if (inner_value.sub_item_type === 'checkbox' || inner_value.sub_item_type === 'radio') {
-                                        ajaxData[sub_line_field] = $(sub_line_field_tag).is(":checked") ? 1 : 0;
+                                $.each(get_response.embedded_line_fields, function(index, inner_value) {
+                                    const embedded_line_field = field_id + inner_value.embedded_item_id;
+                                    const embedded_line_field_tag = '#' + field_id + inner_value.embedded_item_id;
+                                    if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
+                                        ajaxData[embedded_line_field] = $(embedded_line_field_tag).is(":checked") ? 1 : 0;
                                     } else {
-                                        ajaxData[sub_line_field] = $(sub_line_field_tag).val();
+                                        ajaxData[embedded_line_field] = $(embedded_line_field_tag).val();
                                     }
                                 });
                                 $.ajax({
@@ -809,9 +787,9 @@ jQuery(document).ready(function($) {
                                     dataType: "json",
                                     data: ajaxData,
                                     success: function(set_response) {
-                                        $("#sub-line-dialog").dialog('close');
-                                        $('#embedded-list').html(set_response.html_contain);
-                                        activate_sub_line_list_data();
+                                        $("#embedded-line-dialog").dialog('close');
+                                        $('#embedded-line-list').html(set_response.html_contain);
+                                        activate_embedded_line_list_data();
                                     },
                                     error: function(error) {
                                         console.error(error);
@@ -820,21 +798,21 @@ jQuery(document).ready(function($) {
                                 });                    
                             },
                             "Delete": function() {
-                                if (window.confirm("Are you sure you want to delete this sub-line?")) {
+                                if (window.confirm("Are you sure you want to delete this embedded-line?")) {
                                     $.ajax({
                                         type: 'POST',
                                         url: ajax_object.ajax_url,
                                         dataType: "json",
                                         data: {
-                                            'action': 'del_sub_line_dialog_data',
-                                            '_sub_line_id': sub_line_id,
+                                            'action': 'del_embedded_line_dialog_data',
+                                            '_embedded_line_id': embedded_line_id,
                                             '_report_id': $("#report-id").val(),
                                             '_embedded_id': $("#embedded-id").val(),
                                         },
                                         success: function (del_response) {
-                                            $("#sub-line-dialog").dialog('close');
-                                            $('#embedded-list').html(del_response.html_contain);
-                                            activate_sub_line_list_data();
+                                            $("#embedded-line-dialog").dialog('close');
+                                            $('#embedded-line-list').html(del_response.html_contain);
+                                            activate_embedded_line_list_data();
                                         },
                                         error: function(error){
                                             console.error(error);
@@ -845,7 +823,7 @@ jQuery(document).ready(function($) {
                             }
                         });
                     }
-                    $("#sub-line-dialog").dialog('open');
+                    $("#embedded-line-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.error(error);                
@@ -854,7 +832,7 @@ jQuery(document).ready(function($) {
             });
         });
     
-        $("#sub-line-dialog").dialog({
+        $("#embedded-line-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,

@@ -457,8 +457,8 @@ if (!class_exists('to_do_list')) {
                 $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $documents_class = new display_documents();
                 $response['doc_fields'] = $documents_class->get_doc_field_keys($doc_id);
-                $items_class = new sub_items();
-                $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($doc_id);
+                $items_class = new embedded_items();
+                $response['embedded_item_fields'] = $items_class->get_embedded_item_field_keys($doc_id);
             }
             wp_send_json($response);
         }
@@ -749,8 +749,8 @@ if (!class_exists('to_do_list')) {
                 $job_id = sanitize_text_field($_POST['_job_id']);
                 $documents_class = new display_documents();
                 $response['doc_fields'] = $documents_class->get_doc_field_keys($job_id);
-                $items_class = new sub_items();
-                $response['sub_item_fields'] = $items_class->get_sub_item_field_keys($job_id);
+                $items_class = new embedded_items();
+                $response['embedded_item_fields'] = $items_class->get_embedded_item_field_keys($job_id);
             }
             wp_send_json($response);
         }
@@ -1038,19 +1038,19 @@ if (!class_exists('to_do_list')) {
             if (!$is_updated) $this->create_new_todo_for_next_job($params);
 /*
             // Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
-            if ($prev_report_id) $sub_item_ids = get_post_meta($prev_report_id, '_planning', true);
+            if ($prev_report_id) $embedded_item_ids = get_post_meta($prev_report_id, '_planning', true);
             if ($prev_report_id) $embedded = get_post_meta($prev_report_id, '_embedded', true);
             if ($prev_report_id) $select = get_post_meta($prev_report_id, '_select', true);
 
-            if ($sub_item_ids) {
-                if (is_array($sub_item_ids)) {
-                    foreach ($sub_item_ids as $sub_item_id) {
-                        $params['sub_item_id'] = $sub_item_id;
+            if ($embedded_item_ids) {
+                if (is_array($embedded_item_ids)) {
+                    foreach ($embedded_item_ids as $embedded_item_id) {
+                        $params['embedded_item_id'] = $embedded_item_id;
                         if (!$is_updated) $this->create_new_todo_for_next_job($params);
                     }
                 }    
             } else {
-                if (!is_array($sub_item_ids)) {
+                if (!is_array($embedded_item_ids)) {
                     if ($embedded) $params['_embedded'] = $embedded;
                     if ($select) $params['_select'] = $select;
                     if (!$is_updated) $this->create_new_todo_for_next_job($params);
@@ -1067,7 +1067,7 @@ if (!class_exists('to_do_list')) {
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
             $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
-            //$sub_item_id = isset($params['sub_item_id']) ? $params['sub_item_id'] : 0;
+            //$embedded_item_id = isset($params['embedded_item_id']) ? $params['embedded_item_id'] : 0;
             //$embedded = isset($params['_embedded']) ? $params['_embedded'] : 0;
             //$select = isset($params['_select']) ? $params['_select'] : 0;
             $site_id = get_user_meta($user_id, 'site_id', true);
@@ -1086,7 +1086,7 @@ if (!class_exists('to_do_list')) {
 
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
-            //if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
+            //if ($embedded_item_id) update_post_meta($new_todo_id, 'embedded_item_id', $embedded_item_id );
             //if ($embedded) update_post_meta($new_todo_id, '_embedded', $embedded );
             //if ($select) update_post_meta($new_todo_id, '_select', $select );
 
@@ -1586,10 +1586,10 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <?php echo 'log time: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?>
+            <h2><?php echo esc_html(get_the_title($log_id));?></h2>
             
             <fieldset>
-            <h2><?php echo esc_html(get_the_title($log_id));?></h2>
+            <?php echo 'log time: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?>            
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
