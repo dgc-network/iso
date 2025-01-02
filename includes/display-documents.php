@@ -78,7 +78,7 @@ if (!class_exists('display_documents')) {
             elseif (is_site_not_configured()) display_NDA_assignment();
             else {
                 // Display document list if no specific parameters are existed
-                if (($_GET['_category']!='embedded') && !isset($_GET['_doc_id']) && && !isset($_GET['_duplicate_document']) && !isset($_GET['_statement'])) {
+                if (($_GET['_category']!='embedded') && !isset($_GET['_doc_id']) && !isset($_GET['_duplicate_document']) && !isset($_GET['_statement'])) {
                     echo $this->display_document_list();
                 }
 
