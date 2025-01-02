@@ -317,7 +317,7 @@ jQuery(document).ready(function($) {
         });
 
         $('[id^="edit-embedded-item-"]').on("click", function () {
-            const embedded_item_id = this.id.substring(14);
+            const embedded_item_id = this.id.substring(19);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
