@@ -932,7 +932,7 @@ if (!class_exists('sub_items')) {
                             while ($query->have_posts()) : $query->the_post();
                                 $field_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
                                 $field_value = get_post_meta(get_the_ID(), $embedded_id.get_the_ID(), true);
-                                $field_value = ($field_value) ? $field_value : get_the_ID();
+                                $field_value = ($field_value) ? $field_value : $embedded_id.get_the_ID();
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
                                 if ($field_type=='_product') {
                                     $product_code = get_post_meta($field_value, 'product_code', true);
