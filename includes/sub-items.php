@@ -707,11 +707,11 @@ if (!class_exists('sub_items')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
+                    'post_type'     => 'sub-item',
                     'post_title'    => 'New item',
                     'post_content'  => 'Your post content goes here.',
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
-                    'post_type'     => 'sub-item',
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'embedded_id', $embedded_id);
@@ -902,6 +902,7 @@ if (!class_exists('sub_items')) {
             ob_start();
             ?>
             <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>">
+            <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>">
             <fieldset>
             <table style="width:100%;">
                 <thead>
@@ -1054,8 +1055,10 @@ if (!class_exists('sub_items')) {
 
         function del_sub_line_dialog_data() {
             wp_delete_post($_POST['_sub_line_id'], true);
-            $embedded_id = sanitize_text_field($_POST['_embedded_id']);
-            $report_id = sanitize_text_field($_POST['_report_id']);
+            //$embedded_id = sanitize_text_field($_POST['_embedded_id']);
+            //$report_id = sanitize_text_field($_POST['_report_id']);
+            $report_id = (isset($_POST['_report_id'])) ? sanitize_text_field($_POST['_report_id']) : 0;
+            $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
             $response = array('html_contain' => $this->display_sub_line_list($embedded_id, $report_id));
             wp_send_json($response);
         }
