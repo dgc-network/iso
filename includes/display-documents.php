@@ -21,10 +21,7 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_nopriv_set_document_dialog_data', array( $this, 'set_document_dialog_data' ) );
             add_action( 'wp_ajax_del_document_dialog_data', array( $this, 'del_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_document_dialog_data', array( $this, 'del_document_dialog_data' ) );
-/*
-            add_action( 'wp_ajax_get_doc_frame_contain', array( $this, 'get_doc_frame_contain' ) );
-            add_action( 'wp_ajax_nopriv_get_doc_frame_contain', array( $this, 'get_doc_frame_contain' ) );
-*/
+
             add_action( 'wp_ajax_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
 
@@ -414,7 +411,7 @@ if (!class_exists('display_documents')) {
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
-            $is_frame_display = ($is_doc_report==1) ? 'display:none;' : '';
+            $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
 
             $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
@@ -439,21 +436,9 @@ if (!class_exists('display_documents')) {
 
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 
-                <div id="doc-frame-div" style="<?php echo $is_frame_display;?>">
-<?php /*                    
-                    <label id="doc-frame-label" class="button" for="doc-frame"><?php echo __( '文件地址', 'your-text-domain' );?></label>
-                    <?php if (is_site_admin()) {?>
-                        <input type="button" id="doc-frame-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
-                    <?php }?>
-                    <textarea id="doc-frame" rows="3" style="width:100%;"><?php echo $doc_frame;?></textarea>
-*/?>                    
+                <div id="doc-content-div" style="<?php echo $is_content_display;?>">
                     <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
                     <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
-<?php /*                    
-                    <?php $content = str_replace("\n", '<br>', $doc_content); // Line breaks?>
-                    <div class="content"><?php echo $content;?></div>                    
-                    <textarea id="doc-content" rows="5" style="width:100%; display:none;"><?php echo $doc_content;?></textarea>
-*/?>                    
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
@@ -771,9 +756,6 @@ if (!class_exists('display_documents')) {
 
                 $this->get_doc_report_contain_list($params);
                 ?>
-                <?php /* if ($profiles_class->is_user_doc($doc_id)) {?>
-                    <div id="new-doc-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                <?php }*/?>
                 <div class="pagination">
                     <?php
                     // Display pagination links
@@ -1283,53 +1265,6 @@ if (!class_exists('display_documents')) {
                     $todo_class = new to_do_list();
                     $todo_class->create_action_log_and_go_next($params);
                 }
-/*                
-            } else {
-                // Create a new post if no report_id is set
-                $new_post = array(
-                    'post_type' => 'doc-report',
-                    'post_status' => 'publish',
-                    'post_author' => get_current_user_id(),
-                );
-                $post_id = wp_insert_post($new_post);
-        
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                update_post_meta($post_id, 'doc_id', $doc_id);
-        
-                $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) {
-                        $query->the_post();
-                        $field_id = get_the_ID();
-                        $field_type = get_post_meta($field_id, 'field_type', true);
-                        $default_value = $this->get_doc_field_default_value($field_id);
-                        update_post_meta($post_id, $field_id, $default_value);
-
-                        if ($field_type == '_embedded') {
-                            $items_class = new embedded_items();
-                            if (strpos($default_value, '=') !== false) {
-                                list($key, $value) = explode('=', $default_value, 2);
-                                if ($key=='_list') {
-                                }
-                                if ($key=='_form') {
-                                    $embedded_id = $items_class->get_embedded_id_by_number($value);
-                                    $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
-                                    if ($inner_query->have_posts()) :
-                                        while ($inner_query->have_posts()) : $inner_query->the_post();
-                                            $embedded_item_default = get_post_meta(get_the_ID(), 'embedded_item_default', true);
-                                            update_post_meta($post_id, $field_id . get_the_ID(), $embedded_item_default);
-                                        endwhile;
-                                        wp_reset_postdata();
-                                    endif;
-                                }
-                                if ($key=='_select') {
-                                }
-                            }
-                        }
-                    }
-                    wp_reset_postdata();
-                }
-*/                    
             }
             wp_send_json($response);
         }
@@ -1357,8 +1292,6 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        //$field_value = sanitize_text_field($_POST[$field_id]);
-                        //update_post_meta($post_id, get_the_ID(), $field_value);
                         update_post_meta($post_id, get_the_ID(), $_POST[get_the_ID()]);
                     endwhile;
                     wp_reset_postdata();

@@ -290,7 +290,7 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 // Google Gemini AI
-function generate_content($userMessage) {
+function generate_content($prompt) {
     $gemini_api_key = get_user_meta(get_current_user_id(), 'gemini_api_key', true);
     $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $gemini_api_key;
     
@@ -299,7 +299,7 @@ function generate_content($userMessage) {
         array(
           "parts" => array(
             array(
-              "text" => $userMessage,
+              "text" => $prompt,
             )
           )
         )

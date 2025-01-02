@@ -115,10 +115,10 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
 
-                if ($_GET['_select_profile']=='change_post_type_sub_item_to_embedded_item') echo $this->change_post_type_sub_item_to_embedded_item();
-                if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
-
                 echo '</div>';
+
+                //if ($_GET['_select_profile']=='change_post_type_sub_item_to_embedded_item') echo $this->change_post_type_sub_item_to_embedded_item();
+                //if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
             }
         }
 
@@ -149,9 +149,6 @@ if (!class_exists('display_profiles')) {
                 echo "No posts found with the post type 'sub-item'.";
             }
         }
-        
-        // Trigger the function
-        //add_action('init', 'change_post_type_sub_item_to_embedded_item');
         
         function migrate_embedded_code_to_embedded_number() {
             // Query all posts of post type "embedded-item"
@@ -198,46 +195,7 @@ if (!class_exists('display_profiles')) {
                 echo 'No posts found for post type "embedded-item".';
             }
         }
-/*        
-        // Call this function only when needed (e.g., via an admin action or manually).
-        add_action('init', 'migrate_embedded_code_to_embedded_number');
-        
-        function migrate_embedded_code_to_embedded_number() {
-            // Query all posts of post type "embedded"
-            $args = array(
-                'post_type'      => 'embedded-item',
-                'posts_per_page' => -1, // Retrieve all posts
-                'post_status'    => 'any',
-                //'meta_key'       => 'embedded_code', // Only query posts with 'subform_code'
-            );
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Get the old 'subform_code' meta value
-                    $sub_item_type = get_post_meta(get_the_ID(), 'sub_item_type', true);
-                    $sub_item_default = get_post_meta(get_the_ID(), 'sub_item_default', true);
-                    $sub_item_code = get_post_meta(get_the_ID(), 'sub_item_code', true);
-        
-                    if ($old_meta_value) {
-                        // Update the meta to use 'embedded_number' instead
-                        update_post_meta(get_the_ID(), 'embedded_item_type', $sub_item_type);
-                        update_post_meta(get_the_ID(), 'embedded_item_default', $sub_item_default);
-                        update_post_meta(get_the_ID(), 'embedded_item_code', $sub_item_code);
-        
-                        // Optionally, delete the old 'subform_code' meta to avoid duplication
-                        delete_post_meta(get_the_ID(), 'sub_item_type');
-                        delete_post_meta(get_the_ID(), 'sub_item_default');
-                        delete_post_meta(get_the_ID(), 'sub_item_code');
-                    }
-                }
-                wp_reset_postdata();
-            }
-        }
-        //add_action('init', 'migrate_subform_code_to_embedded_number');
-*/
+
         // my-profile
         function display_my_profile() {
             ob_start();
@@ -1002,20 +960,6 @@ if (!class_exists('display_profiles')) {
         }
 
         function select_site_profile_options($selected_option=0) {
-/*
-            ?>
-            <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
-            <?php
-            $site_args = array(
-                'post_type'      => 'site-profile',
-                'posts_per_page' => -1,
-            );
-            $sites = get_posts($site_args);    
-            foreach ($sites as $site) {
-                $selected = ($current_site_id == $site->ID) ? 'selected' : '';
-                echo '<option value="' . esc_attr($site->ID) . '" ' . $selected . '>' . esc_html($site->post_title) . '</option>';
-            }
-*/
             $args = array(
                 'post_type'      => 'site-profile',
                 'posts_per_page' => -1,
@@ -1996,5 +1940,3 @@ if (!class_exists('display_profiles')) {
     }
     $profiles_class = new display_profiles();
 }
-
-

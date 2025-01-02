@@ -1014,7 +1014,6 @@ if (!class_exists('to_do_list')) {
                         'post__in'   => $summary_todos, // Use the array of IDs directly
                         'meta_query' => $meta_query,
                     );
-                
                     $query = new WP_Query($query_args);
                 
                     if ($query->have_posts()) {
@@ -1036,27 +1035,6 @@ if (!class_exists('to_do_list')) {
                 $is_updated = true;
             }
             if (!$is_updated) $this->create_new_todo_for_next_job($params);
-/*
-            // Create the new To-do with embedded-item If meta "_planning" of $prev_report_id is present
-            if ($prev_report_id) $embedded_item_ids = get_post_meta($prev_report_id, '_planning', true);
-            if ($prev_report_id) $embedded = get_post_meta($prev_report_id, '_embedded', true);
-            if ($prev_report_id) $select = get_post_meta($prev_report_id, '_select', true);
-
-            if ($embedded_item_ids) {
-                if (is_array($embedded_item_ids)) {
-                    foreach ($embedded_item_ids as $embedded_item_id) {
-                        $params['embedded_item_id'] = $embedded_item_id;
-                        if (!$is_updated) $this->create_new_todo_for_next_job($params);
-                    }
-                }    
-            } else {
-                if (!is_array($embedded_item_ids)) {
-                    if ($embedded) $params['_embedded'] = $embedded;
-                    if ($select) $params['_select'] = $select;
-                    if (!$is_updated) $this->create_new_todo_for_next_job($params);
-                }
-            }
-*/
         }
 
         function create_new_todo_for_next_job($params=array()) {
@@ -1067,9 +1045,6 @@ if (!class_exists('to_do_list')) {
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
             $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
-            //$embedded_item_id = isset($params['embedded_item_id']) ? $params['embedded_item_id'] : 0;
-            //$embedded = isset($params['_embedded']) ? $params['_embedded'] : 0;
-            //$select = isset($params['_select']) ? $params['_select'] : 0;
             $site_id = get_user_meta($user_id, 'site_id', true);
 
             // Create a new To-do for next_job
@@ -1085,10 +1060,6 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_todo_id, 'site_id', $site_id );
 
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
-
-            //if ($embedded_item_id) update_post_meta($new_todo_id, 'embedded_item_id', $embedded_item_id );
-            //if ($embedded) update_post_meta($new_todo_id, '_embedded', $embedded );
-            //if ($select) update_post_meta($new_todo_id, '_select', $select );
 
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
