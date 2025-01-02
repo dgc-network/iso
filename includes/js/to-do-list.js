@@ -294,7 +294,7 @@ jQuery(document).ready(function($) {
                             console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
                         }
     
-                        if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
+                        if (value.field_type === '_embedded') {
                             $.each(response.sub_item_fields, function(index, inner_value) {
                                 const embedded_field = String(value.field_id) + String(inner_value.sub_item_id);
                                 const embedded_field_tag = '#' + value.field_id + inner_value.sub_item_id;
@@ -314,6 +314,7 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function (response) {
+                        // Get existing URL parameters
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or Update the parameters
                         urlParams.delete("_job_id");
@@ -330,6 +331,7 @@ jQuery(document).ready(function($) {
         });
 
         $("#exit-start-job").on("click", function () {
+            // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Update the parameters
             urlParams.delete("_job_id");
@@ -342,6 +344,7 @@ jQuery(document).ready(function($) {
 
     // todo-list
     $("#search-todo").on( "change", function() {
+        // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         var selectValue = $("#select-todo").val();
         // Remove or Update the parameters

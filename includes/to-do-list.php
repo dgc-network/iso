@@ -747,7 +747,6 @@ if (!class_exists('to_do_list')) {
             $response = array();
             if (isset($_POST['_job_id'])) {
                 $job_id = sanitize_text_field($_POST['_job_id']);
-                //$result['html_contain'] = $this->display_start_job_dialog($job_id);
                 $documents_class = new display_documents();
                 $response['doc_fields'] = $documents_class->get_doc_field_keys($job_id);
                 $items_class = new sub_items();
@@ -1036,7 +1035,8 @@ if (!class_exists('to_do_list')) {
                 }
                 $is_updated = true;
             }
-
+            if (!$is_updated) $this->create_new_todo_for_next_job($params);
+/*
             // Create the new To-do with sub-item If meta "_planning" of $prev_report_id is present
             if ($prev_report_id) $sub_item_ids = get_post_meta($prev_report_id, '_planning', true);
             if ($prev_report_id) $embedded = get_post_meta($prev_report_id, '_embedded', true);
@@ -1056,6 +1056,7 @@ if (!class_exists('to_do_list')) {
                     if (!$is_updated) $this->create_new_todo_for_next_job($params);
                 }
             }
+*/
         }
 
         function create_new_todo_for_next_job($params=array()) {
@@ -1066,9 +1067,9 @@ if (!class_exists('to_do_list')) {
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
             $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
-            $sub_item_id = isset($params['sub_item_id']) ? $params['sub_item_id'] : 0;
-            $embedded = isset($params['_embedded']) ? $params['_embedded'] : 0;
-            $select = isset($params['_select']) ? $params['_select'] : 0;
+            //$sub_item_id = isset($params['sub_item_id']) ? $params['sub_item_id'] : 0;
+            //$embedded = isset($params['_embedded']) ? $params['_embedded'] : 0;
+            //$select = isset($params['_select']) ? $params['_select'] : 0;
             $site_id = get_user_meta($user_id, 'site_id', true);
 
             // Create a new To-do for next_job
@@ -1085,9 +1086,9 @@ if (!class_exists('to_do_list')) {
 
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
-            if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
-            if ($embedded) update_post_meta($new_todo_id, '_embedded', $embedded );
-            if ($select) update_post_meta($new_todo_id, '_select', $select );
+            //if ($sub_item_id) update_post_meta($new_todo_id, 'sub_item_id', $sub_item_id );
+            //if ($embedded) update_post_meta($new_todo_id, '_embedded', $embedded );
+            //if ($select) update_post_meta($new_todo_id, '_select', $select );
 
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
