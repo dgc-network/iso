@@ -376,6 +376,7 @@ if (!class_exists('sub_items')) {
             $is_private = get_post_meta($embedded_id, 'is_private', true);
             $is_private_checked = ($is_private==1) ? 'checked' : '';
             ?>
+            <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
             <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
@@ -414,6 +415,7 @@ if (!class_exists('sub_items')) {
                     </div>
                 </div>
             </fieldset>
+            </div>
             <?php
             return ob_get_clean();
         }
