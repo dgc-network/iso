@@ -1589,7 +1589,6 @@ if (!class_exists('to_do_list')) {
             <h2 style="display:inline;"><?php echo esc_html(get_the_title($log_id));?></h2>
             
             <fieldset>
-            <div><?php echo 'log time: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></div>
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
@@ -1617,6 +1616,7 @@ if (!class_exists('to_do_list')) {
             <hr>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
+                    <?php echo 'Log time: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?>
                 </div>
                 <div style="text-align: right">
                     <input type="button" id="action-log-exit" value="Exit" style="margin:5px;" />
