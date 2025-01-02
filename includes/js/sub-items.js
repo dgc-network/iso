@@ -46,21 +46,6 @@ jQuery(document).ready(function($) {
     // doc-category
     activate_doc_category_list_data();
     function activate_doc_category_list_data(){
-/*        
-        $("#select-profile").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-profile").val();
-            if (selectValue) {
-                queryParams.push("_select_profile=" + selectValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-*/
         $("#new-doc-category").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -161,21 +146,6 @@ jQuery(document).ready(function($) {
     // embedded
     activate_embedded_list_data()
     function activate_embedded_list_data(){
-/*        
-        $("#select-profile").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-profile").val();
-            if (selectValue) {
-                queryParams.push("_select_profile=" + selectValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-*/
         $("#new-embedded").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -288,7 +258,7 @@ jQuery(document).ready(function($) {
             const embedded_id = this.id.substring(14);
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            // Add or update the `_embedded_id` parameter
+            // Remove or update the parameters
             urlParams.set("_embedded_id", embedded_id);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
@@ -423,21 +393,6 @@ jQuery(document).ready(function($) {
     // iso-category
     activate_iso_category_list_data();
     function activate_iso_category_list_data(){
-/*
-        $("#select-profile").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-profile").val();
-            if (selectValue) {
-                queryParams.push("_select_profile=" + selectValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-*/
         $("#new-iso-category").on("click", function() {
             $.ajax({
                 type: 'POST',
@@ -540,49 +495,15 @@ jQuery(document).ready(function($) {
     // department
     activate_department_card_list_data();
     function activate_department_card_list_data(){
-/*        
-        $("#select-profile").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-profile").val();
-            if (selectValue) {
-                queryParams.push("_select_profile=" + selectValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-*/
         $("#search-department").on( "change", function() {
             const urlParams = new URLSearchParams(window.location.search);
             var selectValue = $("#select-profile").val();
-            // Remove or Add the parameters
+            // Remove or Update the parameters
             if (selectValue) urlParams.set("_select_profile", selectValue);
             urlParams.set("_search", $(this).val());
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-profile").val();
-            if (selectValue) {
-                queryParams.push("_select_profile=" + selectValue);
-            }
-            var searchValue = $("#search-department").val();
-            if (searchValue) {
-                queryParams.push("_search=" + searchValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-            // Clear the values of all select elements after redirection
-            $("#search-department").val('');
-*/
         });
 
         $("#new-department-card").on("click", function() {
@@ -775,7 +696,6 @@ jQuery(document).ready(function($) {
                 success: function (set_response) {
                     $("#embedded-list").html(set_response.html_contain);
                     activate_sub_line_list_data();
-                    //activate_doc_report_dialog_data(response);
                 },
                 error: function(error){
                     console.error(error);
@@ -824,7 +744,6 @@ jQuery(document).ready(function($) {
                                         $("#sub-line-dialog").dialog('close');
                                         $('#embedded-list').html(set_response.html_contain);
                                         activate_sub_line_list_data();
-                                        //activate_doc_report_dialog_data(response);
                                     },
                                     error: function(error) {
                                         console.error(error);
@@ -848,7 +767,6 @@ jQuery(document).ready(function($) {
                                             $("#sub-line-dialog").dialog('close');
                                             $('#embedded-list').html(del_response.html_contain);
                                             activate_sub_line_list_data();
-                                            //activate_doc_report_dialog_data(response);
                                         },
                                         error: function(error){
                                             console.error(error);

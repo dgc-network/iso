@@ -659,7 +659,7 @@ if (!class_exists('display_documents')) {
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="exit-doc-frame" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="exit-doc-content" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
             </div>
@@ -698,25 +698,14 @@ if (!class_exists('display_documents')) {
                     <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="exit-doc-frame" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="exit-doc-content" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
             </div>
             <?php
             return ob_get_clean();
         }
-/*
-        function get_doc_frame_contain() {
-            $result = array();
-            if (isset($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $result['html_contain'] = $this->display_doc_frame_contain($doc_id);
-            } else {
-                $result['html_contain'] = 'Invalid AJAX request!';
-            }
-            wp_send_json($result);
-        }
-*/
+
         // doc-report
         function register_doc_report_post_type() {
             $labels = array(

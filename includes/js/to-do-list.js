@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $("#select-todo").on("change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        // Remove or Add the parameters
+        // Remove or Update the parameters
         urlParams.delete("_search");
         urlParams.set("_select_todo", $(this).val());
         urlParams.set("paged", 1);
@@ -147,23 +147,19 @@ jQuery(document).ready(function($) {
     $("#search-start-job").on( "change", function() {
         const urlParams = new URLSearchParams(window.location.search);
         var selectValue = $("#select-todo").val();
-        // Remove or Add the parameters
+        // Remove or Update the parameters
         if (selectValue) urlParams.set("_select_todo", selectValue);
         urlParams.set("_search", $(this).val());
         urlParams.set("paged", 1);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        window.location.replace("?_select_todo=start-job&_search="+$(this).val()+"&paged=1");
-        $(this).val('');
-*/
     });
 
     $('[id^="edit-start-job-"]').on("click", function () {
         const job_id = this.id.substring(15);
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        // Add or update the `_job_id` parameter
+        // Remove or Add the parameters
         urlParams.set("_job_id", job_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
@@ -194,80 +190,6 @@ jQuery(document).ready(function($) {
 
     activate_start_job_dialog_data();
     function activate_start_job_dialog_data(){
-/*        
-        const canvas = document.getElementById('signature-pad');
-        if (canvas) {
-            canvas.width = window.innerWidth-10;
-
-            const context = canvas.getContext('2d');
-            let isDrawing = false;
-            
-            // Set up drawing styles
-            context.strokeStyle = "#000000";
-            context.lineWidth = 2;
-            
-            // Mouse Events for drawing (Desktop)
-            $('#signature-pad').mousedown(function(e) {
-                isDrawing = true;
-                context.beginPath();
-                context.moveTo(e.offsetX, e.offsetY);
-            });
-            
-            $('#signature-pad').mousemove(function(e) {
-                if (isDrawing) {
-                    context.lineTo(e.offsetX, e.offsetY);
-                    context.stroke();
-                }
-            });
-            
-            $(document).mouseup(function() {
-                isDrawing = false;
-            });
-            
-            // Get canvas offset for touch position calculations
-            const getCanvasPosition = (touch) => {
-                const rect = canvas.getBoundingClientRect();
-                return {
-                    x: touch.clientX - rect.left,
-                    y: touch.clientY - rect.top
-                };
-            };
-
-            // Touch start event
-            canvas.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                isDrawing = true;
-                const touchPosition = getCanvasPosition(e.touches[0]);
-                context.beginPath();
-                context.moveTo(touchPosition.x, touchPosition.y);
-            }, { passive: false });
-            
-            // Touch move event
-            canvas.addEventListener('touchmove', function(e) {
-                e.preventDefault();
-                if (isDrawing) {
-                    const touchPosition = getCanvasPosition(e.touches[0]);
-                    context.lineTo(touchPosition.x, touchPosition.y);
-                    context.stroke();
-                }
-            }, { passive: false });
-    
-            $(document).on('touchend', function() {
-                isDrawing = false;
-            });
-
-            // Clear button functionality
-            $('#clear-signature').click(function() {
-                context.clearRect(0, 0, canvas.width, canvas.height);
-            });
-            
-            // Redraw button functionality
-            $('#redraw-signature').click(function() {
-                $('#signature-pad-div').show();
-                $('#signature-image-div').hide();
-            });
-        }
-*/
         $('[id^="start-job-dialog-button-"]').on("click", function () {
             const action_id = this.id.substring(24);
             const ajaxData = {
@@ -320,23 +242,11 @@ jQuery(document).ready(function($) {
                     data: ajaxData,
                     success: function (response) {
                         const urlParams = new URLSearchParams(window.location.search);
-                        // Remove or Add the parameters
+                        // Remove or Update the parameters
                         urlParams.delete("_job_id");
                         urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
-/*
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);
-                        // Remove the specified parameter
-                        url.searchParams.delete('_job_id');
-                        // Get the modified URL
-                        var modifiedUrl = url.toString();
-                        // Reload the page with the modified URL
-                        window.location.replace(modifiedUrl);
-*/
                     },
                     error: function(error){
                         console.error(error);
@@ -348,24 +258,12 @@ jQuery(document).ready(function($) {
 
         $("#exit-start-job").on("click", function () {
             const urlParams = new URLSearchParams(window.location.search);
-            // Remove or Add the parameters
+            // Remove or Update the parameters
             urlParams.delete("_job_id");
             urlParams.delete("_prompt");
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_job_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-*/
         });
     }
 
@@ -373,16 +271,12 @@ jQuery(document).ready(function($) {
     $("#search-todo").on( "change", function() {
         const urlParams = new URLSearchParams(window.location.search);
         var selectValue = $("#select-todo").val();
-        // Remove or Add the parameters
+        // Remove or Update the parameters
         if (selectValue) urlParams.set("_select_todo", selectValue);
         urlParams.set("_search", $(this).val());
         urlParams.set("paged", 1);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        window.location.replace("?_search="+$(this).val()+"&paged=1");
-        $(this).val('');
-*/
     });
 
     $('[id^="edit-todo-"]').on("click", function () {
@@ -444,24 +338,12 @@ jQuery(document).ready(function($) {
                     data: ajaxData,
                     success: function (response) {
                         const urlParams = new URLSearchParams(window.location.search);
-                        // Remove or Add the parameters
+                        // Remove or Update the parameters
                         urlParams.delete("_todo_id");
                         urlParams.delete("_prompt");
                         urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
-/*
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);
-                        // Remove the specified parameter
-                        url.searchParams.delete('_todo_id');
-                        // Get the modified URL
-                        var modifiedUrl = url.toString();
-                        // Reload the page with the modified URL
-                        window.location.replace(modifiedUrl);
-*/                        
                     },
                     error: function(error){
                         console.error(error);
@@ -473,24 +355,12 @@ jQuery(document).ready(function($) {
 
         $("#todo-dialog-exit").on("click", function () {
             const urlParams = new URLSearchParams(window.location.search);
-            // Remove or Add the parameters
+            // Remove or Update the parameters
             urlParams.delete("_todo_id");
             urlParams.delete("_prompt");
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_todo_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-*/
         });
     }
 
@@ -499,7 +369,7 @@ jQuery(document).ready(function($) {
         const log_id = this.id.substring(15);
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        // Add or update the `_log_id` parameter
+        // Remove or update the parameters
         urlParams.set("_log_id", log_id);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
@@ -509,23 +379,11 @@ jQuery(document).ready(function($) {
     function activate_action_log_dialog_data(){
         $("#action-log-exit").on("click", function () {
             const urlParams = new URLSearchParams(window.location.search);
-            // Remove or Add the parameters
+            // Remove or Update the parameters
             urlParams.delete("_log_id");
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_log_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-*/
         });
     }
 })

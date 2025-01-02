@@ -45,51 +45,16 @@ jQuery(document).ready(function($) {
     // iot-device scripts
     activate_iot_device_list_data();
     function activate_iot_device_list_data(){
-/*        
-        $("#select-todo").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-todo").val();
-            if (selectValue) {
-                queryParams.push("_select_todo=" + selectValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-*/
         $("#search-device").on( "change", function() {
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             var selectValue = $("#select-todo").val();
-            // Remove or Add the parameters
+            // Remove or Update the parameters
             if (selectValue) urlParams.set("_select_todo", selectValue);
             urlParams.set("_search", $(this).val());
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-todo").val();
-            if (selectValue) {
-                queryParams.push("_select_todo=" + selectValue);
-            }
-        
-            var searchValue = $("#search-device").val();
-            if (searchValue) {
-                queryParams.push("_search=" + searchValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-            // Clear the values of all select elements after redirection
-            $("#search-device").val('');
-*/
         });
 
         $("#new-iot-device").on("click", function() {
@@ -115,7 +80,7 @@ jQuery(document).ready(function($) {
             const device_id = this.id.substring(16);
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            // Add or update the `_device_id` parameter
+            // Remove or update the parameters
             urlParams.set("_device_id", device_id);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
@@ -173,25 +138,11 @@ jQuery(document).ready(function($) {
         $("#iot-dialog-exit").on("click", function () {
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            // Remove or Add the parameters
+            // Remove or Update the parameters
             urlParams.delete("_device_id");
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*    
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_device_id');
-            // Reset the 'paged' parameter to 1
-            url.searchParams.set('paged', 1);
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-*/            
         });
     }
 });
