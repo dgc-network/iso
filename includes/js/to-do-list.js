@@ -8,19 +8,6 @@ jQuery(document).ready(function($) {
         urlParams.set("paged", 1);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        // Initialize an empty array to store query parameters
-        var queryParams = [];    
-        // Check the selected value for each select element and add it to the queryParams array
-        var selectValue = $("#select-todo").val();
-        if (selectValue) {
-            queryParams.push("_select_todo=" + selectValue);
-        }
-        // Combine all query parameters into a single string
-        var queryString = queryParams.join("&");    
-        // Redirect to the new URL with all combined query parameters
-        window.location.href = "?" + queryString;
-*/
     });
 
     // start-job

@@ -294,8 +294,19 @@ jQuery(document).ready(function($) {
     });
 
     $("#search-document").on( "change", function() {
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        var selectValue = $("#select-category").val();
+        if (selectValue) urlParams.set("_category", selectValue);
+        // Add or update the parameters
+        urlParams.set("_search", $(this).val());
+        urlParams.set("paged", 1);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+/*
         window.location.replace("?_search="+$(this).val()+"&paged=1");
         $(this).val('');
+*/
     });
 
     $("#document-setting-button").on("click", function () {

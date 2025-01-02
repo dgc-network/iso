@@ -15,19 +15,6 @@ jQuery(document).ready(function($) {
         urlParams.set("paged", 1);
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        // Initialize an empty array to store query parameters
-        var queryParams = [];
-        // Check the selected value for each select element and add it to the queryParams array
-        var selectValue = $("#select-profile").val();
-        if (selectValue) {
-            queryParams.push("_select_profile=" + selectValue);
-        }
-        // Combine all query parameters into a single string
-        var queryString = queryParams.join("&");
-        // Redirect to the new URL with all combined query parameters
-        window.location.href = "?" + queryString;
-*/
     });
 
     // my-profile
@@ -313,21 +300,6 @@ jQuery(document).ready(function($) {
     // site-profile
     activate_site_profile_data();
     function activate_site_profile_data(){
-/*        
-        $("#select-profile").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-profile").val();
-            if (selectValue) {
-                queryParams.push("_select_profile=" + selectValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-*/
         $("#site-image-container").on("click", function() {
             $("#site-image-container").hide();
             $("#site-image-url").show();
@@ -591,22 +563,17 @@ jQuery(document).ready(function($) {
     // site-job
     activate_site_job_list_data();
     function activate_site_job_list_data(){
-/*        
-        $("#select-profile").on("change", function() {
-            // Initialize an empty array to store query parameters
-            var queryParams = [];
-            // Check the selected value for each select element and add it to the queryParams array
-            var selectValue = $("#select-profile").val();
-            if (selectValue) {
-                queryParams.push("_select_profile=" + selectValue);
-            }
-            // Combine all query parameters into a single string
-            var queryString = queryParams.join("&");
-            // Redirect to the new URL with all combined query parameters
-            window.location.href = "?" + queryString;
-        });
-*/
         $("#search-site-job").on( "change", function() {
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            var selectValue = $("#select-profile").val();
+            if (selectValue) urlParams.set("_select_profile", selectValue);
+            // Add or update the parameters
+            urlParams.set("_search", $(this).val());
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*
             // Initialize an empty array to store query parameters
             var queryParams = [];
             // Check the selected value for each select element and add it to the queryParams array
@@ -624,6 +591,7 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + queryString;
             // Clear the values of all select elements after redirection
             $("#select-profile, #search-site-job").val('');
+*/
         });
 
         $("#new-site-job").on("click", function() {
