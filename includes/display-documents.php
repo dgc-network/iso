@@ -1764,10 +1764,10 @@ if (!class_exists('display_documents')) {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <div id="line-report-list">
-                                        <?php echo $items_class->display_line_report_list($embedded_id);
-                                        //if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
-                                        //elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
-                                        //else echo $items_class->display_line_report_list($embedded_id);
+                                        <?php
+                                        if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
+                                        elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
+                                        else echo $items_class->display_line_report_list($embedded_id);
                                         ?>
                                     </div>
                                     <?php
@@ -2036,6 +2036,14 @@ if (!class_exists('display_documents')) {
                 if (strpos($default_value, '=') !== false) {
                     list($key, $value) = explode('=', $default_value, 2);
                     if ($key=='_list') {
+                        $embedded_id = $items_class->get_embedded_id_by_number($value);
+                        $inner_query = $items_class->retrieve_line_report_data($embedded_id);
+                        if ($inner_query->have_posts()) :
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                update_post_meta(get_the_ID(), 'report_id', $report_id);
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
                     }
                     if ($key=='_form') {
                         $embedded_id = $items_class->get_embedded_id_by_number($value);

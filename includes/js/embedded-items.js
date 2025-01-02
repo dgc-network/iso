@@ -707,7 +707,7 @@ jQuery(document).ready(function($) {
                                 const ajaxData = {
                                     'action': 'set_line_report_dialog_data',
                                 };
-                                ajaxData['_report_id'] = $("#report-id").val();
+                                //ajaxData['_report_id'] = $("#report-id").val();
                                 ajaxData['_embedded_id'] = $("#embedded-id").val();
                                 field_id = $("#embedded-id").val();
                                 $.each(get_response.line_report_fields, function(index, inner_value) {
@@ -769,7 +769,7 @@ jQuery(document).ready(function($) {
                                     'action': 'set_line_report_dialog_data',
                                 };
                                 ajaxData['_line_report_id'] = line_report_id;
-                                ajaxData['_report_id'] = $("#report-id").val();
+                                //ajaxData['_report_id'] = $("#report-id").val();
                                 ajaxData['_embedded_id'] = $("#embedded-id").val();
                                 field_id = $("#embedded-id").val();
                                 $.each(get_response.line_report_fields, function(index, inner_value) {
@@ -806,7 +806,7 @@ jQuery(document).ready(function($) {
                                         data: {
                                             'action': 'del_line_report_dialog_data',
                                             '_line_report_id': line_report_id,
-                                            '_report_id': $("#report-id").val(),
+                                            //'_report_id': $("#report-id").val(),
                                             '_embedded_id': $("#embedded-id").val(),
                                         },
                                         success: function (del_response) {

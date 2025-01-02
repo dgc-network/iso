@@ -1729,14 +1729,14 @@ if (!class_exists('to_do_list')) {
             $this->create_start_job_and_go_next($action_id, $user_id, true);
         }
         
-        function weekday_event_callback($args) {
+        function weekday_event_callback($params) {
             // Check if today is a weekday (1 = Monday, 5 = Friday)
             $day_of_week = date('N');
             
             if ($day_of_week >= 1 && $day_of_week <= 5) {
                 // Your weekday-specific code here, e.g., send_email_reminder(), update_daily_task(), etc.
-                $action_id = $args['action_id'];
-                $user_id = $args['user_id'];
+                $action_id = $params['action_id'];
+                $user_id = $params['user_id'];
                 $this->create_start_job_and_go_next($action_id, $user_id, true);
             }
         }

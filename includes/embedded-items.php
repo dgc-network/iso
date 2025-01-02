@@ -881,6 +881,7 @@ if (!class_exists('embedded_items')) {
         // line-report
         function display_line_report_list($embedded_id=false, $report_id=false) {
             ob_start();
+            if (!$report_id) $report_id=$embedded_id;
             ?>
             <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
             <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
@@ -905,8 +906,7 @@ if (!class_exists('embedded_items')) {
 
                 <tbody>
                 <?php
-                //$line_report_query = $this->retrieve_line_report_list_data($report_id);
-                $line_report_query = $this->retrieve_line_report_data($embedded_id);
+                $line_report_query = $this->retrieve_line_report_data($report_id);
                 if ($line_report_query->have_posts()) :
                     while ($line_report_query->have_posts()) : $line_report_query->the_post();
                         $line_report_id = get_the_ID();
@@ -942,22 +942,7 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_line_report_data($embedded_id=false) {
-            $args = array(
-                'post_type'      => 'line-report',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'embedded_id',
-                        'value' => $embedded_id,
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-/*
-        function retrieve_line_report_list_data($report_id=false) {
+        function retrieve_line_report_data($report_id=false) {
             $args = array(
                 'post_type'      => 'line-report',
                 'posts_per_page' => -1,
@@ -971,7 +956,7 @@ if (!class_exists('embedded_items')) {
             $query = new WP_Query($args);
             return $query;
         }
-*/
+
         function display_line_report_dialog($line_report_id=false, $embedded_id=false) {
             ob_start();
             $report_id = get_post_meta($line_report_id, 'report_id', true);
@@ -1034,7 +1019,7 @@ if (!class_exists('embedded_items')) {
                 );    
                 $line_report_id = wp_insert_post($new_post);
                 //update_post_meta($line_report_id, 'report_id', $report_id);
-                update_post_meta($line_report_id, 'embedded_id', $embedded_id);
+                update_post_meta($line_report_id, 'report_id', $embedded_id);
             } else {
                 $line_report_id = sanitize_text_field($_POST['_line_report_id']);
             }
