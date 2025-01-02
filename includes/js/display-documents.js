@@ -109,18 +109,6 @@ jQuery(document).ready(function($) {
         urlParams.set("_prompt", $(this).val());
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-/*
-        // Get the current URL
-        var currentUrl = window.location.href;
-        // Create a URL object
-        var url = new URL(currentUrl);
-        // Set the specified parameter
-        url.searchParams.set('_prompt', $(this).val());
-        // Get the modified URL
-        var modifiedUrl = url.toString();
-        // Reload the page with the modified URL
-        window.location.replace(modifiedUrl);
-*/
     })
 
     $("#save-draft").on("click", function () {
@@ -166,13 +154,11 @@ jQuery(document).ready(function($) {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         // Remove or Add the parameters
-        urlParams.set("paged", 1);
         urlParams.delete("_statement");
         urlParams.delete("_prompt");
+        urlParams.delete("_paged");
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-
-        //window.location.replace('/');
     })
 
     $("#statement-page1-next-step").on("click", function () {
@@ -312,8 +298,9 @@ jQuery(document).ready(function($) {
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Add the parameters
-            urlParams.set("paged", 1);
+            urlParams.set("_paged", 1);
             urlParams.set("_statement", iso_category_id);
+            urlParams.delete("_prompt");
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
     
@@ -325,7 +312,7 @@ jQuery(document).ready(function($) {
     $("#select-category").on( "change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        // Remove or Add the parameters
+        // Remove or Update the parameters
         urlParams.delete("_search");
         urlParams.set("_category", $(this).val());
         urlParams.set("paged", 1);
@@ -344,7 +331,7 @@ jQuery(document).ready(function($) {
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
     });
-
+/*
     $("#document-setting-button").on("click", function () {
         $("#document-setting-dialog").dialog('open');
     });
@@ -354,7 +341,7 @@ jQuery(document).ready(function($) {
         modal: true,
         autoOpen: false,
     });
-
+*/
     $("#new-document").on("click", function() {
         $.ajax({
             type: 'POST',
@@ -396,13 +383,13 @@ jQuery(document).ready(function($) {
             $("#doc-frame-div").toggle();
             $("#is-doc-report").val(1)
         });
-
+/*
         $("#doc-frame-label").on("click", function () {
             $("#doc-report-div").toggle();
             $("#doc-frame-div").toggle();
             $("#is-doc-report").val(1)
         });
-
+*/
         $("#doc-field-label").on("click", function () {
             $("#doc-report-div").toggle();
             $("#doc-frame-div").toggle();
@@ -450,19 +437,6 @@ jQuery(document).ready(function($) {
                     urlParams.delete("_prompt");
                     // Redirect to the updated URL
                     window.location.href = "?" + urlParams.toString();
-/*            
-                    // Get the current URL
-                    var currentUrl = window.location.href;
-                    // Create a URL object
-                    var url = new URL(currentUrl);
-                    // Remove the specified parameter
-                    url.searchParams.delete('_doc_id');
-                    url.searchParams.delete('_prompt');
-                    // Get the modified URL
-                    var modifiedUrl = url.toString();
-                    // Reload the page with the modified URL
-                    window.location.replace(modifiedUrl);
-*/                    
                 },
                 error: function(error){
                     console.error(error);
@@ -489,19 +463,6 @@ jQuery(document).ready(function($) {
                         urlParams.delete("_prompt");
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
-/*    
-                        // Get the current URL
-                        var currentUrl = window.location.href;
-                        // Create a URL object
-                        var url = new URL(currentUrl);
-                        // Remove the specified parameter
-                        url.searchParams.delete('_doc_id');
-                        url.searchParams.delete('_prompt');
-                        // Get the modified URL
-                        var modifiedUrl = url.toString();
-                        // Reload the page with the modified URL
-                        window.location.replace(modifiedUrl);
-*/
                     },
                     error: function(error){
                         console.error(error);
@@ -517,7 +478,7 @@ jQuery(document).ready(function($) {
             // Remove or Update the parameters
             urlParams.delete("_doc_id");
             urlParams.delete("_prompt");
-            urlParams.set("paged", 1);
+            //urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
@@ -554,20 +515,7 @@ jQuery(document).ready(function($) {
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-/*
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_doc_id');
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-*/            
         });
-
     }
 
     // doc-field scripts
@@ -859,7 +807,7 @@ jQuery(document).ready(function($) {
         $("#exit-doc-report-list").on("click", function () {
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            // Remove or Add the parameters
+            // Remove or Update the parameters
             urlParams.delete("_doc_id");
             urlParams.delete("_report_id");
             urlParams.set("paged", 1);

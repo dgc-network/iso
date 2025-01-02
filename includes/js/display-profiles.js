@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
     $("#select-profile").on("change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        // Remove or Add the parameters
+        // Remove or Update the parameters
         urlParams.delete("_search");
         urlParams.set("_select_profile", $(this).val());
         urlParams.set("paged", 1);
@@ -186,8 +186,6 @@ jQuery(document).ready(function($) {
                                 success: function (response) {
                                     console.log(response);
                                     window.location.replace(window.location.href);
-                                    //$("#my-exception-notification-setting").html(response.html_contain);
-                                    //$("#exception-notification-setting-dialog").dialog('close');
                                 },
                                 error: function (error) {
                                     console.error(error);
@@ -197,7 +195,6 @@ jQuery(document).ready(function($) {
                         },
                         "Cancel": function () {
                             $("#exception-notification-setting-dialog").dialog('close');
-                            //window.location.replace(window.location.href);
                         },
                     });
                     $("#exception-notification-setting-dialog").dialog('open');
@@ -246,8 +243,6 @@ jQuery(document).ready(function($) {
                                 },
                                 success: function (response) {
                                     console.log(response);
-                                    //$("#my-exception-notification-setting").html(response.html_contain);
-                                    //$("#exception-notification-setting-dialog").dialog('close');
                                     window.location.replace(window.location.href);
                                 },
                                 error: function (error) {
@@ -268,8 +263,6 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         console.log(response);
-                                        //$("#my-exception-notification-setting").html(response.html_contain);
-                                        //$("#exception-notification-setting-dialog").dialog('close');
                                         window.location.replace(window.location.href);
                                     },
                                     error: function (error) {
@@ -457,7 +450,6 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#site-user-dialog").dialog('close');
-                                        //get_site_profile_data();
                                         window.location.replace(window.location.href);
                                     },
                                     error: function (error) {
@@ -526,13 +518,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-/*
-        $("#new-user-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-        });
-*/
+
         $("#site-user-dialog").dialog({
             width: 390,
             modal: true,
@@ -1043,6 +1029,4 @@ jQuery(document).ready(function($) {
             $("#site-content").empty();
         }
     });
-
-
 });

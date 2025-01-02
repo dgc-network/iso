@@ -179,7 +179,6 @@ jQuery(document).ready(function($) {
                     '_is_private': $("#is-private").is(":checked") ? 1 : 0,
                 },
                 success: function (response) {
-                    //$("#embedded-dialog").dialog('close');
                     $("#result-container").html(response.html_contain);
                     activate_embedded_list_data();
                 },
@@ -226,7 +225,6 @@ jQuery(document).ready(function($) {
                         '_embedded_id': $("#embedded-id").val(),
                     },
                     success: function (response) {
-                        //$("#embedded-dialog").dialog('close');
                         $("#result-container").html(response.html_contain);
                         activate_embedded_list_data();
                     },
@@ -240,6 +238,14 @@ jQuery(document).ready(function($) {
         });
 
         $("#exit-embedded-dialog").on("click", function () {
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Remove or update the parameters
+            urlParams.delete('_embedded_id');
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+/*
             // Get the current URL
             var currentUrl = window.location.href;
             // Create a URL object
@@ -252,6 +258,7 @@ jQuery(document).ready(function($) {
             var modifiedUrl = url.toString();
             // Reload the page with the modified URL
             window.location.replace(modifiedUrl);
+*/            
         });
 
         $('[id^="edit-embedded-"]').on("click", function () {

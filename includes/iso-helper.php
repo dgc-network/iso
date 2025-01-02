@@ -90,7 +90,17 @@ function display_NDA_assignment($user_id=false) {
     $profiles_class->get_NDA_assignment($user_id);
 }
 
-function get_site_admin_ids_for_site($site_id) {
+function get_site_admin_ids_for_site($site_id=false) {
+    $site_admin_ids = array();
+    $args = array(
+        'role'    => 'Administrator',
+        'fields'  => 'ID', // Only retrieve user IDs
+    );
+
+    $user_query = new WP_User_Query($args);
+    $user_ids = $user_query->get_results();
+    $site_admin_ids = array_merge($site_admin_ids, $user_ids);
+
     // Step 1: Get all users who are linked to this site ID
     $args = array(
         'meta_query' => array(
@@ -101,30 +111,21 @@ function get_site_admin_ids_for_site($site_id) {
             ),
         ),
     );
-
     $users = get_users($args);
 
     if (!empty($users)) {
         // Step 2: Collect all "site_admin_ids" from matching users
-        $site_admin_ids = array();
-
         foreach ($users as $user) {
             $user_site_admin_ids = get_user_meta($user->ID, 'site_admin_ids', true);
 
             if (!empty($user_site_admin_ids) && is_array($user_site_admin_ids)) {
                 $site_admin_ids = array_merge($site_admin_ids, $user_site_admin_ids);
             }
-
-            if (user_can($user->ID, 'administrator')) {
-                $site_admin_ids[] = $user->ID;
-            }
         }
-
-        // Remove duplicates and return the result
-        return array_unique($site_admin_ids);
     }
 
-    return false; // Return false if no users found
+    // Remove duplicates and return the result
+    return array_unique($site_admin_ids);
 }
 
 function init_webhook_events() {
