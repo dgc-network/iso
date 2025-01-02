@@ -112,7 +112,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
-                if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(0);
+                if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(-1);
 
                 //if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
 
@@ -676,6 +676,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
+        // site-users
         function display_site_user_list($paged=1) {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -691,8 +692,8 @@ if (!class_exists('display_profiles')) {
                     <tbody>
                     <?php        
                     $users = get_users(); // Initialize with all users
-                    // If the current user is not an administrator, filter by site_id
-                    if (!current_user_can('administrator') || $paged==1) {
+
+                    if ($paged==1) {
                         $meta_query_args = array(
                             array(
                                 'key'     => 'site_id',

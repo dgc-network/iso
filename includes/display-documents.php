@@ -491,8 +491,6 @@ if (!class_exists('display_documents')) {
                     </div>
 
                     <div id="job-setting-div" style="display:none;">
-                        <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
-                        <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
                         <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
                         <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
@@ -501,6 +499,10 @@ if (!class_exists('display_documents')) {
                         <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
+                        <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
+                        <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
+                        <label for="user-list"><?php echo __( 'User list:', 'your-text-domain' );?></label>
+                        <?php echo $profiles_class->display_doc_user_list($doc_id);?>
                     </div>
 
                     <label for="system-doc"><?php echo __( '系統文件', 'your-text-domain' );?></label>
