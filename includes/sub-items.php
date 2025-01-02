@@ -1014,39 +1014,38 @@ if (!class_exists('sub_items')) {
         }
 
         function get_sub_line_dialog_data() {
-            $sub_line_id = sanitize_text_field($_POST['_sub_line_id']);
-            $embedded_id = sanitize_text_field($_POST['_embedded_id']);
+            $sub_line_id = (isset($_POST['_sub_line_id'])) ? sanitize_text_field($_POST['_sub_line_id']) : 0;
+            $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
             $response = array('html_contain' => $this->display_sub_line_dialog($sub_line_id, $embedded_id));
             $response['sub_line_fields'] = $this->get_sub_line_keys($embedded_id);
             wp_send_json($response);
         }
 
         function set_sub_line_dialog_data() {
-            $report_id = sanitize_text_field($_POST['_report_id']);
-            $embedded_id = sanitize_text_field($_POST['_embedded_id']);
-            if( isset($_POST['_sub_line_id']) ) {
-                // Update the post
-                $sub_line_id = sanitize_text_field($_POST['_sub_line_id']);
-                $query = $this->retrieve_sub_item_data($embedded_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $field_value = $_POST[$embedded_id.get_the_id()];
-                        update_post_meta($sub_line_id, $embedded_id.get_the_id(), $field_value);
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-            } else {
+            $report_id = (isset($_POST['_report_id'])) ? sanitize_text_field($_POST['_report_id']) : 0;
+            $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
+            if( !isset($_POST['_sub_line_id']) ) {
                 // Create the post
-                //$current_user_id = get_current_user_id();
                 $new_post = array(
                     'post_type'     => 'sub-line',
                     'post_status'   => 'publish',
                     'post_author'   => get_current_user_id(),
                 );    
-                $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'report_id', $report_id);
-
+                $sub_line_id = wp_insert_post($new_post);
+                update_post_meta($sub_line_id, 'report_id', $report_id);
+            } else {
+                $sub_line_id = sanitize_text_field($_POST['_sub_line_id']);
             }
+            // Update the post
+            $query = $this->retrieve_sub_item_data($embedded_id);
+            if ($query->have_posts()) :
+                while ($query->have_posts()) : $query->the_post();
+                    $field_value = $_POST[$embedded_id.get_the_id()];
+                    update_post_meta($sub_line_id, $embedded_id.get_the_id(), $field_value);
+                endwhile;
+                wp_reset_postdata();
+            endif;
+
             $response = array('html_contain' => $this->display_sub_line_list($embedded_id, $report_id));
             wp_send_json($response);
         }

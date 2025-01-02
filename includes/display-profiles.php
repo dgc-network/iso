@@ -734,7 +734,6 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <?php //if ($site_id==$user_site) {?>
                     <label for="job-list"><?php echo __( 'Job list:', 'your-text-domain' );?></label>
                     <fieldset>
                         <table class="ui-widget" style="width:100%;">
@@ -762,7 +761,6 @@ if (!class_exists('display_profiles')) {
                             </tbody>
                         </table>
                     </fieldset>
-                <?php //}?>
                 <?php
                 $current_user_id = get_current_user_id();
                 $current_site_id = get_user_meta($current_user_id, 'site_id', true);
