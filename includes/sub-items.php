@@ -100,7 +100,10 @@ if (!class_exists('sub_items')) {
             <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><?php $profiles_class->display_select_profile('embedded');?></div>
+                <div>
+                    <?php //$profiles_class->display_select_profile('embedded');?>
+                    <select id="select-category"><?php echo $this->select_doc_category_options('embedded');?></select>
+                    </div>
                 <div style="text-align: right"></div>                        
             </div>
 
