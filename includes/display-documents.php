@@ -15,12 +15,13 @@ if (!class_exists('display_documents')) {
             add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
 
-            add_action( 'wp_ajax_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_document_dialog_data', array( $this, 'get_document_dialog_data' ) );
             add_action( 'wp_ajax_set_document_dialog_data', array( $this, 'set_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_document_dialog_data', array( $this, 'set_document_dialog_data' ) );
             add_action( 'wp_ajax_del_document_dialog_data', array( $this, 'del_document_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_document_dialog_data', array( $this, 'del_document_dialog_data' ) );
+
+            add_action( 'wp_ajax_get_doc_content_data', array( $this, 'get_doc_content_data' ) );
+            add_action( 'wp_ajax_nopriv_get_doc_content_data', array( $this, 'get_doc_content_data' ) );
 
             add_action( 'wp_ajax_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
@@ -106,13 +107,7 @@ if (!class_exists('display_documents')) {
                         if (is_site_admin()) echo $this->display_document_dialog($doc_id);
                         else {
                             if ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
-                            else {
-                                $doc_content = get_post_field('post_content', $doc_id);
-                                if ($doc_content) {
-                                    echo $this->display_doc_content($doc_id);
-                                } else {
-                                    echo $this->display_doc_frame_contain($doc_id);
-                                }
+                            else echo $this->display_doc_content($doc_id);
                             }
                         }    
                     }
@@ -438,6 +433,9 @@ if (!class_exists('display_documents')) {
 
                 <div id="doc-content-div" style="<?php echo $is_content_display;?>">
                     <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
+                    <?php if (is_site_admin()) {?>
+                        <input type="button" id="doc-content-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
+                    <?php }?>
                     <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                 </div>
 
@@ -480,8 +478,8 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                        <label for="doc-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
-                        <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
+                        <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
+                        <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '按鍵設定', 'your-text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                         <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
@@ -524,7 +522,7 @@ if (!class_exists('display_documents')) {
             <?php
             return ob_get_clean();
         }
-        
+/*        
         function get_document_dialog_data() {
             $response = array();
             if (isset($_POST['_doc_id'])) {
@@ -541,7 +539,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-        
+*/        
         function set_document_dialog_data() {
             $response = array();
             if( isset($_POST['_doc_id']) ) {
@@ -556,10 +554,11 @@ if (!class_exists('display_documents')) {
                 $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
                 $system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
+                $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
                 $doc_post_args = array(
                     'ID'           => $doc_id,
                     'post_title'   => $job_title,
-                    'post_content' => $_POST['_doc_content'],
+                    'post_content' => $doc_content,
                 );
                 wp_update_post($doc_post_args);
                 if ($job_number) update_post_meta($doc_id, 'job_number', $job_number);
@@ -569,7 +568,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_title', $doc_title);
                 update_post_meta($doc_id, 'doc_revision', $doc_revision);
                 update_post_meta($doc_id, 'doc_category', $doc_category);
-                update_post_meta($doc_id, 'doc_frame', $_POST['_doc_frame']);
+                //update_post_meta($doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
 
@@ -621,7 +620,6 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_content = get_post_field('post_content', $doc_id);
-            //$content = str_replace("\n", '<br>', $doc_content); // Line breaks
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -654,6 +652,16 @@ if (!class_exists('display_documents')) {
             return ob_get_clean();
         }
 
+        function get_doc_content_data() {
+            $response = array();
+            if (isset($_POST['_doc_id'])) {
+                $doc_id = sanitize_text_field($_POST['_doc_id']);
+                $response['html_contain'] = $this->display_doc_content($doc_id);
+            }
+            wp_send_json($response);
+        }
+
+/*
         // doc-frame
         function display_doc_frame_contain($doc_id=false) {
             ob_start();
@@ -692,7 +700,7 @@ if (!class_exists('display_documents')) {
             <?php
             return ob_get_clean();
         }
-
+*/
         // doc-report
         function register_doc_report_post_type() {
             $labels = array(
@@ -1208,7 +1216,6 @@ if (!class_exists('display_documents')) {
                     if ($is_doc_report) {
                         $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $_document));
                     } else {
-                        //$response['html_contain'] = $this->display_doc_frame_contain($_document);
                         $response['html_contain'] = $this->display_doc_content($_document);
                     }
                 } else {

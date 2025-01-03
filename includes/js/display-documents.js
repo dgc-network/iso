@@ -275,8 +275,6 @@ jQuery(document).ready(function($) {
                 urlParams.delete("_prompt");
                 // Redirect to the updated URL
                 window.location.href = "?" + urlParams.toString();
-        
-                //window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=2');
             },
             error: function(error){
                 console.error(error); 
@@ -295,8 +293,6 @@ jQuery(document).ready(function($) {
         urlParams.delete("_prompt");
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
-
-        //window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
     })
 
     $("#proceed-copy-statement").on("click", function () {
@@ -376,8 +372,6 @@ jQuery(document).ready(function($) {
             urlParams.delete("_prompt");
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-    
-            //window.location.replace('/display-documents/?_statement='+iso_category_id+'&_paged=1');
         }
     })
 
@@ -404,17 +398,7 @@ jQuery(document).ready(function($) {
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
     });
-/*
-    $("#document-setting-button").on("click", function () {
-        $("#document-setting-dialog").dialog('open');
-    });
 
-    $("#document-setting-dialog").dialog({
-        width: 390,
-        modal: true,
-        autoOpen: false,
-    });
-*/
     $("#new-document").on("click", function() {
         $.ajax({
             type: 'POST',
@@ -462,14 +446,18 @@ jQuery(document).ready(function($) {
             $("#is-doc-report").val(0)
         });
 
-        $("#doc-report-job-setting").on("click", function () {
-            $("#doc-report-job-setting").toggle();
-            $(".mermaid").toggle()
-            $("#job-setting-div").toggle();
+        $("#doc-content-preview").on("click", function () {
+            get_doc_content_data(doc_id);
         });
 
         $("#doc-report-preview").on("click", function () {
             get_doc_report_list_data(doc_id);
+        });
+
+        $("#doc-report-job-setting").on("click", function () {
+            $("#doc-report-job-setting").toggle();
+            $(".mermaid").toggle()
+            $("#job-setting-div").toggle();
         });
 
         $("#save-document-button").on("click", function() {
@@ -479,7 +467,7 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_id'] = doc_id;
             ajaxData['_job_number'] = $("#job-number").val();
             ajaxData['_job_title'] = $("#job-title").val();
-            ajaxData['_doc_content'] = $("#doc-content").val();
+            ajaxData['_job_content'] = $("#job-content").val();
             ajaxData['_department_id'] = $("#department-id").val();
             ajaxData['_doc_number'] = $("#doc-number").val();
             ajaxData['_doc_title'] = $("#doc-title").val();
@@ -550,8 +538,38 @@ jQuery(document).ready(function($) {
         });
     }
 
-    activate_doc_frame_contain_data($("#doc-id").val());
-    function activate_doc_frame_contain_data(doc_id){
+    function get_doc_content_data(doc_id){
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            dataType: "json",
+            data: {
+                'action': 'get_doc_content_data',
+                '_doc_id': doc_id,
+            },
+            success: function (response) {
+                $('#result-container').html(response.html_contain);
+                activate_doc_content_data(doc_id)
+/*                
+                // Get existing URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                // Remove or update the parameters
+                urlParams.delete("_doc_id");
+                urlParams.delete("_prompt");
+                // Redirect to the updated URL
+                window.location.href = "?" + urlParams.toString();
+*/
+            },
+            error: function(error){
+                console.error(error);
+                alert(error);
+            }
+        });
+
+    }
+
+    activate_doc_content_data($("#doc-id").val());
+    function activate_doc_content_data(doc_id){
         $("#share-document").on("click", function() {
             var homeAddress = window.location.origin;
             var textToCopy = homeAddress + "/display-documents/?_duplicate_document=" + doc_id;
