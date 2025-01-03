@@ -1114,7 +1114,7 @@ if (!class_exists('display_profiles')) {
             $items_class = new embedded_items();
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
-            $doc_content = get_post_field('post_content', $doc_id);
+            $job_content = get_post_field('post_content', $doc_id);
             $department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
             $is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
@@ -1126,10 +1126,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( 'Title:', 'your-text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
-<?php /*                
-                <label for="doc-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
-                <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
-*/?>                
+                <label for="job-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
+                <textarea id="job-content" class="visual-editor"><?php echo $job_content;?></textarea>
                 <label for="action-list"><?php echo __( 'Action list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
@@ -1161,7 +1159,7 @@ if (!class_exists('display_profiles')) {
                 $data = array(
                     'ID'           => $job_id,
                     'post_title'   => $job_title,
-                    'post_content' => $_POST['_doc_content'],
+                    'post_content' => $_POST['_job_content'],
                 );
                 wp_update_post( $data );
                 update_post_meta($job_id, 'job_number', $job_number);
@@ -1863,7 +1861,6 @@ if (!class_exists('display_profiles')) {
                 $activated_site_users[] = $user_id;
                 update_user_meta( $user_id, 'reject_id', get_current_user_id());
                 update_user_meta( $user_id, 'reject_date', $_POST['_reject_date']);
-                //update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
 
                 $line_user_id = get_user_meta($user_id, 'line_user_id', true);
                 $line_bot_api->send_flex_message([
@@ -1935,8 +1932,6 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-        
-        
     }
     $profiles_class = new display_profiles();
 }
