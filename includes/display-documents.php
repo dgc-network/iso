@@ -108,8 +108,7 @@ if (!class_exists('display_documents')) {
                         else {
                             if ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
                             else echo $this->display_doc_content($doc_id);
-                            }
-                        }    
+                        }
                     }
                 }
 
@@ -2000,34 +1999,6 @@ if (!class_exists('display_documents')) {
                     }
                 }
             }
-/*            
-            if ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
-                if ($default_value) {
-                    $items_class = new embedded_items();
-                    $inner_query = $items_class->retrieve_embedded_item_data($field_value);
-                    if ($inner_query->have_posts()) :
-                        while ($inner_query->have_posts()) : $inner_query->the_post();
-                            $embedded_item_value = $_POST[$field_id.get_the_ID()];
-                            update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;
-
-                    if ($field_type=='_embedded') {
-                        update_post_meta($report_id, '_embedded', $default_value);
-                    }
-
-                    if ($field_type=='_planning') {
-                        $embedded_item_ids = $items_class->get_embedded_item_ids($embedded_id);
-                        update_post_meta($report_id, '_planning', $embedded_item_ids);
-                    }
-
-                    if ($field_type=='_select') {
-                        update_post_meta($report_id, '_select', $default_value);
-                    }    
-                }
-            }
-*/                
         }
         
         // document misc
