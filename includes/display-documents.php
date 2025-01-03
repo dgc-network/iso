@@ -521,24 +521,7 @@ if (!class_exists('display_documents')) {
             <?php
             return ob_get_clean();
         }
-/*        
-        function get_document_dialog_data() {
-            $response = array();
-            if (isset($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                $profiles_class = new display_profiles();
-                
-                if (is_site_admin()) $response['html_contain'] = $this->display_document_dialog($doc_id);
-                else { // General Users in site
-                    if ($is_doc_report==0) $response['html_contain'] = $this->display_doc_frame_contain($doc_id);
-                    elseif ($is_doc_report==1) $response['html_contain'] = $this->display_doc_report_list(array('doc_id' => $doc_id));
-                    else $response['html_contain'] = $this->display_document_dialog($doc_id);
-                }
-            }
-            wp_send_json($response);
-        }
-*/        
+
         function set_document_dialog_data() {
             $response = array();
             if( isset($_POST['_doc_id']) ) {
@@ -567,7 +550,6 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_title', $doc_title);
                 update_post_meta($doc_id, 'doc_revision', $doc_revision);
                 update_post_meta($doc_id, 'doc_category', $doc_category);
-                //update_post_meta($doc_id, 'doc_frame', $_POST['_doc_frame']);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
 
@@ -660,46 +642,6 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
-/*
-        // doc-frame
-        function display_doc_frame_contain($doc_id=false) {
-            ob_start();
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
-            ?>
-            <div class="ui-widget" id="result-container">
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <?php echo display_iso_helper_logo();?>
-                    <span><?php echo esc_html($doc_number);?></span>
-                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                    <span><?php echo esc_html($doc_revision);?></span>
-                </div>
-                <div style="text-align:right; display:flex;">
-                </div>
-            </div>
-
-            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
-
-            <fieldset style="overflow-x:auto; white-space:nowrap;">
-                <?php echo $doc_frame; ?>
-            </fieldset>
-
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
-                </div>
-                <div style="text-align:right; display:flex;">
-                    <input type="button" id="exit-doc-content" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
-                </div>
-            </div>
-            </div>
-            <?php
-            return ob_get_clean();
-        }
-*/
         // doc-report
         function register_doc_report_post_type() {
             $labels = array(
@@ -944,7 +886,6 @@ if (!class_exists('display_documents')) {
 
             $args = array(
                 'post_type'      => 'doc-report',
-                //'posts_per_page' => -1,
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => $meta_query,
@@ -1198,9 +1139,6 @@ if (!class_exists('display_documents')) {
         function get_doc_report_dialog_data() {
             $response = array();
             if (isset($_POST['_report_id'])) {
-                // Initialize classes
-
-                // Sanitize POST inputs
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $is_admin = isset($_POST['_is_admin']) ? sanitize_text_field($_POST['_is_admin']) : false;
 
@@ -1224,7 +1162,6 @@ if (!class_exists('display_documents')) {
                     $response['embedded_item_keys'] = $items_class->get_embedded_item_keys($doc_id);
                 }
             }
-            // Return JSON response
             wp_send_json($response);
         }
 
@@ -1576,7 +1513,6 @@ if (!class_exists('display_documents')) {
                 update_post_meta($field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
             } else {
                 // Create the post
-                //$current_user_id = get_current_user_id();
                 $new_post = array(
                     'post_type'     => 'doc-field',
                     'post_status'   => 'publish',
