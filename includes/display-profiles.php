@@ -647,13 +647,14 @@ if (!class_exists('display_profiles')) {
 
                 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div><label for="site-jobs"><?php echo __( '工作職掌：', 'your-text-domain' );?></label></div>
-                <div style="text-align: right">
-                    <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
+                    <div><label for="site-jobs"><?php echo __( '工作職掌：', 'your-text-domain' );?></label></div>
+                    <div style="text-align: right">
+                        <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
+                    </div>
                 </div>
+                <div id="site-job-list">
+                    <?php echo $this->display_site_job_list();?>
                 </div>
-
-                <?php echo $this->display_site_job_list();?>
 
             </fieldset>
             <?php if (is_site_admin()) {?>
@@ -1150,6 +1151,7 @@ if (!class_exists('display_profiles')) {
         }
 
         function set_site_job_dialog_data() {
+            $response = array();
             if( isset($_POST['_doc_id']) ) {
                 $job_id = isset($_POST['_doc_id']) ? sanitize_text_field($_POST['_doc_id']) : 0;
                 $job_title = isset($_POST['_job_title']) ? sanitize_text_field($_POST['_job_title']) : '';
@@ -1200,16 +1202,17 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($new_action_id, 'next_job', -1);
                 update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
-            $response = array('html_contain' => $this->display_site_job_list());
+            $response['html_contain'] = $this->display_site_job_list();
             wp_send_json($response);
         }
 
         function del_site_job_dialog_data() {
-            $doc_id = sanitize_text_field($_POST['_doc_id']);
+            $response = array();
+            $doc_id = isset($_POST['_doc_id']) ? sanitize_text_field($_POST['_doc_id']) : 0;
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             if ($doc_title) echo 'You cannot delete this job';
             else wp_delete_post($doc_id, true);
-            $response = array('html_contain' => $this->display_site_job_list());
+            $response['html_contain'] = $this->display_site_job_list();
             wp_send_json($response);
         }
 
