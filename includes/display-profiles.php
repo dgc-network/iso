@@ -1927,7 +1927,7 @@ if (!class_exists('display_profiles')) {
                     $line_bot_api->send_flex_message([
                         'to' => $line_user_id,
                         'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
-                        'body_contents'   => [['type' => 'text', 'text' => 'A new user '.$user->display_name.' has signed the NDA agreement.', 'wrap' => true]],
+                        'body_contents'   => [['type' => 'text', 'text' => 'A new user '.$user->display_name.' has signed the NDA agreement of '.get_the_title($site_id).'.', 'wrap' => true]],
                         'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_nda_user_id=$user_id")], 'style' => 'primary']],
                     ]);
                 }
