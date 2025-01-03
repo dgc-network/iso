@@ -1126,8 +1126,8 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( 'Title:', 'your-text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
-                <textarea id="job-content" class="visual-editor"><?php echo $job_content;?></textarea>
+                <label style="display:none;" for="job-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
+                <textarea style="display:none;" id="job-content" class="visual-editor"><?php echo $job_content;?></textarea>
                 <label for="action-list"><?php echo __( 'Action list:', 'your-text-domain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
