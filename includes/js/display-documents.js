@@ -432,6 +432,7 @@ jQuery(document).ready(function($) {
     function activate_document_dialog_data(){
         doc_id = $('#doc-id').val();
         activate_doc_action_list_data(doc_id);
+        activate_doc_user_list_data(doc_id);
         activate_doc_field_list_data(doc_id);
 
         $("#doc-content-label").on("click", function () {
@@ -727,7 +728,7 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    // doc-action scripts
+    // doc-action
     function activate_doc_action_list_data(doc_id) {
         $("#new-doc-action").on("click", function() {
             jQuery.ajax({
@@ -831,6 +832,84 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // doc-user
+    function activate_doc_user_list_data(doc_id=false) {
+        $("#new-doc-user").on("click", function() {
+            jQuery.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_new_user_list',
+                },
+                success: function (response) {
+                    $("#new-user-list-dialog").html(response.html_contain);
+                    $("#new-user-list-dialog").dialog('open');
+                    $('[id^="add-doc-user-"]').on("click", function () {
+                        if (window.confirm("Are you sure you want to add this new user for doc?")) {
+                            const user_id = this.id.substring(13);
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'add_doc_user_data',
+                                    '_doc_id': doc_id,
+                                    '_user_id': user_id,
+                                },
+                                success: function (response) {
+                                    console.log(response)
+                                    $("#new-user-list-dialog").dialog('close');
+                                    $("#doc-user-list").html(response.html_contain);
+                                    activate_doc_user_list_data(doc_id);
+                    
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        }
+                    });                        
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+
+        $('[id^="del-doc-user-"]').on("click", function () {
+            if (window.confirm("Are you sure you want to delete this doc user?")) {
+                const user_id = this.id.substring(13);
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_doc_user_data',
+                        '_doc_id': doc_id,
+                        '_user_id': user_id,
+                    },
+                    success: function (response) {
+                        $("#doc-user-list").html(response.html_contain);
+                        activate_doc_user_list_data(doc_id);
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        });
+
+        $("#new-user-list-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+        });
+    }
+    
     // doc-report
     activate_doc_report_list_data($("#doc-id").val());
     function activate_doc_report_list_data(doc_id){

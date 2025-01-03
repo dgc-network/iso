@@ -719,7 +719,7 @@ jQuery(document).ready(function($) {
                     }
                     $("#site-job-dialog").dialog('open');
                     activate_job_action_list_data(doc_id);
-                    activate_doc_user_list_data(doc_id);
+                    activate_job_user_list_data(doc_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -736,7 +736,7 @@ jQuery(document).ready(function($) {
         });    
     }
 
-    // doc-action
+    // job-action
     function activate_job_action_list_data(doc_id=false) {
         $("#new-doc-action").on("click", function() {
             jQuery.ajax({
@@ -839,8 +839,8 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // doc-user
-    function activate_doc_user_list_data(doc_id=false) {
+    // job-user
+    function activate_job_user_list_data(doc_id=false) {
         $("#new-doc-user").on("click", function() {
             jQuery.ajax({
                 type: 'POST',
@@ -868,7 +868,7 @@ jQuery(document).ready(function($) {
                                     console.log(response)
                                     $("#new-user-list-dialog").dialog('close');
                                     $("#doc-user-list").html(response.html_contain);
-                                    activate_doc_user_list_data(doc_id);
+                                    activate_job_user_list_data(doc_id);
                     
                                 },
                                 error: function (error) {
@@ -900,7 +900,7 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         $("#doc-user-list").html(response.html_contain);
-                        activate_doc_user_list_data(doc_id);
+                        activate_job_user_list_data(doc_id);
                     },
                     error: function (error) {
                         console.error(error);
