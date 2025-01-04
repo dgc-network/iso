@@ -1593,7 +1593,6 @@ if (!class_exists('display_documents')) {
         }
 
         function get_doc_field_contains($params=array()) {
-            $items_class = new embedded_items();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
@@ -1632,6 +1631,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_embedded'):
+                            $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             if ($embedded_id) {
                                 $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);

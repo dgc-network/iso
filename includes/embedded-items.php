@@ -849,8 +849,7 @@ if (!class_exists('embedded_items')) {
                     $default_value = get_post_meta(get_the_ID(), 'default_value', true);
 
                     if ($field_type=='_embedded'){
-                        $items_class = new embedded_items();
-                        $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                        $embedded_id = $this->get_embedded_id_by_number($default_value);
                         if ($embedded_id) {
                             $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
                             if ($inner_query->have_posts()) :
