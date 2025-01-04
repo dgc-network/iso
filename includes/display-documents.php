@@ -1459,10 +1459,7 @@ if (!class_exists('display_documents')) {
                     <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
-                    <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
-                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( '_doc_report', 'your-text-domain' );?></option>
-                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
-                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
+                    <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'your-text-domain' );?></option>
 <?php /*                    
                     <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
                     <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
@@ -1488,7 +1485,10 @@ if (!class_exists('display_documents')) {
                         wp_reset_postdata();
                     }
                     ?>
-                    <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'your-text-domain' );?></option>
+                    <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
+                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( '_doc_report', 'your-text-domain' );?></option>
+                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
+                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
@@ -1623,8 +1623,10 @@ if (!class_exists('display_documents')) {
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
+                        $todo_status = get_post_meta($report_id, 'todo_status', true);
                     } elseif ($prev_report_id) {
                         $field_value = get_post_meta($prev_report_id, $field_id, true);
+                        $todo_status = get_post_meta($prev_report_id, 'todo_status', true);
                     } else {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
@@ -1694,58 +1696,6 @@ if (!class_exists('display_documents')) {
                                     <?php
                                 }
                             }
-/*                            
-                            if (strpos($default_value, '=') !== false) {
-                                list($key, $value) = explode('=', $default_value, 2);
-                                if ($key=='_list') {
-                                    $embedded_id = $items_class->get_embedded_id_by_number($value);
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <div id="line-report-list">
-                                        <?php
-                                        if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
-                                        elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
-                                        else echo $items_class->display_line_report_list($embedded_id);
-                                        ?>
-                                    </div>
-                                    <?php
-                                }
-                                if ($key=='_form') {
-                                    $embedded_id = $items_class->get_embedded_id_by_number($value);
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
-                                    <div id="embedded-form">
-                                        <fieldset>
-                                        <?php
-                                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
-                                        if ($inner_query->have_posts()) :
-                                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                                if ($report_id) {
-                                                    $embedded_item_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
-                                                } elseif ($prev_report_id) {
-                                                    $embedded_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
-                                                } else {
-                                                    $embedded_item_value = get_post_meta(get_the_ID(), 'embedded_item_default', true);
-                                                }
-                                                $items_class->get_embedded_item_contains($field_id, get_the_ID(), $embedded_item_value);
-                                            endwhile;
-                                            wp_reset_postdata();
-                                        endif;
-                                        ?>
-                                        </fieldset>
-                                    </div>
-                                    <?php        
-                                }
-                                if ($key=='_select') {
-                                    $embedded_id = $items_class->get_embedded_id_by_number($value);
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
-                                    <?php
-                                }
-                            }
-*/
                             break;
 
                         case ($field_type=='_doc_report'):
@@ -1797,7 +1747,9 @@ if (!class_exists('display_documents')) {
                                 <?php if ($field_value) {?>
                                     <div><img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" /></div>
                                 <?php }?>
-                                <button id="redraw-signature" style="margin:3px;">Redraw</button>
+                                <?php if (!$todo_status) {?>
+                                    <button id="redraw-signature" style="margin:3px;"><?php echo __( 'Redraw', 'your-text-domain' );?></button>
+                                <?php }?>
                             </div>
                             <div style="display:none;" id="signature-pad-div">
                                 <div>

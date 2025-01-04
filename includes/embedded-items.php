@@ -906,7 +906,8 @@ if (!class_exists('embedded_items')) {
         // line-report
         function display_line_report_list($embedded_id=false, $report_id=false) {
             ob_start();
-            if (!$report_id) $report_id=$embedded_id;
+            if ($report_id) $todo_status = get_post_meta($report_id, 'todo_status', true);
+            else $report_id=$embedded_id;
             ?>
             <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
             <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
@@ -957,7 +958,7 @@ if (!class_exists('embedded_items')) {
                 ?>
                 </tbody>
             </table>
-            <?php if (is_site_admin()) {?>
+            <?php if (is_site_admin() && !$todo_status) {?>
                 <div id="new-line-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
