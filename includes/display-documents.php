@@ -1364,20 +1364,35 @@ if (!class_exists('display_documents')) {
                     </thead>
                     <tbody id="sortable-doc-field-list">
                         <?php
-                        $x = 0;
-                        if ($doc_id) $params = array('doc_id' => $doc_id);
-                        $query = $this->retrieve_doc_field_data($params);
+                        //$x = 0;
+                        //if ($doc_id) $params = array('doc_id' => $doc_id);
+                        $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 $order_field = get_post_meta(get_the_ID(), 'order_field', true);
-                                if ($order_field=='ASC') $order_field='checked';
+                                $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_title', true)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'field_type', true)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'default_value', true)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), 'listing_style', true)).'</td>';
+                                if ($field_type=='heading'||$field_type=='canvas'||$field_type='image'||$field_type=='video') {
+                                    if ($field_type=='heading') {
+                                        echo '<td><b>'.esc_html($field_title).'</b></td>';
+                                    } else {
+                                        echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
+                                    }
+                                    echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
+                                    echo '<td></td>';
+                                    echo '<td></td>';
+                                } else {
+                                    echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
+                                    echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
+                                    echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
+                                    echo '<td style="text-align:center;">'.esc_html($listing_style).'</td>';
+                                    }
                                 echo '</tr>';
-                                $x += 1;
+                                //$x += 1;
                             endwhile;
                             wp_reset_postdata();
                         }
