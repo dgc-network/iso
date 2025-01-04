@@ -935,7 +935,11 @@ if (!class_exists('embedded_items')) {
                 if ($line_report_query->have_posts()) :
                     while ($line_report_query->have_posts()) : $line_report_query->the_post();
                         $line_report_id = get_the_ID();
-                        ?><tr id="edit-line-report-<?php echo $line_report_id;?>"><?php
+                        if ($todo_status) {
+                            ?><tr><?php
+                        } else {
+                            ?><tr id="edit-line-report-<?php echo $line_report_id;?>"><?php
+                        }
                         $query = $this->retrieve_embedded_item_data($embedded_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
