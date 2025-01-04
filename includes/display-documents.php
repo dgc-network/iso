@@ -1631,6 +1631,10 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_embedded'):
+                            ini_set('display_errors', 1);
+                            ini_set('display_startup_errors', 1);
+                            error_reporting(E_ALL);
+                            
                             $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             if ($embedded_id) {
