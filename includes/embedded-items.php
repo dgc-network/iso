@@ -393,10 +393,10 @@ if (!class_exists('embedded_items')) {
                 <label for="embedded-type"><?php echo __( 'Type', 'your-text-domain' );?></label>
                 <select id="embedded-type" class="text ui-widget-content ui-corner-all">
                     <?php echo $this->select_iso_category_options($iso_category);?>
-                    <option value="sub-form" <?php ($embedded_type=="sub-form") ? echo "selected" : echo "";?>><?php echo __( 'Subform', 'your-text-domain' );?></option>
-                    <option value="line-list" <?php ($embedded_type=="line-list") ? echo "selected" : echo "";?>><?php echo __( 'Line list', 'your-text-domain' );?></option>
-                    <option value="select-options" <?php ($embedded_type=="select-options") ? echo "selected" : echo "";?>><?php echo __( 'Select options', 'your-text-domain' );?></option>
-                    <option value="flow-chart" <?php ($embedded_type=="flow-chart") ? echo "selected" : echo "";?>><?php echo __( 'Flow chart', 'your-text-domain' );?></option>
+                    <option value="sub-form" <?php echo ($embedded_type=="sub-form") ? "selected" : "";?>><?php echo __( 'Subform', 'your-text-domain' );?></option>
+                    <option value="line-list" <?php echo ($embedded_type=="line-list") ? "selected" : "";?>><?php echo __( 'Line list', 'your-text-domain' );?></option>
+                    <option value="select-options" <?php echo ($embedded_type=="select-options") ? "selected" : echo "";?>><?php echo __( 'Select options', 'your-text-domain' );?></option>
+                    <option value="flow-chart" <?php echo ($embedded_type=="flow-chart") ? "selected" : "";?>><?php echo __( 'Flow chart', 'your-text-domain' );?></option>
                 </select>
                 <div id="embedded-item-list">
                     <?php echo $this->display_embedded_item_list($embedded_id);?>
