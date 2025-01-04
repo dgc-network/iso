@@ -169,8 +169,13 @@ jQuery(document).ready(function($) {
             const embedded_id = this.id.substring(14);
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
+            // Store the "paged" parameter in localStorage if it exists
+            if (urlParams.has('paged')) {
+                localStorage.setItem('embedded_paged', urlParams.get('paged'));
+            }            
             // Remove or update the parameters
             urlParams.set("_embedded_id", embedded_id);
+            urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
@@ -198,6 +203,7 @@ jQuery(document).ready(function($) {
                     const urlParams = new URLSearchParams(window.location.search);
                     // Remove or update the parameters
                     urlParams.delete('_embedded_id');
+                    urlParams.set("paged", localStorage.getItem('embedded_paged'));
                     // Redirect to the updated URL
                     window.location.href = "?" + urlParams.toString();
                     activate_embedded_list_data();
@@ -227,6 +233,7 @@ jQuery(document).ready(function($) {
                     const urlParams = new URLSearchParams(window.location.search);
                     // Remove or update the parameters
                     urlParams.delete('_embedded_id');
+                    urlParams.set("paged", localStorage.getItem('embedded_paged'));
                     // Redirect to the updated URL
                     window.location.href = "?" + urlParams.toString();
                     activate_embedded_list_data();
@@ -255,6 +262,7 @@ jQuery(document).ready(function($) {
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or update the parameters
                         urlParams.delete('_embedded_id');
+                        urlParams.set("paged", localStorage.getItem('embedded_paged'));
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
                         activate_embedded_list_data();
@@ -273,6 +281,7 @@ jQuery(document).ready(function($) {
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or update the parameters
             urlParams.delete('_embedded_id');
+            urlParams.set("paged", localStorage.getItem('embedded_paged'));
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
