@@ -1377,7 +1377,7 @@ if (!class_exists('display_documents')) {
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
                                 if ($field_type=='heading' || $field_type=='canvas' || $field_type=='image' || $field_type=='video') {
                                     if ($field_type=='heading') {
-                                        echo '<td><b>'.esc_html($field_title).'</b></td>';
+                                        echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
                                     } else {
                                         echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
                                     }
