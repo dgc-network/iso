@@ -185,7 +185,10 @@ jQuery(document).ready(function($) {
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
+    }
 
+    activate_embedded_dialog_data();
+    function activate_embedded_dialog_data(){
         $("#save-embedded-button").on("click", function () {
             $.ajax({
                 type: 'POST',
@@ -276,7 +279,6 @@ jQuery(document).ready(function($) {
                     }
                 });
             }
-
         });
 
         $("#exit-embedded-dialog").on("click", function () {
@@ -288,11 +290,6 @@ jQuery(document).ready(function($) {
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
-
-    }
-
-    activate_embedded_dialog_data();
-    function activate_embedded_dialog_data(){
     }
 
     // embedded-item
