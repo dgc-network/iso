@@ -1632,6 +1632,55 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_embedded'):
+                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                            if ($embedded_id) {
+                                $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
+                                if ($embedded_type=='line-list') {
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                    <div id="line-list">
+                                        <?php
+                                        if ($report_id) echo $items_class->display_line_list($embedded_id, $report_id);
+                                        elseif ($prev_report_id) echo $items_class->display_line_list($embedded_id, $prev_report_id);
+                                        else echo $items_class->display_line_list($embedded_id);
+                                        ?>
+                                    </div>
+                                    <?php
+                                }
+                                if ($embedded_type=='sub-form') {
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                    <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
+                                    <div id="sub-form">
+                                        <fieldset>
+                                        <?php
+                                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
+                                        if ($inner_query->have_posts()) :
+                                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                                if ($report_id) {
+                                                    $embedded_item_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
+                                                } elseif ($prev_report_id) {
+                                                    $embedded_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
+                                                } else {
+                                                    $embedded_item_value = get_post_meta(get_the_ID(), 'embedded_item_default', true);
+                                                }
+                                                $items_class->get_embedded_item_contains($field_id, get_the_ID(), $embedded_item_value);
+                                            endwhile;
+                                            wp_reset_postdata();
+                                        endif;
+                                        ?>
+                                        </fieldset>
+                                    </div>
+                                    <?php
+                                }
+                                if ($embedded_type=='select-options') {
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
+                                    <?php
+                                }
+                            }
+/*                            
                             if (strpos($default_value, '=') !== false) {
                                 list($key, $value) = explode('=', $default_value, 2);
                                 if ($key=='_list') {
@@ -1682,6 +1731,7 @@ if (!class_exists('display_documents')) {
                                     <?php
                                 }
                             }
+*/
                             break;
 
                         case ($field_type=='_doc_report'):
@@ -1908,6 +1958,31 @@ if (!class_exists('display_documents')) {
 
             if ($field_type=='_embedded'){
                 $items_class = new embedded_items();
+                $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                if ($embedded_id) {
+                    $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
+                    if ($embedded_type=='line-list') {
+                        $inner_query = $items_class->retrieve_line_list_data($embedded_id);
+                        if ($inner_query->have_posts()) :
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $embedded_item_value = $_POST[$field_id.get_the_ID()];
+                                update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                    }
+                    if ($embedded_type=='sub-form') {
+                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
+                        if ($inner_query->have_posts()) :
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $embedded_item_value = $_POST[$field_id.get_the_ID()];
+                                update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                    }
+                }
+/*                
                 if (strpos($default_value, '=') !== false) {
                     list($key, $value) = explode('=', $default_value, 2);
                     if ($key=='_list') {
@@ -1934,6 +2009,7 @@ if (!class_exists('display_documents')) {
                     if ($key=='_select') {
                     }
                 }
+*/
             }
         }
         

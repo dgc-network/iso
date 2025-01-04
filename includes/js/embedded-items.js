@@ -175,6 +175,7 @@ jQuery(document).ready(function($) {
                     '_embedded_id': $("#embedded-id").val(),
                     '_embedded_title': $("#embedded-title").val(),
                     '_embedded_number': $("#embedded-number").val(),
+                    '_embedded_type': $("#embedded-type").val(),
                     '_iso_category': $("#iso-category").val(),
                     '_is_private': $("#is-private").is(":checked") ? 1 : 0,
                 },
@@ -187,7 +188,6 @@ jQuery(document).ready(function($) {
                     alert(error);
                 }
             });
-
         });
 
         $("#duplicate-embedded-button").on("click", function () {

@@ -389,7 +389,6 @@ if (!class_exists('embedded_items')) {
                 <input type="text" id="embedded-number" value="<?php echo esc_attr($embedded_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="embedded-title"><?php echo __( 'Title', 'your-text-domain' );?></label>
                 <input type="text" id="embedded-title" value="<?php echo esc_attr($embedded_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="embedded-item-list"><?php echo __( 'Items', 'your-text-domain' );?></label>
                 <label for="embedded-type"><?php echo __( 'Type', 'your-text-domain' );?></label>
                 <select id="embedded-type" class="text ui-widget-content ui-corner-all">
                     <option value="sub-form" <?php echo ($embedded_type == "sub-form") ? "selected" : ""; ?>><?php echo __( 'Subform', 'your-text-domain' ); ?></option>
@@ -397,6 +396,7 @@ if (!class_exists('embedded_items')) {
                     <option value="select-options" <?php echo ($embedded_type == "select-options") ? "selected" : ""; ?>><?php echo __( 'Select options', 'your-text-domain' ); ?></option>
                     <option value="flow-chart" <?php echo ($embedded_type == "flow-chart") ? "selected" : ""; ?>><?php echo __( 'Flow chart', 'your-text-domain' ); ?></option>
                 </select>
+                <label for="embedded-item-list"><?php echo __( 'Items', 'your-text-domain' );?></label>
                 <div id="embedded-item-list">
                     <?php echo $this->display_embedded_item_list($embedded_id);?>
                 </div>
@@ -443,6 +443,7 @@ if (!class_exists('embedded_items')) {
                 $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : '';
                 $embedded_number = (isset($_POST['_embedded_number'])) ? sanitize_text_field($_POST['_embedded_number']) : '';
                 $embedded_title = (isset($_POST['_embedded_title'])) ? sanitize_text_field($_POST['_embedded_title']) : '';
+                $embedded_type = (isset($_POST['_embedded_type'])) ? sanitize_text_field($_POST['_embedded_type']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
                 $is_private = (isset($_POST['_is_private'])) ? sanitize_text_field($_POST['_is_private']) : 0;
                 $data = array(
@@ -451,6 +452,7 @@ if (!class_exists('embedded_items')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($embedded_id, 'embedded_number', $embedded_number);
+                update_post_meta($embedded_id, 'embedded_type', $embedded_type);
                 update_post_meta($embedded_id, 'iso_category', $iso_category);
                 update_post_meta($embedded_id, 'is_private', $is_private);
             } else {
@@ -848,6 +850,21 @@ if (!class_exists('embedded_items')) {
 
                     if ($field_type=='_embedded'){
                         $items_class = new embedded_items();
+                        $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                        if ($embedded_id) {
+                            $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
+                            if ($inner_query->have_posts()) :
+                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    $_list = array();
+                                    $_list["embedded_id"] = $embedded_id;
+                                    $_list["embedded_item_id"] = get_the_ID();
+                                    $_list["embedded_item_type"] = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                                    array_push($_array, $_list);
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+                        }
+/*                        
                         if (strpos($default_value, '=') !== false) {
                             list($key, $value) = explode('=', $default_value, 2);
                             $embedded_id = $this->get_embedded_id_by_number($value);
@@ -863,6 +880,7 @@ if (!class_exists('embedded_items')) {
                                 wp_reset_postdata();
                             endif;    
                         }
+*/
                     }
                 endwhile;
                 wp_reset_postdata();
