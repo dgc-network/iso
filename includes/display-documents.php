@@ -1631,10 +1631,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_embedded'):
-                            ini_set('display_errors', 1);
-                            ini_set('display_startup_errors', 1);
-                            error_reporting(E_ALL);
-
                             $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             if ($embedded_id) {
@@ -1642,7 +1638,7 @@ if (!class_exists('display_documents')) {
                                 if ($embedded_type=='line-list') {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <div id="line-list">
+                                    <div id="line-report-list">
                                         <?php
                                         if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
                                         elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
