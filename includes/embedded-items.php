@@ -374,6 +374,7 @@ if (!class_exists('embedded_items')) {
             $embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
             $iso_category = get_post_meta($embedded_id, 'iso_category', true);
             $embedded_site = get_post_meta($embedded_id, 'site_id', true);
+            $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
             $is_private = get_post_meta($embedded_id, 'is_private', true);
             $is_private_checked = ($is_private==1) ? 'checked' : '';
             ?>
@@ -384,15 +385,23 @@ if (!class_exists('embedded_items')) {
             <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
 
             <fieldset>
-                <label for="embedded-number"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
+                <label for="embedded-number"><?php echo __( 'Number', 'your-text-domain' );?></label>
                 <input type="text" id="embedded-number" value="<?php echo esc_attr($embedded_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="embedded-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <label for="embedded-title"><?php echo __( 'Title', 'your-text-domain' );?></label>
                 <input type="text" id="embedded-title" value="<?php echo esc_attr($embedded_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="embedded-item-list"><?php echo __( 'Items: ', 'your-text-domain' );?></label>
+                <label for="embedded-item-list"><?php echo __( 'Items', 'your-text-domain' );?></label>
+                <label for="embedded-type"><?php echo __( 'Type', 'your-text-domain' );?></label>
+                <select id="embedded-type" class="text ui-widget-content ui-corner-all">
+                    <?php echo $this->select_iso_category_options($iso_category);?>
+                    <option value="sub-form" <?php ($embedded_type=="sub-form") ? echo "selected" : echo "";?>><?php echo __( 'Subform', 'your-text-domain' );?></option>
+                    <option value="line-list" <?php ($embedded_type=="line-list") ? echo "selected" : echo "";?>><?php echo __( 'Line list', 'your-text-domain' );?></option>
+                    <option value="select-options" <?php ($embedded_type=="select-options") ? echo "selected" : echo "";?>><?php echo __( 'Select options', 'your-text-domain' );?></option>
+                    <option value="flow-chart" <?php ($embedded_type=="flow-chart") ? echo "selected" : echo "";?>><?php echo __( 'Flow chart', 'your-text-domain' );?></option>
+                </select>
                 <div id="embedded-item-list">
                     <?php echo $this->display_embedded_item_list($embedded_id);?>
                 </div>
-                <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
+                <label for="iso-category"><?php echo __( 'ISO', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
                 <?php if ($embedded_site==$site_id || current_user_can('administrator')) {?>
                     <div>
