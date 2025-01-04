@@ -167,12 +167,18 @@ jQuery(document).ready(function($) {
 
         $('[id^="edit-embedded-"]').on("click", function () {
             const embedded_id = this.id.substring(14);
+
+            // Get the current URL
+            const currentUrl = window.location.href;
+            // Extract the page number using a regular expression
+            const pageMatch = currentUrl.match(/\/page\/(\d+)\//);
+            if (pageMatch) {
+                const pageNumber = pageMatch[1]; // Extracted page number
+                localStorage.setItem('embedded_paged', pageNumber);
+            }
+            
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            // Store the "paged" parameter in localStorage if it exists
-            if (urlParams.has('paged')) {
-                localStorage.setItem('embedded_paged', urlParams.get('paged'));
-            }            
             // Remove or update the parameters
             urlParams.set("_embedded_id", embedded_id);
             urlParams.set("paged", 1);
