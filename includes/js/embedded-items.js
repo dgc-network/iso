@@ -165,6 +165,19 @@ jQuery(document).ready(function($) {
             });    
         });
 
+        $('[id^="edit-embedded-"]').on("click", function () {
+            const embedded_id = this.id.substring(14);
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Remove or update the parameters
+            urlParams.set("_embedded_id", embedded_id);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+            activate_embedded_dialog_data(embedded_id);
+        });
+    }
+
+    function activate_embedded_dialog_data(embedded_id){
         $("#save-embedded-button").on("click", function () {
             $.ajax({
                 type: 'POST',
@@ -181,6 +194,12 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
+                    // Get existing URL parameters
+                    const urlParams = new URLSearchParams(window.location.search);
+                    // Remove or update the parameters
+                    urlParams.delete('_embedded_id');
+                    // Redirect to the updated URL
+                    window.location.href = "?" + urlParams.toString();
                     activate_embedded_list_data();
                 },
                 error: function (error) {
@@ -204,6 +223,12 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
+                    // Get existing URL parameters
+                    const urlParams = new URLSearchParams(window.location.search);
+                    // Remove or update the parameters
+                    urlParams.delete('_embedded_id');
+                    // Redirect to the updated URL
+                    window.location.href = "?" + urlParams.toString();
                     activate_embedded_list_data();
                 },
                 error: function (error) {
@@ -226,6 +251,12 @@ jQuery(document).ready(function($) {
                     },
                     success: function (response) {
                         $("#result-container").html(response.html_contain);
+                        // Get existing URL parameters
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or update the parameters
+                        urlParams.delete('_embedded_id');
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
                         activate_embedded_list_data();
                     },
                     error: function (error) {
@@ -242,31 +273,6 @@ jQuery(document).ready(function($) {
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or update the parameters
             urlParams.delete('_embedded_id');
-            urlParams.set("paged", 1);
-            // Redirect to the updated URL
-            window.location.href = "?" + urlParams.toString();
-/*
-            // Get the current URL
-            var currentUrl = window.location.href;
-            // Create a URL object
-            var url = new URL(currentUrl);
-            // Remove the specified parameter
-            url.searchParams.delete('_embedded_id');
-            // Reset the 'paged' parameter to 1
-            url.searchParams.set('paged', 1);
-            // Get the modified URL
-            var modifiedUrl = url.toString();
-            // Reload the page with the modified URL
-            window.location.replace(modifiedUrl);
-*/            
-        });
-
-        $('[id^="edit-embedded-"]').on("click", function () {
-            const embedded_id = this.id.substring(14);
-            // Get existing URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            // Remove or update the parameters
-            urlParams.set("_embedded_id", embedded_id);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
@@ -707,7 +713,6 @@ jQuery(document).ready(function($) {
                                 const ajaxData = {
                                     'action': 'set_line_report_dialog_data',
                                 };
-                                //ajaxData['_report_id'] = $("#report-id").val();
                                 ajaxData['_embedded_id'] = $("#embedded-id").val();
                                 field_id = $("#embedded-id").val();
                                 $.each(get_response.line_report_fields, function(index, inner_value) {
@@ -769,7 +774,6 @@ jQuery(document).ready(function($) {
                                     'action': 'set_line_report_dialog_data',
                                 };
                                 ajaxData['_line_report_id'] = line_report_id;
-                                //ajaxData['_report_id'] = $("#report-id").val();
                                 ajaxData['_embedded_id'] = $("#embedded-id").val();
                                 field_id = $("#embedded-id").val();
                                 $.each(get_response.line_report_fields, function(index, inner_value) {
@@ -806,7 +810,6 @@ jQuery(document).ready(function($) {
                                         data: {
                                             'action': 'del_line_report_dialog_data',
                                             '_line_report_id': line_report_id,
-                                            //'_report_id': $("#report-id").val(),
                                             '_embedded_id': $("#embedded-id").val(),
                                         },
                                         success: function (del_response) {
@@ -838,6 +841,5 @@ jQuery(document).ready(function($) {
             autoOpen: false,
             buttons: {}
         });
-
     }
 });
