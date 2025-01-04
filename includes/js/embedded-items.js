@@ -173,11 +173,11 @@ jQuery(document).ready(function($) {
             urlParams.set("_embedded_id", embedded_id);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-            activate_embedded_dialog_data(embedded_id);
         });
     }
 
-    function activate_embedded_dialog_data(embedded_id){
+    activate_embedded_dialog_data();
+    function activate_embedded_dialog_data(){
         $("#save-embedded-button").on("click", function () {
             $.ajax({
                 type: 'POST',
