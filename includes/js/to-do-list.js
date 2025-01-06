@@ -465,7 +465,7 @@ jQuery(document).ready(function($) {
                         '_log_id': $("#log-id").val(),
                     },
                     success: function (response) {
-                        $("#result-container").html(response.html_contain);
+                        //$("#result-container").html(response.html_contain);
                         // Get existing URL parameters
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or update the parameters
