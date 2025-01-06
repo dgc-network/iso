@@ -1404,6 +1404,7 @@ if (!class_exists('to_do_list')) {
         
         // action_log
         function display_action_log_list() {
+            ob_start();
             $query = $this->retrieve_action_log_data(0);
             $total_posts = $query->found_posts;
             ?>
@@ -1422,6 +1423,7 @@ if (!class_exists('to_do_list')) {
                 </div>
             </div>
             <?php
+            return ob_get_clean();
         }
         
         function retrieve_action_log_data($paged=1, $report_id=false) {
