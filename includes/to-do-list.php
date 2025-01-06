@@ -1585,7 +1585,7 @@ if (!class_exists('to_do_list')) {
                         echo '<h3>'.$doc_title.'</h3>';
                     }
                     $user_id = get_post_meta($log_id, 'user_id', true);
-                    if ($doc_id) {
+                    if ($user_id) {
                         $nda_content = get_user_meta($user_id, 'nda_content', true);
                         echo '<h3>'.$nda_content.'</h3>';
                     }

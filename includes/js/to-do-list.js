@@ -486,7 +486,7 @@ jQuery(document).ready(function($) {
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Update the parameters
             urlParams.delete("_log_id");
-            urlParams.set("paged", 1);
+            //urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
