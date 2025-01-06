@@ -73,6 +73,9 @@ function user_is_not_logged_in() {
 
 function is_site_not_configured($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
+    if (current_user_can('administrator')) {
+        return false;
+    }
     $user = get_userdata($user_id);
     // Get the site_id meta for the user
     $site_id = get_user_meta($user_id, 'site_id', true);
