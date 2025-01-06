@@ -1570,7 +1570,7 @@ if (!class_exists('to_do_list')) {
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo esc_html(get_the_title($log_id));?></h2>
-            
+            <input type="hidden" id="log-id" value="<?php echo esc_attr($log_id); ?>" />            
             <fieldset>
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
@@ -1715,8 +1715,12 @@ if (!class_exists('to_do_list')) {
 
         function del_action_log_dialog_data() {
             $response = array();
-            wp_delete_post($_POST['_log_id'], true);
-            $response['html_contain'] = $this->display_action_log_list();
+            if (isset($_POST['_log_id'])) {
+                wp_delete_post($_POST['_log_id'], true);
+                $response['html_contain'] = $this->display_action_log_list();
+            } else {
+                $response['error'] = 'Invalid request!';
+            }
             wp_send_json($response);
         }
 
