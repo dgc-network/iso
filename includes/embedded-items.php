@@ -1197,6 +1197,7 @@ if (!class_exists('embedded_items')) {
 
                 $params = array(
                     'log_message' => 'Category('.$category_title.') has been updated',
+                    'category_id' => $category_id,
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -1222,6 +1223,7 @@ if (!class_exists('embedded_items')) {
             $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
             $params = array(
                 'log_message' => 'Category('.get_the_title($category_id).') has been deleted',
+                'category_id' => $category_id,
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    
@@ -1676,6 +1678,7 @@ if (!class_exists('embedded_items')) {
 
                 $params = array(
                     'log_message' => 'Department('.$department_title.') has been updated',
+                    'department_id' => $department_id,
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -1702,6 +1705,7 @@ if (!class_exists('embedded_items')) {
             $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
             $params = array(
                 'log_message' => 'Department('.get_the_title($department_id).') has been deleted',
+                'department_id' => $department_id,
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    

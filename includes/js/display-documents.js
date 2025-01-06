@@ -712,6 +712,16 @@ jQuery(document).ready(function($) {
                         });
                     }
                     $("#doc-field-dialog").dialog('open');
+
+                    $("#field-type").on("change", function() {
+                        if ($(this).val() === 'heading' || $(this).val() === 'video' || $(this).val() === 'image' || $(this).val() === 'canvas') {
+                            $('#listing-style').val('');
+                        }
+                        if ($(this).val() === 'textarea') {
+                            $('#listing-style').val('left');
+                        }
+                    });
+                
                 },
                 error: function (error) {
                     console.error(error);

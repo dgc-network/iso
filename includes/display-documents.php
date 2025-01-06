@@ -553,8 +553,10 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
 
+                $log_message = $doc_title.'(#'.$doc_number.') has been updated';
                 $params = array(
-                    'log_message' => $doc_title.'(#'.$doc_number.') has been updated',
+                    'log_message' => $doc_title.' has been updated',
+                    'doc_id' => $doc_id,
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -585,7 +587,8 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $params = array(
-                'log_message' => $doc_title.'(#'.$doc_number.') has been deleted',
+                'log_message' => $doc_title.' has been deleted',
+                'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    
@@ -1128,7 +1131,7 @@ if (!class_exists('display_documents')) {
 
             <div id="report-action-log-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_action_log($report_id);?>
+                <?php echo $todo_class->get_action_log_list($report_id);?>
             </div>
             
             </div>
@@ -1364,8 +1367,6 @@ if (!class_exists('display_documents')) {
                     </thead>
                     <tbody id="sortable-doc-field-list">
                         <?php
-                        //$x = 0;
-                        //if ($doc_id) $params = array('doc_id' => $doc_id);
                         $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
@@ -1375,8 +1376,9 @@ if (!class_exists('display_documents')) {
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
 
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
+/*
                                 if ($field_type=='heading' || $field_type=='canvas' || $field_type=='image' || $field_type=='video') {
-                                    if ($field_type=='heading') {
+                                    if ($field_type=='heading' && $default_value=='') {
                                         echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
                                     } else {
                                         echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
@@ -1385,13 +1387,13 @@ if (!class_exists('display_documents')) {
                                     echo '<td></td>';
                                     echo '<td></td>';
                                 } else {
+*/                                 
                                     echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
                                     echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
                                     echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
                                     echo '<td style="text-align:center;">'.esc_html($listing_style).'</td>';
-                                }
+                                //}
                                 echo '</tr>';
-                                //$x += 1;
                             endwhile;
                             wp_reset_postdata();
                         }
@@ -1465,7 +1467,7 @@ if (!class_exists('display_documents')) {
                     <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
                     <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
                     <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
-                    <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( '_employee', 'your-text-domain' );?></option>
+                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
 */?>                    
                     <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
                     <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( '_iot_device', 'your-text-domain' );?></option>
@@ -1488,7 +1490,7 @@ if (!class_exists('display_documents')) {
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
                     <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( '_doc_report', 'your-text-domain' );?></option>
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
-                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
+                    <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( '_employee', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
@@ -2284,7 +2286,8 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_category', $draft_category);
 
                 $params = array(
-                    'log_message' => 'Generate the draft of '.$draft_title,
+                    'log_message' => $draft_title . ' has been created',
+                    'doc_id' => $draft_id,
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);
@@ -2355,7 +2358,8 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(
-                'log_message' => 'Generate the draft of '.$doc_title,
+                'log_message' => $doc_title . ' has been created',
+                'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);

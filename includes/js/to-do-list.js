@@ -454,7 +454,34 @@ jQuery(document).ready(function($) {
 
     activate_action_log_dialog_data();
     function activate_action_log_dialog_data(){
-        $("#action-log-exit").on("click", function () {
+        $("#del-action-log").on("click", function () {
+            if (window.confirm("Are you sure you want to delete this action log?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: ajax_object.ajax_url,
+                    dataType: "json",
+                    data: {
+                        'action': 'del_action_log_dialog_data',
+                        '_log_id': $("#log-id").val(),
+                    },
+                    success: function (response) {
+                        $("#result-container").html(response.html_contain);
+                        // Get existing URL parameters
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or update the parameters
+                        urlParams.delete('_log_id');
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert(error);
+                    }
+                });
+            }
+        });
+
+        $("#exit-action-log").on("click", function () {
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Update the parameters

@@ -23,6 +23,9 @@ if (!class_exists('to_do_list')) {
             add_action( 'wp_ajax_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
 
+            add_action( 'wp_ajax_del_action_log_dialog_data', array( $this, 'del_action_log_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_action_log_dialog_data', array( $this, 'del_action_log_dialog_data' ) );
+
             add_action( 'init', array( $this, 'schedule_event_and_action' ) );
 
             // Schedule the cron job if it's not already scheduled
@@ -912,6 +915,11 @@ if (!class_exists('to_do_list')) {
 
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+            $category_id = isset($params['category_id']) ? $params['category_id'] : 0;
+            $department_id = isset($params['department_id']) ? $params['department_id'] : 0;
+            $device_id = isset($params['device_id']) ? $params['device_id'] : 0;
 
             if ($report_id) {
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -937,6 +945,10 @@ if (!class_exists('to_do_list')) {
             update_post_meta($todo_id, 'submit_action', $action_id);
             update_post_meta($todo_id, 'submit_time', time());
             update_post_meta($todo_id, 'next_job', $next_job);
+            if ($user_id) update_post_meta($todo_id, 'user_id', $user_id);
+            if ($category_id) update_post_meta($todo_id, 'category_id', $category_id);
+            if ($department_id) update_post_meta($todo_id, 'department_id', $department_id);
+            if ($device_id) update_post_meta($todo_id, 'device_id', $device_id);
 
             update_post_meta($report_id, 'todo_status', $next_job);
 
@@ -1404,7 +1416,7 @@ if (!class_exists('to_do_list')) {
                         <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
                     </div>
                 </div>
-                <?php echo $this->get_action_log();?>
+                <?php echo $this->get_action_log_list();?>
                 <div style="background-color:lightblue; text-align:center;">
                     <?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $total_posts;?>
                 </div>
@@ -1563,7 +1575,31 @@ if (!class_exists('to_do_list')) {
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
-                if (!$submit_action) echo 'system log!';
+                if (!$submit_action) {
+                    echo 'system log!';
+                    $doc_id = get_post_meta($log_id, 'doc_id', true);
+                    if ($doc_id) {
+                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        echo '<h3>'.$doc_title.'</h3>';
+                    }
+                    $user_id = get_post_meta($log_id, 'user_id', true);
+                    if ($doc_id) {
+                        $nda_content = get_user_meta($user_id, 'nda_content', true);
+                        echo '<h3>'.$nda_content.'</h3>';
+                    }
+                    $category_id = get_post_meta($log_id, 'category_id', true);
+                    if ($category_id) {
+                        echo '<h3>'.get_the_title($category_id).'</h3>';
+                    }
+                    $department_id = get_post_meta($log_id, 'department_id', true);
+                    if ($department_id) {
+                        echo '<h3>'.get_the_title($department_id).'</h3>';
+                    }
+                    $device_id = get_post_meta($log_id, 'device_id', true);
+                    if ($device_id) {
+                        echo '<h3>'.get_the_title($device_id).'</h3>';
+                    }
+                }
                 // Figure out the summary-job Step 3
                 else if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
@@ -1590,7 +1626,8 @@ if (!class_exists('to_do_list')) {
                     <?php echo 'Log time: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?>
                 </div>
                 <div style="text-align: right">
-                    <input type="button" id="action-log-exit" value="Exit" style="margin:5px;" />
+                    <input type="button" id="del-action-log" value="Delete" style="margin:5px;" />
+                    <input type="button" id="exit-action-log" value="Exit" style="margin:5px;" />
                 </div>
             </div>
             </fieldset>
@@ -1599,7 +1636,7 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
         
-        function get_action_log($report_id=false) {
+        function get_action_log_list($report_id=false) {
             ob_start();
             ?>
             <fieldset>
@@ -1675,24 +1712,14 @@ if (!class_exists('to_do_list')) {
             <?php
             return ob_get_clean();
         }
-/*        
-        function count_action_logs(){
-            $current_user_id = get_current_user_id();
-            $current_site = get_user_meta($current_user_id, 'site_id', true);
-            $x = 0;
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                    $site_id = get_post_meta($doc_id, 'site_id', true);
-                    if ($current_site==$site_id) { // Aditional condition to filter the data
-                        $x += 1;
-                    }
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            return $x;
+
+        function del_action_log_dialog_data() {
+            $response = array();
+            wp_delete_post($_POST['_log_id'], true);
+            $response['html_contain'] = $this->display_action_log_list();
+            wp_send_json($response);
         }
-*/        
+
         // doc-report frequence setting
         function schedule_event_callback($params) {
             $action_id = $params['action_id'];

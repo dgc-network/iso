@@ -903,6 +903,7 @@ if (!class_exists('iot_messages')) {
 
                 $params = array(
                     'log_message' => 'IoT device(#'.$device_number.') has been updated',
+                    'device_id' => $device_id,
                 );
                 $todo_class = new to_do_list();
                 $todo_class->create_action_log_and_go_next($params);    
@@ -933,6 +934,7 @@ if (!class_exists('iot_messages')) {
             $device_number = get_post_meta($device_id, 'device_number', true);
             $params = array(
                 'log_message' => 'IoT device(#'.$device_number.') has been deleted',
+                'device_id' => $device_id,
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    
