@@ -684,8 +684,8 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#site-job-dialog").dialog('close');
-                                        //window.location.replace(window.location.href);
-                                        $("#site-job-list").html(response.html_contain);
+                                        window.location.replace(window.location.href);
+                                        //$("#site-job-list").html(response.html_contain);
                                         activate_site_job_list_data();
                                     },
                                     error: function (error) {
@@ -706,8 +706,8 @@ jQuery(document).ready(function($) {
                                         },
                                         success: function (response) {
                                             $("#site-job-dialog").dialog('close');
-                                            //window.location.replace(window.location.href);
-                                            $("#site-job-list").html(response.html_contain);
+                                            window.location.replace(window.location.href);
+                                            //$("#site-job-list").html(response.html_contain);
                                             activate_site_job_list_data();
                                         },
                                         error: function (error) {
