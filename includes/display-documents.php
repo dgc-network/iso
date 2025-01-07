@@ -1378,17 +1378,17 @@ if (!class_exists('display_documents')) {
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
 /*
                                 if ($field_type=='heading' || $field_type=='canvas' || $field_type=='image' || $field_type=='video') {
-                                    if ($field_type=='heading' && $default_value=='') {
-                                        echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
-                                    } else {
-                                        echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
-                                    }
                                     echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
                                     echo '<td></td>';
                                     echo '<td></td>';
                                 } else {
 */                                 
-                                    echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
+                                    //echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
+                                    if ($field_type=='heading' && $default_value=='') {
+                                        echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
+                                    } else {
+                                        echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
+                                    }
                                     echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
                                     echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
                                     echo '<td style="text-align:center;">'.esc_html($listing_style).'</td>';
