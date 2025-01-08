@@ -1289,7 +1289,7 @@ if (!class_exists('embedded_items')) {
             while ($query->have_posts()) : $query->the_post();
                 $category_url = get_post_meta(get_the_ID(), 'category_url', true);
                 $embedded = get_post_meta(get_the_ID(), 'embedded', true);
-                $start_ai_url = '/display-documents/?_statement=' . get_the_ID();
+                $start_ai_url = '/display-documents/?_start_ai=' . get_the_ID();
                 ?>
                 <div class="iso-category-content">
                     <?php the_content(); ?>
@@ -1298,9 +1298,9 @@ if (!class_exists('embedded_items')) {
                             <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
                         </div>
                         <div class="wp-block-button">
-                            <?php if ($embedded) {?>
+                            <?php //if ($embedded) {?>
                             <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'your-text-domain' ); ?></a>
-                            <?php }?>
+                            <?php //}?>
                         </div>
                     </div>
                     <!-- Spacer -->

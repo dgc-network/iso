@@ -49,8 +49,8 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_reset_doc_report_todo_status', array( $this, 'reset_doc_report_todo_status' ) );
             add_action( 'wp_ajax_nopriv_reset_doc_report_todo_status', array( $this, 'reset_doc_report_todo_status' ) );                                                                    
 
-            add_action( 'wp_ajax_set_iso_statement_data', array( $this, 'set_iso_statement_data' ) );
-            add_action( 'wp_ajax_nopriv_set_iso_statement_data', array( $this, 'set_iso_statement_data' ) );
+            add_action( 'wp_ajax_set_iso_start_ai_data', array( $this, 'set_iso_start_ai_data' ) );
+            add_action( 'wp_ajax_nopriv_set_iso_start_ai_data', array( $this, 'set_iso_start_ai_data' ) );
         }
 
         function enqueue_display_document_scripts() {
@@ -76,7 +76,7 @@ if (!class_exists('display_documents')) {
             elseif (is_site_not_configured()) display_NDA_assignment();
             else {
                 // Display document list if no specific parameters are existed
-                if (($_GET['_category']!='embedded') && !isset($_GET['_doc_id']) && !isset($_GET['_duplicate_document']) && !isset($_GET['_statement'])) {
+                if (($_GET['_category']!='embedded') && !isset($_GET['_doc_id']) && !isset($_GET['_duplicate_document']) && !isset($_GET['_start_ai'])) {
                     echo $this->display_document_list();
                 }
 
@@ -87,13 +87,13 @@ if (!class_exists('display_documents')) {
                 }
                 
                 // Display ISO statement
-                if (isset($_GET['_statement'])) {
-                    $iso_category_id = sanitize_text_field($_GET['_statement']);
+                if (isset($_GET['_start_ai'])) {
+                    $iso_category_id = sanitize_text_field($_GET['_start_ai']);
                     $paged = 1;
                     if (isset($_GET['_paged'])) {
                         $paged = sanitize_text_field($_GET['_paged']);
                     }
-                    echo $this->display_iso_statement_content($iso_category_id, $paged);
+                    echo $this->display_iso_start_ai_content($iso_category_id, $paged);
                 }
 
                 // Display document dialog if doc_id is existed
@@ -2129,7 +2129,7 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function display_iso_statement_content($iso_category_id=false, $paged=1) {
+        function display_iso_start_ai_content($iso_category_id=false, $paged=1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
@@ -2224,7 +2224,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
 
-        function set_iso_statement_data() {
+        function set_iso_start_ai_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
 
             if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {

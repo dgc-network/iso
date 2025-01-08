@@ -192,7 +192,7 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'set_iso_statement_data',
+                'action': 'set_iso_start_ai_data',
                 _draft_title : $("#draft-title").val(),
                 _draft_category : $("#draft-category").val(),
                 _draft_content : $("#draft-content").val(),
@@ -227,7 +227,7 @@ jQuery(document).ready(function($) {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         // Remove or Add the parameters
-        urlParams.delete("_statement");
+        urlParams.delete("_start_ai");
         urlParams.delete("_prompt");
         urlParams.delete("_paged");
         // Redirect to the updated URL
@@ -261,7 +261,7 @@ jQuery(document).ready(function($) {
             url: ajax_object.ajax_url,
             dataType: "json",
             data: {
-                'action': 'set_iso_statement_data',
+                'action': 'set_iso_start_ai_data',
                 _keyValuePairs : keyValuePairs,
             },
             success: function (response) {
@@ -271,7 +271,7 @@ jQuery(document).ready(function($) {
                 const urlParams = new URLSearchParams(window.location.search);
                 // Remove or Add the parameters
                 urlParams.set("_paged", 2);
-                urlParams.set("_statement", iso_category_id);
+                urlParams.set("_start_ai", iso_category_id);
                 urlParams.delete("_prompt");
                 // Redirect to the updated URL
                 window.location.href = "?" + urlParams.toString();
@@ -289,7 +289,7 @@ jQuery(document).ready(function($) {
         const urlParams = new URLSearchParams(window.location.search);
         // Remove or Add the parameters
         urlParams.set("_paged", 1);
-        urlParams.set("_statement", iso_category_id);
+        urlParams.set("_start_ai", iso_category_id);
         urlParams.delete("_prompt");
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
@@ -346,7 +346,7 @@ jQuery(document).ready(function($) {
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_iso_statement_data',
+                    'action': 'set_iso_start_ai_data',
                     _duplicated_ids : duplicated_ids,
                 },
                 success: function (response) {
@@ -368,7 +368,7 @@ jQuery(document).ready(function($) {
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Add the parameters
             urlParams.set("_paged", 1);
-            urlParams.set("_statement", iso_category_id);
+            urlParams.set("_start_ai", iso_category_id);
             urlParams.delete("_prompt");
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
