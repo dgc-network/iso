@@ -1003,15 +1003,17 @@ if (!class_exists('display_profiles')) {
                             else $doc_title = get_the_content();
                             // display the warning if the job without assigned actions
                             $action_query = $this->retrieve_doc_action_data(get_the_ID());
-                            $action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
+                            $job_title = ($action_query->have_posts()) ? get_the_title() : '<span style="color:red;">'.get_the_title().'</span>';
+                            //$action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                             // display the warning if the job without assigned users
                             $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
-                            $users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">(U)</span>';
+                            $doc_title = (!empty($users_query)) ? $doc_title : '<span style="color:red;">'.$doc_title'</span>';
+                            //$users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">(U)</span>';
                             ?>
                             <tr id="edit-site-job-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
-                                <td style="text-align:center;"><?php echo get_the_title().$action_unassigned;?></td>
-                                <td><?php echo $doc_title.$users_unassigned;?></td>
+                                <td style="text-align:center;"><?php echo $job_title;?></td>
+                                <td><?php echo $doc_title;?></td>
                             </tr>
                             <?php 
                         endwhile;
