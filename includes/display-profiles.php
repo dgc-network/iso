@@ -215,6 +215,11 @@ if (!class_exists('display_profiles')) {
                                 }
                                 wp_reset_postdata();
                             }
+
+                            // Step 5: Delete the matched 'embedded' post
+                            wp_delete_post($matched_post_id, true); // true to force deletion
+                            error_log('Deleted embedded post ID: ' . $matched_post_id);
+
                         }
                     }
                 }
