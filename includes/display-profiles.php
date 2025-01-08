@@ -196,10 +196,14 @@ if (!class_exists('display_profiles')) {
                                         delete_post_meta($post_id, 'embedded_id');
                                     }
         
+                                    // Fetch the current title to ensure it is preserved
+                                    $current_title = get_the_title($post_id);
+        
                                     // Update post type to 'doc-field'
                                     $post_args = array(
                                         'ID'          => $post_id,
                                         'post_type'   => 'doc-field',
+                                        'post_title'  => $current_title, // Preserve the title
                                     );
         
                                     wp_update_post($post_args);
