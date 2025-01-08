@@ -117,7 +117,7 @@ if (!class_exists('display_profiles')) {
 
                 echo '</div>';
 
-                if ($_GET['_select_profile']=='hange_post_type_sub_item_to_embedded_item') echo $this->hange_post_type_sub_item_to_embedded_item();
+                if ($_GET['_select_profile']=='change_post_type_sub_item_to_embedded_item') echo $this->change_post_type_sub_item_to_embedded_item();
                 if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
                 if ($_GET['_select_profile']=='update_doc_field_titles') echo $this->update_doc_field_titles();
                 if ($_GET['_select_profile']=='update_post_type_and_meta_for_embedded_items') echo $this->update_post_type_and_meta_for_embedded_items();
