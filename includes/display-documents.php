@@ -1441,7 +1441,7 @@ if (!class_exists('display_documents')) {
         function display_doc_field_dialog($field_id=false) {
             ob_start();
             //$field_title = get_post_meta($field_id, 'field_title', true);
-            $field_title = get_the_title();
+            $field_title = get_the_title($field_id);
             $field_type = get_post_meta($field_id, 'field_type', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
@@ -1627,7 +1627,7 @@ if (!class_exists('display_documents')) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_id = get_the_ID();
                     //$field_title = get_post_meta($field_id, 'field_title', true);
-                    $field_title = get_the_title();
+                    $field_title = get_the_title($field_id);
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
 
