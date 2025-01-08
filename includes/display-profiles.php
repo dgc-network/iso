@@ -1007,7 +1007,7 @@ if (!class_exists('display_profiles')) {
                             //$action_unassigned = ($action_query->have_posts()) ? '' : '<span style="color:red;">(U)</span>';
                             // display the warning if the job without assigned users
                             $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
-                            $doc_title = (!empty($users_query)) ? $doc_title : '<span style="color:red;">'.$doc_title'</span>';
+                            $doc_title = (!empty($users_query)) ? $doc_title : '<span style="color:red;">'.$doc_title.'</span>';
                             //$users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">(U)</span>';
                             ?>
                             <tr id="edit-site-job-<?php the_ID();?>">
