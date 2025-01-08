@@ -117,11 +117,143 @@ if (!class_exists('display_profiles')) {
 
                 echo '</div>';
 
-                //if ($_GET['_select_profile']=='change_post_type_sub_item_to_embedded_item') echo $this->change_post_type_sub_item_to_embedded_item();
-                //if ($_GET['_select_profile']=='migrate_embedded_code_to_embedded_number') echo $this->migrate_embedded_code_to_embedded_number();
+                if ($_GET['_select_profile']=='update_doc_field_titles') echo $this->update_doc_field_titles();
+                if ($_GET['_select_profile']=='update_post_type_and_meta_for_embedded_items') echo $this->update_post_type_and_meta_for_embedded_items();
             }
         }
 
+        function update_post_type_and_meta_for_embedded_items() {
+            // Step 1: Query posts of post type 'doc-field' with meta key 'default_value'
+            $args = array(
+                'post_type'      => 'doc-field',
+                'meta_key'       => 'default_value',
+                'posts_per_page' => -1,
+                'post_status'    => 'any',
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    
+                    // Retrieve the embedded number from 'default_value'
+                    $embedded_number = get_post_meta(get_the_ID(), 'default_value', true);
+        
+                    if (!empty($embedded_number)) {
+                        // Step 2: Query the post with post type 'embedded' and meta key 'embedded_number'
+                        $args_embedded = array(
+                            'post_type'      => 'embedded',
+                            'meta_key'       => 'embedded_number',
+                            'meta_value'     => $embedded_number,
+                            'posts_per_page' => 1,
+                            'post_status'    => 'any',
+                        );
+        
+                        $embedded_query = new WP_Query($args_embedded);
+        
+                        if ($embedded_query->have_posts()) {
+                            $embedded_query->the_post();
+                            $matched_post_id = get_the_ID(); // Matched 'embedded' post ID
+                            wp_reset_postdata();
+        
+                            // Step 3: Query posts of post type 'embedded-item' with meta key 'embedded_id'
+                            $args_update = array(
+                                'post_type'      => 'embedded-item',
+                                'meta_key'       => 'embedded_id',
+                                'meta_value'     => $matched_post_id,
+                                'posts_per_page' => -1,
+                                'post_status'    => 'any',
+                            );
+        
+                            $query_update = new WP_Query($args_update);
+        
+                            if ($query_update->have_posts()) {
+                                while ($query_update->have_posts()) {
+                                    $query_update->the_post();
+        
+                                    // Step 4: Replace meta keys and update the post type
+                                    $post_id = get_the_ID();
+        
+                                    // Get existing meta values
+                                    $embedded_item_type = get_post_meta($post_id, 'embedded_item_type', true);
+                                    $embedded_item_default = get_post_meta($post_id, 'embedded_item_default', true);
+        
+                                    // Update new meta keys
+                                    if ($embedded_item_type) {
+                                        update_post_meta($post_id, 'field_type', $embedded_item_type);
+                                        delete_post_meta($post_id, 'embedded_item_type');
+                                    }
+        
+                                    if ($embedded_item_default) {
+                                        update_post_meta($post_id, 'default_value', $embedded_item_default);
+                                        delete_post_meta($post_id, 'embedded_item_default');
+                                    }
+        
+                                    // Update post type to 'doc-field'
+                                    $post_args = array(
+                                        'ID'          => $post_id,
+                                        'post_type'   => 'doc-field',
+                                    );
+        
+                                    wp_update_post($post_args);
+        
+                                    // Optional: Log the updated post ID for debugging
+                                    error_log('Post ID updated to doc-field with meta changes: ' . $post_id);
+                                }
+                                wp_reset_postdata();
+                            }
+                        }
+                    }
+                }
+                wp_reset_postdata();
+            } else {
+                // No posts found for the given parameters
+                error_log('No doc-field posts found with meta key "default_value".');
+            }
+        }
+        
+        function update_doc_field_titles() {
+            // Step 1: Query all posts of post type 'doc-field'
+            $args = array(
+                'post_type'      => 'doc-field',
+                'posts_per_page' => -1, // Retrieve all posts
+                'post_status'    => 'any',
+            );
+        
+            $query = new WP_Query($args);
+        
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+        
+                    // Step 2: Get the post ID and the meta value for 'field_title'
+                    $post_id = get_the_ID();
+                    $field_title = get_post_meta($post_id, 'field_title', true);
+        
+                    if (!empty($field_title)) {
+                        // Step 3: Update the post title with the value from 'field_title'
+                        $post_args = array(
+                            'ID'         => $post_id,
+                            'post_title' => $field_title,
+                        );
+        
+                        wp_update_post($post_args);
+        
+                        // Optional: Log the updated post ID and title for debugging
+                        error_log('Post ID ' . $post_id . ' updated with title: ' . $field_title);
+                    }
+                }
+                wp_reset_postdata();
+            } else {
+                // No posts found
+                error_log('No posts found for post type doc-field');
+            }
+        }
+/*        
+        // Run the function
+        update_doc_field_titles();
+        
         function change_post_type_sub_item_to_embedded_item() {
             global $wpdb;
         
@@ -195,7 +327,7 @@ if (!class_exists('display_profiles')) {
                 echo 'No posts found for post type "embedded-item".';
             }
         }
-
+*/
         // my-profile
         function display_my_profile() {
             ob_start();

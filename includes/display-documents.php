@@ -756,7 +756,8 @@ if (!class_exists('display_documents')) {
                     if ($query->have_posts()) {
                         echo '<tr>';
                         while ($query->have_posts()) : $query->the_post();
-                            $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                            //$field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                            $field_title = get_the_title();
                             echo '<th>'.esc_html($field_title).'</th>';
                         endwhile;
                         if (current_user_can('administrator')) {
@@ -1375,29 +1376,23 @@ if (!class_exists('display_documents')) {
                         $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
-                                $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                                //$field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                                $field_title = get_the_title();
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
 
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
-/*
-                                if ($field_type=='heading' || $field_type=='canvas' || $field_type=='image' || $field_type=='video') {
-                                    echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
-                                    echo '<td></td>';
-                                    echo '<td></td>';
+
+                                if ($field_type=='heading' && $default_value=='') {
+                                    echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
                                 } else {
-*/                                 
-                                    //echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
-                                    if ($field_type=='heading' && $default_value=='') {
-                                        echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
-                                    } else {
-                                        echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
-                                    }
-                                    echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
-                                    echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
-                                    echo '<td style="text-align:center;">'.esc_html($listing_style).'</td>';
-                                //}
+                                    echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
+                                }
+                                echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html($listing_style).'</td>';
+
                                 echo '</tr>';
                             endwhile;
                             wp_reset_postdata();
@@ -1445,7 +1440,8 @@ if (!class_exists('display_documents')) {
 
         function display_doc_field_dialog($field_id=false) {
             ob_start();
-            $field_title = get_post_meta($field_id, 'field_title', true);
+            //$field_title = get_post_meta($field_id, 'field_title', true);
+            $field_title = get_the_title();
             $field_type = get_post_meta($field_id, 'field_type', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
@@ -1524,29 +1520,35 @@ if (!class_exists('display_documents')) {
 
         function set_doc_field_dialog_data() {
             $response = array();
+            $doc_id = (isset($_POST['_doc_id'])) ? sanitize_text_field($_POST['_doc_id']) : 0;
             if( isset($_POST['_field_id']) ) {
                 // Update the post
                 $field_id = sanitize_text_field($_POST['_field_id']);
-                update_post_meta($field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
-                update_post_meta($field_id, 'field_type', sanitize_text_field($_POST['_field_type']));
-                update_post_meta($field_id, 'default_value', sanitize_text_field($_POST['_default_value']));
-                update_post_meta($field_id, 'listing_style', sanitize_text_field($_POST['_listing_style']));
-                update_post_meta($field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
+                $field_title = (isset($_POST['_field_title'])) ? sanitize_text_field($_POST['_field_title']) : '';
+                $field_type = (isset($_POST['_field_type'])) ? sanitize_text_field($_POST['_field_type']) : '';
+                $default_value = (isset($_POST['_default_value'])) ? sanitize_text_field($_POST['_default_value']) : '';
+                $listing_style = (isset($_POST['_listing_style'])) ? sanitize_text_field($_POST['_listing_style']) : '';
+
+                //update_post_meta($field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
+                update_post_meta($field_id, 'field_type', $field_type);
+                update_post_meta($field_id, 'default_value', $default_value);
+                update_post_meta($field_id, 'listing_style', $listing_style);
+                //update_post_meta($field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
             } else {
                 // Create the post
                 $new_post = array(
                     'post_type'     => 'doc-field',
+                    'post_title'    => 'Field title',
                     'post_status'   => 'publish',
                     'post_author'   => get_current_user_id(),
                 );    
                 $post_id = wp_insert_post($new_post);
-                update_post_meta($post_id, 'doc_id', sanitize_text_field($_POST['_doc_id']));
-                update_post_meta($post_id, 'field_title', 'Field title');
+                update_post_meta($post_id, 'doc_id', $doc_id);
+                //update_post_meta($post_id, 'field_title', 'Field title');
                 update_post_meta($post_id, 'field_type', 'text');
                 update_post_meta($post_id, 'listing_style', 'center');
                 update_post_meta($post_id, 'sorting_key', 999);
             }
-            $doc_id = sanitize_text_field($_POST['_doc_id']);
             $response['html_contain'] = $this->display_doc_field_list($doc_id);
             wp_send_json($response);
         }
@@ -1624,7 +1626,8 @@ if (!class_exists('display_documents')) {
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_id = get_the_ID();
-                    $field_title = get_post_meta($field_id, 'field_title', true);
+                    //$field_title = get_post_meta($field_id, 'field_title', true);
+                    $field_title = get_the_title();
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
 
@@ -1955,34 +1958,6 @@ if (!class_exists('display_documents')) {
                         endif;
                     }
                 }
-/*                
-                if (strpos($default_value, '=') !== false) {
-                    list($key, $value) = explode('=', $default_value, 2);
-                    if ($key=='_list') {
-                        $embedded_id = $items_class->get_embedded_id_by_number($value);
-                        $inner_query = $items_class->retrieve_line_report_data($embedded_id);
-                        if ($inner_query->have_posts()) :
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                update_post_meta(get_the_ID(), 'report_id', $report_id);
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                    }
-                    if ($key=='_form') {
-                        $embedded_id = $items_class->get_embedded_id_by_number($value);
-                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
-                        if ($inner_query->have_posts()) :
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $embedded_item_value = $_POST[$field_id.get_the_ID()];
-                                update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                    }
-                    if ($key=='_select') {
-                    }
-                }
-*/
             }
         }
         
@@ -2395,19 +2370,21 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                        //$field_title = get_post_meta(get_the_ID(), 'field_title', true);
+                        $field_title = get_the_title();
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         $new_post = array(
                             'post_type'     => 'doc-field',
+                            'post_title'    => $field_title,
                             'post_status'   => 'publish',
                             'post_author'   => $current_user_id,
                         );    
                         $field_id = wp_insert_post($new_post);
                         update_post_meta($field_id, 'doc_id', $post_id);
-                        update_post_meta($field_id, 'field_title', $field_title);
+                        //update_post_meta($field_id, 'field_title', $field_title);
                         update_post_meta($field_id, 'field_type', $field_type);
                         update_post_meta($field_id, 'default_value', $default_value);
                         update_post_meta($field_id, 'listing_style', $listing_style);
