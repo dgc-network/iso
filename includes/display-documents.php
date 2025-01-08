@@ -207,7 +207,7 @@ if (!class_exists('display_documents')) {
 
                             ?>
                             <tr id="edit-document-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
+                                <td style="text-align:center;"><?php echo $doc_number;?></td>
                                 <td><?php echo $doc_title;?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc_revision);?></td>
                             </tr>
