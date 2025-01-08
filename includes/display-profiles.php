@@ -139,6 +139,7 @@ if (!class_exists('display_profiles')) {
                     
                     // Retrieve the embedded number from 'default_value'
                     $embedded_number = get_post_meta(get_the_ID(), 'default_value', true);
+                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
         
                     if (!empty($embedded_number)) {
                         // Step 2: Query the post with post type 'embedded' and meta key 'embedded_number'
@@ -188,6 +189,11 @@ if (!class_exists('display_profiles')) {
                                     if ($embedded_item_default) {
                                         update_post_meta($post_id, 'default_value', $embedded_item_default);
                                         delete_post_meta($post_id, 'embedded_item_default');
+                                    }
+        
+                                    if ($doc_id) {
+                                        update_post_meta($post_id, 'doc_id', $doc_id);
+                                        delete_post_meta($post_id, 'embedded_id');
                                     }
         
                                     // Update post type to 'doc-field'
