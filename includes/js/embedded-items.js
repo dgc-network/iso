@@ -213,7 +213,7 @@ jQuery(document).ready(function($) {
                     '_embedded_number': $("#embedded-number").val(),
                     '_embedded_type': $("#embedded-type").val(),
                     '_iso_category': $("#iso-category").val(),
-                    '_is_private': $("#is-private").is(":checked") ? 1 : 0,
+                    '_is_public': $("#is-public").is(":checked") ? 1 : 0,
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);

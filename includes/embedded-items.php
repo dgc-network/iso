@@ -114,7 +114,7 @@ if (!class_exists('embedded_items')) {
                     <thead>
                         <th><?php echo __( 'Number', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Iype', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -125,12 +125,13 @@ if (!class_exists('embedded_items')) {
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $embedded_number = get_post_meta(get_the_ID(), 'embedded_number', true);
-                            $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
+                            $embedded_type = get_post_meta(get_the_ID(), 'embedded_type', true);
+                            //$iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
                             ?>
                             <tr id="edit-embedded-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($embedded_number);?></td>
                                 <td><?php the_title();?></td>
-                                <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
+                                <td style="text-align:center;"><?php echo get_the_title($embedded_type);?></td>
                             </tr>
                             <?php 
                         endwhile;
@@ -167,20 +168,20 @@ if (!class_exists('embedded_items')) {
                 'meta_query'     => array(
                     'relation' => 'AND', // Combine all conditions with an AND relation
                     array(
-                        'relation' => 'OR', // Sub-condition for is_private
+                        'relation' => 'OR', // Sub-condition for is_public
                         array(
-                            'key'     => 'is_private',
+                            'key'     => 'is_public',
                             'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
                         ),
                         array(
-                            'key'     => 'is_private',
+                            'key'     => 'is_public',
                             'value'   => '0',
                             'compare' => '=', // Condition to check if the meta value is 0
                         ),
                         array(
                             'relation' => 'AND',
                             array(
-                                'key'     => 'is_private',
+                                'key'     => 'is_public',
                                 'value'   => '1',
                                 'compare' => '=',
                             ),
@@ -262,20 +263,20 @@ if (!class_exists('embedded_items')) {
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
-                        'relation' => 'OR', // Sub-condition for is_private
+                        'relation' => 'OR', // Sub-condition for is_public
                         array(
-                            'key'     => 'is_private',
+                            'key'     => 'is_public',
                             'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
                         ),
                         array(
-                            'key'     => 'is_private',
+                            'key'     => 'is_public',
                             'value'   => '0',
                             'compare' => '=', // Condition to check if the meta value is 0
                         ),
                         array(
                             'relation' => 'AND',
                             array(
-                                'key'     => 'is_private',
+                                'key'     => 'is_public',
                                 'value'   => '1',
                                 'compare' => '=',
                             ),
@@ -322,20 +323,20 @@ if (!class_exists('embedded_items')) {
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
-                        'relation' => 'OR', // Sub-condition for is_private
+                        'relation' => 'OR', // Sub-condition for is_public
                         array(
-                            'key'     => 'is_private',
+                            'key'     => 'is_public',
                             'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
                         ),
                         array(
-                            'key'     => 'is_private',
+                            'key'     => 'is_public',
                             'value'   => '0',
                             'compare' => '=', // Condition to check if the meta value is 0
                         ),
                         array(
                             'relation' => 'AND',
                             array(
-                                'key'     => 'is_private',
+                                'key'     => 'is_public',
                                 'value'   => '1',
                                 'compare' => '=',
                             ),
@@ -375,8 +376,8 @@ if (!class_exists('embedded_items')) {
             $iso_category = get_post_meta($embedded_id, 'iso_category', true);
             $embedded_site = get_post_meta($embedded_id, 'site_id', true);
             $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
-            $is_private = get_post_meta($embedded_id, 'is_private', true);
-            $is_private_checked = ($is_private==1) ? 'checked' : '';
+            $is_public = get_post_meta($embedded_id, 'is_public', true);
+            $is_public_checked = ($is_public==1) ? 'checked' : '';
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
@@ -401,12 +402,14 @@ if (!class_exists('embedded_items')) {
                 <div id="embedded-item-list">
                     <?php echo $this->display_embedded_item_list($embedded_id);?>
                 </div>
+<?php /*                
                 <label for="iso-category"><?php echo __( 'ISO', 'your-text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
+*/?>
                 <?php if ($embedded_site==$site_id || current_user_can('administrator')) {?>
                     <div>
-                        <input type="checkbox" id="is-private" <?php echo $is_private_checked;?> /> 
-                        <label for="is-private"><?php echo __( 'Is private', 'your-text-domain' );?></label>
+                        <input type="checkbox" id="is-public" <?php echo $is_public_checked;?> /> 
+                        <label for="is-public"><?php echo __( 'Is public', 'your-text-domain' );?></label>
                     </div>
                 <?php }?>
                 <hr>
@@ -446,7 +449,7 @@ if (!class_exists('embedded_items')) {
                 $embedded_title = (isset($_POST['_embedded_title'])) ? sanitize_text_field($_POST['_embedded_title']) : '';
                 $embedded_type = (isset($_POST['_embedded_type'])) ? sanitize_text_field($_POST['_embedded_type']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
-                $is_private = (isset($_POST['_is_private'])) ? sanitize_text_field($_POST['_is_private']) : 0;
+                $is_public = (isset($_POST['_is_public'])) ? sanitize_text_field($_POST['_is_public']) : 0;
                 $data = array(
                     'ID'           => $embedded_id,
                     'post_title'   => $embedded_title,
@@ -455,7 +458,7 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($embedded_id, 'embedded_number', $embedded_number);
                 update_post_meta($embedded_id, 'embedded_type', $embedded_type);
                 update_post_meta($embedded_id, 'iso_category', $iso_category);
-                update_post_meta($embedded_id, 'is_private', $is_private);
+                update_post_meta($embedded_id, 'is_public', $is_public);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -499,7 +502,7 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'embedded_number', time());
                 update_post_meta($post_id, 'iso_category', $iso_category);
-                update_post_meta($post_id, 'is_private', 1);
+                update_post_meta($post_id, 'is_public', 1);
 
                 $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) {
