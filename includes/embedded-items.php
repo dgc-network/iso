@@ -629,7 +629,7 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_embedded_item_data($embedded_id=false, $paged=0) {
+        function retrieve_embedded_item_data($embedded_id=false, $paged=1) {
             $args = array(
                 'post_type'      => 'embedded-item',
                 'posts_per_page' => get_option('operation_row_counts'),
@@ -863,23 +863,6 @@ if (!class_exists('embedded_items')) {
                                 wp_reset_postdata();
                             endif;
                         }
-/*                        
-                        if (strpos($default_value, '=') !== false) {
-                            list($key, $value) = explode('=', $default_value, 2);
-                            $embedded_id = $this->get_embedded_id_by_number($value);
-                            $inner_query = $this->retrieve_embedded_item_data($embedded_id);
-                            if ($inner_query->have_posts()) :
-                                while ($inner_query->have_posts()) : $inner_query->the_post();
-                                    $_list = array();
-                                    $_list["embedded_id"] = $embedded_id;
-                                    $_list["embedded_item_id"] = get_the_ID();
-                                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
-                                    array_push($_array, $_list);
-                                endwhile;
-                                wp_reset_postdata();
-                            endif;    
-                        }
-*/
                     }
                 endwhile;
                 wp_reset_postdata();
