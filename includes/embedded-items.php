@@ -114,7 +114,7 @@ if (!class_exists('embedded_items')) {
                     <thead>
                         <th><?php echo __( 'Number', 'your-text-domain' );?></th>
                         <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Iype', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Type', 'your-text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php

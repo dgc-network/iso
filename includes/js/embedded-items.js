@@ -187,6 +187,8 @@ jQuery(document).ready(function($) {
             if (pageMatch) {
                 const pageNumber = pageMatch[1]; // Extracted page number
                 localStorage.setItem('embedded_paged', pageNumber);
+            } else {
+                localStorage.setItem('embedded_paged', 1);
             }
             
             // Get existing URL parameters
