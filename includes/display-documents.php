@@ -207,7 +207,7 @@ if (!class_exists('display_documents')) {
                             }
 
                             if ($system_doc) {
-                                $doc_title = '<span style="color:blue;">***' . $doc_title . '</span>';
+                                $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
                             }
 
                             ?>
