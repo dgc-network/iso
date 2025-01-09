@@ -1659,7 +1659,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_embedded'):
                             $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id) {
+                            if ($embedded_id && $field_value) {
                                 $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
                                 $embedded_type = ($embedded_type) ? $embedded_type : 'sub-form';
                                 if ($embedded_type=='line-list') {
@@ -1949,8 +1949,9 @@ if (!class_exists('display_documents')) {
                         $inner_query = $items_class->retrieve_line_report_data($embedded_id);
                         if ($inner_query->have_posts()) :
                             while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $embedded_item_value = $_POST[$field_id.get_the_ID()];
-                                update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
+                                //$embedded_item_value = $_POST[$field_id.get_the_ID()];
+                                //update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
+                                update_post_meta(get_the_ID(), 'report_id', $report_id);
                             endwhile;
                             wp_reset_postdata();
                         endif;
