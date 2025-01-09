@@ -131,7 +131,7 @@ if (!class_exists('embedded_items')) {
                             <tr id="edit-embedded-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($embedded_number);?></td>
                                 <td><?php the_title();?></td>
-                                <td style="text-align:center;"><?php echo get_the_title($embedded_type);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($embedded_type);?></td>
                             </tr>
                             <?php 
                         endwhile;
@@ -171,18 +171,18 @@ if (!class_exists('embedded_items')) {
                         'relation' => 'OR', // Sub-condition for is_public
                         array(
                             'key'     => 'is_public',
-                            'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
-                        ),
-                        array(
-                            'key'     => 'is_public',
-                            'value'   => '0',
+                            'value'   => '1',
                             'compare' => '=', // Condition to check if the meta value is 0
                         ),
                         array(
                             'relation' => 'AND',
                             array(
                                 'key'     => 'is_public',
-                                'value'   => '1',
+                                'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
+                            ),
+                            array(
+                                'key'     => 'is_public',
+                                'value'   => '0',
                                 'compare' => '=',
                             ),
                             array(
