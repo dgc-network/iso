@@ -2183,7 +2183,8 @@ if (!class_exists('display_documents')) {
                                 <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
                                 <label for="draft-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
                                 <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
-                                <p>Content:<textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea></p>
+                                <label for="draft-content"><?php echo __( '文件內容', 'your-text-domain' );?></label><br>
+                                <textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea>
                                 <?php if (is_site_admin()) {?>
                                     <p><input type="button" id="save-draft" value="Generate draft" /></p>
                                 <?php }?>
