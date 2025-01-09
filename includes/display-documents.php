@@ -409,6 +409,7 @@ if (!class_exists('display_documents')) {
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
+            $multiple_selction = get_post_meta($doc_id, 'multiple_selction', true);
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
 
             //$doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
@@ -492,8 +493,8 @@ if (!class_exists('display_documents')) {
                         <?php echo $profiles_class->display_doc_user_list($doc_id);?>
                     </div>
 
-                    <label for="system-doc"><?php echo __( '系統文件', 'your-text-domain' );?></label>
-                    <fieldset>
+                    <label id="system-doc-label"><?php echo __( '系統文件', 'your-text-domain' );?></label>
+                    <fieldset id="system-doc-div" style="display:none;">
                         <label for="system-doc"><?php echo __( '名稱', 'your-text-domain' );?></label>
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
                         <input type="checkbox" id="multiple-selction" value="<?php echo esc_html($multiple_selction);?>" />
@@ -545,6 +546,7 @@ if (!class_exists('display_documents')) {
                 $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
                 $system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
+                $multiple_selction = (isset($_POST['_multiple_selction'])) ? sanitize_text_field($_POST['_multiple_selction']) : 0;
                 $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
                 $doc_post_args = array(
                     'ID'           => $doc_id,
