@@ -482,7 +482,7 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
             ajaxData['_system_doc'] = $("#system-doc").val();
-            ajaxData['_multiple_selection'] = $("#multiple-selection").is(":checked") ? 1 : 0;
+            ajaxData['_multiple_select'] = $("#multiple-select").is(":checked") ? 1 : 0;
 
             $.ajax({
                 type: 'POST',
