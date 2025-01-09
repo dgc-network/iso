@@ -410,6 +410,7 @@ if (!class_exists('display_documents')) {
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
             $multiple_select = get_post_meta($doc_id, 'multiple_select', true);
+            $is_multiple_select = ($multiple_select==1) ? 'checked' : '';
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
 
             //$doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
@@ -497,7 +498,7 @@ if (!class_exists('display_documents')) {
                     <fieldset id="system-doc-div" style="display:none;">
                         <label for="system-doc"><?php echo __( '名稱', 'your-text-domain' );?></label>
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
-                        <input type="checkbox" id="multiple-select" value="<?php echo esc_html($multiple_select);?>" />
+                        <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
                         <label for="multiple-select"><?php echo __( '多選', 'your-text-domain' );?></label>
                     </fieldset>
                 </div>
