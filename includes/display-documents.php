@@ -1688,7 +1688,7 @@ if (!class_exists('display_documents')) {
                                                 } elseif ($prev_report_id) {
                                                     $embedded_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
                                                 } else {
-                                                    $embedded_item_value = get_post_meta(get_the_ID(), 'embedded_item_default', true);
+                                                    $embedded_item_value = get_post_meta(get_the_ID(), 'default_value', true);
                                                 }
                                                 $items_class->get_embedded_item_contains($field_id, get_the_ID(), $embedded_item_value);
                                             endwhile;

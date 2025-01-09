@@ -360,9 +360,9 @@ jQuery(document).ready(function($) {
                                         '_embedded_id': $("#embedded-id").val(),
                                         '_embedded_item_id': $("#embedded-item-id").val(),
                                         '_embedded_item_title': $("#embedded-item-title").val(),
-                                        '_embedded_item_type': $("#embedded-item-type").val(),
-                                        '_embedded_item_default': $("#embedded-item-default").val(),
-                                        '_embedded_item_code': $("#embedded-item-code").val(),
+                                        '_field_type': $("#embedded-item-type").val(),
+                                        '_default_value': $("#embedded-item-default").val(),
+                                        '_field_note': $("#embedded-item-code").val(),
                                     },
                                     success: function (response) {
                                         $("#embedded-item-dialog").dialog('close');
@@ -732,7 +732,7 @@ jQuery(document).ready(function($) {
                                 $.each(get_response.line_report_fields, function(index, inner_value) {
                                     const line_report_field = field_id + inner_value.embedded_item_id;
                                     const line_report_field_tag = '#' + field_id + inner_value.embedded_item_id;
-                                    if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
+                                    if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                         ajaxData[line_report_field] = $(line_report_field_tag).is(":checked") ? 1 : 0;
                                     } else {
                                         ajaxData[line_report_field] = $(line_report_field_tag).val();
@@ -793,7 +793,7 @@ jQuery(document).ready(function($) {
                                 $.each(get_response.line_report_fields, function(index, inner_value) {
                                     const line_report_field = field_id + inner_value.embedded_item_id;
                                     const line_report_field_tag = '#' + field_id + inner_value.embedded_item_id;
-                                    if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
+                                    if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                         ajaxData[line_report_field] = $(line_report_field_tag).is(":checked") ? 1 : 0;
                                     } else {
                                         ajaxData[line_report_field] = $(line_report_field_tag).val();

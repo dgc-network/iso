@@ -1075,7 +1075,7 @@ jQuery(document).ready(function($) {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
                                 const embedded_field = String(value.field_id) + String(inner_value.embedded_item_id);
                                 const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
-                                if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
+                                if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                     ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
                                 } else {
                                     ajaxData[embedded_field] = $(embedded_field_tag).val();
@@ -1136,7 +1136,7 @@ jQuery(document).ready(function($) {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
                                 const embedded_field = String(value.field_id) + String(inner_value.embedded_item_id);
                                 const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
-                                if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
+                                if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                     ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
                                 } else {
                                     ajaxData[embedded_field] = $(embedded_field_tag).val();
@@ -1203,7 +1203,7 @@ jQuery(document).ready(function($) {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
                                 const embedded_field = value.field_id + inner_value.embedded_item_id;
                                 const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
-                                if (inner_value.embedded_item_type === 'checkbox' || inner_value.embedded_item_type === 'radio') {
+                                if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                     ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
                                 } else {
                                     ajaxData[embedded_field] = $(embedded_field_tag).val();

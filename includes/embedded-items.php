@@ -503,9 +503,9 @@ if (!class_exists('embedded_items')) {
                 $query = $this->retrieve_embedded_item_data($embedded_id);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $embedded_item_type = get_post_meta(get_the_ID(), 'embedded_item_type', true);
-                        $embedded_item_default = get_post_meta(get_the_ID(), 'embedded_item_default', true);
-                        $embedded_item_code = get_post_meta(get_the_ID(), 'embedded_item_code', true);
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        $field_note = get_post_meta(get_the_ID(), 'field_note', true);
                         $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
                         $new_embedded_item = array(
                             'post_type'     => 'embedded-item',
@@ -515,9 +515,9 @@ if (!class_exists('embedded_items')) {
                             'post_author'   => $current_user_id,
                         );    
                         $embedded_item_id = wp_insert_post($new_embedded_item);
-                        update_post_meta($embedded_item_id, 'embedded_item_type', $embedded_item_type);
-                        update_post_meta($embedded_item_id, 'embedded_item_default', $embedded_item_default);
-                        update_post_meta($embedded_item_id, 'embedded_item_code', $embedded_item_code);
+                        update_post_meta($embedded_item_id, 'field_type', $field_type);
+                        update_post_meta($embedded_item_id, 'default_value', $default_value);
+                        update_post_meta($embedded_item_id, 'field_note', $field_note);
                         update_post_meta($embedded_item_id, 'sorting_key', $sorting_key);
                         update_post_meta($embedded_item_id, 'embedded_id', $post_id);
                     endwhile;
@@ -588,22 +588,22 @@ if (!class_exists('embedded_items')) {
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         $embedded_item_title = get_the_title();
-                        $embedded_item_code = get_post_meta(get_the_ID(), 'embedded_item_code', true);
-                        $embedded_item_type = get_post_meta(get_the_ID(), 'embedded_item_type', true);
-                        $embedded_item_default = get_post_meta(get_the_ID(), 'embedded_item_default', true);
-                        if ($embedded_item_type=='heading') {
-                            if (!$embedded_item_default) {
-                                $embedded_item_code = '<b>'.$embedded_item_code.'</b>';
+                        $field_note = get_post_meta(get_the_ID(), 'field_note', true);
+                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        if ($field_type=='heading') {
+                            if (!$default_value) {
+                                $field_note = '<b>'.$field_note.'</b>';
                                 $embedded_item_title = '<b>'.$embedded_item_title.'</b>';    
                             }
-                            $embedded_item_type='';
-                            $embedded_item_default='';
+                            $field_type='';
+                            $default_value='';
                         }
                         ?>
                         <tr id="edit-item-<?php the_ID();?>" data-embedded-item-id="<?php echo esc_attr(get_the_ID());?>">
                             <td><?php echo $embedded_item_title;?></td>
-                            <td style="text-align:center;"><?php echo esc_html($embedded_item_type);?></td>
-                            <td style="text-align:center;"><?php echo esc_html($embedded_item_default);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($default_value);?></td>
                         </tr>
                         <?php
                     endwhile;
@@ -662,9 +662,9 @@ if (!class_exists('embedded_items')) {
         function display_embedded_item_dialog($embedded_item_id=false) {
             ob_start();
             $embedded_item_title = get_the_title($embedded_item_id);
-            $embedded_item_type = get_post_meta($embedded_item_id, 'embedded_item_type', true);
-            $embedded_item_default = get_post_meta($embedded_item_id, 'embedded_item_default', true);
-            $embedded_item_code = get_post_meta($embedded_item_id, 'embedded_item_code', true);
+            $field_type = get_post_meta($embedded_item_id, 'field_type', true);
+            $default_value = get_post_meta($embedded_item_id, 'default_value', true);
+            $field_note = get_post_meta($embedded_item_id, 'field_note', true);
             ?>
             <fieldset>
                 <input type="hidden" id="embedded-item-id" value="<?php echo esc_attr($embedded_item_id);?>" />
@@ -673,18 +673,18 @@ if (!class_exists('embedded_items')) {
                 <textarea id="embedded-item-title" rows="3" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
                 <label for="embedded-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="embedded-item-type" class="text ui-widget-content ui-corner-all">
-                    <option value="heading" <?php echo ($embedded_item_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
-                    <option value="checkbox" <?php echo ($embedded_item_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
-                    <option value="text" <?php echo ($embedded_item_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
-                    <option value="textarea" <?php echo ($embedded_item_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
-                    <option value="number" <?php echo ($embedded_item_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
-                    <option value="radio" <?php echo ($embedded_item_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
-                    <option value="_product" <?php echo ($embedded_item_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
+                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
+                    <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
+                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
+                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
+                    <option value="number" <?php echo ($field_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
+                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
+                    <option value="_product" <?php echo ($field_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
                 </select>
                 <label for="embedded-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
-                <input type="text" id="embedded-item-default" value="<?php echo esc_attr($embedded_item_default);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="embedded-item-default" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="embedded-item-code"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
-                <input type="text" id="embedded-item-code" value="<?php echo esc_attr($embedded_item_code);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="embedded-item-code" value="<?php echo esc_attr($field_note);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
             return ob_get_clean();
@@ -701,17 +701,17 @@ if (!class_exists('embedded_items')) {
             $embedded_id = sanitize_text_field($_POST['_embedded_id']);
             if( isset($_POST['_embedded_item_id']) ) {
                 $embedded_item_id = sanitize_text_field($_POST['_embedded_item_id']);
-                $embedded_item_code = sanitize_text_field($_POST['_embedded_item_code']);
-                $embedded_item_type = sanitize_text_field($_POST['_embedded_item_type']);
-                $embedded_item_default = sanitize_text_field($_POST['_embedded_item_default']);
+                $field_note = sanitize_text_field($_POST['_field_note']);
+                $field_type = sanitize_text_field($_POST['_field_type']);
+                $default_value = sanitize_text_field($_POST['_default_value']);
                 $data = array(
                     'ID'           => $embedded_item_id,
                     'post_title'   => sanitize_text_field($_POST['_embedded_item_title']),
                 );
                 wp_update_post( $data );
-                update_post_meta($embedded_item_id, 'embedded_item_code', $embedded_item_code);
-                update_post_meta($embedded_item_id, 'embedded_item_type', $embedded_item_type);
-                update_post_meta($embedded_item_id, 'embedded_item_default', $embedded_item_default);
+                update_post_meta($embedded_item_id, 'field_note', $field_note);
+                update_post_meta($embedded_item_id, 'field_type', $field_type);
+                update_post_meta($embedded_item_id, 'default_value', $default_value);
             } else {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -754,12 +754,12 @@ if (!class_exists('embedded_items')) {
             $options = '<option value="">Select '.get_the_title($embedded_id).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $embedded_item_code = get_post_meta(get_the_ID(), 'embedded_item_code', true);
-                $embedded_item_type = get_post_meta(get_the_ID(), 'embedded_item_type', true);
-                if ($embedded_item_type=='heading'){
+                $field_note = get_post_meta(get_the_ID(), 'field_note', true);
+                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                if ($field_type=='heading'){
                     $embedded_item_title = '<b>'.get_the_title().'</b>';
                 } else {
-                    $embedded_item_title = $embedded_item_code.' '.get_the_title();
+                    $embedded_item_title = $field_note.' '.get_the_title();
                     $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $embedded_item_title . '</option>';
                 }
             endwhile;
@@ -769,46 +769,46 @@ if (!class_exists('embedded_items')) {
 
         function get_embedded_item_contains($field_id=false, $embedded_item_id=false, $embedded_item_value=false) {
             $embedded_item_title = get_the_title($embedded_item_id);
-            $embedded_item_code = get_post_meta($embedded_item_id, 'embedded_item_code', true);
-            $embedded_item_type = get_post_meta($embedded_item_id, 'embedded_item_type', true);
-            $embedded_item_default = get_post_meta($embedded_item_id, 'embedded_item_default', true);
-            if ($embedded_item_type=='heading') {
-                $embedded_item_default = ($embedded_item_default) ? $embedded_item_default : 'b';
+            $field_note = get_post_meta($embedded_item_id, 'field_note', true);
+            $field_type = get_post_meta($embedded_item_id, 'field_type', true);
+            $default_value = get_post_meta($embedded_item_id, 'default_value', true);
+            if ($field_type=='heading') {
+                $default_value = ($default_value) ? $default_value : 'b';
                 ?>
-                <div><<?php echo esc_html($embedded_item_default);?>><?php echo esc_html($embedded_item_title.' '.$embedded_item_code);?></<?php echo esc_html($embedded_item_default);?>></div>
+                <div><<?php echo esc_html($default_value);?>><?php echo esc_html($embedded_item_title.' '.$field_note);?></<?php echo esc_html($default_value);?>></div>
                 <?php
-            } elseif ($embedded_item_type=='checkbox') {
+            } elseif ($field_type=='checkbox') {
                 $is_checked = ($embedded_item_value==1) ? 'checked' : '';
                 ?>
                 <div>
-                <input type="checkbox" class="embedded-item-class" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" <?php echo $is_checked;?> /> <?php echo $embedded_item_code.' '.$embedded_item_title?>
+                <input type="checkbox" class="embedded-item-class" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" <?php echo $is_checked;?> /> <?php echo $field_note.' '.$embedded_item_title?>
                 </div>
                 <?php
-            } elseif ($embedded_item_type=='textarea') {
+            } elseif ($field_type=='textarea') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$embedded_item_code);?></label>
+                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$field_note);?></label>
                 <textarea class="embedded-item-class" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" rows="3" style="width:100%;"><?php echo esc_html($embedded_item_value);?></textarea>
                 <?php
-            } elseif ($embedded_item_type=='text') {
+            } elseif ($field_type=='text') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$embedded_item_code);?></label>
+                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$field_note);?></label>
                 <input type="text" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" value="<?php echo esc_html($embedded_item_value);?>" class="text ui-widget-content ui-corner-all embedded-item-class" />
                 <?php
-            } elseif ($embedded_item_type=='number') {
+            } elseif ($field_type=='number') {
                 ?>
-                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$embedded_item_code);?></label>
+                <label for="<?php echo esc_attr($field_id.$embedded_item_id);?>"><?php echo esc_html($embedded_item_title.' '.$field_note);?></label>
                 <input type="number" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" value="<?php echo esc_html($embedded_item_value);?>" class="number ui-widget-content ui-corner-all embedded-item-class" />
                 <?php
-            } elseif ($embedded_item_type=='radio') {
+            } elseif ($field_type=='radio') {
                 $is_checked = ($embedded_item_value==1) ? 'checked' : '';
                 ?>
                 <div>
-                <input type="radio" class="embedded-item-class" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $embedded_item_title.' '.$embedded_item_code?>
+                <input type="radio" class="embedded-item-class" id="<?php echo esc_attr($field_id.$embedded_item_id);?>" name="<?php echo esc_attr(substr($field_id, 0, 5));?>" <?php echo $is_checked;?> /> <?php echo $embedded_item_title.' '.$field_note?>
                 </div>
                 <?php
             } else {
                 ?>
-                <div><?php echo $embedded_item_title.' '.$embedded_item_code?></div>
+                <div><?php echo $embedded_item_title.' '.$field_note?></div>
                 <?php
             }
         }
@@ -824,7 +824,7 @@ if (!class_exists('embedded_items')) {
                         'compare' => '='
                     ),
                     array(
-                        'key'   => 'embedded_item_type',
+                        'key'   => 'field_type',
                         'value' => 'heading',
                         'compare' => '!='
                     )
@@ -857,7 +857,7 @@ if (!class_exists('embedded_items')) {
                                     $_list = array();
                                     $_list["embedded_id"] = $embedded_id;
                                     $_list["embedded_item_id"] = get_the_ID();
-                                    $_list["embedded_item_type"] = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
                                     array_push($_array, $_list);
                                 endwhile;
                                 wp_reset_postdata();
@@ -873,7 +873,7 @@ if (!class_exists('embedded_items')) {
                                     $_list = array();
                                     $_list["embedded_id"] = $embedded_id;
                                     $_list["embedded_item_id"] = get_the_ID();
-                                    $_list["embedded_item_type"] = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
                                     array_push($_array, $_list);
                                 endwhile;
                                 wp_reset_postdata();
@@ -894,7 +894,7 @@ if (!class_exists('embedded_items')) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
                     $_list = array();
                     $_list["embedded_item_id"] = get_the_ID();
-                    $_list["embedded_item_type"] = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
                     array_push($_array, $_list);
 
                 endwhile;
@@ -943,7 +943,7 @@ if (!class_exists('embedded_items')) {
                         $query = $this->retrieve_embedded_item_data($embedded_id);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-                                $field_type = get_post_meta(get_the_ID(), 'embedded_item_type', true);
+                                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $field_value = get_post_meta($line_report_id, $embedded_id.get_the_ID(), true);
                                 $field_value = ($field_value) ? $field_value : $embedded_id.get_the_ID();
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
@@ -1003,9 +1003,9 @@ if (!class_exists('embedded_items')) {
                         if ($line_report_id) {
                             $field_value = get_post_meta($line_report_id, $embedded_id.get_the_ID(), true);
                         } else {
-                            $field_value = get_post_meta(get_the_ID(), 'embedded_item_default', true);
+                            $field_value = get_post_meta(get_the_ID(), 'default_value', true);
                         }
-                        $field_type = get_post_meta(get_the_id(), 'embedded_item_type', true);
+                        $field_type = get_post_meta(get_the_id(), 'field_type', true);
                         $documents_class = new display_documents();
                         $get_system_doc_id = $documents_class->get_system_doc_id($field_type);
                         if ($get_system_doc_id) {

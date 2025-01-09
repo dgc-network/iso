@@ -179,18 +179,18 @@ if (!class_exists('display_profiles')) {
                                     $post_id = get_the_ID();
         
                                     // Get existing meta values
-                                    $embedded_item_type = get_post_meta($post_id, 'embedded_item_type', true);
-                                    $embedded_item_default = get_post_meta($post_id, 'embedded_item_default', true);
+                                    $field_type = get_post_meta($post_id, 'field_type', true);
+                                    $default_value = get_post_meta($post_id, 'default_value', true);
         
                                     // Update new meta keys
-                                    if ($embedded_item_type) {
-                                        update_post_meta($post_id, 'field_type', $embedded_item_type);
-                                        delete_post_meta($post_id, 'embedded_item_type');
+                                    if ($field_type) {
+                                        update_post_meta($post_id, 'field_type', $field_type);
+                                        delete_post_meta($post_id, 'field_type');
                                     }
         
-                                    if ($embedded_item_default) {
-                                        update_post_meta($post_id, 'default_value', $embedded_item_default);
-                                        delete_post_meta($post_id, 'embedded_item_default');
+                                    if ($default_value) {
+                                        update_post_meta($post_id, 'default_value', $default_value);
+                                        delete_post_meta($post_id, 'default_value');
                                     }
         
                                     if ($doc_id) {
@@ -321,17 +321,17 @@ if (!class_exists('display_profiles')) {
                     if (!empty($sub_item_type) || !empty($sub_item_default) || !empty($sub_item_code)) {
                         // Update the meta keys to use the new 'embedded_item' prefix
                         if (!empty($sub_item_type)) {
-                            update_post_meta($post_id, 'embedded_item_type', $sub_item_type);
+                            update_post_meta($post_id, 'field_type', $sub_item_type);
                             delete_post_meta($post_id, 'sub_item_type');
                         }
         
                         if (!empty($sub_item_default)) {
-                            update_post_meta($post_id, 'embedded_item_default', $sub_item_default);
+                            update_post_meta($post_id, 'default_value', $sub_item_default);
                             delete_post_meta($post_id, 'sub_item_default');
                         }
         
                         if (!empty($sub_item_code)) {
-                            update_post_meta($post_id, 'embedded_item_code', $sub_item_code);
+                            update_post_meta($post_id, 'field_note', $sub_item_code);
                             delete_post_meta($post_id, 'sub_item_code');
                         }
                     }
