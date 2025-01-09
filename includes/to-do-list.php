@@ -1414,7 +1414,7 @@ if (!class_exists('to_do_list')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('action-log');?></div>
                     <div style="text-align: right">
-                        <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
+                        <input type="text" id="search-log" style="display:inline" placeholder="Search..." />
                     </div>
                 </div>
                 <?php echo $this->get_action_log_list();?>

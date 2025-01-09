@@ -442,6 +442,18 @@ jQuery(document).ready(function($) {
     }
 
     // action-log
+    $("#search-log").on( "change", function() {
+        // Get existing URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        var selectValue = $("#select-todo").val();
+        // Remove or Update the parameters
+        if (selectValue) urlParams.set("_select_todo", selectValue);
+        urlParams.set("_search", $(this).val());
+        urlParams.set("paged", 1);
+        // Redirect to the updated URL
+        window.location.href = "?" + urlParams.toString();
+    });
+
     $('[id^="edit-action-log"]').on("click", function () {
         const log_id = this.id.substring(15);
         // Get existing URL parameters
