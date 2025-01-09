@@ -393,7 +393,7 @@ if (!class_exists('embedded_items')) {
                 <select id="embedded-type" class="text ui-widget-content ui-corner-all">
                     <option value="sub-form" <?php echo ($embedded_type == "sub-form") ? "selected" : ""; ?>><?php echo __( 'Subform', 'your-text-domain' ); ?></option>
                     <option value="line-list" <?php echo ($embedded_type == "line-list") ? "selected" : ""; ?>><?php echo __( 'Line list', 'your-text-domain' ); ?></option>
-                    <option value="select-options" <?php echo ($embedded_type == "select-options") ? "selected" : ""; ?>><?php echo __( 'Select options', 'your-text-domain' ); ?></option>
+                    <option value="select-one" <?php echo ($embedded_type == "select-one") ? "selected" : ""; ?>><?php echo __( 'Select options', 'your-text-domain' ); ?></option>
                     <option value="flow-chart" <?php echo ($embedded_type == "flow-chart") ? "selected" : ""; ?>><?php echo __( 'Flow chart', 'your-text-domain' ); ?></option>
                 </select>
                 <label for="embedded-item-list"><?php echo __( 'Items', 'your-text-domain' );?></label>
@@ -751,7 +751,7 @@ if (!class_exists('embedded_items')) {
 
         function select_embedded_item_options($selected_option=false, $embedded_id=false) {
             $query = $this->retrieve_embedded_item_data($embedded_id);
-            $options = '<option value="">Select '.get_the_title($embedded_id).'</option>';
+            $options = '<option value="">Select option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $field_note = get_post_meta(get_the_ID(), 'field_note', true);
@@ -759,9 +759,9 @@ if (!class_exists('embedded_items')) {
                 if ($field_type=='heading'){
                     $embedded_item_title = '<b>'.get_the_title().'</b>';
                 } else {
-                    $embedded_item_title = $field_note.' '.get_the_title();
-                    $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $embedded_item_title . '</option>';
+                    $embedded_item_title = get_the_title();
                 }
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $embedded_item_title . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -839,7 +839,7 @@ if (!class_exists('embedded_items')) {
         }
 
         function get_embedded_item_keys($doc_id=false) {
-            return array();
+            //return array();
             if ($doc_id) $params = array('doc_id' => $doc_id);
             $documents_class = new display_documents();
             $query = $documents_class->retrieve_doc_field_data($params);
@@ -852,7 +852,7 @@ if (!class_exists('embedded_items')) {
                     if ($field_type=='_embedded'){
                         $embedded_id = $this->get_embedded_id_by_number($default_value);
                         if ($embedded_id) {
-                            $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
+                            $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $_list = array();

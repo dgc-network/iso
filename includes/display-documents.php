@@ -1699,7 +1699,7 @@ if (!class_exists('display_documents')) {
                                     </div>
                                     <?php
                                 }
-                                if ($embedded_type=='select-options') {
+                                if ($embedded_type=='select-one') {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
