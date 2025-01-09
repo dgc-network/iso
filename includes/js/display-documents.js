@@ -1073,12 +1073,12 @@ jQuery(document).ready(function($) {
     
                         if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
-                                const embedded_field = String(value.field_id) + String(inner_value.embedded_item_id);
-                                const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
+                                const field_embedded = String(value.field_id) + String(inner_value.embedded_item_id);
+                                const field_embedded_tag = '#' + value.field_id + inner_value.embedded_item_id;
                                 if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
-                                    ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
+                                    ajaxData[field_embedded] = $(field_embedded_tag).is(":checked") ? 1 : 0;
                                 } else {
-                                    ajaxData[embedded_field] = $(embedded_field_tag).val();
+                                    ajaxData[field_embedded] = $(field_embedded_tag).val();
                                 }
                             });
                         }
@@ -1134,12 +1134,12 @@ jQuery(document).ready(function($) {
     
                         if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
-                                const embedded_field = String(value.field_id) + String(inner_value.embedded_item_id);
-                                const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
+                                const field_embedded = String(value.field_id) + String(inner_value.embedded_item_id);
+                                const field_embedded_tag = '#' + value.field_id + inner_value.embedded_item_id;
                                 if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
-                                    ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
+                                    ajaxData[field_embedded] = $(field_embedded_tag).is(":checked") ? 1 : 0;
                                 } else {
-                                    ajaxData[embedded_field] = $(embedded_field_tag).val();
+                                    ajaxData[field_embedded] = $(field_embedded_tag).val();
                                 }
                             });
                         }
@@ -1201,12 +1201,12 @@ jQuery(document).ready(function($) {
                         ajaxData[value.field_id] = $(field_id_tag).val();
                         if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
-                                const embedded_field = value.field_id + inner_value.embedded_item_id;
-                                const embedded_field_tag = '#' + value.field_id + inner_value.embedded_item_id;
+                                const field_embedded = value.field_id + inner_value.embedded_item_id;
+                                const field_embedded_tag = '#' + value.field_id + inner_value.embedded_item_id;
                                 if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
-                                    ajaxData[embedded_field] = $(embedded_field_tag).is(":checked") ? 1 : 0;
+                                    ajaxData[field_embedded] = $(field_embedded_tag).is(":checked") ? 1 : 0;
                                 } else {
-                                    ajaxData[embedded_field] = $(embedded_field_tag).val();
+                                    ajaxData[field_embedded] = $(field_embedded_tag).val();
                                 }
                             });
                         }
