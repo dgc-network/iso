@@ -1946,7 +1946,7 @@ if (!class_exists('display_documents')) {
                     $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
                     $embedded_type = ($embedded_type) ? $embedded_type : 'sub-form';
                     if ($embedded_type=='line-list') {
-                        $inner_query = $items_class->retrieve_line_list_data($embedded_id);
+                        $inner_query = $items_class->retrieve_line_report_data($embedded_id);
                         if ($inner_query->have_posts()) :
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $embedded_item_value = $_POST[$field_id.get_the_ID()];
