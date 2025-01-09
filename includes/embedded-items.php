@@ -683,8 +683,8 @@ if (!class_exists('embedded_items')) {
                 </select>
                 <label for="embedded-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
                 <textarea id="embedded-item-default" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
-                <label for="embedded-item-code"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
-                <textarea id="embedded-item-code" rows="2" style="width:100%;"><?php echo $field_note;?></textarea>
+                <label for="embedded-item-note"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
+                <textarea id="embedded-item-note" rows="2" style="width:100%;"><?php echo $field_note;?></textarea>
             </fieldset>
             <?php
             return ob_get_clean();
