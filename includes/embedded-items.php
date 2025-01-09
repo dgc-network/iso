@@ -500,7 +500,7 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($post_id, 'iso_category', $iso_category);
                 update_post_meta($post_id, 'is_private', 1);
 
-                $query = $this->retrieve_embedded_item_data($embedded_id);
+                $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
@@ -750,7 +750,7 @@ if (!class_exists('embedded_items')) {
         }
 
         function select_embedded_item_options($selected_option=false, $embedded_id=false) {
-            $query = $this->retrieve_embedded_item_data($embedded_id);
+            $query = $this->retrieve_embedded_item_data($embedded_id, 0);
             $options = '<option value="">Select option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -873,7 +873,7 @@ if (!class_exists('embedded_items')) {
 
         function get_line_report_field_keys($embedded_id=false) {
             $_array = array();
-            $inner_query = $this->retrieve_embedded_item_data($embedded_id);
+            $inner_query = $this->retrieve_embedded_item_data($embedded_id, 0);
             if ($inner_query->have_posts()) :
                 while ($inner_query->have_posts()) : $inner_query->the_post();
                     $_list = array();
@@ -900,7 +900,7 @@ if (!class_exists('embedded_items')) {
                 <thead>
                 <tr>
                 <?php                
-                $query = $this->retrieve_embedded_item_data($embedded_id);
+                $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         ?>
@@ -924,7 +924,7 @@ if (!class_exists('embedded_items')) {
                         } else {
                             ?><tr id="edit-line-report-<?php echo $line_report_id;?>"><?php
                         }
-                        $query = $this->retrieve_embedded_item_data($embedded_id);
+                        $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
@@ -978,7 +978,7 @@ if (!class_exists('embedded_items')) {
                 <input type="hidden" id="line-report-id" value="<?php echo esc_attr($line_report_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <?php
-                $query = $this->retrieve_embedded_item_data($embedded_id);
+                $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
                         ?>
@@ -1037,7 +1037,7 @@ if (!class_exists('embedded_items')) {
                 $line_report_id = sanitize_text_field($_POST['_line_report_id']);
             }
             // Update the post
-            $query = $this->retrieve_embedded_item_data($embedded_id);
+            $query = $this->retrieve_embedded_item_data($embedded_id, 0);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $field_value = $_POST[$embedded_id.get_the_id()];

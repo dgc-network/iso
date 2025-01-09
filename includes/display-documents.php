@@ -1680,7 +1680,7 @@ if (!class_exists('display_documents')) {
                                     <div id="sub-form">
                                         <fieldset>
                                         <?php
-                                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
+                                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
                                         if ($inner_query->have_posts()) :
                                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                                 if ($report_id) {
@@ -1948,7 +1948,7 @@ if (!class_exists('display_documents')) {
                         endif;
                     }
                     if ($embedded_type=='sub-form') {
-                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id);
+                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
                         if ($inner_query->have_posts()) :
                             while ($inner_query->have_posts()) : $inner_query->the_post();
                                 $embedded_item_value = $_POST[$field_id.get_the_ID()];
