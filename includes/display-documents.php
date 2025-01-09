@@ -563,6 +563,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_category', $doc_category);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
+                update_post_meta($doc_id, 'multiple_select', $multiple_select);
 
                 $log_message = $doc_title.'(#'.$doc_number.') has been updated';
                 $params = array(
