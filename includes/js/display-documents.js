@@ -435,6 +435,10 @@ jQuery(document).ready(function($) {
         activate_doc_user_list_data(doc_id);
         activate_doc_field_list_data(doc_id);
 
+        $("#system-doc-label").on("click", function () {
+            $("#system-doc-div").toggle();
+        });
+
         $("#doc-content-label").on("click", function () {
             $("#doc-report-div").toggle();
             $("#doc-content-div").toggle();
