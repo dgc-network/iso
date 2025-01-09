@@ -398,7 +398,6 @@ if (!class_exists('embedded_items')) {
                     <option value="sub-form" <?php echo ($embedded_type == "sub-form") ? "selected" : ""; ?>><?php echo __( 'Subform', 'your-text-domain' ); ?></option>
                     <option value="line-list" <?php echo ($embedded_type == "line-list") ? "selected" : ""; ?>><?php echo __( 'Line list', 'your-text-domain' ); ?></option>
                     <option value="select-one" <?php echo ($embedded_type == "select-one") ? "selected" : ""; ?>><?php echo __( 'Select one', 'your-text-domain' ); ?></option>
-                    <option value="select-multi" <?php echo ($embedded_type == "select-multi") ? "selected" : ""; ?>><?php echo __( 'Select multiple', 'your-text-domain' ); ?></option>
                     <option value="flow-chart" <?php echo ($embedded_type == "flow-chart") ? "selected" : ""; ?>><?php echo __( 'Flow chart', 'your-text-domain' ); ?></option>
                 </select>
                 <label for="embedded-item-list"><?php echo __( 'Items', 'your-text-domain' );?></label>

@@ -387,15 +387,12 @@ if (!class_exists('display_documents')) {
 
         function display_document_dialog($doc_id=false) {
             ob_start();
-            $prev_doc_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
-            $next_doc_id = $this->get_next_doc_id($doc_id);     // Fetch the next ID
-            ?>
-            <input type="hidden" id="prev-doc-id" value="<?php echo esc_attr($prev_doc_id); ?>" />
-            <input type="hidden" id="next-doc-id" value="<?php echo esc_attr($next_doc_id); ?>" />
-            <?php
             $todo_class = new to_do_list();
             $items_class = new embedded_items();
             $profiles_class = new display_profiles();
+
+            $prev_doc_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
+            $next_doc_id = $this->get_next_doc_id($doc_id);     // Fetch the next ID
 
             $job_title = get_the_title($doc_id);
             $job_number = get_post_meta($doc_id, 'job_number', true);
@@ -412,15 +409,18 @@ if (!class_exists('display_documents')) {
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
+            $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
 
-            $doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
-            $doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
+            //$doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
+            //$doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
             ?>
             <div class="ui-widget" id="result-container">
             <div>
                 <?php echo display_iso_helper_logo();?>
                 <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
+                <input type="hidden" id="prev-doc-id" value="<?php echo esc_attr($prev_doc_id); ?>" />
+                <input type="hidden" id="next-doc-id" value="<?php echo esc_attr($next_doc_id); ?>" />
             </div>
 
             <fieldset>
@@ -493,21 +493,25 @@ if (!class_exists('display_documents')) {
                     </div>
 
                     <label for="system-doc"><?php echo __( '系統文件', 'your-text-domain' );?></label>
-                    <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
+                    <fieldset>
+                        <label for="system-doc"><?php echo __( '名稱', 'your-text-domain' );?></label>
+                        <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
+                        <input type="checkbox" id="multiple-selction" value="<?php echo esc_html($multiple_selction);?>" />
+                        <label for="multiple-selction"><?php echo __( '多選', 'your-text-domain' );?></label>
+                    </fieldset>
                 </div>
 
                 <?php
                     // transaction data vs card key/value
                     $this->get_transactions_by_key_value_pair(array('_document' => $doc_id));
-
-                    $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
-                    ?>
-                    <div class="content">
-                        <?php echo $content;?>
-                        <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                            <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
-                        </div>
-                    </div>            
+                ?>
+                
+                <div class="content">
+                    <?php echo $content;?>
+                    <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                        <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                    </div>
+                </div>            
 
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1704,12 +1708,6 @@ if (!class_exists('display_documents')) {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
-                                    <?php
-                                }
-                                if ($embedded_type=='select-multi') {
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
                                     <?php
                                 }
                             }
