@@ -1535,12 +1535,23 @@ if (!class_exists('display_documents')) {
                 $field_type = (isset($_POST['_field_type'])) ? sanitize_text_field($_POST['_field_type']) : '';
                 $default_value = (isset($_POST['_default_value'])) ? sanitize_text_field($_POST['_default_value']) : '';
                 $listing_style = (isset($_POST['_listing_style'])) ? sanitize_text_field($_POST['_listing_style']) : '';
-
+                wp_update_post(array(
+                    'ID'          => $field_id,
+                    'post_title'  => $field_title,
+                    'meta_input'  => array(
+                        'field_type'    => $field_type,
+                        'default_value' => $default_value,
+                        'listing_style' => $listing_style,
+                    )
+                ));
+                //wp_update_post( $data );
+/*
                 //update_post_meta($field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
                 update_post_meta($field_id, 'field_type', $field_type);
                 update_post_meta($field_id, 'default_value', $default_value);
                 update_post_meta($field_id, 'listing_style', $listing_style);
                 //update_post_meta($field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
+*/                
             } else {
                 // Create the post
                 $new_post = array(
