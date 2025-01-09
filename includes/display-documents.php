@@ -1453,7 +1453,6 @@ if (!class_exists('display_documents')) {
 
         function display_doc_field_dialog($field_id=false) {
             ob_start();
-            //$field_title = get_post_meta($field_id, 'field_title', true);
             $field_title = get_the_title($field_id);
             $field_type = get_post_meta($field_id, 'field_type', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
@@ -1550,14 +1549,6 @@ if (!class_exists('display_documents')) {
                         'listing_style' => $listing_style,
                     )
                 ));
-                //wp_update_post( $data );
-/*
-                //update_post_meta($field_id, 'field_title', sanitize_text_field($_POST['_field_title']));
-                update_post_meta($field_id, 'field_type', $field_type);
-                update_post_meta($field_id, 'default_value', $default_value);
-                update_post_meta($field_id, 'listing_style', $listing_style);
-                //update_post_meta($field_id, 'order_field', sanitize_text_field($_POST['_order_field']));
-*/                
             } else {
                 // Create the post
                 $new_post = array(
@@ -1568,7 +1559,6 @@ if (!class_exists('display_documents')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'doc_id', $doc_id);
-                //update_post_meta($post_id, 'field_title', 'Field title');
                 update_post_meta($post_id, 'field_type', 'text');
                 update_post_meta($post_id, 'listing_style', 'center');
                 update_post_meta($post_id, 'sorting_key', 999);
