@@ -624,7 +624,7 @@ if (!class_exists('embedded_items')) {
                 ?>
             </div>
             </fieldset>
-            <div id="embedded-item-dialog" title="Sub item dialog"></div>
+            <div id="embedded-item-dialog" title="embedded-item-dialog"></div>
             <?php
             return ob_get_clean();
         }
@@ -670,7 +670,7 @@ if (!class_exists('embedded_items')) {
                 <input type="hidden" id="embedded-item-id" value="<?php echo esc_attr($embedded_item_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="embedded-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
-                <textarea id="embedded-item-title" rows="3" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
+                <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
                 <label for="embedded-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="embedded-item-type" class="text ui-widget-content ui-corner-all">
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
@@ -682,9 +682,9 @@ if (!class_exists('embedded_items')) {
                     <option value="_product" <?php echo ($field_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
                 </select>
                 <label for="embedded-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
-                <input type="text" id="embedded-item-default" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
+                <textarea id="embedded-item-default" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
                 <label for="embedded-item-code"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
-                <input type="text" id="embedded-item-code" value="<?php echo esc_attr($field_note);?>" class="text ui-widget-content ui-corner-all" />
+                <textarea id="embedded-item-code" rows="2" style="width:100%;"><?php echo $field_note;?></textarea>
             </fieldset>
             <?php
             return ob_get_clean();
