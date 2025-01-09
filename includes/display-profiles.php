@@ -178,7 +178,7 @@ if (!class_exists('display_profiles')) {
         
                                     // Step 4: Replace meta keys and update the post type
                                     $post_id = get_the_ID();
-        
+/*        
                                     // Get existing meta values
                                     $field_type = get_post_meta($post_id, 'field_type', true);
                                     $default_value = get_post_meta($post_id, 'default_value', true);
@@ -193,7 +193,7 @@ if (!class_exists('display_profiles')) {
                                         update_post_meta($post_id, 'default_value', $default_value);
                                         delete_post_meta($post_id, 'default_value');
                                     }
-        
+*/        
                                     if ($doc_id) {
                                         update_post_meta($post_id, 'doc_id', $doc_id);
                                         delete_post_meta($post_id, 'embedded_id');

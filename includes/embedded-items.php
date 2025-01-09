@@ -188,6 +188,14 @@ if (!class_exists('embedded_items')) {
                             'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
                         ),
                         array(
+                            'key'     => 'site_id',
+                            'value'   => $site_id,
+                            'compare' => '=',
+                        ),
+                    ),
+                    array(
+                        'relation' => 'AND',
+                        array(
                             'key'     => 'is_public',
                             'value'   => '0',
                             'compare' => '=',
