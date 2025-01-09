@@ -196,6 +196,7 @@ if (!class_exists('display_documents')) {
                             $doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
                             $doc_category = get_post_meta(get_the_ID(), 'doc_category', true);
                             $is_doc_report = get_post_meta(get_the_ID(), 'is_doc_report', true);
+                            $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
 
                             if (!$doc_category) {
                                 $doc_number = '<span style="color:red;">' . $doc_number . '</span>';
@@ -203,6 +204,10 @@ if (!class_exists('display_documents')) {
 
                             if ($is_doc_report == 1) {
                                 $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
+                            }
+
+                            if ($system_doc) {
+                                $doc_title = '<span style="color:blue;">***' . $doc_title . '</span>';
                             }
 
                             ?>
