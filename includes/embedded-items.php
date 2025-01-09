@@ -167,36 +167,39 @@ if (!class_exists('embedded_items')) {
                 'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'AND', // Combine all conditions with an AND relation
-                    array(
-                        'relation' => 'OR', // Sub-condition for is_public
-                        array(
-                            'key'     => 'is_public',
-                            'value'   => '1',
-                            'compare' => '=', // Condition to check if the meta value is 0
-                        ),
-                        array(
-                            'relation' => 'AND',
-                            array(
-                                'key'     => 'is_public',
-                                'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
-                            ),
-                            array(
-                                'key'     => 'is_public',
-                                'value'   => '0',
-                                'compare' => '=',
-                            ),
-                            array(
-                                'key'     => 'site_id',
-                                'value'   => $site_id,
-                                'compare' => '=',
-                            ),
-                        ),
-                    ),
                 ),
                 'meta_key'       => 'embedded_number', // Meta key for sorting
                 'orderby'        => 'meta_value', // Sort by meta value
                 'order'          => 'DESC', // Sorting order (ascending)
             );
+
+            if (!current_user_can('administrator')) {
+                $args['meta_query'][] = array(
+                    'relation' => 'OR', // Sub-condition for is_public
+                    array(
+                        'key'     => 'is_public',
+                        'value'   => '1',
+                        'compare' => '=', // Condition to check if the meta value is 0
+                    ),
+                    array(
+                        'relation' => 'AND',
+                        array(
+                            'key'     => 'is_public',
+                            'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
+                        ),
+                        array(
+                            'key'     => 'is_public',
+                            'value'   => '0',
+                            'compare' => '=',
+                        ),
+                        array(
+                            'key'     => 'site_id',
+                            'value'   => $site_id,
+                            'compare' => '=',
+                        ),
+                    ),
+                );
+            }
 
             // Add the embedded_number condition only if $embedded_number exists
             if (!empty($embedded_number)) {
