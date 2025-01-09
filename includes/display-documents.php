@@ -499,9 +499,9 @@ if (!class_exists('display_documents')) {
                         <?php echo $profiles_class->display_doc_user_list($doc_id);?>
                     </div>
 
-                    <label id="system-doc-label" class="button"><?php echo __( '系統文件', 'your-text-domain' );?></label>
+                    <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'your-text-domain' );?></label>
                     <fieldset id="system-doc-div" style="display:none;">
-                        <label for="system-doc"><?php echo __( '名稱', 'your-text-domain' );?></label>
+                        <label for="system-doc"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
                         <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
                         <label for="multiple-select"><?php echo __( '多選', 'your-text-domain' );?></label>
