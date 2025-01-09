@@ -1661,6 +1661,7 @@ if (!class_exists('display_documents')) {
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             if ($embedded_id) {
                                 $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
+                                $embedded_type = ($embedded_type) ? $embedded_type : 'sub-form';
                                 if ($embedded_type=='line-list') {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
@@ -1703,6 +1704,12 @@ if (!class_exists('display_documents')) {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
+                                    <?php
+                                }
+                                if ($embedded_type=='select-multi') {
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                    <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
                                     <?php
                                 }
                             }
@@ -1937,6 +1944,7 @@ if (!class_exists('display_documents')) {
                 $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                 if ($embedded_id) {
                     $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
+                    $embedded_type = ($embedded_type) ? $embedded_type : 'sub-form';
                     if ($embedded_type=='line-list') {
                         $inner_query = $items_class->retrieve_line_list_data($embedded_id);
                         if ($inner_query->have_posts()) :
