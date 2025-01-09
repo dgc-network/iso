@@ -1659,7 +1659,7 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_embedded'):
                             $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id && $field_value) {
+                            if ($embedded_id && $default_value) {
                                 $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
                                 $embedded_type = ($embedded_type) ? $embedded_type : 'sub-form';
                                 if ($embedded_type=='line-list') {
