@@ -1672,12 +1672,15 @@ if (!class_exists('display_documents')) {
                     } else {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
+                    error_log($field_type . '('. $field_id . ') value: ' . $field_value);
+
+/*                    
                     if ($doc_embedded_id) {
                         //if ($embedded_item_id) $field_id = $embedded_item_id.get_the_ID();
                         if ($report_id) $field_value = get_post_meta($report_id, $field_id, true);
                         if ($prev_report_id) $field_value = get_post_meta($prev_report_id, $field_id, true);
                     }
-
+*/
                     switch (true) {
                         case ($field_type=='_employee'):
                             ?>
