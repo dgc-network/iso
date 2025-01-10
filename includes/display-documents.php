@@ -1641,16 +1641,20 @@ if (!class_exists('display_documents')) {
 
         function get_doc_field_contains($params=array()) {
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            $doc_embedded_id = isset($params['doc_embedded_id']) ? $params['doc_embedded_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
             $is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
 
             $query = $this->retrieve_doc_field_data($params);
+            if ($doc_embedded_id) {
+                $items_class = new embedded_items();
+                $query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
+            }
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_id = get_the_ID();
-                    //$field_title = get_post_meta($field_id, 'field_title', true);
                     $field_title = get_the_title($field_id);
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);

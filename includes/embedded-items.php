@@ -970,7 +970,7 @@ if (!class_exists('embedded_items')) {
                 <div id="new-line-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
-            <div id="line-report-dialog" title="Sub line dialog"></div>
+            <div id="line-report-dialog" title="line-report-dialog"></div>
             <?php
             return ob_get_clean();
         }
