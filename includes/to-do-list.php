@@ -873,7 +873,25 @@ if (!class_exists('to_do_list')) {
             $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
+
                     $documents_class->update_doc_field_contains($new_report_id, get_the_ID(), $is_default, $user_id);
+/*
+                    $field_id = get_the_ID();
+                    $field_type = get_post_meta($field_id, 'field_type', true);
+                    if ($field_type=='_embedded') {
+                        $items_class = new embedded_items();
+                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
+                        if ($inner_query->have_posts()) :
+                            while ($inner_query->have_posts()) : $inner_query->the_post();
+                                $documents_class->update_doc_field_contains($new_report_id, $field_id.get_the_ID(), $is_default, $user_id);
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+
+                    } else {
+                        $documents_class->update_doc_field_contains($new_report_id, $field_id, $is_default, $user_id);
+                    }
+*/                        
                 endwhile;
                 wp_reset_postdata();
             }            

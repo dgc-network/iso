@@ -1641,18 +1641,18 @@ if (!class_exists('display_documents')) {
 
         function get_doc_field_contains($params=array()) {
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-            $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
-            $embedded_item_id = isset($params['embedded_item_id']) ? $params['embedded_item_id'] : 0;
-            $line_report_id = isset($params['line_report_id']) ? $params['line_report_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
             $is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
+            $doc_embedded_id = isset($params['doc_embedded_id']) ? $params['doc_embedded_id'] : 0;
+            $embedded_item_id = isset($params['embedded_item_id']) ? $params['embedded_item_id'] : 0;
+            $line_report_id = isset($params['line_report_id']) ? $params['line_report_id'] : 0;
 
             $query = $this->retrieve_doc_field_data($params);
-            if ($embedded_doc_id) {
+            if ($doc_embedded_id) {
                 $items_class = new embedded_items();
-                $query = $items_class->retrieve_embedded_item_data($embedded_doc_id, 0);
+                $query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
             }
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
@@ -1670,8 +1670,8 @@ if (!class_exists('display_documents')) {
                     } else {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
-                    if ($embedded_doc_id) {
-                        if ($embedded_item_id) $field_id = $embedded_item_id.get_the_ID();
+                    if ($doc_embedded_id) {
+                        //if ($embedded_item_id) $field_id = $embedded_item_id.get_the_ID();
                         if ($report_id) $field_value = get_post_meta($report_id, $field_id, true);
                         if ($prev_report_id) $field_value = get_post_meta($prev_report_id, $field_id, true);
                     }
@@ -1702,11 +1702,11 @@ if (!class_exists('display_documents')) {
                                 <div id="sub-form">
                                     <fieldset>
                                     <?php
-                                $params = array(
-                                    'embedded_doc_id' => $embedded_id,
-                                    'embedded_item_id' => $field_id,
-                                );
-                                $this->get_doc_field_contains($params);
+                                    $params = array(
+                                        'doc_embedded_id' => $embedded_id,
+                                        //'embedded_item_id' => $field_id,
+                                    );
+                                    $this->get_doc_field_contains($params);
 /*
                                     $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
                                     if ($inner_query->have_posts()) :
@@ -1991,8 +1991,10 @@ if (!class_exists('display_documents')) {
                     $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
                     if ($inner_query->have_posts()) :
                         while ($inner_query->have_posts()) : $inner_query->the_post();
-                            $embedded_item_value = $_POST[$field_id.get_the_ID()];
-                            update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
+                            //$embedded_item_value = $_POST[$field_id.get_the_ID()];
+                            //update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
+                            $embedded_item_value = $_POST[get_the_ID()];
+                            update_post_meta($report_id, get_the_ID(), $embedded_item_value);
                         endwhile;
                         wp_reset_postdata();
                     endif;
