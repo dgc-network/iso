@@ -299,7 +299,7 @@ jQuery(document).ready(function($) {
                                 //const field_embedded = `${value.field_id}${inner_value.embedded_item_id}`;
                                 //const field_embedded_tag = `#${value.field_id}${inner_value.embedded_item_id}`;
                                 const field_embedded = `${inner_value.embedded_item_id}`;
-                                const field_embedded_tag = `#$${inner_value.embedded_item_id}`;
+                                const field_embedded_tag = `#${inner_value.embedded_item_id}`;
                                 
                                 const element = $(field_embedded_tag);
                                 if (element.length) {
