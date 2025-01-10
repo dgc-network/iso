@@ -1628,7 +1628,9 @@ if (!class_exists('to_do_list')) {
                     <?php echo 'Log time: '.wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?>
                 </div>
                 <div style="text-align: right">
-                    <input type="button" id="del-action-log" value="Delete" style="margin:5px;" />
+                    <?php if (is_site_admin()) {?>
+                        <input type="button" id="del-action-log" value="Delete" style="margin:5px;" />
+                    <?php }?>
                     <input type="button" id="exit-action-log" value="Exit" style="margin:5px;" />
                 </div>
             </div>
@@ -1662,7 +1664,6 @@ if (!class_exists('to_do_list')) {
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
-                            //$site_id = get_post_meta($doc_id, 'site_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $todo_title = get_the_title();
                             $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
