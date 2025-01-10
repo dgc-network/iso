@@ -1642,6 +1642,7 @@ if (!class_exists('display_documents')) {
         function get_doc_field_contains($params=array()) {
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
             $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
+            $embedded_item_id = isset($params['embedded_item_id']) ? $params['embedded_item_id'] : 0;
             $line_report_id = isset($params['line_report_id']) ? $params['line_report_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
@@ -1670,7 +1671,7 @@ if (!class_exists('display_documents')) {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
                     if ($embedded_doc_id) {
-                        $field_id = $field_id.get_the_ID();
+                        if ($embedded_item_id) $field_id = $embedded_item_id;
                         $field_value = get_post_meta($report_id, $field_id, true);
                     }
 
@@ -1699,12 +1700,6 @@ if (!class_exists('display_documents')) {
                                 <div id="sub-form">
                                     <fieldset>
                                     <?php
-                                    $params = array(
-                                        'embedded_doc_id' => $embedded_id,
-                                        'report_id' => $line_report_id,
-                                    );
-                                    $this->get_doc_field_contains($params);
-/*                                    
                                     $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -1715,11 +1710,17 @@ if (!class_exists('display_documents')) {
                                             } else {
                                                 $embedded_item_value = get_post_meta(get_the_ID(), 'default_value', true);
                                             }
-                                            $items_class->get_embedded_item_contains($field_id, get_the_ID(), $embedded_item_value);
+                                            //$items_class->get_embedded_item_contains($field_id, get_the_ID(), $embedded_item_value);
+                                            $params = array(
+                                                'embedded_doc_id' => $embedded_id,
+                                                'embedded_item_id' => $field_id.get_the_ID(),
+                                            );
+                                            $this->get_doc_field_contains($params);
+        
                                         endwhile;
                                         wp_reset_postdata();
                                     endif;
-*/                                    
+
                                     ?>
                                     </fieldset>
                                 </div>
