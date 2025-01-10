@@ -993,7 +993,7 @@ if (!class_exists('embedded_items')) {
         function display_line_report_dialog($line_report_id=false, $embedded_id=false) {
             ob_start();
             $report_id = get_post_meta($line_report_id, 'report_id', true);
-            $report_id = ($report_id) ? $report_id : $embedded_id;
+            //$report_id = ($report_id) ? $report_id : $embedded_id;
             ?>
             <fieldset>
                 <input type="hidden" id="line-report-id" value="<?php echo esc_attr($line_report_id);?>" />
@@ -1004,7 +1004,7 @@ if (!class_exists('embedded_items')) {
                     while ($query->have_posts()) : $query->the_post();
                         $documents_class = new display_documents();
                         $params = array(
-                            'doc_id'    => $report_id,
+                            'doc_embedded_id' => $embedded_id,
                             'report_id' => $line_report_id,
                         );                
                         $documents_class->get_doc_field_contains($params);
