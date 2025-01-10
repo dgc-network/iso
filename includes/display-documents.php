@@ -1209,6 +1209,8 @@ if (!class_exists('display_documents')) {
                     }
                 }
 
+                $this->update_doc_field_contains(array('report_id' => $report_id));
+/*
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) {
@@ -1217,7 +1219,7 @@ if (!class_exists('display_documents')) {
                     }
                     wp_reset_postdata();
                 }
-
+*/
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $proceed_to_todo = isset($_POST['_proceed_to_todo']) ? sanitize_text_field($_POST['_proceed_to_todo']) : 0;
         
@@ -1933,7 +1935,101 @@ if (!class_exists('display_documents')) {
             return $options;
         }
 
-        function update_doc_field_contains($report_id=false, $field_id=false, $is_default=false, $user_id=false) {
+        function update_doc_field_contains($params=array()) {
+            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            $is_default = isset($params['is_default']) ? $params['is_default'] : false;
+            $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+            $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    // standard fields
+                    $field_id = get_the_ID();
+                    $field_type = get_post_meta($field_id, 'field_type', true);
+                    $default_value = get_post_meta($field_id, 'default_value', true);
+                    if ($is_default) {
+                        $field_value = $this->get_doc_field_default_value($field_id, $user_id);
+                    } else {
+                        $field_value = $_POST[$field_id];
+                    }
+                    update_post_meta($report_id, $field_id, $field_value);
+        
+                    // special field-type
+                    if ($field_type=='_employees'){
+                        $employee_ids = get_post_meta($report_id, '_employees', true);
+                        // Ensure $employee_ids is an array, or initialize it as an empty array
+                        if (!is_array($employee_ids)) {
+                            $employee_ids = array();
+                        }
+        
+                        if ($default_value=='me'){
+                            $current_user_id = get_current_user_id();
+                            // Check if the $current_user_id is not already in the $employee_ids array
+                            if (!in_array($current_user_id, $employee_ids)) {
+                                // Add the value to the $employee_ids array
+                                $employee_ids = array($current_user_id);
+                            }
+                        } else {
+                            // Loop through each value in $field_value to check and add to $employee_ids
+                            foreach ($field_value as $value) {
+                                // Check if the value is not already in the $employee_ids array
+                                if (!in_array($value, $employee_ids)) {
+                                    // Add the value to the $employee_ids array
+                                    $employee_ids[] = $value;
+                                }
+                            }    
+                        }
+                        update_post_meta($report_id, '_employees', $employee_ids);
+                    }
+        
+                    if ($field_type=='_employee'){
+                        update_post_meta($report_id, '_employee', $field_value);
+                    }
+        
+                    if ($field_type=='_document'){
+                        update_post_meta($report_id, '_document', $field_value);
+                    }
+        
+                    if ($field_type=='_department'){
+                        update_post_meta($report_id, '_department', $field_value);
+                    }
+        
+                    if ($field_type=='_embedded'){
+                        $items_class = new embedded_items();
+                        $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                        if ($embedded_id && $default_value) {
+                            $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
+                            if ($inner_query->have_posts()) :
+                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    $embedded_item_value = $_POST[get_the_ID()];
+                                    update_post_meta($report_id, get_the_ID(), $embedded_item_value);
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+                        }
+                    }
+        
+                    if ($field_type=='_line_list'){
+                        $items_class = new embedded_items();
+                        $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                        if ($embedded_id && $default_value) {
+                            $inner_query = $items_class->retrieve_line_report_data($embedded_id);
+                            if ($inner_query->have_posts()) :
+                                while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    update_post_meta(get_the_ID(), 'report_id', $report_id);
+                                endwhile;
+                                wp_reset_postdata();
+                            endif;
+                        }
+                    }
+        
+                }
+                wp_reset_postdata();
+            }
+
+        }
+        
+        function old_update_doc_field_contains($report_id=false, $field_id=false, $is_default=false, $user_id=false) {
             // standard fields
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
