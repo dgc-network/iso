@@ -1451,21 +1451,11 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
-        function display_doc_field_dialog($field_id=false) {
+        function get_field_type_list_data() {
             ob_start();
-            $field_title = get_the_title($field_id);
-            $field_type = get_post_meta($field_id, 'field_type', true);
-            $listing_style = get_post_meta($field_id, 'listing_style', true);
-            $default_value = get_post_meta($field_id, 'default_value', true);
-            $order_field = get_post_meta($field_id, 'order_field', true);
             ?>
-            <fieldset>
-                <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
-                <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
-                <select id="field-type" class="text ui-widget-content ui-corner-all">
+            <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
+            <select id="field-type" class="text ui-widget-content ui-corner-all">
                     <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
                     <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
                     <option value="number" <?php echo ($field_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
@@ -1508,7 +1498,26 @@ if (!class_exists('display_documents')) {
                     <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( 'Employee', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
-                </select>
+            </select>
+
+            <?php
+            return ob_get_clean();
+        }
+
+        function display_doc_field_dialog($field_id=false) {
+            ob_start();
+            $field_title = get_the_title($field_id);
+            $field_type = get_post_meta($field_id, 'field_type', true);
+            $listing_style = get_post_meta($field_id, 'listing_style', true);
+            $default_value = get_post_meta($field_id, 'default_value', true);
+            $order_field = get_post_meta($field_id, 'order_field', true);
+            ?>
+            <fieldset>
+                <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
+                <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
+                <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
+                <?php echo $this->get_field_type_list_data();?>
                 <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>

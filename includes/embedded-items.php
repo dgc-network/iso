@@ -677,6 +677,7 @@ if (!class_exists('embedded_items')) {
 
         function display_embedded_item_dialog($embedded_item_id=false) {
             ob_start();
+            $documents_class = new display_documents();
             $embedded_item_title = get_the_title($embedded_item_id);
             $field_type = get_post_meta($embedded_item_id, 'field_type', true);
             $default_value = get_post_meta($embedded_item_id, 'default_value', true);
@@ -687,6 +688,8 @@ if (!class_exists('embedded_items')) {
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="embedded-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
                 <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
+                <?php echo $documents_class->get_field_type_list_data();?>
+<?php /*                
                 <label for="embedded-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="embedded-item-type" class="text ui-widget-content ui-corner-all">
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
@@ -697,6 +700,7 @@ if (!class_exists('embedded_items')) {
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="_product" <?php echo ($field_type=='_product') ? 'selected' : ''?>><?php echo __( '_product', 'your-text-domain' );?></option>
                 </select>
+*/?>                
                 <label for="embedded-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
                 <textarea id="embedded-item-default" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
                 <label for="embedded-item-note"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
