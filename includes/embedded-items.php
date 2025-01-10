@@ -1003,8 +1003,8 @@ if (!class_exists('embedded_items')) {
                     while ($query->have_posts()) : $query->the_post();
                         $documents_class = new display_documents();
                         $params = array(
-                            'doc_id'    => $doc_id,
-                            'report_id' => $report_id,
+                            'doc_id'    => $report_id,
+                            'report_id' => $line_report_id,
                         );                
                         $documents_class->get_doc_field_contains($params);
 /*    
