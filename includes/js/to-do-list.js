@@ -296,8 +296,10 @@ jQuery(document).ready(function($) {
     
                         if (value.field_type === '_embedded') {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
-                                const field_embedded = `${value.field_id}${inner_value.embedded_item_id}`;
-                                const field_embedded_tag = `#${value.field_id}${inner_value.embedded_item_id}`;
+                                //const field_embedded = `${value.field_id}${inner_value.embedded_item_id}`;
+                                //const field_embedded_tag = `#${value.field_id}${inner_value.embedded_item_id}`;
+                                const field_embedded = `${inner_value.embedded_item_id}`;
+                                const field_embedded_tag = `#$${inner_value.embedded_item_id}`;
                                 
                                 const element = $(field_embedded_tag);
                                 if (element.length) {
