@@ -1671,7 +1671,7 @@ if (!class_exists('display_documents')) {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
                     if ($embedded_doc_id) {
-                        if ($embedded_item_id) $field_id = $embedded_item_id;
+                        if ($embedded_item_id) $field_id = $embedded_item_id.get_the_ID();
                         $field_value = get_post_meta($report_id, $field_id, true);
                     }
 
@@ -1694,6 +1694,12 @@ if (!class_exists('display_documents')) {
                             $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             if ($embedded_id && $default_value) {
+                                $params = array(
+                                    'embedded_doc_id' => $embedded_id,
+                                    'embedded_item_id' => $field_id,
+                                );
+                                $this->get_doc_field_contains($params);
+/*
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
@@ -1711,16 +1717,11 @@ if (!class_exists('display_documents')) {
                                                 $embedded_item_value = get_post_meta(get_the_ID(), 'default_value', true);
                                             }
                                             //$items_class->get_embedded_item_contains($field_id, get_the_ID(), $embedded_item_value);
-                                            $params = array(
-                                                'embedded_doc_id' => $embedded_id,
-                                                'embedded_item_id' => $field_id.get_the_ID(),
-                                            );
-                                            $this->get_doc_field_contains($params);
         
                                         endwhile;
                                         wp_reset_postdata();
                                     endif;
-
+*/
                                     ?>
                                     </fieldset>
                                 </div>
