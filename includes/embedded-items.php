@@ -384,9 +384,9 @@ if (!class_exists('embedded_items')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $embedded_title = get_the_title($embedded_id);
             $embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
-            $iso_category = get_post_meta($embedded_id, 'iso_category', true);
+            //$iso_category = get_post_meta($embedded_id, 'iso_category', true);
             $embedded_site = get_post_meta($embedded_id, 'site_id', true);
-            $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
+            //$embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
             $is_public = get_post_meta($embedded_id, 'is_public', true);
             $is_public_checked = ($is_public==1) ? 'checked' : '';
             ?>
@@ -401,6 +401,7 @@ if (!class_exists('embedded_items')) {
                 <input type="text" id="embedded-number" value="<?php echo esc_attr($embedded_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="embedded-title"><?php echo __( 'Title', 'your-text-domain' );?></label>
                 <input type="text" id="embedded-title" value="<?php echo esc_attr($embedded_title);?>" class="text ui-widget-content ui-corner-all" />
+<?php /*                
                 <label for="embedded-type"><?php echo __( 'Type', 'your-text-domain' );?></label>
                 <select id="embedded-type" class="text ui-widget-content ui-corner-all">
                     <option value="sub-form" <?php echo ($embedded_type == "sub-form") ? "selected" : ""; ?>><?php echo __( 'Subform', 'your-text-domain' ); ?></option>
@@ -408,6 +409,7 @@ if (!class_exists('embedded_items')) {
                     <option value="select-one" <?php echo ($embedded_type == "select-one") ? "selected" : ""; ?>><?php echo __( 'Select one', 'your-text-domain' ); ?></option>
                     <option value="flow-chart" <?php echo ($embedded_type == "flow-chart") ? "selected" : ""; ?>><?php echo __( 'Flow chart', 'your-text-domain' ); ?></option>
                 </select>
+*/?>
                 <label for="embedded-item-list"><?php echo __( 'Items', 'your-text-domain' );?></label>
                 <div id="embedded-item-list">
                     <?php echo $this->display_embedded_item_list($embedded_id);?>
@@ -457,8 +459,8 @@ if (!class_exists('embedded_items')) {
                 $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : '';
                 $embedded_number = (isset($_POST['_embedded_number'])) ? sanitize_text_field($_POST['_embedded_number']) : '';
                 $embedded_title = (isset($_POST['_embedded_title'])) ? sanitize_text_field($_POST['_embedded_title']) : '';
-                $embedded_type = (isset($_POST['_embedded_type'])) ? sanitize_text_field($_POST['_embedded_type']) : '';
-                $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
+                //$embedded_type = (isset($_POST['_embedded_type'])) ? sanitize_text_field($_POST['_embedded_type']) : '';
+                //$iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
                 $is_public = (isset($_POST['_is_public'])) ? sanitize_text_field($_POST['_is_public']) : 0;
                 $data = array(
                     'ID'           => $embedded_id,
@@ -466,8 +468,8 @@ if (!class_exists('embedded_items')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($embedded_id, 'embedded_number', $embedded_number);
-                update_post_meta($embedded_id, 'embedded_type', $embedded_type);
-                update_post_meta($embedded_id, 'iso_category', $iso_category);
+                //update_post_meta($embedded_id, 'embedded_type', $embedded_type);
+                //update_post_meta($embedded_id, 'iso_category', $iso_category);
                 update_post_meta($embedded_id, 'is_public', $is_public);
             } else {
                 $current_user_id = get_current_user_id();
@@ -1715,7 +1717,7 @@ if (!class_exists('embedded_items')) {
 
         function select_department_card_options($selected_option=0) {
             $query = $this->retrieve_department_card_data(0);
-            $options = '<option value="">Select department</option>';
+            $options = '<option value="">Select option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';

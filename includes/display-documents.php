@@ -1475,15 +1475,6 @@ if (!class_exists('display_documents')) {
                     <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
                     <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'your-text-domain' );?></option>
-<?php /*                    
-                    <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
-                    <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
-                    <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
-                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
-                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
-*/?>                    
-                    <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( '_embedded', 'your-text-domain' );?></option>
-                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( '_iot_device', 'your-text-domain' );?></option>
                     <?php
                     $query = $this->get_system_doc_list_query();
                     if ($query->have_posts()) {
@@ -1500,10 +1491,21 @@ if (!class_exists('display_documents')) {
                         wp_reset_postdata();
                     }
                     ?>
-                    <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( '_document', 'your-text-domain' );?></option>
-                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( '_doc_report', 'your-text-domain' );?></option>
-                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( '_department', 'your-text-domain' );?></option>
-                    <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( '_employee', 'your-text-domain' );?></option>
+<?php /*                    
+                    <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
+                    <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
+                    <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
+                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
+                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
+*/?>                    
+                    <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( 'Embedded', 'your-text-domain' );?></option>
+                    <option value="_line_list" <?php echo ($field_type=='_line_list') ? 'selected' : ''?>><?php echo __( 'Line_list', 'your-text-domain' );?></option>
+                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( 'Select', 'your-text-domain' );?></option>
+                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( 'IoT_device', 'your-text-domain' );?></option>
+                    <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( 'Document', 'your-text-domain' );?></option>
+                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( 'Doc_report', 'your-text-domain' );?></option>
+                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( 'Department', 'your-text-domain' );?></option>
+                    <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( 'Employee', 'your-text-domain' );?></option>
                     <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
                 </select>
@@ -1674,52 +1676,58 @@ if (!class_exists('display_documents')) {
                             $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             if ($embedded_id && $default_value) {
-                                $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
-                                $embedded_type = ($embedded_type) ? $embedded_type : 'sub-form';
-                                if ($embedded_type=='line-list') {
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <div id="line-report-list">
-                                        <?php
-                                        if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
-                                        elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
-                                        else echo $items_class->display_line_report_list($embedded_id);
-                                        ?>
-                                    </div>
+                                ?>
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
+                                <div id="sub-form">
+                                    <fieldset>
                                     <?php
-                                }
-                                if ($embedded_type=='sub-form') {
+                                    $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
+                                    if ($inner_query->have_posts()) :
+                                        while ($inner_query->have_posts()) : $inner_query->the_post();
+                                            if ($report_id) {
+                                                $embedded_item_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
+                                            } elseif ($prev_report_id) {
+                                                $embedded_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
+                                            } else {
+                                                $embedded_item_value = get_post_meta(get_the_ID(), 'default_value', true);
+                                            }
+                                            $items_class->get_embedded_item_contains($field_id, get_the_ID(), $embedded_item_value);
+                                        endwhile;
+                                        wp_reset_postdata();
+                                    endif;
                                     ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
-                                    <div id="sub-form">
-                                        <fieldset>
-                                        <?php
-                                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
-                                        if ($inner_query->have_posts()) :
-                                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                                if ($report_id) {
-                                                    $embedded_item_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
-                                                } elseif ($prev_report_id) {
-                                                    $embedded_item_value = get_post_meta($prev_report_id, $field_id.get_the_ID(), true);
-                                                } else {
-                                                    $embedded_item_value = get_post_meta(get_the_ID(), 'default_value', true);
-                                                }
-                                                $items_class->get_embedded_item_contains($field_id, get_the_ID(), $embedded_item_value);
-                                            endwhile;
-                                            wp_reset_postdata();
-                                        endif;
-                                        ?>
-                                        </fieldset>
-                                    </div>
+                                    </fieldset>
+                                </div>
+                                <?php
+                            }
+                            break;
+
+                        case ($field_type=='_line_list'):
+                            $items_class = new embedded_items();
+                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                            if ($embedded_id && $default_value) {
+                                ?>
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                <div id="line-report-list">
                                     <?php
-                                }
-                                if ($embedded_type=='select-one') {
+                                    if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
+                                    elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
+                                    else echo $items_class->display_line_report_list($embedded_id);
                                     ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
-                                    <?php
-                                }
+                                </div>
+                                <?php
+                            }
+                            break;
+
+                        case ($field_type=='_select'):
+                            $items_class = new embedded_items();
+                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                            if ($embedded_id && $default_value) {
+                                ?>
+                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
+                                <?php
                             }
                             break;
 
@@ -1951,30 +1959,29 @@ if (!class_exists('display_documents')) {
             if ($field_type=='_embedded'){
                 $items_class = new embedded_items();
                 $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                if ($embedded_id) {
-                    $embedded_type = get_post_meta($embedded_id, 'embedded_type', true);
-                    $embedded_type = ($embedded_type) ? $embedded_type : 'sub-form';
-                    if ($embedded_type=='line-list') {
-                        $inner_query = $items_class->retrieve_line_report_data($embedded_id);
-                        if ($inner_query->have_posts()) :
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                //$embedded_item_value = $_POST[$field_id.get_the_ID()];
-                                //update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
-                                update_post_meta(get_the_ID(), 'report_id', $report_id);
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                    }
-                    if ($embedded_type=='sub-form') {
-                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
-                        if ($inner_query->have_posts()) :
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $embedded_item_value = $_POST[$field_id.get_the_ID()];
-                                update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                    }
+                if ($embedded_id && $default_value) {
+                    $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
+                    if ($inner_query->have_posts()) :
+                        while ($inner_query->have_posts()) : $inner_query->the_post();
+                            $embedded_item_value = $_POST[$field_id.get_the_ID()];
+                            update_post_meta($report_id, $field_id.get_the_ID(), $embedded_item_value);
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                }
+            }
+
+            if ($field_type=='_line_list'){
+                $items_class = new embedded_items();
+                $embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                if ($embedded_id && $default_value) {
+                    $inner_query = $items_class->retrieve_line_report_data($embedded_id);
+                    if ($inner_query->have_posts()) :
+                        while ($inner_query->have_posts()) : $inner_query->the_post();
+                            update_post_meta(get_the_ID(), 'report_id', $report_id);
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
                 }
             }
         }
