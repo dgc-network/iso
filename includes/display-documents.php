@@ -1672,7 +1672,8 @@ if (!class_exists('display_documents')) {
                     }
                     if ($embedded_doc_id) {
                         if ($embedded_item_id) $field_id = $embedded_item_id.get_the_ID();
-                        $field_value = get_post_meta($report_id, $field_id, true);
+                        if ($report_id) $field_value = get_post_meta($report_id, $field_id, true);
+                        if ($prev_report_id) $field_value = get_post_meta($prev_report_id, $field_id, true);
                     }
 
                     switch (true) {
@@ -1694,18 +1695,19 @@ if (!class_exists('display_documents')) {
                             $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             if ($embedded_id && $default_value) {
-                                $params = array(
-                                    'embedded_doc_id' => $embedded_id,
-                                    'embedded_item_id' => $field_id,
-                                );
-                                $this->get_doc_field_contains($params);
-/*
+
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
                                 <div id="sub-form">
                                     <fieldset>
                                     <?php
+                                $params = array(
+                                    'embedded_doc_id' => $embedded_id,
+                                    'embedded_item_id' => $field_id,
+                                );
+                                $this->get_doc_field_contains($params);
+/*
                                     $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
                                     if ($inner_query->have_posts()) :
                                         while ($inner_query->have_posts()) : $inner_query->the_post();
