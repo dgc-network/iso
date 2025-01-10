@@ -993,22 +993,22 @@ if (!class_exists('embedded_items')) {
         function display_line_report_dialog($line_report_id=false, $embedded_id=false) {
             ob_start();
             $report_id = get_post_meta($line_report_id, 'report_id', true);
-            //$report_id = ($report_id) ? $report_id : $embedded_id;
+            $report_id = ($report_id) ? $report_id : $embedded_id;
             ?>
             <fieldset>
                 <input type="hidden" id="line-report-id" value="<?php echo esc_attr($line_report_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <?php
+                $documents_class = new display_documents();
+                $params = array(
+                    'embedded_doc_id' => $report_id,
+                    'report_id' => $line_report_id,
+                );                
+                $documents_class->get_doc_field_contains($params);
+/*
                 $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $documents_class = new display_documents();
-                        $params = array(
-                            'embedded_doc_id' => $report_id,
-                            'report_id' => $line_report_id,
-                        );                
-                        $documents_class->get_doc_field_contains($params);
-/*    
                         ?>
                         <label for="<?php echo esc_attr($embedded_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
                         <?php
@@ -1030,10 +1030,10 @@ if (!class_exists('embedded_items')) {
                             <input type="<?php echo esc_attr($field_type);?>" id="<?php echo esc_attr($embedded_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
                             <?php    
                         }
-*/
                     endwhile;
                     wp_reset_postdata();
                 endif;
+*/
                 ?>
             </fieldset>
             <?php
