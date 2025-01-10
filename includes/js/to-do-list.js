@@ -308,6 +308,7 @@ jQuery(document).ready(function($) {
                                     } else {
                                         ajaxData[field_embedded] = element.val();
                                     }
+                                    console.log(`${field_embedded_tag} value is: ${element.val()}`);
                                 } else {
                                     console.warn(`Element not found: ${field_embedded_tag}`);
                                 }
