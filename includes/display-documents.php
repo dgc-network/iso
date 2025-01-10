@@ -1450,7 +1450,7 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
-        function get_field_type_list_data() {
+        function get_field_type_list_data($field_type=false) {
             ob_start();
             ?>
             <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
@@ -1516,7 +1516,7 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
-                <?php echo $this->get_field_type_list_data();?>
+                <?php echo $this->get_field_type_list_data($field_type);?>
                 <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>

@@ -688,7 +688,7 @@ if (!class_exists('embedded_items')) {
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="embedded-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
                 <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
-                <?php echo $documents_class->get_field_type_list_data();?>
+                <?php echo $documents_class->get_field_type_list_data($field_type);?>
 <?php /*                
                 <label for="embedded-item-type"><?php echo __( 'Type: ', 'your-text-domain' );?></label>
                 <select id="embedded-item-type" class="text ui-widget-content ui-corner-all">
@@ -944,6 +944,7 @@ if (!class_exists('embedded_items')) {
                         } else {
                             ?><tr id="edit-line-report-<?php echo $line_report_id;?>"><?php
                         }
+
                         $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
@@ -951,14 +952,11 @@ if (!class_exists('embedded_items')) {
                                 $field_value = get_post_meta($line_report_id, $embedded_id.get_the_ID(), true);
                                 $field_value = ($field_value) ? $field_value : $embedded_id.get_the_ID();
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
-                                if ($field_type=='_product') {
-                                    $product_code = get_post_meta($field_value, 'product_code', true);
-                                    $field_value = get_the_title($field_value).'('.$product_code.')'; 
-                                }
                                 ?><td <?php echo $text_align;?>><?php echo esc_html($field_value);?></td><?php
                             endwhile;
                             wp_reset_postdata();
                         endif;
+
                         ?></tr><?php
                     endwhile;
                     wp_reset_postdata();
@@ -970,7 +968,7 @@ if (!class_exists('embedded_items')) {
                 <div id="new-line-report" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
             <?php }?>
             </fieldset>
-            <div id="line-report-dialog" title="line-report-dialog"></div>
+            <div id="line-report-dialog" title="line dialog"></div>
             <?php
             return ob_get_clean();
         }
@@ -1050,9 +1048,10 @@ if (!class_exists('embedded_items')) {
         }
 
         function set_line_report_dialog_data() {
-            //$report_id = (isset($_POST['_report_id'])) ? sanitize_text_field($_POST['_report_id']) : 0;
             $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
-            if( !isset($_POST['_line_report_id']) ) {
+            if( isset($_POST['_line_report_id']) ) {
+                $line_report_id = sanitize_text_field($_POST['_line_report_id']);
+            } else {
                 // Create the post
                 $new_post = array(
                     'post_type'     => 'line-report',
@@ -1060,11 +1059,9 @@ if (!class_exists('embedded_items')) {
                     'post_author'   => get_current_user_id(),
                 );    
                 $line_report_id = wp_insert_post($new_post);
-                //update_post_meta($line_report_id, 'report_id', $report_id);
                 update_post_meta($line_report_id, 'report_id', $embedded_id);
-            } else {
-                $line_report_id = sanitize_text_field($_POST['_line_report_id']);
             }
+
             // Update the post
             $query = $this->retrieve_embedded_item_data($embedded_id, 0);
             if ($query->have_posts()) :
@@ -1075,7 +1072,6 @@ if (!class_exists('embedded_items')) {
                 wp_reset_postdata();
             endif;
 
-            //$response = array('html_contain' => $this->display_line_report_list($embedded_id, $report_id));
             $response = array('html_contain' => $this->display_line_report_list($embedded_id));
             wp_send_json($response);
         }
