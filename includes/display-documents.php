@@ -1738,6 +1738,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_department'):
+                            $items_class = new embedded_items();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($field_value);?></select>
