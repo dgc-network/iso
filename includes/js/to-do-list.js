@@ -340,7 +340,7 @@ jQuery(document).ready(function($) {
                         urlParams.delete("_prompt");
                         urlParams.set("paged", 1);
                         // Redirect to the updated URL
-                        window.location.href = "?" + urlParams.toString();
+                        //window.location.href = "?" + urlParams.toString();
                     },
                     error: function(error){
                         console.error(error);
