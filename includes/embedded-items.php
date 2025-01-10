@@ -546,7 +546,7 @@ if (!class_exists('embedded_items')) {
 
         function select_embedded_options($selected_option=0) {
             $query = $this->retrieve_embedded_data(0);
-            $options = '<option value="">Select an option</option>';
+            $options = '<option value="">Select option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $embedded_number = get_post_meta(get_the_ID(), 'embedded_number', true);
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
@@ -1001,6 +1001,13 @@ if (!class_exists('embedded_items')) {
                 $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
+                        $documents_class = new display_documents();
+                        $params = array(
+                            'doc_id'    => $doc_id,
+                            'report_id' => $report_id,
+                        );                
+                        $documents_class->get_doc_field_contains($params);
+/*    
                         ?>
                         <label for="<?php echo esc_attr($embedded_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
                         <?php
@@ -1022,6 +1029,7 @@ if (!class_exists('embedded_items')) {
                             <input type="<?php echo esc_attr($field_type);?>" id="<?php echo esc_attr($embedded_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
                             <?php    
                         }
+*/
                     endwhile;
                     wp_reset_postdata();
                 endif;
@@ -1384,7 +1392,7 @@ if (!class_exists('embedded_items')) {
             $category_content = get_post_field('post_content', $category_id);
             $category_url = get_post_meta($category_id, 'category_url', true);
             $parent_category = get_post_meta($category_id, 'parent_category', true);
-            $embedded = get_post_meta($category_id, 'embedded', true);
+            //$embedded = get_post_meta($category_id, 'embedded', true);
             ob_start();
             ?>
             <fieldset>
@@ -1397,8 +1405,10 @@ if (!class_exists('embedded_items')) {
                 <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
                 <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
+<?php /*                
                 <label for="embedded"><?php echo __( 'Statement: ', 'your-text-domain' );?></label>
                 <select id="embedded" class="text ui-widget-content ui-corner-all"><?php echo $this->select_embedded_options($embedded);?></select>
+*/?>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1416,7 +1426,7 @@ if (!class_exists('embedded_items')) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $category_url = sanitize_text_field($_POST['_category_url']);
                 $parent_category = sanitize_text_field($_POST['_parent_category']);
-                $embedded = sanitize_text_field($_POST['_embedded']);
+                //$embedded = sanitize_text_field($_POST['_embedded']);
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => sanitize_text_field($_POST['_category_title']),
@@ -1425,7 +1435,7 @@ if (!class_exists('embedded_items')) {
                 wp_update_post( $data );
                 update_post_meta($category_id, 'category_url', $category_url);
                 update_post_meta($category_id, 'parent_category', $parent_category);
-                update_post_meta($category_id, 'embedded', $embedded);
+                //update_post_meta($category_id, 'embedded', $embedded);
             } else {
                 $current_user_id = get_current_user_id();
                 $new_post = array(

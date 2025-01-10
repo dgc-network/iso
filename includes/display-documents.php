@@ -501,7 +501,7 @@ if (!class_exists('display_documents')) {
 
                     <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'your-text-domain' );?></label>
                     <fieldset id="system-doc-div" style="display:none;">
-                        <label for="system-doc"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+                        <label for="system-doc"><?php echo __( '欄位型態名稱', 'your-text-domain' );?></label>
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
                         <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
                         <label for="multiple-select"><?php echo __( '多選', 'your-text-domain' );?></label>
@@ -1065,14 +1065,10 @@ if (!class_exists('display_documents')) {
             ob_start();
             $prev_report_id = $this->get_previous_report_id($report_id); // Fetch the previous ID
             $next_report_id = $this->get_next_report_id($report_id);     // Fetch the next ID
-            ?>
-            <input type="hidden" id="prev-report-id" value="<?php echo esc_attr($prev_report_id); ?>" />
-            <input type="hidden" id="next-report-id" value="<?php echo esc_attr($next_report_id); ?>" />
-            <?php
-            $todo_status = get_post_meta($report_id, 'todo_status', true);
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $todo_status = get_post_meta($report_id, 'todo_status', true);
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1085,6 +1081,8 @@ if (!class_exists('display_documents')) {
                 </div>
             </div>
 
+            <input type="hidden" id="prev-report-id" value="<?php echo esc_attr($prev_report_id); ?>" />
+            <input type="hidden" id="next-report-id" value="<?php echo esc_attr($next_report_id); ?>" />
             <input type="hidden" id="report-id" value="<?php echo esc_attr($report_id);?>" />
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             <fieldset>
@@ -1103,7 +1101,8 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
                     </div>
                 </div>            
-            <hr>
+                
+                <hr>
                 <?php
                 // Action buttons
                 if (empty($todo_status)){
@@ -2075,7 +2074,7 @@ if (!class_exists('display_documents')) {
 
         function select_system_doc_options($selected_option=0, $params=array()) {
             $query = $this->retrieve_doc_report_data($params);
-            $options = '<option value="">Select an option</option>';
+            $options = '<option value="">Select option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
