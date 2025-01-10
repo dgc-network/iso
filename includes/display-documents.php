@@ -1669,6 +1669,9 @@ if (!class_exists('display_documents')) {
                     } else {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
+                    if ($embedded_doc_id) {
+                        $field_value = get_post_meta($report_id, $field_id.get_the_ID(), true);
+                    }
 
                     switch (true) {
                         case ($field_type=='_employee'):
