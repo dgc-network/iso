@@ -919,7 +919,7 @@ if (!class_exists('embedded_items')) {
             <table style="width:100%;">
                 <thead>
                 <tr>
-                <?php                
+                <?php
                 $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
@@ -945,6 +945,12 @@ if (!class_exists('embedded_items')) {
                             ?><tr id="edit-line-report-<?php echo $line_report_id;?>"><?php
                         }
 
+                        $documents_class = new display_documents();
+                        $params = array(
+                            'doc_embedded_id' => $report_id,
+                        );                
+                        $documents_class->get_field_contain_list_display($params);
+/*
                         $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
@@ -956,7 +962,7 @@ if (!class_exists('embedded_items')) {
                             endwhile;
                             wp_reset_postdata();
                         endif;
-
+*/
                         ?></tr><?php
                     endwhile;
                     wp_reset_postdata();
@@ -1003,35 +1009,6 @@ if (!class_exists('embedded_items')) {
                     'report_id' => $line_report_id,
                 );                
                 $documents_class->get_doc_field_contains($params);
-/*
-                $query = $this->retrieve_embedded_item_data($embedded_id, 0);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        ?>
-                        <label for="<?php echo esc_attr($embedded_id.get_the_ID());?>"><?php echo esc_html(get_the_title());?></label>
-                        <?php
-                        if ($line_report_id) {
-                            $field_value = get_post_meta($line_report_id, $embedded_id.get_the_ID(), true);
-                        } else {
-                            $field_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        }
-                        $field_type = get_post_meta(get_the_id(), 'field_type', true);
-                        $documents_class = new display_documents();
-                        $get_system_doc_id = $documents_class->get_system_doc_id($field_type);
-                        if ($get_system_doc_id) {
-                            $params['doc_id'] = $get_system_doc_id;
-                            ?>
-                            <select id="<?php echo esc_attr($embedded_id.get_the_ID());?>" class="text ui-widget-content ui-corner-all"><?php echo $documents_class->select_system_doc_options($field_value, $params);?></select>
-                            <?php
-                        } else {
-                            ?>
-                            <input type="<?php echo esc_attr($field_type);?>" id="<?php echo esc_attr($embedded_id.get_the_ID());?>" value="<?php echo esc_html($field_value);?>"  class="text ui-widget-content ui-corner-all" />
-                            <?php    
-                        }
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-*/
                 ?>
             </fieldset>
             <?php

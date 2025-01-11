@@ -416,7 +416,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    $documents_class->get_doc_report_contain_list($params);
+                    $documents_class->get_doc_report_native_list($params);
                 } else {
                     $doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
@@ -1597,7 +1597,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    $documents_class->get_doc_report_contain_list($params);
+                    $documents_class->get_doc_report_native_list($params);
                 } else {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
                     $prev_report_id = get_post_meta($log_id, 'prev_report_id', true);

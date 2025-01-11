@@ -721,7 +721,7 @@ if (!class_exists('display_documents')) {
                 $total_posts = $query->found_posts;
                 $total_pages = ceil($total_posts / get_option('operation_row_counts'));
 
-                $this->get_doc_report_contain_list($params);
+                $this->get_doc_report_native_list($params);
                 ?>
                 <div class="pagination">
                     <?php
@@ -756,7 +756,85 @@ if (!class_exists('display_documents')) {
             return ob_get_clean();
         }
 
-        function get_doc_report_contain_list($params) {
+        function get_field_contain_list_display($params=array()) {
+            //ob_start();
+            $doc_embedded_id = isset($params['doc_embedded_id']) ? $params['doc_embedded_id'] : 0;
+            $inner_query = $this->retrieve_doc_field_data($params);
+            if ($doc_embedded_id) {
+                $items_class = new embedded_items();
+                $inner_query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
+            }
+            if ($inner_query->have_posts()) {
+                while ($inner_query->have_posts()) : $inner_query->the_post();
+                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                    $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                    $field_value = get_post_meta($report_id, get_the_ID(), true);
+                    $is_checked = ($field_value==1) ? 'checked' : '';
+                    echo '<td style="text-align:'.$listing_style.';">';
+                    if ($field_type=='checkbox') {
+                        if ($field_value==1) echo 'V';
+                    } elseif ($field_type=='radio') {
+                        if ($field_value==1) echo 'V';
+                    } elseif ($field_type=='_employee'||$field_type=='_employees') {
+                        if (is_array($field_value)) {
+                            $user_names = array(); // Array to hold user display names
+                            // Loop through each selected user ID
+                            foreach ($field_value as $user_id) {
+                                // Get user data
+                                $user = get_userdata($user_id);
+                                // Check if the user data is retrieved successfully
+                                if ($user) {
+                                    // Add the user's display name to the array
+                                    $user_names[] = esc_html($user->display_name);
+                                } else {
+                                    // Optionally handle the case where user data is not found
+                                    $user_names[] = 'User not found for ID: ' . esc_html($user_id);
+                                }
+                            }
+                            // Display the user names as a comma-separated list
+                            echo implode(', ', $user_names);
+                        } else {
+                            // Handle the case where $field_value is not an array
+                            // Get user data
+                            $user = get_userdata($field_value);
+                            // Check if the user data is retrieved successfully
+                            if ($user) {
+                                // Add the user's display name to the array
+                                echo esc_html($user->display_name);
+                            } else {
+                                // Optionally handle the case where user data is not found
+                                echo 'User not found for ID: ' . esc_html($field_value);
+                            }
+                        }
+                    //} elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
+                    } elseif ($field_type=='_embedded') {
+                        echo esc_html(get_the_title($field_value).'('.$field_value.')');
+                    } elseif ($field_type=='_document') {
+                        $doc_title = get_post_meta($field_value, 'doc_title', true);
+                        $doc_number = get_post_meta($field_value, 'doc_number', true);
+                        $doc_revision = get_post_meta($field_value, 'doc_revision', true);
+                        echo esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision);
+                    } elseif ($field_type=='_department') {
+                        echo esc_html(get_the_title($field_value));
+                    } elseif ($field_type=='_iot_device') {
+                        $iot_device = get_post_meta($field_value, 'iot_device', true);
+                        echo esc_html(get_the_title($field_value));
+                    } else {
+                        $get_system_doc_id = $this->get_system_doc_id($field_type);
+                        if ($get_system_doc_id) {
+                            if ($field_value) echo esc_html(get_the_title($field_value));
+                        } else {
+                            echo esc_html($field_value);
+                        }
+                    }
+                    echo '</td>';
+                endwhile;                
+                wp_reset_postdata();
+            }
+            //return ob_get_clean();
+        }
+
+        function get_doc_report_native_list($params) {
             $params['is_listing'] = true;
             ?>
             <table style="width:100%;">
@@ -766,7 +844,6 @@ if (!class_exists('display_documents')) {
                     if ($query->have_posts()) {
                         echo '<tr>';
                         while ($query->have_posts()) : $query->the_post();
-                            //$field_title = get_post_meta(get_the_ID(), 'field_title', true);
                             $field_title = get_the_title();
                             echo '<th>'.esc_html($field_title).'</th>';
                         endwhile;
@@ -785,74 +862,9 @@ if (!class_exists('display_documents')) {
                         while ($query->have_posts()) : $query->the_post();
                             $report_id = get_the_ID();
                             echo '<tr id="edit-doc-report-'.$report_id.'">';
-                            $inner_query = $this->retrieve_doc_field_data($params);
-                            if ($inner_query->have_posts()) {
-                                while ($inner_query->have_posts()) : $inner_query->the_post();
-                                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                                    $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                                    $field_value = get_post_meta($report_id, get_the_ID(), true);
-                                    $is_checked = ($field_value==1) ? 'checked' : '';
-                                    echo '<td style="text-align:'.$listing_style.';">';
-                                    if ($field_type=='checkbox') {
-                                        if ($field_value==1) echo 'V';
-                                    } elseif ($field_type=='radio') {
-                                        if ($field_value==1) echo 'V';
-                                    } elseif ($field_type=='_employee'||$field_type=='_employees') {
-                                        if (is_array($field_value)) {
-                                            $user_names = array(); // Array to hold user display names
-                                            // Loop through each selected user ID
-                                            foreach ($field_value as $user_id) {
-                                                // Get user data
-                                                $user = get_userdata($user_id);
-                                                // Check if the user data is retrieved successfully
-                                                if ($user) {
-                                                    // Add the user's display name to the array
-                                                    $user_names[] = esc_html($user->display_name);
-                                                } else {
-                                                    // Optionally handle the case where user data is not found
-                                                    $user_names[] = 'User not found for ID: ' . esc_html($user_id);
-                                                }
-                                            }
-                                            // Display the user names as a comma-separated list
-                                            echo implode(', ', $user_names);
-                                        } else {
-                                            // Handle the case where $field_value is not an array
-                                            // Get user data
-                                            $user = get_userdata($field_value);
-                                            // Check if the user data is retrieved successfully
-                                            if ($user) {
-                                                // Add the user's display name to the array
-                                                echo esc_html($user->display_name);
-                                            } else {
-                                                // Optionally handle the case where user data is not found
-                                                echo 'User not found for ID: ' . esc_html($field_value);
-                                            }
-                                        }
-                                    //} elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
-                                    } elseif ($field_type=='_embedded') {
-                                        echo esc_html(get_the_title($field_value).'('.$field_value.')');
-                                    } elseif ($field_type=='_document') {
-                                        $doc_title = get_post_meta($field_value, 'doc_title', true);
-                                        $doc_number = get_post_meta($field_value, 'doc_number', true);
-                                        $doc_revision = get_post_meta($field_value, 'doc_revision', true);
-                                        echo esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision);
-                                    } elseif ($field_type=='_department') {
-                                        echo esc_html(get_the_title($field_value));
-                                    } elseif ($field_type=='_iot_device') {
-                                        $iot_device = get_post_meta($field_value, 'iot_device', true);
-                                        echo esc_html(get_the_title($field_value));
-                                    } else {
-                                        $get_system_doc_id = $this->get_system_doc_id($field_type);
-                                        if ($get_system_doc_id) {
-                                            if ($field_value) echo esc_html(get_the_title($field_value));
-                                        } else {
-                                            echo esc_html($field_value);
-                                        }
-                                    }
-                                    echo '</td>';
-                                endwhile;                
-                                wp_reset_postdata();
-                            }
+
+                            $this->get_field_contain_list_display($params);
+
                             if (current_user_can('administrator')) {
                                 $next_job = get_post_meta($report_id, 'todo_status', true);
                                 $todo_status = ($next_job) ? get_the_title($next_job) : 'Draft';
@@ -1335,7 +1347,7 @@ if (!class_exists('display_documents')) {
                                 if ($doc_report->have_posts()) {
                                     echo $doc_title. ':';
                                     echo '<fieldset>';
-                                    $this->get_doc_report_contain_list($params);
+                                    $this->get_doc_report_native_list($params);
                                     echo '</fieldset>';    
                                 }        
                             }
