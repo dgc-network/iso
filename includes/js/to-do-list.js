@@ -296,8 +296,6 @@ jQuery(document).ready(function($) {
     
                         if (value.field_type === '_embedded') {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
-                                //const field_embedded = `${value.field_id}${inner_value.embedded_item_id}`;
-                                //const field_embedded_tag = `#${value.field_id}${inner_value.embedded_item_id}`;
                                 const field_embedded = `${inner_value.embedded_item_id}`;
                                 const field_embedded_tag = `#${inner_value.embedded_item_id}`;
                                 
@@ -314,19 +312,6 @@ jQuery(document).ready(function($) {
                                 }
                             });
                         }
-/*                        
-                        if (value.field_type === '_embedded') {
-                            $.each(response.embedded_item_keys, function(index, inner_value) {
-                                const field_embedded = String(value.field_id) + String(inner_value.embedded_item_id);
-                                const field_embedded_tag = '#' + value.field_id + inner_value.embedded_item_id;
-                                if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
-                                    ajaxData[field_embedded] = $(field_embedded_tag).is(":checked") ? 1 : 0;
-                                } else {
-                                    ajaxData[field_embedded] = $(field_embedded_tag).val();
-                                }
-                            });
-                        }
-*/
                     }
                 });
     
@@ -343,7 +328,7 @@ jQuery(document).ready(function($) {
                         urlParams.delete("_prompt");
                         urlParams.set("paged", 1);
                         // Redirect to the updated URL
-                        //window.location.href = "?" + urlParams.toString();
+                        window.location.href = "?" + urlParams.toString();
                     },
                     error: function(error){
                         console.error(error);

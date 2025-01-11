@@ -803,15 +803,7 @@ if (!class_exists('to_do_list')) {
             // Update the post meta
             $documents_class = new display_documents();
             $documents_class->update_doc_field_contains(array('report_id' => $prev_report_id, 'is_default' => $is_default, 'user_id' => $user_id));
-/*
-            $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $doc_id));
-            if ($query->have_posts()) {
-                while ($query->have_posts()) : $query->the_post();
-                    $documents_class->update_doc_field_contains($prev_report_id, get_the_ID(), $is_default, $user_id);
-                endwhile;
-                wp_reset_postdata();
-            }            
-*/
+
             // Update current todo
             update_post_meta($todo_id, 'prev_report_id', $prev_report_id);
             update_post_meta($todo_id, 'submit_user', $user_id );
@@ -873,29 +865,7 @@ if (!class_exists('to_do_list')) {
 
             // Update the doc-field meta for new doc-report
             $documents_class->update_doc_field_contains(array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id));
-/*
-            $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $doc_id));
-            if ($query->have_posts()) {
-                while ($query->have_posts()) : $query->the_post();
-                    $field_id = get_the_ID();
-                    $field_type = get_post_meta($field_id, 'field_type', true);
-                    if ($field_type=='_embedded') {
-                        $items_class = new embedded_items();
-                        $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
-                        if ($inner_query->have_posts()) :
-                            while ($inner_query->have_posts()) : $inner_query->the_post();
-                                $documents_class->update_doc_field_contains($new_report_id, $field_id.get_the_ID(), $is_default, $user_id);
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
 
-                    } else {
-                        $documents_class->update_doc_field_contains($new_report_id, $field_id, $is_default, $user_id);
-                    }
-                endwhile;
-                wp_reset_postdata();
-            }            
-*/
             // Add a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
