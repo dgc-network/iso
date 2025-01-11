@@ -1710,7 +1710,7 @@ if (!class_exists('display_documents')) {
                                     <?php
                                     $params = array(
                                         'doc_embedded_id' => $embedded_id,
-                                        //'embedded_item_id' => $field_id,
+                                        'report_id' => $report_id,
                                     );
                                     $this->get_doc_field_contains($params);
 /*
