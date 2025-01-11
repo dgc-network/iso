@@ -1672,7 +1672,7 @@ if (!class_exists('display_documents')) {
                     } else {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
-                    error_log($field_type . '('. $field_id . ') value: ' . $field_value);
+                    error_log('Get '.$field_type . '('. $field_id . ') value: ' . $field_value);
 
 /*                    
                     if ($doc_embedded_id) {
@@ -1956,7 +1956,8 @@ if (!class_exists('display_documents')) {
                         $field_value = $_POST[$field_id];
                     }
                     update_post_meta($report_id, $field_id, $field_value);
-        
+                    error_log('Update '.$field_type . '('. $field_id . ') value: ' . $field_value);
+
                     // special field-type
                     if ($field_type=='_employees'){
                         $employee_ids = get_post_meta($report_id, '_employees', true);
