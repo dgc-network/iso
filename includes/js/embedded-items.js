@@ -374,9 +374,9 @@ jQuery(document).ready(function($) {
                                         '_embedded_id': $("#embedded-id").val(),
                                         '_embedded_item_id': $("#embedded-item-id").val(),
                                         '_embedded_item_title': $("#embedded-item-title").val(),
-                                        //'_field_type': $("#embedded-item-type").val(),
                                         '_field_type': $("#field-type").val(),
-                                        '_default_value': $("#embedded-item-default").val(),
+                                        '_default_value': $("#default-value").val(),
+                                        '_listing_style': $("#listing-style").val(),
                                         '_field_note': $("#embedded-item-note").val(),
                                     },
                                     success: function (response) {

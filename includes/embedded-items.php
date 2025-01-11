@@ -668,8 +668,8 @@ if (!class_exists('embedded_items')) {
                 <label for="embedded-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
                 <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
                 <?php $documents_class->get_field_type_data($field_type);?>
-                <label for="embedded-item-default"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
-                <textarea id="embedded-item-default" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
+                <label for="default-value"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
+                <textarea id="default-value" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
                 <?php $documents_class->get_listing_style_data($listing_style);?>
                 <label for="embedded-item-note"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
                 <textarea id="embedded-item-note" rows="2" style="width:100%;"><?php echo $field_note;?></textarea>
