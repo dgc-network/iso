@@ -1669,10 +1669,11 @@ if (!class_exists('display_documents')) {
                     } elseif ($prev_report_id) {
                         $field_value = get_post_meta($prev_report_id, $field_id, true);
                         $todo_status = get_post_meta($prev_report_id, 'todo_status', true);
+                        $report_id = $prev_report_id;
                     } else {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
-                    error_log('Get '.$field_type . '('. $field_id . ') value: ' . $field_value);
+                    error_log('Get '.$field_type . '('. $field_id . ') value: ' . $field_value . ' report_id: ' . $report_id . ' prev_report_id: ' . $prev_report_id);
 
 /*                    
                     if ($doc_embedded_id) {
@@ -1942,6 +1943,7 @@ if (!class_exists('display_documents')) {
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $is_default = isset($params['is_default']) ? $params['is_default'] : false;
             $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
             $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($query->have_posts()) {
                 while ($query->have_posts()) {
@@ -1958,7 +1960,7 @@ if (!class_exists('display_documents')) {
 
                     if (!empty($field_value)) {
                         update_post_meta($report_id, $field_id, $field_value);
-                        error_log('Update '.$field_type . '('. $field_id . ') value: ' . $field_value);
+                        error_log('Update '.$field_type . '('. $field_id . ') value: ' . $field_value . ' for report_id: ' . $report_id);
     
                         // special field-type
                         if ($field_type=='_employees'){
@@ -2009,7 +2011,7 @@ if (!class_exists('display_documents')) {
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         $embedded_item_value = $_POST[get_the_ID()];
                                         update_post_meta($report_id, get_the_ID(), $embedded_item_value);
-                                        error_log('Update '.$field_type . '('. get_the_ID() . ') value: ' . $embedded_item_value);
+                                        error_log('Update '.$field_type . '('. get_the_ID() . ') value: ' . $embedded_item_value . ' for report_id: ' . $report_id);
                                     endwhile;
                                     wp_reset_postdata();
                                 endif;
