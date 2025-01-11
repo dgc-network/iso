@@ -864,6 +864,7 @@ if (!class_exists('display_documents')) {
                             $report_id = get_the_ID();
                             echo '<tr id="edit-doc-report-'.$report_id.'">';
 
+                            $params['report_id'] = $report_id;
                             $this->get_field_contain_list_display($params);
 
                             if (current_user_can('administrator')) {
