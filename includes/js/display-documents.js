@@ -456,7 +456,14 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-report-preview").on("click", function () {
-            get_doc_report_list_data(doc_id);
+            //get_doc_report_list_data(doc_id);
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Remove or update the parameters
+            urlParams.set("_is_doc_report", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+
         });
 
         $("#doc-report-job-setting").on("click", function () {
@@ -988,6 +995,7 @@ jQuery(document).ready(function($) {
             // Remove or Update the parameters
             urlParams.delete("_doc_id");
             urlParams.delete("_report_id");
+            urlParams.delete("_is_doc_report");
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();

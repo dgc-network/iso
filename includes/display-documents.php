@@ -104,9 +104,9 @@ if (!class_exists('display_documents')) {
                         $report_id = sanitize_text_field($_GET['_report_id']);
                         echo $this->display_doc_report_dialog($report_id);
                     } else {
-                        if (is_site_admin()) echo $this->display_document_dialog($doc_id);
+                        if (is_site_admin() && $_GET['_is_doc_report']!=1) echo $this->display_document_dialog($doc_id);
                         else {
-                            if ($is_doc_report==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
+                            if ($is_doc_report==1 || $_GET['_is_doc_report']==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
                             else echo $this->display_doc_content($doc_id);
                         }
                     }
