@@ -417,9 +417,6 @@ if (!class_exists('display_documents')) {
             $multiple_select = get_post_meta($doc_id, 'multiple_select', true);
             $is_multiple_select = ($multiple_select==1) ? 'checked' : '';
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
-
-            //$doc_report_frequence_setting = get_post_meta($doc_id, 'doc_report_frequence_setting', true);
-            //$doc_report_frequence_start_time = get_post_meta($doc_id, 'doc_report_frequence_start_time', true);
             ?>
             <div class="ui-widget" id="result-container">
             <div>

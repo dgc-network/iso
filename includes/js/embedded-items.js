@@ -745,8 +745,8 @@ jQuery(document).ready(function($) {
                                 ajaxData['_embedded_id'] = $("#embedded-id").val();
                                 field_id = $("#embedded-id").val();
                                 $.each(get_response.line_report_fields, function(index, inner_value) {
-                                    const line_report_field = field_id + inner_value.embedded_item_id;
-                                    const line_report_field_tag = '#' + field_id + inner_value.embedded_item_id;
+                                    const line_report_field = inner_value.embedded_item_id;
+                                    const line_report_field_tag = '#' + inner_value.embedded_item_id;
                                     if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                         ajaxData[line_report_field] = $(line_report_field_tag).is(":checked") ? 1 : 0;
                                     } else {

@@ -949,8 +949,8 @@ if (!class_exists('embedded_items')) {
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                                $field_value = get_post_meta($line_report_id, $embedded_id.get_the_ID(), true);
-                                $field_value = ($field_value) ? $field_value : $embedded_id.get_the_ID();
+                                $field_value = get_post_meta($line_report_id, get_the_ID(), true);
+                                $field_value = ($field_value) ? $field_value : get_the_ID();
                                 $text_align = ($field_type=='number') ? 'style="text-align:center;"' : '';
                                 ?><td <?php echo $text_align;?>><?php echo esc_html($field_value);?></td><?php
                             endwhile;
@@ -1066,8 +1066,8 @@ if (!class_exists('embedded_items')) {
             $query = $this->retrieve_embedded_item_data($embedded_id, 0);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-                    $field_value = $_POST[$embedded_id.get_the_id()];
-                    update_post_meta($line_report_id, $embedded_id.get_the_id(), $field_value);
+                    $field_value = $_POST[get_the_id()];
+                    update_post_meta($line_report_id, get_the_id(), $field_value);
                 endwhile;
                 wp_reset_postdata();
             endif;
