@@ -946,8 +946,18 @@ jQuery(document).ready(function($) {
         });
     
         $("#search-doc-report").on( "change", function() {
-            get_doc_report_list_data(doc_id, $(this).val())
-            $(this).val('');
+            //get_doc_report_list_data(doc_id, $(this).val())
+            //$(this).val('');
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            //var selectValue = $("#select-todo").val();
+            // Remove or Update the parameters
+            //if (selectValue) urlParams.set("_select_todo", selectValue);
+            urlParams.set("_search", $(this).val());
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+
         });
 /*
         $("#new-doc-report").on("click", function() {
@@ -1084,10 +1094,10 @@ jQuery(document).ready(function($) {
                             console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
                         }
     
-                        if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
+                        if (value.field_type === '_embedded') {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
-                                const field_embedded = String(value.field_id) + String(inner_value.embedded_item_id);
-                                const field_embedded_tag = '#' + value.field_id + inner_value.embedded_item_id;
+                                const field_embedded = inner_value.embedded_item_id;
+                                const field_embedded_tag = '#' + inner_value.embedded_item_id;
                                 if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                     ajaxData[field_embedded] = $(field_embedded_tag).is(":checked") ? 1 : 0;
                                 } else {
@@ -1104,7 +1114,15 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function(response) {
-                        get_doc_report_list_data($("#doc-id").val());
+                        //get_doc_report_list_data($("#doc-id").val());
+                        // Get existing URL parameters
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or Update the parameters
+                        urlParams.delete("_report_id");
+                        //urlParams.set("paged", 1);
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
+
                     },
                     error: function(error){
                         console.error(error);
@@ -1145,10 +1163,10 @@ jQuery(document).ready(function($) {
                             console.log("Signature saved as:", dataURL); // You can also use this URL for further processing
                         }
     
-                        if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
+                        if (value.field_type === '_embedded') {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
-                                const field_embedded = String(value.field_id) + String(inner_value.embedded_item_id);
-                                const field_embedded_tag = '#' + value.field_id + inner_value.embedded_item_id;
+                                const field_embedded = inner_value.embedded_item_id;
+                                const field_embedded_tag = '#' + inner_value.embedded_item_id;
                                 if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                     ajaxData[field_embedded] = $(field_embedded_tag).is(":checked") ? 1 : 0;
                                 } else {
@@ -1165,7 +1183,15 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function(response) {
-                        get_doc_report_list_data($("#doc-id").val());
+                        //get_doc_report_list_data($("#doc-id").val());
+                        // Get existing URL parameters
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or Update the parameters
+                        urlParams.delete("_report_id");
+                        //urlParams.set("paged", 1);
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
+
                     },
                     error: function(error){
                         console.error(error);
@@ -1188,7 +1214,14 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function (response) {
-                        get_doc_report_list_data($("#doc-id").val());
+                        //get_doc_report_list_data($("#doc-id").val());
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or Update the parameters
+                        urlParams.delete("_report_id");
+                        //urlParams.set("paged", 1);
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
+
                     },
                     error: function(error){
                         console.error(error);
@@ -1212,10 +1245,10 @@ jQuery(document).ready(function($) {
                         ajaxData[value.field_id] = $(field_id_tag).is(":checked") ? 1 : 0;
                     } else {
                         ajaxData[value.field_id] = $(field_id_tag).val();
-                        if (value.field_type === '_embedded' || value.field_type === '_planning' || value.field_type === '_select') {
+                        if (value.field_type === '_embedded') {
                             $.each(response.embedded_item_keys, function(index, inner_value) {
-                                const field_embedded = value.field_id + inner_value.embedded_item_id;
-                                const field_embedded_tag = '#' + value.field_id + inner_value.embedded_item_id;
+                                const field_embedded = inner_value.embedded_item_id;
+                                const field_embedded_tag = '#' + inner_value.embedded_item_id;
                                 if (inner_value.field_type === 'checkbox' || inner_value.field_type === 'radio') {
                                     ajaxData[field_embedded] = $(field_embedded_tag).is(":checked") ? 1 : 0;
                                 } else {
@@ -1232,7 +1265,15 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function (response) {
-                        get_doc_report_list_data($("#doc-id").val());
+                        //get_doc_report_list_data($("#doc-id").val());
+                        // Get existing URL parameters
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or Update the parameters
+                        urlParams.delete("_report_id");
+                        //urlParams.set("paged", 1);
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
+            
                     },
                     error: function(error){
                         console.error(error);
@@ -1254,7 +1295,15 @@ jQuery(document).ready(function($) {
                         '_report_id': report_id,
                     },
                     success: function (response) {
-                        get_doc_report_list_data($("#doc-id").val());
+                        //get_doc_report_list_data($("#doc-id").val());
+                        // Get existing URL parameters
+                        const urlParams = new URLSearchParams(window.location.search);
+                        // Remove or Update the parameters
+                        urlParams.delete("_report_id");
+                        //urlParams.set("paged", 1);
+                        // Redirect to the updated URL
+                        window.location.href = "?" + urlParams.toString();
+
                     },
                     error: function(error){
                         console.error(error);
