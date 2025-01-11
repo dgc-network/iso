@@ -757,7 +757,6 @@ if (!class_exists('display_documents')) {
         }
 
         function get_field_contain_list_display($params=array()) {
-            //ob_start();
             $doc_embedded_id = isset($params['doc_embedded_id']) ? $params['doc_embedded_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $inner_query = $this->retrieve_doc_field_data($params);
@@ -807,9 +806,8 @@ if (!class_exists('display_documents')) {
                                 echo 'User not found for ID: ' . esc_html($field_value);
                             }
                         }
-                    //} elseif ($field_type=='_embedded'||$field_type=='_planning'||$field_type=='_select') {
-                    } elseif ($field_type=='_embedded') {
-                        echo esc_html(get_the_title($field_value).'('.$field_value.')');
+                    } elseif ($field_type=='_select') {
+                        echo esc_html(get_the_title($field_value));
                     } elseif ($field_type=='_document') {
                         $doc_title = get_post_meta($field_value, 'doc_title', true);
                         $doc_number = get_post_meta($field_value, 'doc_number', true);
@@ -832,7 +830,6 @@ if (!class_exists('display_documents')) {
                 endwhile;                
                 wp_reset_postdata();
             }
-            //return ob_get_clean();
         }
 
         function get_doc_report_native_list($params) {
