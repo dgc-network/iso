@@ -863,7 +863,7 @@ if (!class_exists('display_documents')) {
                             $report_id = get_the_ID();
                             echo '<tr id="edit-doc-report-'.$report_id.'">';
 
-                            $this->get_field_contain_list_display($params);
+                            echo $this->get_field_contain_list_display($params);
 
                             if (current_user_can('administrator')) {
                                 $next_job = get_post_meta($report_id, 'todo_status', true);

@@ -949,7 +949,7 @@ if (!class_exists('embedded_items')) {
                         $params = array(
                             'doc_embedded_id' => $report_id,
                         );                
-                        $documents_class->get_field_contain_list_display($params);
+                        echo $documents_class->get_field_contain_list_display($params);
 /*
                         $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                         if ($query->have_posts()) :
