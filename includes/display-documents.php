@@ -1454,8 +1454,20 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
-        function get_field_type_list_data($field_type=false) {
-            ob_start();
+        function get_listing_style_data($listing_style=false) {
+            ?>
+            <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
+            <select id="listing-style" class="text ui-widget-content ui-corner-all">
+                <option value=""></option>
+                <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'your-text-domain' );?></option>
+                <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'your-text-domain' );?></option>
+                <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'your-text-domain' );?></option>
+            </select>
+            <?php
+        }
+
+        function get_field_type_data($field_type=false) {
+            //ob_start();
             ?>
             <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
             <select id="field-type" class="text ui-widget-content ui-corner-all">
@@ -1484,13 +1496,6 @@ if (!class_exists('display_documents')) {
                         wp_reset_postdata();
                     }
                     ?>
-<?php /*                    
-                    <option value="_max_value" <?php echo ($field_type=='_max_value') ? 'selected' : ''?>><?php echo __( '_max_value', 'your-text-domain' );?></option>
-                    <option value="_min_value" <?php echo ($field_type=='_min_value') ? 'selected' : ''?>><?php echo __( '_min_value', 'your-text-domain' );?></option>
-                    <option value="_planning" <?php echo ($field_type=='_planning') ? 'selected' : ''?>><?php echo __( '_planning', 'your-text-domain' );?></option>
-                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( '_select', 'your-text-domain' );?></option>
-                    <option value='_employees' <?php echo ($field_type=='_employees') ? 'selected' : ''?>><?php echo __( '_employees', 'your-text-domain' );?></option>
-*/?>                    
                     <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( 'Embedded', 'your-text-domain' );?></option>
                     <option value="_line_list" <?php echo ($field_type=='_line_list') ? 'selected' : ''?>><?php echo __( 'Line_list', 'your-text-domain' );?></option>
                     <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( 'Select', 'your-text-domain' );?></option>
@@ -1504,7 +1509,7 @@ if (!class_exists('display_documents')) {
             </select>
 
             <?php
-            return ob_get_clean();
+            //return ob_get_clean();
         }
 
         function display_doc_field_dialog($field_id=false) {
@@ -1520,16 +1525,10 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
-                <?php echo $this->get_field_type_list_data($field_type);?>
+                <?php $this->get_field_type_data($field_type);?>
                 <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
-                <select id="listing-style" class="text ui-widget-content ui-corner-all">
-                    <option value=""></option>
-                    <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'your-text-domain' );?></option>
-                    <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'your-text-domain' );?></option>
-                    <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'your-text-domain' );?></option>
-                </select>
+                <?php $this->get_listing_style_data($listing_style);?>
             </fieldset>
             <?php
             return ob_get_clean();
