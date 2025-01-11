@@ -948,8 +948,9 @@ if (!class_exists('embedded_items')) {
                         $documents_class = new display_documents();
                         $params = array(
                             'doc_embedded_id' => $report_id,
+                            'report_id' => $line_report_id,
                         );                
-                        echo $documents_class->get_field_contain_list_display($params);
+                        $documents_class->get_field_contain_list_display($params);
 /*
                         $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                         if ($query->have_posts()) :

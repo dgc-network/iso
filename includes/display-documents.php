@@ -759,6 +759,7 @@ if (!class_exists('display_documents')) {
         function get_field_contain_list_display($params=array()) {
             //ob_start();
             $doc_embedded_id = isset($params['doc_embedded_id']) ? $params['doc_embedded_id'] : 0;
+            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $inner_query = $this->retrieve_doc_field_data($params);
             if ($doc_embedded_id) {
                 $items_class = new embedded_items();
@@ -863,7 +864,7 @@ if (!class_exists('display_documents')) {
                             $report_id = get_the_ID();
                             echo '<tr id="edit-doc-report-'.$report_id.'">';
 
-                            echo $this->get_field_contain_list_display($params);
+                            $this->get_field_contain_list_display($params);
 
                             if (current_user_can('administrator')) {
                                 $next_job = get_post_meta($report_id, 'todo_status', true);
