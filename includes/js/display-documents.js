@@ -1269,7 +1269,15 @@ jQuery(document).ready(function($) {
         });
 
         $("#exit-doc-report-dialog").on("click", function () {
-            get_doc_report_list_data($("#doc-id").val());
+            //get_doc_report_list_data($("#doc-id").val());
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            // Remove or Update the parameters
+            urlParams.delete("_report_id");
+            //urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+
         });
 
         $(".video-button").on("click", function () {
