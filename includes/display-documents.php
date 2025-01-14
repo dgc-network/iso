@@ -1692,7 +1692,6 @@ if (!class_exists('display_documents')) {
                             $items_class = new embedded_items();
                             $embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             if ($embedded_id && $default_value) {
-
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
@@ -1865,10 +1864,18 @@ if (!class_exists('display_documents')) {
                             $get_system_doc_id = $this->get_system_doc_id($field_type);
                             if ($get_system_doc_id) {
                                 $params['doc_id'] = $get_system_doc_id;
-                                ?>
-                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
-                                <?php
+                                $multiple_select = get_post_meta($get_system_doc_id, 'multiple_select', true);
+                                if ($multiple_select) {
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                    <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
+                                    <?php
+                                }
                             } else {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
