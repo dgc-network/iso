@@ -713,6 +713,7 @@ if (!class_exists('embedded_items')) {
                 );    
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'embedded_id', $embedded_id);
+                update_post_meta($post_id, 'default_value', 'center');
                 update_post_meta($post_id, 'sorting_key', 999);
             }
             $response = array('html_contain' => $this->display_embedded_item_list($embedded_id));
