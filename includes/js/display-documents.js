@@ -295,7 +295,7 @@ jQuery(document).ready(function($) {
         window.location.href = "?" + urlParams.toString();
     })
 
-    $("#proceed-copy-statement").on("click", function () {
+    $("#proceed-to-copy").on("click", function () {
         // Initialize an empty array to store the IDs of selected (checked) elements
         const duplicated_ids = [];
 
