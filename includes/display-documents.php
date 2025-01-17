@@ -1866,6 +1866,7 @@ if (!class_exists('display_documents')) {
                                 $params['doc_id'] = $get_system_doc_id;
                                 $multiple_select = get_post_meta($get_system_doc_id, 'multiple_select', true);
                                 if ($multiple_select) {
+                                    error_log('Multiple select: '.print_r($field_value, true));
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_system_doc_options($field_value, $params);?></select>

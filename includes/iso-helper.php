@@ -191,7 +191,7 @@ function init_webhook_events() {
                         'type' => 'button',
                         'action' => array(
                             'type' => 'uri',
-                            'label' => 'Click me!',
+                            'label' => __( '點擊這裡', 'text-domain' ),
                             'uri' => $url,
                         ),
                         'style' => 'primary',

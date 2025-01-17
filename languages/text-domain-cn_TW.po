@@ -1,2 +1,2 @@
-msgid "文件總覽"
-msgstr "Documents"
+msgid "Documents"
+msgstr "文件總覽"
