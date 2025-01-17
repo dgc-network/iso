@@ -2013,13 +2013,10 @@ if (!class_exists('display_documents')) {
                                 endif;
                             }
                         }
-    
                     }
-        
                 }
                 wp_reset_postdata();
             }
-
         }
         
         // document misc
