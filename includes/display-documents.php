@@ -1869,7 +1869,7 @@ if (!class_exists('display_documents')) {
                                     $params['multiple'] = true;
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
+                                    <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_system_doc_options($field_value, $params);?></select>
                                     <?php
                                 } else {
                                     ?>
@@ -2102,11 +2102,23 @@ if (!class_exists('display_documents')) {
 
         function select_system_doc_options($selected_option=0, $params=array()) {
             $query = $this->retrieve_doc_report_data($params);
-            ($params['multiple']) ? $multiple = true : $multiple = false;
-            if ($multiple) $options = '';
-            else $options = '<option value="">Select option</option>';
+            $options = '<option value="">Select option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
+        function select_multiple_system_doc_options($selected_option=array(), $params=array()) {
+            if (!is_array($selected_options)) {
+                $selected_options = array();
+            }
+            $query = $this->retrieve_doc_report_data($params);
+            $options = '';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = in_array(get_the_ID(), $selected_options) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
             endwhile;
             wp_reset_postdata();
