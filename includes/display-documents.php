@@ -1866,6 +1866,7 @@ if (!class_exists('display_documents')) {
                                 $params['doc_id'] = $get_system_doc_id;
                                 $multiple_select = get_post_meta($get_system_doc_id, 'multiple_select', true);
                                 if ($multiple_select) {
+                                    $params['multiple'] = true;
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                     <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
@@ -2101,7 +2102,9 @@ if (!class_exists('display_documents')) {
 
         function select_system_doc_options($selected_option=0, $params=array()) {
             $query = $this->retrieve_doc_report_data($params);
-            $options = '<option value="">Select option</option>';
+            ($params['multiple']) ? $multiple = true : $multiple = false;
+            if ($multiple) $options = '';
+            else $options = '<option value="">Select option</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
