@@ -2108,7 +2108,7 @@ if (!class_exists('display_documents')) {
             return $options;
         }
 
-        function select_multiple_system_doc_options($selected_option=array(), $params=array()) {
+        function select_multiple_system_doc_options($selected_options=array(), $params=array()) {
             if (!is_array($selected_options)) {
                 $selected_options = array();
             }
