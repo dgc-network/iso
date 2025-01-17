@@ -9,7 +9,7 @@
  * Requires at least: 6.0
  * Tested up to: 6.5.3
  *
- * Text Domain: iso
+ * Text Domain: your-text-domain
  * Domain Path: /languages/
  */
 
@@ -21,6 +21,7 @@ if ( headers_sent( $file, $line ) ) {
     error_log( "Headers already sent in $file on line $line" );
 }
 */
+/*
 function is_rest_request() {
     return defined( 'REST_REQUEST' ) && REST_REQUEST;
 }
@@ -36,6 +37,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
+function plugin_load_textdomain() {
+    load_plugin_textdomain( 'your-text-domain', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'plugin_load_textdomain' );
+
 function admin_enqueue_scripts_and_styles() {
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui-js', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), '1.13.2', true);
