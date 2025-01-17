@@ -52,14 +52,14 @@ if (!class_exists('to_do_list')) {
             $iot_messages = new iot_messages();
             ?>
             <select id="select-todo">
-                <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'your-text-domain' );?></option>
-                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'your-text-domain' );?></option>
-                <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'your-text-domain' );?></option>
+                <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'text-domain' );?></option>
+                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'text-domain' );?></option>
+                <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'text-domain' );?></option>
                 <?php if (current_user_can('administrator') || $iot_messages->is_site_with_iot_device()) {?>
-                    <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'your-text-domain' );?></option>
+                    <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'text-domain' );?></option>
                 <?php }?>
                 <?php if (current_user_can('administrator')) {?>
-                    <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'your-text-domain' );?></option>
+                    <option value="cron-events" <?php echo ($select_option=="cron-events") ? 'selected' : ''?>><?php echo __( 'Cron events', 'text-domain' );?></option>
                 <?php }?>
             </select>
             <?php
@@ -157,7 +157,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '待辦事項', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( '待辦事項', 'text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('todo-list');?></div>
@@ -170,10 +170,10 @@ if (!class_exists('to_do_list')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Due date', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Todo', 'text-domain' );?></th>
+                            <th><?php echo __( 'Document', 'text-domain' );?></th>
+                            <th><?php echo __( 'Due date', 'text-domain' );?></th>
+                            <th><?php echo __( 'Authorized', 'text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -480,7 +480,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '啟動表單', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( '啟動表單', 'text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('start-job');?></div>
@@ -493,9 +493,9 @@ if (!class_exists('to_do_list')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( 'Job', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Document', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Job', 'text-domain' );?></th>
+                            <th><?php echo __( 'Document', 'text-domain' );?></th>
+                            <th><?php echo __( 'Authorized', 'text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -979,8 +979,8 @@ if (!class_exists('to_do_list')) {
             if (empty($next_leadtime)) $next_leadtime=86400;
         
             if ($next_job>0)   $todo_title = get_the_title($next_job);
-            if ($next_job==-1) $todo_title = __( '發行', 'your-text-domain' );
-            if ($next_job==-2) $todo_title = __( '廢止', 'your-text-domain' );
+            if ($next_job==-1) $todo_title = __( '發行', 'text-domain' );
+            if ($next_job==-2) $todo_title = __( '廢止', 'text-domain' );
 
             $params['todo_title'] = $todo_title;
             $params['user_id'] = $user_id;
@@ -1398,7 +1398,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '簽核記錄', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( '簽核記錄', 'text-domain' );?></h2>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('action-log');?></div>
                     <div style="text-align: right">
@@ -1407,7 +1407,7 @@ if (!class_exists('to_do_list')) {
                 </div>
                 <?php echo $this->get_action_log_list();?>
                 <div style="background-color:lightblue; text-align:center;">
-                    <?php echo __( 'Total Submissions:', 'your-text-domain' );?> <?php echo $total_posts;?>
+                    <?php echo __( 'Total Submissions:', 'text-domain' );?> <?php echo $total_posts;?>
                 </div>
             </div>
             <?php
@@ -1635,12 +1635,12 @@ if (!class_exists('to_do_list')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( 'Time', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Todo', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'User', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Next', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Time', 'text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'text-domain' );?></th>
+                            <th><?php echo __( 'Todo', 'text-domain' );?></th>
+                            <th><?php echo __( 'User', 'text-domain' );?></th>
+                            <th><?php echo __( 'Action', 'text-domain' );?></th>
+                            <th><?php echo __( 'Next', 'text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1667,8 +1667,8 @@ if (!class_exists('to_do_list')) {
                             $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
                             $next_job = get_post_meta(get_the_ID(), 'next_job', true);
                             if (!$next_job) $next_job = get_post_meta($submit_action, 'next_job', true);
-                            $job_title = ($next_job==-1) ? __( '發行', 'your-text-domain' ) : get_the_title($next_job);
-                            $job_title = ($next_job==-2) ? __( '廢止', 'your-text-domain' ) : $job_title;
+                            $job_title = ($next_job==-1) ? __( '發行', 'text-domain' ) : get_the_title($next_job);
+                            $job_title = ($next_job==-2) ? __( '廢止', 'text-domain' ) : $job_title;
                             if ($submit_action) $submit_title = get_the_title($submit_action);
                             else {
                                 $submit_title = '';

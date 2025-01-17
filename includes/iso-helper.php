@@ -165,7 +165,7 @@ function init_webhook_events() {
                         // Retrieve the value of the 'doc_id' parameter
                         $doc_id = $query_params['_duplicate_document'];
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        $text_message = __( '您可以點擊下方按鍵將文件「', 'your-text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'your-text-domain' );
+                        $text_message = __( '您可以點擊下方按鍵將文件「', 'text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'text-domain' );
                     }
                 }
 
@@ -232,7 +232,7 @@ function init_webhook_events() {
                             );
                         
                             $body_contents = array();
-                            $text_message = __( '您可以點擊下方列示，直接執行『', 'your-text-domain' ) . $message['text'] . __( '』相關作業。', 'your-text-domain' );
+                            $text_message = __( '您可以點擊下方列示，直接執行『', 'text-domain' ) . $message['text'] . __( '』相關作業。', 'text-domain' );
                             $body_content = array(
                                 'type' => 'text',
                                 'text' => $text_message,
@@ -358,19 +358,19 @@ function convert_content_to_styled_html($content) {
 
 // Add the custom schedules
 function select_cron_schedules_option($selected_option = false) {
-    $options = '<option value="">' . __('None', 'your-text-domain') . '</option>';
+    $options = '<option value="">' . __('None', 'text-domain') . '</option>';
     
     $intervals = [
-        'hourly' => __('每小時', 'your-text-domain'),
-        'twicedaily' => __('每12小時', 'your-text-domain'),
-        'weekday_daily' => __('週間每日', 'your-text-domain'),
-        'daily' => __('每日', 'your-text-domain'),
-        'weekly' => __('每週', 'your-text-domain'),
-        'biweekly' => __('每二週', 'your-text-domain'),
-        'monthly' => __('每月', 'your-text-domain'),
-        'bimonthly' => __('每二月', 'your-text-domain'),
-        'half_yearly' => __('每半年', 'your-text-domain'),
-        'yearly' => __('每年', 'your-text-domain'),
+        'hourly' => __('每小時', 'text-domain'),
+        'twicedaily' => __('每12小時', 'text-domain'),
+        'weekday_daily' => __('週間每日', 'text-domain'),
+        'daily' => __('每日', 'text-domain'),
+        'weekly' => __('每週', 'text-domain'),
+        'biweekly' => __('每二週', 'text-domain'),
+        'monthly' => __('每月', 'text-domain'),
+        'bimonthly' => __('每二月', 'text-domain'),
+        'half_yearly' => __('每半年', 'text-domain'),
+        'yearly' => __('每年', 'text-domain'),
     ];
 
     foreach ($intervals as $value => $label) {

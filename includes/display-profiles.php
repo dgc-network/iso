@@ -87,10 +87,10 @@ if (!class_exists('display_profiles')) {
         function display_select_profile($select_option=false) {
             ?>
             <select id="select-profile">
-                <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( '我的帳號', 'your-text-domain' );?></option>
-                <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( '組織設定', 'your-text-domain' );?></option>
-                <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'your-text-domain' );?></option>
-                <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'your-text-domain' );?></option>
+                <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( '我的帳號', 'text-domain' );?></option>
+                <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( '組織設定', 'text-domain' );?></option>
+                <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'text-domain' );?></option>
+                <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'text-domain' );?></option>
             </select>
             <?php
         }
@@ -398,22 +398,22 @@ if (!class_exists('display_profiles')) {
             $gemini_api_key = get_user_meta($current_user_id, 'gemini_api_key', true);
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '我的帳號', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '我的帳號', 'text-domain' );?></h2>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('my-profile');?></div>
                 <div style="text-align: right">
                 </div>
             </div>    
             <fieldset>
-                <label for="display-name"><?php echo __( 'Name', 'your-text-domain' );?></label>
+                <label for="display-name"><?php echo __( 'Name', 'text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="user-email"><?php echo __( 'Email', 'your-text-domain' );?></label>
+                <label for="user-email"><?php echo __( 'Email', 'text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="my-job-list"><?php echo __( 'Jobs & authorizations', 'your-text-domain' );?></label>
+                <label for="my-job-list"><?php echo __( 'Jobs & authorizations', 'text-domain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
-                <label for="phone-number"><?php echo __( 'Phone', 'your-text-domain' );?></label>
+                <label for="phone-number"><?php echo __( 'Phone', 'text-domain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="gemini-api-key"><?php echo __( 'Gemini API key', 'your-text-domain' );?></label>
+                <label for="gemini-api-key"><?php echo __( 'Gemini API key', 'text-domain' );?></label>
                 <input type="password" id="gemini-api-key" value="<?php echo $gemini_api_key;?>" class="text ui-widget-content ui-corner-all" />
                 <?php
                 // transaction data vs card key/value
@@ -427,11 +427,11 @@ if (!class_exists('display_profiles')) {
                 $is_display = ($iot_messages->is_site_with_iot_device()) ? '' : 'display:none;';
                 ?>
                 <div style=<?php echo $is_display;?>>
-                    <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting', 'your-text-domain' );?></label>
+                    <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting', 'text-domain' );?></label>
                     <div id="my-exception-notification-setting"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
                 </div>
             </fieldset>
-            <button type="submit" id="my-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+            <button type="submit" id="my-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'text-domain' );?></button>
             <?php
             return ob_get_clean();
         }
@@ -457,9 +457,9 @@ if (!class_exists('display_profiles')) {
             <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Job', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Authorized', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Job', 'text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'text-domain' );?></th>
+                        <th><?php echo __( 'Authorized', 'text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php    
@@ -526,10 +526,10 @@ if (!class_exists('display_profiles')) {
                 <thead>
                     <tr>
                         <th></th>
-                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Next', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Action', 'text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'text-domain' );?></th>
+                        <th><?php echo __( 'Next', 'text-domain' );?></th>
+                        <th><?php echo __( 'LeadTime', 'text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -544,10 +544,10 @@ if (!class_exists('display_profiles')) {
                         $next_job_title = get_the_title($next_job);
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($next_job==-1) {
-                            $next_job_title = __( '發行', 'your-text-domain' );
+                            $next_job_title = __( '發行', 'text-domain' );
                         }
                         if ($next_job==-2) {
-                            $next_job_title = __( '廢止', 'your-text-domain' );
+                            $next_job_title = __( '廢止', 'text-domain' );
                         }
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
@@ -594,10 +594,10 @@ if (!class_exists('display_profiles')) {
                 <h4><?php echo '設定「'.get_the_title($doc_id).'」職務的'.'「'.get_the_title($action_id).'」動作 → <span style="color:blue;">'.$is_authorized;?></span></h4>
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
-                <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'your-text-domain' );?></label>
+                <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'text-domain' );?></label>
                 <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($frequence_report_setting);?></select>
                 <div id="frquence-report-start-time-div">
-                    <label for="frequence-report-start-time"><?php echo __( '循環表單啟動時間', 'your-text-domain' );?></label><br>
+                    <label for="frequence-report-start-time"><?php echo __( '循環表單啟動時間', 'text-domain' );?></label><br>
                     <input type="date" id="frequence-report-start-date" value="<?php echo wp_date('Y-m-d', $frequence_report_start_time);?>" />
                     <input type="time" id="frequence-report-start-time" value="<?php echo wp_date('H:i', $frequence_report_start_time);?>" />
                     <input type="hidden" id="prev-start-time" value="<?php echo $frequence_report_start_time;?>" />
@@ -801,7 +801,7 @@ if (!class_exists('display_profiles')) {
             $company_address = get_post_meta($site_id, 'company_address', true);
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '組織設定', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '組織設定', 'text-domain' );?></h2>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('site-profile');?></div>
                 <div style="text-align: right">
@@ -810,37 +810,37 @@ if (!class_exists('display_profiles')) {
 
             <fieldset>
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                <label for="site-title"><?php echo __( '組織名稱：', 'your-text-domain' );?></label>
+                <label for="site-title"><?php echo __( '組織名稱：', 'text-domain' );?></label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
 
-                <label for="site-logo"><?php echo __( 'LOGO:', 'your-text-domain' );?></label>
+                <label for="site-logo"><?php echo __( 'LOGO:', 'text-domain' );?></label>
                 <div id="site-image-container">
                     <?php echo (isURL($image_url)) ? '<img src="' . esc_attr($image_url) . '" style="object-fit:cover; width:250px; height:250px;" class="button">' : '<a href="#" id="custom-image-href">Set image URL</a>'; ?>
                 </div>
                 <div id="site-image-url" style="display:none;">
                 <fieldset>
-                    <label for="image-url"><?php echo __( 'Image URL:', 'your-text-domain' );?></label>
+                    <label for="image-url"><?php echo __( 'Image URL:', 'text-domain' );?></label>
                     <textarea id="image-url" rows="3" style="width:99%;"><?php echo $image_url;?></textarea>
                     <button id="set-image-url" class="button">Set</button>
                 </fieldset>
                 </div>
 
-                <label for="site-members"><?php echo __( '組織成員：', 'your-text-domain' );?></label>
+                <label for="site-members"><?php echo __( '組織成員：', 'text-domain' );?></label>
                 <?php echo $this->display_site_user_list();?>
 
-                <label for="site-content"><?php echo __( 'NDA條款：', 'your-text-domain' );?></label>
+                <label for="site-content"><?php echo __( 'NDA條款：', 'text-domain' );?></label>
                 <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
-                <label for="company-phone"><?php echo __( '聯絡電話：', 'your-text-domain' );?></label>
+                <label for="company-phone"><?php echo __( '聯絡電話：', 'text-domain' );?></label>
                 <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="company-address"><?php echo __( '公司地址：', 'your-text-domain' );?></label>
+                <label for="company-address"><?php echo __( '公司地址：', 'text-domain' );?></label>
                 <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
-                <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+                <label for="unified-number"><?php echo __( '統一編號：', 'text-domain' );?></label>
                 <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
 
                 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><label for="site-jobs"><?php echo __( '工作職掌：', 'your-text-domain' );?></label></div>
+                    <div><label for="site-jobs"><?php echo __( '工作職掌：', 'text-domain' );?></label></div>
                     <div style="text-align: right">
                         <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
                     </div>
@@ -851,7 +851,7 @@ if (!class_exists('display_profiles')) {
 
             </fieldset>
             <?php if (is_site_admin()) {?>
-                <button type="submit" id="site-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'your-text-domain' );?></button>
+                <button type="submit" id="site-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'text-domain' );?></button>
             <?php }?>
             <?php
             return ob_get_clean();
@@ -916,9 +916,9 @@ if (!class_exists('display_profiles')) {
             <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Name', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Email', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Admin', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Name', 'text-domain' );?></th>
+                        <th><?php echo __( 'Email', 'text-domain' );?></th>
+                        <th><?php echo __( 'Admin', 'text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php        
@@ -968,17 +968,17 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="display-name"><?php echo __( 'Name:', 'your-text-domain' );?></label>
+                <label for="display-name"><?php echo __( 'Name:', 'text-domain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="user-email"><?php echo __( 'Email:', 'your-text-domain' );?></label>
+                <label for="user-email"><?php echo __( 'Email:', 'text-domain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="job-list"><?php echo __( 'Job list:', 'your-text-domain' );?></label>
+                    <label for="job-list"><?php echo __( 'Job list:', 'text-domain' );?></label>
                     <fieldset>
                         <table class="ui-widget" style="width:100%;">
                             <thead>
                                 <th></th>
-                                <th><?php echo __( 'Job', 'your-text-domain' );?></th>
-                                <th><?php echo __( 'Title', 'your-text-domain' );?></th>
+                                <th><?php echo __( 'Job', 'text-domain' );?></th>
+                                <th><?php echo __( 'Title', 'text-domain' );?></th>
                             </thead>
                             <tbody>
                                 <?php
@@ -1004,11 +1004,11 @@ if (!class_exists('display_profiles')) {
                 $current_site_id = get_user_meta($current_user_id, 'site_id', true);
                 if (current_user_can('administrator')) {
                     ?>
-                    <label for="select-site"><?php echo __( 'Site:', 'your-text-domain' );?></label>
+                    <label for="select-site"><?php echo __( 'Site:', 'text-domain' );?></label>
                     <select id="select-site" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id);?></select>
                     <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
-                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label>
+                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'text-domain' );?></label>
                     </div>
                     <?php
                 } else {
@@ -1024,7 +1024,7 @@ if (!class_exists('display_profiles')) {
                     ?>
                     <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> disabled />
-                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'your-text-domain' );?></label>
+                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'text-domain' );?></label>
                     </div>
                     <?php
                 }
@@ -1176,8 +1176,8 @@ if (!class_exists('display_profiles')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <th>#</th>
-                        <th><?php echo __( 'Job', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Job', 'text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -1318,20 +1318,20 @@ if (!class_exists('display_profiles')) {
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="job-number"><?php echo __( 'Number:', 'your-text-domain' );?></label>
+                <label for="job-number"><?php echo __( 'Number:', 'text-domain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-title"><?php echo __( 'Title:', 'your-text-domain' );?></label>
+                <label for="job-title"><?php echo __( 'Title:', 'text-domain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label style="display:none;" for="job-content"><?php echo __( 'Content:', 'your-text-domain' );?></label>
+                <label style="display:none;" for="job-content"><?php echo __( 'Content:', 'text-domain' );?></label>
                 <textarea style="display:none;" id="job-content" class="visual-editor"><?php echo $job_content;?></textarea>
-                <label for="action-list"><?php echo __( 'Action list:', 'your-text-domain' );?></label>
+                <label for="action-list"><?php echo __( 'Action list:', 'text-domain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
-                <label for="department"><?php echo __( 'Department:', 'your-text-domain' );?></label>
+                <label for="department"><?php echo __( 'Department:', 'text-domain' );?></label>
                 <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
-                <label for="user-list"><?php echo __( 'User list:', 'your-text-domain' );?></label>
+                <label for="user-list"><?php echo __( 'User list:', 'text-domain' );?></label>
                 <?php echo $this->display_doc_user_list($doc_id);?>
                 <input type="checkbox" id="is-summary-job" <?php echo $is_checked?> />
-                <label for="is-summary-job"><?php echo __( 'Is summary job', 'your-text-domain' );?></label>
+                <label for="is-summary-job"><?php echo __( 'Is summary job', 'text-domain' );?></label>
             <?php
             return ob_get_clean();
         }
@@ -1420,10 +1420,10 @@ if (!class_exists('display_profiles')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( 'Action', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Next', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'LeadTime', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Action', 'text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'text-domain' );?></th>
+                        <th><?php echo __( 'Next', 'text-domain' );?></th>
+                        <th><?php echo __( 'LeadTime', 'text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1437,10 +1437,10 @@ if (!class_exists('display_profiles')) {
                         $next_job_title = get_the_title($next_job);
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($next_job==-1) {
-                            $next_job_title = __( '發行', 'your-text-domain' );
+                            $next_job_title = __( '發行', 'text-domain' );
                         }
                         if ($next_job==-2) {
-                            $next_job_title = __( '廢止', 'your-text-domain' );
+                            $next_job_title = __( '廢止', 'text-domain' );
                         }
                         $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
                         ?>
@@ -1666,14 +1666,14 @@ if (!class_exists('display_profiles')) {
             endwhile;
             wp_reset_postdata();
             if ($selected_option==-1){
-                $options .= '<option value="-1" selected>'.__( '發行', 'your-text-domain' ).'</option>';
+                $options .= '<option value="-1" selected>'.__( '發行', 'text-domain' ).'</option>';
             } else {
-                $options .= '<option value="-1">'.__( '發行', 'your-text-domain' ).'</option>';
+                $options .= '<option value="-1">'.__( '發行', 'text-domain' ).'</option>';
             }
             if ($selected_option==-2){
-                $options .= '<option value="-2" selected>'.__( '廢止', 'your-text-domain' ).'</option>';
+                $options .= '<option value="-2" selected>'.__( '廢止', 'text-domain' ).'</option>';
             } else {
-                $options .= '<option value="-2">'.__( '廢止', 'your-text-domain' ).'</option>';
+                $options .= '<option value="-2">'.__( '廢止', 'text-domain' ).'</option>';
             }
             return $options;
         }
@@ -1687,8 +1687,8 @@ if (!class_exists('display_profiles')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( 'Name', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Name', 'text-domain' );?></th>
+                        <th><?php echo __( 'Email', 'text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1738,8 +1738,8 @@ if (!class_exists('display_profiles')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( 'Name', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Name', 'text-domain' );?></th>
+                        <th><?php echo __( 'Email', 'text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1940,28 +1940,28 @@ if (!class_exists('display_profiles')) {
             $submit_date = get_user_meta($user_id, 'submit_date', true);
             ?>
             <div class="ui-widget" id="result-container">
-                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'text-domain' );?></h2>
                 <div>
-                    <label for="site-title"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+                    <label for="site-title"><b><?php echo __( '甲方：', 'text-domain' );?></b></label>
                     <input type="text" id="site-title" value="<?php echo $site_title;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+                    <label for="unified-number"><?php echo __( '統一編號：', 'text-domain' );?></label>
                     <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
                 </div>
                 <div>
-                    <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
+                    <label for="display-name"><b><?php echo __( '乙方：', 'text-domain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="identity-number"><?php echo __( '身分證號碼：', 'your-text-domain' );?></label>
+                    <label for="identity-number"><?php echo __( '身分證號碼：', 'text-domain' );?></label>
                     <input type="text" id="identity-number" value="<?php echo $identity_number;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
                 <div id="nda-content"><?php echo $nda_content;?></div>
                 <div style="display:flex;">
-                    <?php echo __( '簽核日期：', 'your-text-domain' );?>
+                    <?php echo __( '簽核日期：', 'text-domain' );?>
                     <input type="text" id="submit-date" value="<?php echo $submit_date;?>" disabled />
                 </div>
                 <div>
-                    <label for="signature-pad"><?php echo __( '審核簽名：', 'your-text-domain' );?></label>
+                    <label for="signature-pad"><?php echo __( '審核簽名：', 'text-domain' );?></label>
                     <div id="signature-pad-div">
                         <div>
                             <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
@@ -1970,12 +1970,12 @@ if (!class_exists('display_profiles')) {
                     </div>
                 </div>
                 <div style="display:flex;">
-                    <?php echo __( '審核日期：', 'your-text-domain' );?>
+                    <?php echo __( '審核日期：', 'text-domain' );?>
                     <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
                 </div>
                 <hr>
-                <button type="submit" id="nda-approve"><?php echo __( 'Approve', 'your-text-domain' );?></button>
-                <button type="submit" id="nda-reject"><?php echo __( 'Reject', 'your-text-domain' );?></button>
+                <button type="submit" id="nda-approve"><?php echo __( 'Approve', 'text-domain' );?></button>
+                <button type="submit" id="nda-reject"><?php echo __( 'Reject', 'text-domain' );?></button>
             </div>
             <?php
         }
@@ -1984,11 +1984,11 @@ if (!class_exists('display_profiles')) {
             $user = get_userdata($user_id);
             ?>
             <div class="ui-widget" id="result-container">
-                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'your-text-domain' );?></h2>
+                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'text-domain' );?></h2>
                 <div>
-                    <label for="select-nda-site"><b><?php echo __( '甲方：', 'your-text-domain' );?></b></label>
+                    <label for="select-nda-site"><b><?php echo __( '甲方：', 'text-domain' );?></b></label>
                     <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
-                        <option value=""><?php echo __( 'Select Site', 'your-text-domain' );?></option>
+                        <option value=""><?php echo __( 'Select Site', 'text-domain' );?></option>
                         <?php
                             $site_args = array(
                                 'post_type'      => 'site-profile',
@@ -2014,13 +2014,13 @@ if (!class_exists('display_profiles')) {
                             }
                         ?>
                     </select>
-                    <label for="unified-number"><?php echo __( '統一編號：', 'your-text-domain' );?></label>
+                    <label for="unified-number"><?php echo __( '統一編號：', 'text-domain' );?></label>
                     <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
                 <div>
-                    <label for="display-name"><b><?php echo __( '乙方：', 'your-text-domain' );?></b></label>
+                    <label for="display-name"><b><?php echo __( '乙方：', 'text-domain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="identity-number"><?php echo __( '身分證字號：', 'your-text-domain' );?></label>
+                    <label for="identity-number"><?php echo __( '身分證字號：', 'text-domain' );?></label>
                     <input type="text" id="identity-number" class="text ui-widget-content ui-corner-all" />
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
@@ -2028,7 +2028,7 @@ if (!class_exists('display_profiles')) {
                     <!-- The site content will be displayed here -->
                 </div>
                 <div>
-                    <label for="signature-pad"><?php echo __( '簽名：', 'your-text-domain' );?></label>
+                    <label for="signature-pad"><?php echo __( '簽名：', 'text-domain' );?></label>
                     <div id="signature-pad-div">
                         <div>
                             <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
@@ -2037,12 +2037,12 @@ if (!class_exists('display_profiles')) {
                     </div>
                 </div>
                 <div style="display:flex;">
-                    <?php echo __( '日期：', 'your-text-domain' );?>
+                    <?php echo __( '日期：', 'text-domain' );?>
                     <input type="date" id="submit-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
                 </div>
                 <hr>
-                <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'your-text-domain' );?></button>
-                <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'your-text-domain' );?></button>
+                <button type="submit" id="nda-submit"><?php echo __( 'Submit', 'text-domain' );?></button>
+                <button type="submit" id="nda-exit"><?php echo __( 'Exit', 'text-domain' );?></button>
             </div>
             <?php
         }

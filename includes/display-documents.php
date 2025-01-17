@@ -161,7 +161,7 @@ if (!class_exists('display_documents')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '文件總覽', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( '文件總覽', 'text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
@@ -177,9 +177,9 @@ if (!class_exists('display_documents')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( '文件編號', 'your-text-domain' );?></th>
-                            <th><?php echo __( '文件名稱', 'your-text-domain' );?></th>
-                            <th><?php echo __( '文件版本', 'your-text-domain' );?></th>
+                            <th><?php echo __( '文件編號', 'text-domain' );?></th>
+                            <th><?php echo __( '文件名稱', 'text-domain' );?></th>
+                            <th><?php echo __( '文件版本', 'text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -428,32 +428,32 @@ if (!class_exists('display_documents')) {
             </div>
 
             <fieldset>
-                <label for="doc-number"><?php echo __( '文件編號', 'your-text-domain' );?></label>
+                <label for="doc-number"><?php echo __( '文件編號', 'text-domain' );?></label>
                 <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-title"><?php echo __( '文件名稱', 'your-text-domain' );?></label>
+                <label for="doc-title"><?php echo __( '文件名稱', 'text-domain' );?></label>
                 <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-revision"><?php echo __( '文件版本', 'your-text-domain' );?></label>
+                <label for="doc-revision"><?php echo __( '文件版本', 'text-domain' );?></label>
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+                <label for="doc-category"><?php echo __( '文件類別', 'text-domain' );?></label><br>
                 <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category);?></select>
 
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 
                 <div id="doc-content-div" style="<?php echo $is_content_display;?>">
-                    <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'your-text-domain' );?></label>
+                    <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'text-domain' );?></label>
                     <?php if (is_site_admin()) {?>
-                        <input type="button" id="doc-content-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
+                        <input type="button" id="doc-content-preview" value="<?php echo __( 'Preview', 'text-domain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
-                    <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'your-text-domain' );?></label>
+                    <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'text-domain' );?></label>
                     <?php if (is_site_admin()) {?>
-                        <input type="button" id="doc-report-preview" value="<?php echo __( 'Preview', 'your-text-domain' );?>" style="margin:3px;font-size:small;" />
+                        <input type="button" id="doc-report-preview" value="<?php echo __( 'Preview', 'text-domain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <?php echo $this->display_doc_field_list($doc_id);?>
-                    <label id="doc-report-job-setting" class="button"><?php echo __( '職務設定', 'your-text-domain' );?></label>
+                    <label id="doc-report-job-setting" class="button"><?php echo __( '職務設定', 'text-domain' );?></label>
                 
                     <div id="mermaid-div">
                         <pre class="mermaid">
@@ -469,8 +469,8 @@ if (!class_exists('display_documents')) {
                                     $next_job = get_post_meta(get_the_ID(), 'next_job', true);
                                     $next_job_title = get_the_title($next_job);
                                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                                    if ($next_job==-1) $next_job_title = __( '發行', 'your-text-domain' );
-                                    if ($next_job==-2) $next_job_title = __( '廢止', 'your-text-domain' );
+                                    if ($next_job==-1) $next_job_title = __( '發行', 'text-domain' );
+                                    if ($next_job==-2) $next_job_title = __( '廢止', 'text-domain' );
                                     ?>
                                     <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
                                     <?php
@@ -482,26 +482,26 @@ if (!class_exists('display_documents')) {
                     </div>
 
                     <div id="job-setting-div" style="display:none;">
-                        <label for="job-number"><?php echo __( '職務編號', 'your-text-domain' );?></label>
+                        <label for="job-number"><?php echo __( '職務編號', 'text-domain' );?></label>
                         <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
-                        <label for="job-title"><?php echo __( '職務名稱', 'your-text-domain' );?></label>
+                        <label for="job-title"><?php echo __( '職務名稱', 'text-domain' );?></label>
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                        <label for="job-content"><?php echo __( '職務說明', 'your-text-domain' );?></label>
+                        <label for="job-content"><?php echo __( '職務說明', 'text-domain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
-                        <label for="action-list"><?php echo __( '按鍵設定', 'your-text-domain' );?></label>
+                        <label for="action-list"><?php echo __( '按鍵設定', 'text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
-                        <label for="department"><?php echo __( '部門', 'your-text-domain' );?></label>
+                        <label for="department"><?php echo __( '部門', 'text-domain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
-                        <label for="user-list"><?php echo __( 'User list:', 'your-text-domain' );?></label>
+                        <label for="user-list"><?php echo __( 'User list:', 'text-domain' );?></label>
                         <?php echo $profiles_class->display_doc_user_list($doc_id);?>
                     </div>
 
-                    <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'your-text-domain' );?></label>
+                    <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'text-domain' );?></label>
                     <fieldset id="system-doc-div" style="display:none;">
-                        <label for="system-doc"><?php echo __( '欄位型態名稱', 'your-text-domain' );?></label>
+                        <label for="system-doc"><?php echo __( '欄位型態名稱', 'text-domain' );?></label>
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
                         <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
-                        <label for="multiple-select"><?php echo __( '多選', 'your-text-domain' );?></label>
+                        <label for="multiple-select"><?php echo __( '多選', 'text-domain' );?></label>
                     </fieldset>
                 </div>
 
@@ -521,8 +521,8 @@ if (!class_exists('display_documents')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <?php if (is_site_admin()) {?>
-                            <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-                            <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                            <input type="button" id="save-document-button" value="<?php echo __( 'Save', 'text-domain' );?>" style="margin:3px;" />
+                            <input type="button" id="del-document-button" value="<?php echo __( 'Delete', 'text-domain' );?>" style="margin:3px;" />
                         <?php }?>
                     </div>
                     <div style="text-align: right">
@@ -640,10 +640,10 @@ if (!class_exists('display_documents')) {
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'text-domain' );?>" style="margin:3px;" />
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="exit-doc-content" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="exit-doc-content" value="<?php echo __( 'Exit', 'text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
             </div>
@@ -704,7 +704,7 @@ if (!class_exists('display_documents')) {
 
             <div id="doc-field-setting-dialog" title="Field setting" style="display:none">
                 <fieldset>
-                    <label for="doc-field-setting"><?php echo __( 'Field setting:', 'your-text-domain' );?></label>
+                    <label for="doc-field-setting"><?php echo __( 'Field setting:', 'text-domain' );?></label>
                     <?php echo $this->display_doc_field_list($doc_id);?>
                 </fieldset>
             </div>        
@@ -736,7 +736,7 @@ if (!class_exists('display_documents')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <?php if ($profiles_class->is_user_doc($doc_id)) {?>
-                        <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'text-domain' );?>" style="margin:3px;" />
                     <?php }?>
                     <style>
                     /* Hide button on mobile devices */
@@ -748,7 +748,7 @@ if (!class_exists('display_documents')) {
                     </style>
                 </div>
                 <div style="text-align:right; display:flex;">
-                    <input type="button" id="exit-doc-report-list" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                    <input type="button" id="exit-doc-report-list" value="<?php echo __( 'Exit', 'text-domain' );?>" style="margin:3px;" />
                 </div>
             </div>
             </div>
@@ -846,7 +846,7 @@ if (!class_exists('display_documents')) {
                             echo '<th>'.esc_html($field_title).'</th>';
                         endwhile;
                         if (current_user_can('administrator')) {
-                            echo '<th>'. __( '待辦', 'your-text-domain' ).'</th>';
+                            echo '<th>'. __( '待辦', 'text-domain' ).'</th>';
                         }
                         echo '</tr>';
                         wp_reset_postdata();
@@ -1132,10 +1132,10 @@ if (!class_exists('display_documents')) {
                     </div>
                     <div style="text-align:right; display:flex;">
                     <?php if ($profiles_class->is_user_doc($doc_id)) {?>
-                        <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-                        <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'text-domain' );?>" style="margin:3px;" />
                     <?php }?>                    
-                        <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'text-domain' );?>" style="margin:3px;" />
                     </div>
                     </div>
                     <?php
@@ -1143,11 +1143,11 @@ if (!class_exists('display_documents')) {
                     ?>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <input type="button" id="action-log-button" value="<?php echo __('簽核記錄', 'your-text-domain')?>" style="margin:3px;" />
-                        <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="action-log-button" value="<?php echo __('簽核記錄', 'text-domain')?>" style="margin:3px;" />
+                        <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'text-domain' );?>" style="margin:3px;" />
                     </div>
                     <div style="text-align:right;">
-                        <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'your-text-domain' );?>" style="margin:5px;" />
+                        <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'text-domain' );?>" style="margin:5px;" />
                     </div>
                     </div>
                     <?php
@@ -1378,10 +1378,10 @@ if (!class_exists('display_documents')) {
                 <table style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Type', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Default', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Align', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Title', 'text-domain' );?></th>
+                            <th><?php echo __( 'Type', 'text-domain' );?></th>
+                            <th><?php echo __( 'Default', 'text-domain' );?></th>
+                            <th><?php echo __( 'Align', 'text-domain' );?></th>
                         </tr>
                     </thead>
                     <tbody id="sortable-doc-field-list">
@@ -1453,12 +1453,12 @@ if (!class_exists('display_documents')) {
 
         function get_listing_style_data($listing_style=false) {
             ?>
-            <label for="listing-style"><?php echo __( '列表排列：', 'your-text-domain' );?></label>
+            <label for="listing-style"><?php echo __( '列表排列：', 'text-domain' );?></label>
             <select id="listing-style" class="text ui-widget-content ui-corner-all">
                 <option value=""></option>
-                <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'your-text-domain' );?></option>
-                <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'your-text-domain' );?></option>
-                <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'your-text-domain' );?></option>
+                <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'text-domain' );?></option>
+                <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'text-domain' );?></option>
+                <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'text-domain' );?></option>
             </select>
             <?php
         }
@@ -1466,17 +1466,17 @@ if (!class_exists('display_documents')) {
         function get_field_type_data($field_type=false) {
             //ob_start();
             ?>
-            <label for="field-type"><?php echo __( '欄位型態：', 'your-text-domain' );?></label>
+            <label for="field-type"><?php echo __( '欄位型態：', 'text-domain' );?></label>
             <select id="field-type" class="text ui-widget-content ui-corner-all">
-                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'your-text-domain' );?></option>
-                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'your-text-domain' );?></option>
-                    <option value="number" <?php echo ($field_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'your-text-domain' );?></option>
-                    <option value="date" <?php echo ($field_type=='date') ? 'selected' : ''?>><?php echo __( 'Date', 'your-text-domain' );?></option>
-                    <option value="time" <?php echo ($field_type=='time') ? 'selected' : ''?>><?php echo __( 'Time', 'your-text-domain' );?></option>
-                    <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'your-text-domain' );?></option>
-                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'your-text-domain' );?></option>
-                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'your-text-domain' );?></option>
-                    <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'your-text-domain' );?></option>
+                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'text-domain' );?></option>
+                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'text-domain' );?></option>
+                    <option value="number" <?php echo ($field_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'text-domain' );?></option>
+                    <option value="date" <?php echo ($field_type=='date') ? 'selected' : ''?>><?php echo __( 'Date', 'text-domain' );?></option>
+                    <option value="time" <?php echo ($field_type=='time') ? 'selected' : ''?>><?php echo __( 'Time', 'text-domain' );?></option>
+                    <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'text-domain' );?></option>
+                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'text-domain' );?></option>
+                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'text-domain' );?></option>
+                    <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'text-domain' );?></option>
                     <?php
                     $query = $this->get_system_doc_list_query();
                     if ($query->have_posts()) {
@@ -1486,23 +1486,23 @@ if (!class_exists('display_documents')) {
                             // Add to the list if meta exists and is not empty
                             if (!empty($system_doc)) {
                                 ?>
-                                <option value="<?php echo $system_doc;?>" <?php echo ($field_type==$system_doc) ? 'selected' : ''?>><?php echo __( $system_doc, 'your-text-domain' );?></option>
+                                <option value="<?php echo $system_doc;?>" <?php echo ($field_type==$system_doc) ? 'selected' : ''?>><?php echo __( $system_doc, 'text-domain' );?></option>
                                 <?php
                             }
                         }
                         wp_reset_postdata();
                     }
                     ?>
-                    <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( 'Embedded', 'your-text-domain' );?></option>
-                    <option value="_line_list" <?php echo ($field_type=='_line_list') ? 'selected' : ''?>><?php echo __( 'Line_list', 'your-text-domain' );?></option>
-                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( 'Select', 'your-text-domain' );?></option>
-                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( 'IoT_device', 'your-text-domain' );?></option>
-                    <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( 'Document', 'your-text-domain' );?></option>
-                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( 'Doc_report', 'your-text-domain' );?></option>
-                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( 'Department', 'your-text-domain' );?></option>
-                    <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( 'Employee', 'your-text-domain' );?></option>
-                    <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'your-text-domain' );?></option>
-                    <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'your-text-domain' );?></option>
+                    <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( 'Embedded', 'text-domain' );?></option>
+                    <option value="_line_list" <?php echo ($field_type=='_line_list') ? 'selected' : ''?>><?php echo __( 'Line_list', 'text-domain' );?></option>
+                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( 'Select', 'text-domain' );?></option>
+                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( 'IoT_device', 'text-domain' );?></option>
+                    <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( 'Document', 'text-domain' );?></option>
+                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( 'Doc_report', 'text-domain' );?></option>
+                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( 'Department', 'text-domain' );?></option>
+                    <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( 'Employee', 'text-domain' );?></option>
+                    <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'text-domain' );?></option>
+                    <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'text-domain' );?></option>
             </select>
 
             <?php
@@ -1520,10 +1520,10 @@ if (!class_exists('display_documents')) {
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="field-title"><?php echo __( '欄位名稱：', 'your-text-domain' );?></label>
+                <label for="field-title"><?php echo __( '欄位名稱：', 'text-domain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <?php $this->get_field_type_data($field_type);?>
-                <label for="default-value"><?php echo __( '初始值：', 'your-text-domain' );?></label>
+                <label for="default-value"><?php echo __( '初始值：', 'text-domain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
                 <?php $this->get_listing_style_data($listing_style);?>
             </fieldset>
@@ -1789,7 +1789,7 @@ if (!class_exists('display_documents')) {
                                     <div><img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" /></div>
                                 <?php }?>
                                 <?php if (!$todo_status) {?>
-                                    <button id="redraw-signature" style="margin:3px;"><?php echo __( 'Redraw', 'your-text-domain' );?></button>
+                                    <button id="redraw-signature" style="margin:3px;"><?php echo __( 'Redraw', 'text-domain' );?></button>
                                 <?php }?>
                             </div>
                             <div style="display:none;" id="signature-pad-div">
@@ -2229,9 +2229,9 @@ if (!class_exists('display_documents')) {
                         <div class="content">
                             <fieldset>
                                 <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
-                                <label for="draft-category"><?php echo __( '文件類別', 'your-text-domain' );?></label><br>
+                                <label for="draft-category"><?php echo __( '文件類別', 'text-domain' );?></label><br>
                                 <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
-                                <label for="draft-content"><?php echo __( '文件內容', 'your-text-domain' );?></label><br>
+                                <label for="draft-content"><?php echo __( '文件內容', 'text-domain' );?></label><br>
                                 <textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea>
                                 <?php if (is_site_admin()) {?>
                                     <p><input type="button" id="save-draft" value="Generate draft" /></p>
@@ -2266,7 +2266,7 @@ if (!class_exists('display_documents')) {
                                     endwhile;
                                     wp_reset_postdata();
                                     if (is_site_admin()) {?>
-                                        <button id="proceed-to-copy" class="button" style="margin:5px; text-align:center;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'your-text-domain' );?></button>
+                                        <button id="proceed-to-copy" class="button" style="margin:5px; text-align:center;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'text-domain' );?></button>
                                     <?php }
                                 endif;
                                 ?>
@@ -2282,17 +2282,17 @@ if (!class_exists('display_documents')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <?php if ($paged==1) {?>
                         <div>
-                            <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Back', 'your-text-domain' );?></button>
+                            <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Back', 'text-domain' );?></button>
                         </div>
                         <div style="text-align: right">
-                            <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'your-text-domain' );?></button>
+                            <button id="statement-page1-next-step" class="button" style="margin:5px;"><?php echo __( 'Next', 'text-domain' );?></button>
                         </div>
                     <?php } else {?>
                         <div>
-                            <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Back', 'your-text-domain' );?></button>
+                            <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Back', 'text-domain' );?></button>
                         </div>
                         <div style="text-align: right">
-                            <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Done', 'your-text-domain' );?></button>
+                            <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Done', 'text-domain' );?></button>
                         </div>
                     <?php }?>
                 </div>

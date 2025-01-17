@@ -98,23 +98,23 @@ if (!class_exists('embedded_items')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '嵌入項目', 'text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
                     <select id="select-category"><?php echo $this->select_doc_category_options('embedded');?></select>
                 </div>
                 <div style="text-align: right">
-                    <input type="text" id="search-embedded" placeholder="<?php echo __( 'Search...', 'your-text-domain' );?>" style="margin:5px;" />
+                    <input type="text" id="search-embedded" placeholder="<?php echo __( 'Search...', 'text-domain' );?>" style="margin:5px;" />
                 </div>                        
             </div>
 
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Number', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Public', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Number', 'text-domain' );?></th>
+                        <th><?php echo __( 'Title', 'text-domain' );?></th>
+                        <th><?php echo __( 'Public', 'text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -385,38 +385,38 @@ if (!class_exists('embedded_items')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '嵌入項目', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '嵌入項目', 'text-domain' );?></h2>
             <input type="hidden" id="prev-embedded-id" value="<?php echo esc_attr($prev_embedded_id); ?>" />
             <input type="hidden" id="next-embedded-id" value="<?php echo esc_attr($next_embedded_id); ?>" />
             <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
             <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
 
             <fieldset>
-                <label for="embedded-number"><?php echo __( 'Number', 'your-text-domain' );?></label>
+                <label for="embedded-number"><?php echo __( 'Number', 'text-domain' );?></label>
                 <input type="text" id="embedded-number" value="<?php echo esc_attr($embedded_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="embedded-title"><?php echo __( 'Title', 'your-text-domain' );?></label>
+                <label for="embedded-title"><?php echo __( 'Title', 'text-domain' );?></label>
                 <input type="text" id="embedded-title" value="<?php echo esc_attr($embedded_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="embedded-item-list"><?php echo __( 'Items', 'your-text-domain' );?></label>
+                <label for="embedded-item-list"><?php echo __( 'Items', 'text-domain' );?></label>
                 <div id="embedded-item-list">
                     <?php echo $this->display_embedded_item_list($embedded_id);?>
                 </div>
                 <?php if ($embedded_site==$site_id || current_user_can('administrator')) {?>
                     <div>
                         <input type="checkbox" id="is-public" <?php echo $is_public_checked;?> /> 
-                        <label for="is-public"><?php echo __( 'Is public', 'your-text-domain' );?></label>
+                        <label for="is-public"><?php echo __( 'Is public', 'text-domain' );?></label>
                     </div>
                 <?php }?>
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <?php if (is_site_admin()) {?>
-                            <input type="button" id="save-embedded-button" value="<?php echo __( 'Save', 'your-text-domain' );?>" style="margin:3px;" />
-                            <input type="button" id="del-embedded-button" value="<?php echo __( 'Delete', 'your-text-domain' );?>" style="margin:3px;" />
+                            <input type="button" id="save-embedded-button" value="<?php echo __( 'Save', 'text-domain' );?>" style="margin:3px;" />
+                            <input type="button" id="del-embedded-button" value="<?php echo __( 'Delete', 'text-domain' );?>" style="margin:3px;" />
                         <?php }?>
                     </div>
                     <div style="text-align: right">
                     <?php if (is_site_admin()) {?>
-                        <input type="button" id="duplicate-embedded-button" value="<?php echo __( 'Duplicate', 'your-text-domain' );?>" style="margin:3px;" />
+                        <input type="button" id="duplicate-embedded-button" value="<?php echo __( 'Duplicate', 'text-domain' );?>" style="margin:3px;" />
                     <?php }?>
                     <input type="button" id="exit-embedded-dialog" value="Exit" style="margin:5px;" />
                     </div>
@@ -567,9 +567,9 @@ if (!class_exists('embedded_items')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( 'Items', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Type', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Default', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Items', 'text-domain' );?></th>
+                        <th><?php echo __( 'Type', 'text-domain' );?></th>
+                        <th><?php echo __( 'Default', 'text-domain' );?></th>
                     </tr>
                 </thead>
                 <tbody id="sortable-embedded-item-list">
@@ -665,13 +665,13 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <input type="hidden" id="embedded-item-id" value="<?php echo esc_attr($embedded_item_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="embedded-item-title"><?php echo __( 'Item: ', 'your-text-domain' );?></label>
+                <label for="embedded-item-title"><?php echo __( 'Item: ', 'text-domain' );?></label>
                 <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
                 <?php $documents_class->get_field_type_data($field_type);?>
-                <label for="default-value"><?php echo __( 'Default: ', 'your-text-domain' );?></label>
+                <label for="default-value"><?php echo __( 'Default: ', 'text-domain' );?></label>
                 <textarea id="default-value" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
                 <?php $documents_class->get_listing_style_data($listing_style);?>
-                <label for="embedded-item-note"><?php echo __( 'Note: ', 'your-text-domain' );?></label>
+                <label for="embedded-item-note"><?php echo __( 'Note: ', 'text-domain' );?></label>
                 <textarea id="embedded-item-note" rows="2" style="width:100%;"><?php echo $field_note;?></textarea>
             </fieldset>
             <?php
@@ -1050,7 +1050,7 @@ if (!class_exists('embedded_items')) {
             $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '文件類別', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '文件類別', 'text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $profiles_class->display_select_profile('doc-category');?></div>
@@ -1060,9 +1060,9 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Category', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Category', 'text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'text-domain' );?></th>
+                        <th><?php echo __( 'ISO', 'text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -1121,11 +1121,11 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="category-title"><?php echo __( 'Category: ', 'your-text-domain' );?></label>
+                <label for="category-title"><?php echo __( 'Category: ', 'text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <label for="category-content"><?php echo __( 'Description: ', 'text-domain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
-                <label for="iso-category"><?php echo __( 'ISO: ', 'your-text-domain' );?></label>
+                <label for="iso-category"><?php echo __( 'ISO: ', 'text-domain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
             </fieldset>
             <?php
@@ -1199,7 +1199,7 @@ if (!class_exists('embedded_items')) {
             endwhile;
             wp_reset_postdata();
             $selected = ($selected_option=="embedded") ? 'selected' : '';
-            $options .= '<option value="embedded" '.$selected.'>'.__( '嵌入項目', 'your-text-domain' ).'</option>';
+            $options .= '<option value="embedded" '.$selected.'>'.__( '嵌入項目', 'text-domain' ).'</option>';
             return $options;
         }
         
@@ -1256,7 +1256,7 @@ if (!class_exists('embedded_items')) {
                         </div>
                         <div class="wp-block-button">
                             <?php //if ($embedded) {?>
-                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'your-text-domain' ); ?></a>
+                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'text-domain' ); ?></a>
                             <?php //}?>
                         </div>
                     </div>
@@ -1275,7 +1275,7 @@ if (!class_exists('embedded_items')) {
             if (current_user_can('administrator')) {
                 ?>
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( 'ISO類別', 'your-text-domain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( 'ISO類別', 'text-domain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $profiles_class->display_select_profile('iso-category');?></div>
@@ -1285,9 +1285,9 @@ if (!class_exists('embedded_items')) {
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
-                            <th><?php echo __( 'ISO', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Description', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Parent', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'ISO', 'text-domain' );?></th>
+                            <th><?php echo __( 'Description', 'text-domain' );?></th>
+                            <th><?php echo __( 'Parent', 'text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
@@ -1315,7 +1315,7 @@ if (!class_exists('embedded_items')) {
                 <?php
             } else {
                 ?>
-                <p><?php echo __( 'You do not have permission to access this page.', 'your-text-domain' );?></p>
+                <p><?php echo __( 'You do not have permission to access this page.', 'text-domain' );?></p>
                 <?php
             }
             return ob_get_clean();
@@ -1342,16 +1342,16 @@ if (!class_exists('embedded_items')) {
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
-                <label for="category-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <label for="category-title"><?php echo __( 'Title: ', 'text-domain' );?></label>
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="category-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <label for="category-content"><?php echo __( 'Description: ', 'text-domain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
-                <label for="category-url"><?php echo __( 'URL: ', 'your-text-domain' );?></label>
+                <label for="category-url"><?php echo __( 'URL: ', 'text-domain' );?></label>
                 <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="parent-category"><?php echo __( 'Parent: ', 'your-text-domain' );?></label>
+                <label for="parent-category"><?php echo __( 'Parent: ', 'text-domain' );?></label>
                 <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
 <?php /*                
-                <label for="embedded"><?php echo __( 'Statement: ', 'your-text-domain' );?></label>
+                <label for="embedded"><?php echo __( 'Statement: ', 'text-domain' );?></label>
                 <select id="embedded" class="text ui-widget-content ui-corner-all"><?php echo $this->select_embedded_options($embedded);?></select>
 */?>
             </fieldset>
@@ -1418,9 +1418,9 @@ if (!class_exists('embedded_items')) {
             $economic_selected = ($selected_option == 'economic-growth') ? 'selected' : '';
             $environmental_selected = ($selected_option == 'environmental-protection') ? 'selected' : '';
             $social_selected = ($selected_option == 'social-responsibility') ? 'selected' : '';
-            $options .= '<option value="economic-growth" '.$economic_selected.'>' . __( 'Economic Growth', 'your-text-domain' ) . '</option>';
-            $options .= '<option value="environmental-protection" '.$environmental_selected.'>' . __( 'environmental protection', 'your-text-domain' ) . '</option>';
-            $options .= '<option value="social-responsibility" '.$social_selected.'>' . __( 'social responsibility', 'your-text-domain' ) . '</option>';    
+            $options .= '<option value="economic-growth" '.$economic_selected.'>' . __( 'Economic Growth', 'text-domain' ) . '</option>';
+            $options .= '<option value="environmental-protection" '.$environmental_selected.'>' . __( 'environmental protection', 'text-domain' ) . '</option>';
+            $options .= '<option value="social-responsibility" '.$social_selected.'>' . __( 'social responsibility', 'text-domain' ) . '</option>';    
             return $options;
         }
 
@@ -1476,7 +1476,7 @@ if (!class_exists('embedded_items')) {
             $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '部門列表', 'your-text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '部門列表', 'text-domain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $profiles_class->display_select_profile('department-card');?></div>
@@ -1488,9 +1488,9 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Number', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Title', 'your-text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'your-text-domain' );?></th>
+                        <th><?php echo __( 'Number', 'text-domain' );?></th>
+                        <th><?php echo __( 'Title', 'text-domain' );?></th>
+                        <th><?php echo __( 'Description', 'text-domain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -1595,13 +1595,13 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <input type="hidden" id="department-id" value="<?php echo esc_attr($department_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="department-number"><?php echo __( 'Number: ', 'your-text-domain' );?></label>
+                <label for="department-number"><?php echo __( 'Number: ', 'text-domain' );?></label>
                 <input type="text" id="department-number" value="<?php echo esc_attr($department_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="department-title"><?php echo __( 'Title: ', 'your-text-domain' );?></label>
+                <label for="department-title"><?php echo __( 'Title: ', 'text-domain' );?></label>
                 <input type="text" id="department-title" value="<?php echo esc_attr($department_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="department-content"><?php echo __( 'Description: ', 'your-text-domain' );?></label>
+                <label for="department-content"><?php echo __( 'Description: ', 'text-domain' );?></label>
                 <textarea id="department-content" rows="3" style="width:100%;"><?php echo esc_html($department_content);?></textarea>
-                <label for="department-members"><?php echo __( '部門成員：', 'your-text-domain' );?></label>
+                <label for="department-members"><?php echo __( '部門成員：', 'text-domain' );?></label>
                 <?php echo $this->display_department_user_list($department_id);?>
                 <?php
                 // transaction data vs card key/value
@@ -1710,8 +1710,8 @@ if (!class_exists('embedded_items')) {
                 <fieldset style="margin-top:5px;">
                     <table class="ui-widget" style="width:100%;">
                         <thead>
-                            <th><?php echo __( 'Name', 'your-text-domain' );?></th>
-                            <th><?php echo __( 'Email', 'your-text-domain' );?></th>
+                            <th><?php echo __( 'Name', 'text-domain' );?></th>
+                            <th><?php echo __( 'Email', 'text-domain' );?></th>
                         </thead>
                         <tbody>
                         <?php
