@@ -9,7 +9,7 @@
  * Requires at least: 6.0
  * Tested up to: 6.5.3
  *
- * Text Domain: text-domain
+ * Text Domain: textdomain
  * Domain Path: /languages/
  */
 
@@ -38,7 +38,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
 function plugin_load_textdomain() {
-    load_plugin_textdomain( 'text-domain', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+    load_plugin_textdomain( 'textdomain', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 add_action( 'plugins_loaded', 'plugin_load_textdomain' );
 

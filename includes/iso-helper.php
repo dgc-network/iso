@@ -165,7 +165,7 @@ function init_webhook_events() {
                         // Retrieve the value of the 'doc_id' parameter
                         $doc_id = $query_params['_duplicate_document'];
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        $text_message = __( '您可以點擊下方按鍵將文件「', 'text-domain' ).$doc_title.__( '」加入您的文件匣中。', 'text-domain' );
+                        $text_message = __( '您可以點擊下方按鍵將文件「', 'textdomain' ).$doc_title.__( '」加入您的文件匣中。', 'textdomain' );
                     }
                 }
 
@@ -191,7 +191,7 @@ function init_webhook_events() {
                         'type' => 'button',
                         'action' => array(
                             'type' => 'uri',
-                            'label' => __( '點擊這裡', 'text-domain' ),
+                            'label' => __( '點擊這裡', 'textdomain' ),
                             'uri' => $url,
                         ),
                         'style' => 'primary',
@@ -232,7 +232,7 @@ function init_webhook_events() {
                             );
                         
                             $body_contents = array();
-                            $text_message = __( '您可以點擊下方列示，直接執行『', 'text-domain' ) . $message['text'] . __( '』相關作業。', 'text-domain' );
+                            $text_message = __( '您可以點擊下方列示，直接執行『', 'textdomain' ) . $message['text'] . __( '』相關作業。', 'textdomain' );
                             $body_content = array(
                                 'type' => 'text',
                                 'text' => $text_message,
@@ -328,7 +328,7 @@ function generate_content($prompt) {
             $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
             return convert_content_to_styled_html($generated_text);
         } else {
-            return "Failed to generate text. Please enter the API key in my-profile page first.";
+            return __( 'Failed to generate text. Please enter the API key in my-profile page first.', 'textdomain' );
         }
     }
     curl_close($ch);
@@ -358,19 +358,19 @@ function convert_content_to_styled_html($content) {
 
 // Add the custom schedules
 function select_cron_schedules_option($selected_option = false) {
-    $options = '<option value="">' . __('None', 'text-domain') . '</option>';
+    $options = '<option value="">' . __('None', 'textdomain') . '</option>';
     
     $intervals = [
-        'hourly' => __('每小時', 'text-domain'),
-        'twicedaily' => __('每12小時', 'text-domain'),
-        'weekday_daily' => __('週間每日', 'text-domain'),
-        'daily' => __('每日', 'text-domain'),
-        'weekly' => __('每週', 'text-domain'),
-        'biweekly' => __('每二週', 'text-domain'),
-        'monthly' => __('每月', 'text-domain'),
-        'bimonthly' => __('每二月', 'text-domain'),
-        'half_yearly' => __('每半年', 'text-domain'),
-        'yearly' => __('每年', 'text-domain'),
+        'hourly' => __('每小時', 'textdomain'),
+        'twicedaily' => __('每12小時', 'textdomain'),
+        'weekday_daily' => __('週間每日', 'textdomain'),
+        'daily' => __('每日', 'textdomain'),
+        'weekly' => __('每週', 'textdomain'),
+        'biweekly' => __('每二週', 'textdomain'),
+        'monthly' => __('每月', 'textdomain'),
+        'bimonthly' => __('每二月', 'textdomain'),
+        'half_yearly' => __('每半年', 'textdomain'),
+        'yearly' => __('每年', 'textdomain'),
     ];
 
     foreach ($intervals as $value => $label) {
@@ -384,7 +384,7 @@ function select_cron_schedules_option($selected_option = false) {
 function add_weekday_only_cron_schedule($schedules) {
     $schedules['weekday_daily'] = array(
         'interval' => 86400, // 24 hours in seconds
-        'display'  => __('Once Daily on Weekdays Only'),
+        'display'  => __('Once Daily on Weekdays Only', 'textdomain'),
     );
     return $schedules;
 }
@@ -393,23 +393,23 @@ add_filter('cron_schedules', 'add_weekday_only_cron_schedule');
 function iso_helper_cron_schedules($schedules) {
     $schedules['biweekly'] = array(
         'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
-        'display'  => __('Every Two Weeks'),
+        'display'  => __('Every Two Weeks', 'textdomain'),
     );
     $schedules['monthly'] = array(
         'interval' => 30 * DAY_IN_SECONDS, // Approximate monthly interval
-        'display'  => __('Monthly'),
+        'display'  => __('Monthly', 'textdomain'),
     );
     $schedules['bimonthly'] = array(
         'interval' => 60.5 * DAY_IN_SECONDS, // Approximate monthly interval
-        'display'  => __('Every Two Months'),
+        'display'  => __('Every Two Months', 'textdomain'),
     );
     $schedules['half_yearly'] = array(
         'interval' => 182.5 * DAY_IN_SECONDS, // Approximate half-year interval
-        'display'  => __('Every Six Months'),
+        'display'  => __('Every Six Months', 'textdomain'),
     );
     $schedules['yearly'] = array(
         'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
-        'display'  => __('Yearly'),
+        'display'  => __('Yearly', 'textdomain'),
     );
     return $schedules;
 }

@@ -211,8 +211,8 @@ if (!class_exists('line_login_api')) {
                         <img src="https://s3.ap-southeast-1.amazonaws.com/app-assets.easystore.co/apps/154/icon.png" alt="LINE Login" style="max-width: 100px;">
                     </a>
                 </div>
-                <div><?php echo esc_html__( 'You are not logged in.', 'text-domain' ); ?></div>
-                <div><?php echo esc_html__( 'Please click the above button to log in.', 'text-domain' ); ?></div>
+                <div><?php echo esc_html__( 'You are not logged in.', 'textdomain' ); ?></div>
+                <div><?php echo esc_html__( 'Please click the above button to log in.', 'textdomain' ); ?></div>
             </div>
             <?php            
         }

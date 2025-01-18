@@ -399,9 +399,9 @@ if (!class_exists('iot_messages')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Time', 'text-domain' );?></th>
-                        <th><?php echo __( 'Sensor', 'text-domain' );?></th>
-                        <th><?php echo __( 'Value', 'text-domain' );?></th>
+                        <th><?php echo __( 'Time', 'textdomain' );?></th>
+                        <th><?php echo __( 'Sensor', 'textdomain' );?></th>
+                        <th><?php echo __( 'Value', 'textdomain' );?></th>
                         <th></th>
                         <th></th>
                     </thead>
@@ -428,19 +428,19 @@ if (!class_exists('iot_messages')) {
                             <tr id="edit-iot-message-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
                                 <?php if ($temperature) {?>
-                                    <td style="text-align:center;"><?php echo __( 'Temperature', 'text-domain' );?></td>
+                                    <td style="text-align:center;"><?php echo __( 'Temperature', 'textdomain' );?></td>
                                     <td style="text-align:center;"><?php echo esc_html($temperature);?></td>
                                 <?php }?>
                                 <?php if ($humidity) {?>
-                                    <td style="text-align:center;"><?php echo __( 'Humidity(%)', 'text-domain' );?></td>
+                                    <td style="text-align:center;"><?php echo __( 'Humidity(%)', 'textdomain' );?></td>
                                     <td style="text-align:center;"><?php echo esc_html($humidity);?><span style="font-size:small">%</span></td>
                                 <?php }?>
                                 <?php if ($latitude) {?>
-                                    <td style="text-align:center;"><?php echo __( 'Latitude', 'text-domain' );?></td>
+                                    <td style="text-align:center;"><?php echo __( 'Latitude', 'textdomain' );?></td>
                                     <td style="text-align:center;"><?php echo esc_html($latitude);?></td>
                                 <?php }?>
                                 <?php if ($longitude) {?>
-                                    <td style="text-align:center;"><?php echo __( 'Longitude', 'text-domain' );?></td>
+                                    <td style="text-align:center;"><?php echo __( 'Longitude', 'textdomain' );?></td>
                                     <td style="text-align:center;"><?php echo esc_html($longitude);?></td>
                                 <?php }?>
                             </tr>
@@ -511,7 +511,7 @@ if (!class_exists('iot_messages')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( 'IoT devices', 'text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'IoT devices', 'textdomain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $todo_class->display_select_todo('iot-devices');?></div>
@@ -523,9 +523,9 @@ if (!class_exists('iot_messages')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Number', 'text-domain' );?></th>
-                        <th><?php echo __( 'Title', 'text-domain' );?></th>
-                        <th><?php echo __( 'Description', 'text-domain' );?></th>
+                        <th><?php echo __( 'Number', 'textdomain' );?></th>
+                        <th><?php echo __( 'Title', 'textdomain' );?></th>
+                        <th><?php echo __( 'Description', 'textdomain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -564,8 +564,8 @@ if (!class_exists('iot_messages')) {
             <div style="background-color:lightblue; text-align:center;">
                 <?php 
                 echo $this->count_matching_iot_messages();
-                echo __( ' total submissions', 'text-domain' );
-                echo __( ' before today.', 'text-domain' );
+                echo __( ' total submissions', 'textdomain' );
+                echo __( ' before today.', 'textdomain' );
                 ?>
             </div>
             </div>
@@ -778,37 +778,37 @@ if (!class_exists('iot_messages')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( 'IoT devices', 'text-domain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'IoT devices', 'textdomain' );?></h2>
             <fieldset>
                 <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="device-number"><?php echo __( 'Number: ', 'text-domain' );?></label>
+                <label for="device-number"><?php echo __( 'Number: ', 'textdomain' );?></label>
                 <input type="text" id="device-number" value="<?php echo esc_attr($device_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="device-title"><?php echo __( 'Title: ', 'text-domain' );?></label>
+                <label for="device-title"><?php echo __( 'Title: ', 'textdomain' );?></label>
                 <input type="text" id="device-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="device-content"><?php echo __( 'Description: ', 'text-domain' );?></label>
+                <label for="device-content"><?php echo __( 'Description: ', 'textdomain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <?php if (current_user_can('administrator')) {?>
-                    <label for="site-id"><?php echo __( 'Site:', 'text-domain' );?></label>
+                    <label for="site-id"><?php echo __( 'Site:', 'textdomain' );?></label>
                     <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $profiles_class->select_site_profile_options($site_id);?></select>
                 <?php }?>
-                <label for="temperature-offset"><?php echo __( 'Temperature offset:', 'text-domain' );?></label>
+                <label for="temperature-offset"><?php echo __( 'Temperature offset:', 'textdomain' );?></label>
                 <input type="text" id="temperature-offset" value="<?php echo esc_attr($temperature_offset);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="record-frequency"><?php echo __( 'Record frequency:', 'text-domain' );?></label>
+                <label for="record-frequency"><?php echo __( 'Record frequency:', 'textdomain' );?></label>
                 <select id="record-frequency" class="text ui-widget-content ui-corner-all" >
-                    <option value="daily" <?php echo ($record_frequency=='daily') ? 'selected' : '';?>><?php echo __( '每日記錄一次', 'text-domain' );?></option>
-                    <option value="twice-daily" <?php echo ($record_frequency=='twice-daily') ? 'selected' : '';?>><?php echo __( '12小時記錄一次', 'text-domain' );?></option>
-                    <option value="six-hours" <?php echo ($record_frequency=='six-hours') ? 'selected' : '';?>><?php echo __( '6小時記錄一次', 'text-domain' );?></option>
-                    <option value="three-hours" <?php echo ($record_frequency=='three-hours') ? 'selected' : '';?>><?php echo __( '3小時記錄一次', 'text-domain' );?></option>
-                    <option value="one-hour" <?php echo ($record_frequency=='one-hour') ? 'selected' : '';?>><?php echo __( '1小時記錄一次', 'text-domain' );?></option>
+                    <option value="daily" <?php echo ($record_frequency=='daily') ? 'selected' : '';?>><?php echo __( '每日記錄一次', 'textdomain' );?></option>
+                    <option value="twice-daily" <?php echo ($record_frequency=='twice-daily') ? 'selected' : '';?>><?php echo __( '12小時記錄一次', 'textdomain' );?></option>
+                    <option value="six-hours" <?php echo ($record_frequency=='six-hours') ? 'selected' : '';?>><?php echo __( '6小時記錄一次', 'textdomain' );?></option>
+                    <option value="three-hours" <?php echo ($record_frequency=='three-hours') ? 'selected' : '';?>><?php echo __( '3小時記錄一次', 'textdomain' );?></option>
+                    <option value="one-hour" <?php echo ($record_frequency=='one-hour') ? 'selected' : '';?>><?php echo __( '1小時記錄一次', 'textdomain' );?></option>
                 </select>
-                <label for="records-removed"><?php echo __( 'Records removed:', 'text-domain' );?></label>
+                <label for="records-removed"><?php echo __( 'Records removed:', 'textdomain' );?></label>
                 <select id="records-removed" class="text ui-widget-content ui-corner-all" >
-                    <option value="one-year" <?php echo ($records_removed=='one-year') ? 'selected' : '';?>><?php echo __( '一年以上', 'text-domain' );?></option>
-                    <option value="two-years" <?php echo ($records_removed=='two-years') ? 'selected' : '';?>><?php echo __( '二年以上', 'text-domain' );?></option>
-                    <option value="three-years" <?php echo ($records_removed=='three-years') ? 'selected' : '';?>><?php echo __( '三年以上', 'text-domain' );?></option>
-                    <option value="half-year" <?php echo ($records_removed=='half-year') ? 'selected' : '';?>><?php echo __( '六個月以上', 'text-domain' );?></option>
-                    <option value="three-months" <?php echo ($records_removed=='three-months') ? 'selected' : '';?>><?php echo __( '三個月以上', 'text-domain' );?></option>
+                    <option value="one-year" <?php echo ($records_removed=='one-year') ? 'selected' : '';?>><?php echo __( '一年以上', 'textdomain' );?></option>
+                    <option value="two-years" <?php echo ($records_removed=='two-years') ? 'selected' : '';?>><?php echo __( '二年以上', 'textdomain' );?></option>
+                    <option value="three-years" <?php echo ($records_removed=='three-years') ? 'selected' : '';?>><?php echo __( '三年以上', 'textdomain' );?></option>
+                    <option value="half-year" <?php echo ($records_removed=='half-year') ? 'selected' : '';?>><?php echo __( '六個月以上', 'textdomain' );?></option>
+                    <option value="three-months" <?php echo ($records_removed=='three-months') ? 'selected' : '';?>><?php echo __( '三個月以上', 'textdomain' );?></option>
                 </select>
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
@@ -844,7 +844,7 @@ if (!class_exists('iot_messages')) {
                 </div>                
                 <?php }
                 ?>
-                <label for="iot-message"><?php echo __( 'IoT messages: ', 'text-domain' );?></label>
+                <label for="iot-message"><?php echo __( 'IoT messages: ', 'textdomain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id);?>
                 <?php
                 // transaction data vs card key/value
@@ -858,8 +858,8 @@ if (!class_exists('iot_messages')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <?php if (current_user_can('administrator')) {?>
-                            <input type="button" id="save-iot-device" value="<?php echo __( 'Save', 'text-domain' );?>" style="margin:3px;" />
-                            <input type="button" id="del-iot-device" value="<?php echo __( 'Delete', 'text-domain' );?>" style="margin:3px;" />
+                            <input type="button" id="save-iot-device" value="<?php echo __( 'Save', 'textdomain' );?>" style="margin:3px;" />
+                            <input type="button" id="del-iot-device" value="<?php echo __( 'Delete', 'textdomain' );?>" style="margin:3px;" />
                         <?php }?>
                     </div>
                     <div style="text-align: right">
@@ -974,9 +974,9 @@ if (!class_exists('iot_messages')) {
             <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Device', 'text-domain' );?></th>
-                        <th><?php echo __( 'Max.', 'text-domain' );?></th>
-                        <th><?php echo __( 'Min.', 'text-domain' );?></th>
+                        <th><?php echo __( 'Device', 'textdomain' );?></th>
+                        <th><?php echo __( 'Max.', 'textdomain' );?></th>
+                        <th><?php echo __( 'Min.', 'textdomain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -1045,14 +1045,14 @@ if (!class_exists('iot_messages')) {
             <fieldset>
                 <input type="hidden" id="setting-id" value="<?php echo esc_attr($setting_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="device-id"><?php echo __( 'Device', 'text-domain' );?></label>
+                <label for="device-id"><?php echo __( 'Device', 'textdomain' );?></label>
                 <select id="device-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iot_device_options($device_id);?></select>                
-                <label for="max-value"><?php echo __( 'Max.', 'text-domain' );?></label>
+                <label for="max-value"><?php echo __( 'Max.', 'textdomain' );?></label>
                 <input type="text" id="max-value" value="<?php echo esc_attr($max_value);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="min-value"><?php echo __( 'Min', 'text-domain' );?></label>
+                <label for="min-value"><?php echo __( 'Min', 'textdomain' );?></label>
                 <input type="text" id="min-value" value="<?php echo esc_attr($min_value);?>" class="text ui-widget-content ui-corner-all" />
                 <input type="checkbox" id="is-once-daily" <?php echo $is_checked;?> />
-                <label for="is-once-daily"><?php echo __( 'Only reply once per day.', 'text-domain' );?></label>
+                <label for="is-once-daily"><?php echo __( 'Only reply once per day.', 'textdomain' );?></label>
                 </fieldset>
             <?php
             return ob_get_clean();

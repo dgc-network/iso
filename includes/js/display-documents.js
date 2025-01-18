@@ -1011,7 +1011,7 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + urlParams.toString();
         });
     }
-
+/*
     function get_doc_report_list_data(doc_id=false, search_doc_report=false) {
         const ajaxData = {
             'action': 'get_doc_report_list_data',
@@ -1035,7 +1035,7 @@ jQuery(document).ready(function($) {
             }
         });
     }
-
+*/
     function get_doc_report_dialog_data(report_id, callback) {
         $.ajax({
             url: ajax_object.ajax_url,
