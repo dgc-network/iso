@@ -1442,7 +1442,7 @@ if (!class_exists('display_documents')) {
 
             // Get system document options
             $system_doc_array = $this->get_system_doc_query();
-            $field_types = array_merge($field_types, $system_doc_array);
+            //$field_types = array_merge($field_types, $system_doc_array);
 
 
             // Integrate $system_doc_array to $field_types 
