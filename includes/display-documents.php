@@ -1446,7 +1446,7 @@ if (!class_exists('display_documents')) {
                 // Loop through the query results
                 while ($system_doc_query->have_posts()) {
                     $system_doc_query->the_post();
-                    $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
+                    //$system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
             
                     // Add the 'system_doc' to field_types if not empty
                     if (!empty($system_doc)) {
