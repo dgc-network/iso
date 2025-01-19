@@ -1438,12 +1438,12 @@ if (!class_exists('display_documents')) {
                 'image' => __('Image', 'textdomain'),
                 'video' => __('Video', 'textdomain'),
             ];
-/*        
+
             // Get system document options
-            $query = $this->get_system_doc_query();
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
+            $system_doc_query = $this->get_system_doc_query();
+            if ($system_doc_query->have_posts()) {
+                while ($system_doc_query->have_posts()) {
+                    $system_doc_query->the_post();
                     $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
                     if (!empty($system_doc)) {
                         $field_types[$system_doc] = $system_doc;
@@ -1451,7 +1451,7 @@ if (!class_exists('display_documents')) {
                 }
                 wp_reset_postdata();
             }
-*/        
+
             // If $field_type is set and exists in $field_types, return the label
             if ($field_type !== false && isset($field_types[$field_type])) {
                 return $field_types[$field_type];
