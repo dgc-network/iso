@@ -165,7 +165,12 @@ function init_webhook_events() {
                         // Retrieve the value of the 'doc_id' parameter
                         $doc_id = $query_params['_duplicate_document'];
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        $text_message = __( '您可以點擊下方按鍵將文件「', 'textdomain' ).$doc_title.__( '」加入您的文件匣中。', 'textdomain' );
+                        //$text_message = __( '您可以點擊下方按鍵將文件「', 'textdomain' ).$doc_title.__( '」加入您的文件匣中。', 'textdomain' );
+                        $text_message = sprintf(
+                            __( '您可以點擊下方按鍵將文件「%s」加入您的文件匣中。', 'textdomain' ),
+                            $doc_title
+                        );
+                        
                     }
                 }
 
@@ -230,12 +235,20 @@ function init_webhook_events() {
                                     'weight' => 'bold',
                                 ),
                             );
-                        
+/*                        
                             $body_contents = array();
-                            $text_message = __( '您可以點擊下方列示，直接執行『', 'textdomain' ) . $message['text'] . __( '』相關作業。', 'textdomain' );
+                            $text_message = __( '您可以點擊下方列示，直接執行「', 'textdomain' ) . $message['text'] . __( '」相關作業。', 'textdomain' );
+                            $text_message = sprintf(
+                                __( '您可以點擊下方列示，直接執行「%s」相關作業。', 'textdomain' ),
+                                $message['text']
+                            );
+*/                            
                             $body_content = array(
                                 'type' => 'text',
-                                'text' => $text_message,
+                                'text' => sprintf(
+                                    __( '您可以點擊下方列示，直接執行「%s」相關作業。', 'textdomain' ),
+                                    $message['text']
+                                ),
                                 'wrap' => true,
                             );
                             $body_contents[] = $body_content;

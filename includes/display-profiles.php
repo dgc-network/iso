@@ -1923,7 +1923,7 @@ if (!class_exists('display_profiles')) {
             $submit_date = get_user_meta($user_id, 'submit_date', true);
             ?>
             <div class="ui-widget" id="result-container">
-                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'textdomain' );?></h2>
+                <h2 style="display:inline; text-align:center;"><?php echo __( '保密協議', 'textdomain' );?></h2>
                 <div>
                     <label for="site-title"><b><?php echo __( '甲方', 'textdomain' );?></b></label>
                     <input type="text" id="site-title" value="<?php echo $site_title;?>" class="text ui-widget-content ui-corner-all" disabled />
@@ -1967,7 +1967,7 @@ if (!class_exists('display_profiles')) {
             $user = get_userdata($user_id);
             ?>
             <div class="ui-widget" id="result-container">
-                <h2 style="display:inline; text-align:center;"><?php echo __( '保密切結書', 'textdomain' );?></h2>
+                <h2 style="display:inline; text-align:center;"><?php echo __( '保密協議', 'textdomain' );?></h2>
                 <div>
                     <label for="select-nda-site"><b><?php echo __( '甲方', 'textdomain' );?></b></label>
                     <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
@@ -2047,12 +2047,27 @@ if (!class_exists('display_profiles')) {
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been rejected. Check to the administrator.', 'textdomain' ), 'wrap' => true]],
+                    //'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been rejected. Check to the administrator.', 'textdomain' ), 'wrap' => true]],
+                    'body_contents' => [
+                        [
+                            'type' => 'text',
+                            'text' => sprintf(
+                                __( 'The NDA of %s has been rejected. Check with the administrator.', 'textdomain' ),
+                                esc_html( $user->display_name )
+                            ),
+                            'wrap' => true,
+                        ],
+                    ],                    
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
                 ]);
 
                 $params = array(
-                    'log_message' => 'The NDA of '.$user->display_name.' has been rejected by '.wp_get_current_user()->display_name,
+                    //'log_message' => 'The NDA of '.$user->display_name.' has been rejected by '.wp_get_current_user()->display_name,
+                    'log_message' => sprintf(
+                        __('The NDA of %s has been rejected by %s', 'textdomain'),
+                        $user->display_name,
+                        wp_get_current_user()->display_name
+                    ),     
                     'user_id' => $user_id,
                 );
                 $todo_class = new to_do_list();
@@ -2076,12 +2091,27 @@ if (!class_exists('display_profiles')) {
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been approved. Go to your profile.', 'textdomain' ), 'wrap' => true]],
+                    //'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been approved. Go to your profile.', 'textdomain' ), 'wrap' => true]],
+                    'body_contents' => [
+                        [
+                            'type' => 'text',
+                            'text' => sprintf(
+                                __('The NDA of %s has been approved. Go to your profile.', 'textdomain'),
+                                $user->display_name
+                            ),
+                            'wrap' => true
+                        ]
+                    ],                    
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
                 ]);
 
                 $params = array(
-                    'log_message' => 'The NDA of '.$user->display_name.' has been approved by '.wp_get_current_user()->display_name,
+                    //'log_message' => 'The NDA of '.$user->display_name.' has been approved by '.wp_get_current_user()->display_name,
+                    'log_message' => sprintf(
+                        __('The NDA of %s has been approved by %s', 'textdomain'),
+                        $user->display_name,
+                        wp_get_current_user()->display_name
+                    ),                    
                     'user_id' => $user_id,
                 );
                 $todo_class = new to_do_list();
@@ -2107,7 +2137,18 @@ if (!class_exists('display_profiles')) {
                     $line_bot_api->send_flex_message([
                         'to' => $line_user_id,
                         'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                        'body_contents'   => [['type' => 'text', 'text' => $user->display_name.__( ' has signed the NDA of ', 'textdomain' ).get_the_title($site_id).'.', 'wrap' => true]],
+                        //'body_contents'   => [['type' => 'text', 'text' => $user->display_name.__( ' has signed the NDA of ', 'textdomain' ).get_the_title($site_id).'.', 'wrap' => true]],
+                        'body_contents' => [
+                            [
+                                'type' => 'text',
+                                'text' => sprintf(
+                                    __('%s has signed the NDA of %s.', 'textdomain'),
+                                    $user->display_name,
+                                    get_the_title($site_id)
+                                ),
+                                'wrap' => true
+                            ]
+                        ],                        
                         'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' =>  __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_nda_user_id=$user_id")], 'style' => 'primary']],
                     ]);
                 }

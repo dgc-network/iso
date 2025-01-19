@@ -1124,7 +1124,12 @@ if (!class_exists('to_do_list')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
-            $text_message = __( '你在「', 'textdomain' ).$todo_title.__( '」的職務有一份文件需要在', 'textdomain' ).$due_date.__( '前簽核完成，你可以點擊下方連結查看該文件。', 'textdomain' );
+            //$text_message = __( '你在「', 'textdomain' ).$todo_title.__( '」的職務有一份文件需要在', 'textdomain' ).$due_date.__( '前簽核完成，你可以點擊下方連結查看該文件。', 'textdomain' );
+            $text_message = sprintf(
+                __('你在「%s」的職務有一份文件需要在%s前簽核完成，你可以點擊下方連結查看該文件。', 'textdomain'),
+                $todo_title,
+                $due_date
+            );            
             $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;
         
             $args = array(
@@ -1284,9 +1289,19 @@ if (!class_exists('to_do_list')) {
             $submit_time = get_post_meta($todo_id, 'submit_time', true);
             $text_message=$doc_title.' has been released on '.wp_date( get_option('date_format'), $submit_time ).'.';
 
-            $text_message = __( '文件「', 'textdomain' ).$doc_title.__( '」已經在', 'textdomain' ).wp_date( get_option('date_format'), $submit_time );
-            if ($next_job==-1) $text_message .= __( '發行，你可以點擊下方連結查看該文件。', 'textdomain' );
-            if ($next_job==-2) $text_message .= __( '廢止，你可以點擊下方連結查看該文件。', 'textdomain' );
+            //$text_message = __( '文件「', 'textdomain' ).$doc_title.__( '」已經在', 'textdomain' ).wp_date( get_option('date_format'), $submit_time );
+            //if ($next_job==-1) $text_message .= __( '發行，你可以點擊下方連結查看該文件。', 'textdomain' );
+            //if ($next_job==-2) $text_message .= __( '廢止，你可以點擊下方連結查看該文件。', 'textdomain' );
+            if ($next_job==-1) $text_message = sprintf(
+                __( '文件「%s」已經在%s發行，你可以點擊下方連結查看該文件。', 'textdomain' ),
+                $doc_title,
+                wp_date( get_option('date_format'), $submit_time )
+            );
+            if ($next_job==-2) $text_message = sprintf(
+                __( '文件「%s」已經在%s廢止，你可以點擊下方連結查看該文件。', 'textdomain' ),
+                $doc_title,
+                wp_date( get_option('date_format'), $submit_time )
+            );
             if ($report_id) {
                 $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
             } else {
