@@ -2047,7 +2047,7 @@ if (!class_exists('display_profiles')) {
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been rejected. Check the administrator.', 'textdomain' ), 'wrap' => true]],
+                    'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been rejected. Check to the administrator.', 'textdomain' ), 'wrap' => true]],
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
                 ]);
 
@@ -2076,7 +2076,7 @@ if (!class_exists('display_profiles')) {
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been approved. Check your profile.', 'textdomain' ), 'wrap' => true]],
+                    'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been approved. Go to your profile.', 'textdomain' ), 'wrap' => true]],
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
                 ]);
 

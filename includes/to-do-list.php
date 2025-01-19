@@ -1282,7 +1282,7 @@ if (!class_exists('to_do_list')) {
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $doc_title .= '('.$doc_number.')';
             $submit_time = get_post_meta($todo_id, 'submit_time', true);
-            $text_message=$doc_title.' has been published on '.wp_date( get_option('date_format'), $submit_time ).'.';
+            $text_message=$doc_title.' has been released on '.wp_date( get_option('date_format'), $submit_time ).'.';
 
             $text_message = __( '文件「', 'textdomain' ).$doc_title.__( '」已經在', 'textdomain' ).wp_date( get_option('date_format'), $submit_time );
             if ($next_job==-1) $text_message .= __( '發行，你可以點擊下方連結查看該文件。', 'textdomain' );
@@ -1402,7 +1402,7 @@ if (!class_exists('to_do_list')) {
                 </div>
                 <?php echo $this->get_action_log_list();?>
                 <div style="background-color:lightblue; text-align:center;">
-                    <?php echo __( 'Total Submissions:', 'textdomain' );?> <?php echo $total_posts;?>
+                    <?php echo __( 'Total Submissions: ', 'textdomain' );?> <?php echo $total_posts;?>
                 </div>
             </div>
             <?php
