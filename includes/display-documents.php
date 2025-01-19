@@ -1393,6 +1393,7 @@ if (!class_exists('display_documents')) {
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
                                 $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                                $style = $this->get_listing_style_data($listing_style);
 
                                 echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
 
@@ -1403,7 +1404,7 @@ if (!class_exists('display_documents')) {
                                 }
                                 echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html($listing_style).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html($style).'</td>';
 
                                 echo '</tr>';
                             endwhile;
@@ -1450,7 +1451,16 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
-        function get_listing_style_data() {
+        function get_listing_style_data($key=false) {
+            if ($key) {
+                $styles = [
+                    '' => __('請選擇', 'textdomain'),
+                    'left' => __('靠左', 'textdomain'),
+                    'center' => __('置中', 'textdomain'),
+                    'right' => __('靠右', 'textdomain'),
+                ];
+                return $styles[$key];
+            }
             return $styles = [
                 '' => __('請選擇', 'textdomain'),
                 'left' => __('靠左', 'textdomain'),
