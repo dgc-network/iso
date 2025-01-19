@@ -993,7 +993,7 @@ if (!class_exists('display_profiles')) {
                     <select id="select-site" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id);?></select>
                     <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
-                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'textdomain' );?></label>
+                    <label for="is-site-admin"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
                     </div>
                     <?php
                 } else {
@@ -1009,7 +1009,7 @@ if (!class_exists('display_profiles')) {
                     ?>
                     <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> disabled />
-                    <label for="is-site-admin"><?php echo __( 'Is site admin', 'textdomain' );?></label>
+                    <label for="is-site-admin"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
                     </div>
                     <?php
                 }
@@ -1547,7 +1547,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="next-job"><?php echo __( 'Next job', 'textdomain' );?></label>
                 <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
-                <label for="next-leadtime"><?php echo __( 'Next leadtime', 'textdomain' );?></label>
+                <label for="next-leadtime"><?php echo __( 'Leadtime', 'textdomain' );?></label>
                 <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
