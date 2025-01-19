@@ -1444,6 +1444,7 @@ if (!class_exists('display_documents')) {
 
             if ($system_doc_query instanceof WP_Query && $system_doc_query->have_posts()) {
                 // Loop through the query results
+/*
                 while ($system_doc_query->have_posts()) {
                     $system_doc_query->the_post();
                     //$system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
@@ -1453,6 +1454,7 @@ if (!class_exists('display_documents')) {
                         //$field_types[get_the_ID()] = $system_doc;
                     }
                 }
+*/
                 wp_reset_postdata(); // Restore original post data
             }
 /*            
