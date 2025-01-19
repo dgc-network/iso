@@ -1397,7 +1397,7 @@ if (!class_exists('display_documents')) {
             return $query;
         }
 
-        function get_listing_style_data($key = false) {
+        function get_listing_style_data($style = false) {
             $styles = [
                 '.' => __('請選擇', 'textdomain'),
                 'left' => __('靠左', 'textdomain'),
@@ -1405,12 +1405,12 @@ if (!class_exists('display_documents')) {
                 'right' => __('靠右', 'textdomain'),
             ];
         
-            if ($key === '.') {
+            if ($style === '.') {
                 return ''; // Return an empty string if $key is '.'
             }
         
-            if ($key !== false && isset($styles[$key])) {
-                return $styles[$key];
+            if ($style !== false && isset($styles[$style])) {
+                return $styles[$style];
             }
         
             return $styles;
