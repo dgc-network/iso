@@ -1460,53 +1460,7 @@ if (!class_exists('display_documents')) {
             // Return the array of all field types if no specific $field_type is set
             return $field_types;
         }
-/*        
-        function get_field_type_data($field_type=false) {
-            //ob_start();
-            ?>
-            <label for="field-type"><?php echo __( '欄位型態', 'textdomain' );?></label>
-            <select id="field-type" class="text ui-widget-content ui-corner-all">
-                    <option value="text" <?php echo ($field_type=='text') ? 'selected' : ''?>><?php echo __( 'Text', 'textdomain' );?></option>
-                    <option value="textarea" <?php echo ($field_type=='textarea') ? 'selected' : ''?>><?php echo __( 'Textarea', 'textdomain' );?></option>
-                    <option value="number" <?php echo ($field_type=='number') ? 'selected' : ''?>><?php echo __( 'Number', 'textdomain' );?></option>
-                    <option value="date" <?php echo ($field_type=='date') ? 'selected' : ''?>><?php echo __( 'Date', 'textdomain' );?></option>
-                    <option value="time" <?php echo ($field_type=='time') ? 'selected' : ''?>><?php echo __( 'Time', 'textdomain' );?></option>
-                    <option value="checkbox" <?php echo ($field_type=='checkbox') ? 'selected' : ''?>><?php echo __( 'Checkbox', 'textdomain' );?></option>
-                    <option value="radio" <?php echo ($field_type=='radio') ? 'selected' : ''?>><?php echo __( 'Radio', 'textdomain' );?></option>
-                    <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'textdomain' );?></option>
-                    <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'textdomain' );?></option>
-                    <?php
-                    $query = $this->get_system_doc_query();
-                    if ($query->have_posts()) {
-                        while ($query->have_posts()) {
-                            $query->the_post();
-                            $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
-                            // Add to the list if meta exists and is not empty
-                            if (!empty($system_doc)) {
-                                ?>
-                                <option value="<?php echo $system_doc;?>" <?php echo ($field_type==$system_doc) ? 'selected' : ''?>><?php echo $system_doc;?></option>
-                                <?php
-                            }
-                        }
-                        wp_reset_postdata();
-                    }
-                    ?>
-                    <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( 'Embedded', 'textdomain' );?></option>
-                    <option value="_line_list" <?php echo ($field_type=='_line_list') ? 'selected' : ''?>><?php echo __( 'Line_list', 'textdomain' );?></option>
-                    <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( 'Select', 'textdomain' );?></option>
-                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( 'IoT devices', 'textdomain' );?></option>
-                    <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( 'Document', 'textdomain' );?></option>
-                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( 'Report', 'textdomain' );?></option>
-                    <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( 'Department', 'textdomain' );?></option>
-                    <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( 'Employee', 'textdomain' );?></option>
-                    <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Image', 'textdomain' );?></option>
-                    <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'textdomain' );?></option>
-            </select>
 
-            <?php
-            //return ob_get_clean();
-        }
-*/
         function display_doc_field_list($doc_id=false) {
             ob_start();
             ?>
@@ -2089,6 +2043,51 @@ if (!class_exists('display_documents')) {
         function get_system_doc_query() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
+            
+            if (empty($site_id)) {
+                return null; // Ensure the site_id exists before proceeding.
+            }
+        
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1, // Retrieve all matching posts, consider limiting this in production
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'relation' => 'OR',
+                        array(
+                            'key'     => 'system_doc',
+                            'compare' => '!=',
+                            'value'   => '',
+                        ),
+                        array(
+                            'key'     => 'system_doc',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',
+                    ),
+                ),
+            );
+        
+            // Perform the query
+            $query = new WP_Query($args);
+        
+            // Optional: Check for query errors or no results
+            if (!$query->have_posts()) {
+                // Log or handle the case when no results are found
+                return null; // or return false depending on your use case
+            }
+        
+            return $query;
+        }
+/*        
+        function get_system_doc_query() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'document', // Specify the post type
                 'posts_per_page' => -1, // Retrieve all matching posts
@@ -2116,7 +2115,7 @@ if (!class_exists('display_documents')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         function get_system_doc_id($field_type = false) {
             // Ensure $field_type is provided
             if (!$field_type) {
