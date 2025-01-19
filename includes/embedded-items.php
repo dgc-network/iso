@@ -560,6 +560,7 @@ if (!class_exists('embedded_items')) {
 
         function display_embedded_item_list($embedded_id=false) {
             ob_start();
+            $documents_class = new display_documents();
             ?>
             <fieldset>
             <table style="width:100%;">
@@ -582,6 +583,7 @@ if (!class_exists('embedded_items')) {
                         $embedded_item_title = get_the_title();
                         $field_note = get_post_meta(get_the_ID(), 'field_note', true);
                         $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        $type = $documents_class->get_field_type_data($field_type);
                         $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                         if ($field_type=='heading') {
                             if (!$default_value) {
@@ -594,7 +596,7 @@ if (!class_exists('embedded_items')) {
                         ?>
                         <tr id="edit-item-<?php the_ID();?>" data-embedded-item-id="<?php echo esc_attr(get_the_ID());?>">
                             <td><?php echo $embedded_item_title;?></td>
-                            <td style="text-align:center;"><?php echo esc_html($field_type);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($type);?></td>
                             <td style="text-align:center;"><?php echo esc_html($default_value);?></td>
                         </tr>
                         <?php
@@ -657,8 +659,7 @@ if (!class_exists('embedded_items')) {
             $embedded_item_title = get_the_title($embedded_item_id);
             $field_type = get_post_meta($embedded_item_id, 'field_type', true);
             $default_value = get_post_meta($embedded_item_id, 'default_value', true);
-            $listing_style = get_post_meta($embedded_item_id, 'listing_style', true);
-            $styles = $documents_class->get_listing_style_data();
+            $listing_style = get_post_meta($embedded_item_id, 'listing_style', true);            
             $field_note = get_post_meta($embedded_item_id, 'field_note', true);
             ?>
             <fieldset>
@@ -666,7 +667,16 @@ if (!class_exists('embedded_items')) {
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="embedded-item-title"><?php echo __( 'Item', 'textdomain' );?></label>
                 <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
-                <?php $documents_class->get_field_type_data($field_type);?>
+                <?php $types = $documents_class->get_field_type_data();?>
+                <label for="field-type"><?php echo __( '欄位型態', 'textdomain' );?></label>
+                <select id="field-type" class="text ui-widget-content ui-corner-all">
+                <?php foreach ($types as $value => $label): ?>
+                    <option value="<?php echo esc_attr($value); ?>" <?php echo ($field_type === $value) ? 'selected' : ''; ?>>
+                        <?php echo esc_html($label); ?>
+                    </option>
+                <?php endforeach; ?>
+                </select>
+                <?php $styles = $documents_class->get_listing_style_data();?>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
                 <textarea id="default-value" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">

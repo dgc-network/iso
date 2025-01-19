@@ -1391,6 +1391,7 @@ if (!class_exists('display_documents')) {
                                 //$field_title = get_post_meta(get_the_ID(), 'field_title', true);
                                 $field_title = get_the_title();
                                 $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                                $type = $this->get_field_type_data($field_type);
                                 $default_value = get_post_meta(get_the_ID(), 'default_value', true);
                                 $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
                                 $style = $this->get_listing_style_data($listing_style);
@@ -1402,7 +1403,7 @@ if (!class_exists('display_documents')) {
                                 } else {
                                     echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
                                 }
-                                echo '<td style="text-align:center;">'.esc_html($field_type).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html($type).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html($style).'</td>';
 
@@ -1469,37 +1470,52 @@ if (!class_exists('display_documents')) {
         
             return $styles;
         }
-/*        
-        function get_listing_style_data($key=false) {
-            if ($key) {
-                $styles = [
-                    '' => __('請選擇', 'textdomain'),
-                    'left' => __('靠左', 'textdomain'),
-                    'center' => __('置中', 'textdomain'),
-                    'right' => __('靠右', 'textdomain'),
-                ];
-                return $styles[$key];
-            }
-            return $styles = [
-                '' => __('請選擇', 'textdomain'),
-                'left' => __('靠左', 'textdomain'),
-                'center' => __('置中', 'textdomain'),
-                'right' => __('靠右', 'textdomain'),
+
+        function get_field_type_data($field_type = false) {
+            $field_types = [
+                'text' => __('Text', 'textdomain'),
+                'textarea' => __('Textarea', 'textdomain'),
+                'number' => __('Number', 'textdomain'),
+                'date' => __('Date', 'textdomain'),
+                'time' => __('Time', 'textdomain'),
+                'checkbox' => __('Checkbox', 'textdomain'),
+                'radio' => __('Radio', 'textdomain'),
+                'heading' => __('Heading', 'textdomain'),
+                'canvas' => __('Canvas', 'textdomain'),
+                '_embedded' => __('Embedded', 'textdomain'),
+                '_line_list' => __('Line_list', 'textdomain'),
+                '_select' => __('Select', 'textdomain'),
+                '_iot_device' => __('IoT devices', 'textdomain'),
+                '_document' => __('Document', 'textdomain'),
+                '_doc_report' => __('Report', 'textdomain'),
+                '_department' => __('Department', 'textdomain'),
+                '_employee' => __('Employee', 'textdomain'),
+                'image' => __('Image', 'textdomain'),
+                'video' => __('Video', 'textdomain'),
             ];
+        
+            // Get system document options
+            $query = $this->get_system_doc_list_query();
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
+                    if (!empty($system_doc)) {
+                        $field_types[$system_doc] = $system_doc;
+                    }
+                }
+                wp_reset_postdata();
+            }
+        
+            // If $field_type is set and exists in $field_types, return the label
+            if ($field_type !== false && isset($field_types[$field_type])) {
+                return $field_types[$field_type];
+            }
+        
+            // Return the array of all field types if no specific $field_type is set
+            return $field_types;
         }
 /*        
-        function get_listing_style_data($listing_style=false) {
-            ?>
-            <label for="listing-style"><?php echo __( '對齊', 'textdomain' );?></label>
-            <select id="listing-style" class="text ui-widget-content ui-corner-all">
-                <option value=""></option>
-                <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'textdomain' );?></option>
-                <option value="center" <?php echo ($listing_style=='center') ? 'selected' : ''?>><?php echo __( '置中', 'textdomain' );?></option>
-                <option value="right" <?php echo ($listing_style=='right') ? 'selected' : ''?>><?php echo __( '靠右', 'textdomain' );?></option>
-            </select>
-            <?php
-        }
-*/
         function get_field_type_data($field_type=false) {
             //ob_start();
             ?>
@@ -1545,23 +1561,31 @@ if (!class_exists('display_documents')) {
             <?php
             //return ob_get_clean();
         }
-
+*/
         function display_doc_field_dialog($field_id=false) {
             ob_start();
             $field_title = get_the_title($field_id);
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
-            $styles = $this->get_listing_style_data();
             ?>
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="field-title"><?php echo __( '欄位名稱', 'textdomain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
-                <?php $this->get_field_type_data($field_type);?>
+                <?php $types = $this->get_field_type_data();?>
+                <label for="field-type"><?php echo __( '欄位型態', 'textdomain' );?></label>
+                <select id="field-type" class="text ui-widget-content ui-corner-all">
+                <?php foreach ($types as $value => $label): ?>
+                    <option value="<?php echo esc_attr($value); ?>" <?php echo ($field_type === $value) ? 'selected' : ''; ?>>
+                        <?php echo esc_html($label); ?>
+                    </option>
+                <?php endforeach; ?>
+                </select>
                 <label for="default-value"><?php echo __( '預設值', 'textdomain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
+                <?php $styles = $this->get_listing_style_data();?>
                 <label for="listing-style"><?php echo __( '對齊', 'textdomain' ); ?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">
                 <?php foreach ($styles as $value => $label): ?>
