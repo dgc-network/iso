@@ -1441,7 +1441,7 @@ if (!class_exists('display_documents')) {
 
             // Get system document options
             $system_doc_query = $this->get_system_doc_query();
-/*
+
             if ($system_doc_query instanceof WP_Query && $system_doc_query->have_posts()) {
                 // Loop through the query results
                 while ($system_doc_query->have_posts()) {
@@ -1450,7 +1450,7 @@ if (!class_exists('display_documents')) {
             
                     // Add the 'system_doc' to field_types if not empty
                     if (!empty($system_doc)) {
-                        $field_types[get_the_ID()] = $system_doc;
+                        //$field_types[get_the_ID()] = $system_doc;
                     }
                 }
                 wp_reset_postdata(); // Restore original post data
