@@ -1439,8 +1439,17 @@ if (!class_exists('display_documents')) {
                 'video' => __('Video', 'textdomain'),
             ];
 
+
             // Get system document options
-            $system_doc_query = $this->get_system_doc_query();
+            $system_doc_array = $this->get_system_doc_query();
+            $field_types = array_merge($field_types, $system_doc_array);
+
+
+            // Integrate $system_doc_array to $field_types 
+
+
+
+/*            
             if ($system_doc_query->have_posts()) {
                 while ($system_doc_query->have_posts()) {
                     $system_doc_query->the_post();
@@ -2105,6 +2114,20 @@ if (!class_exists('display_documents')) {
             // Perform the query
             $query = new WP_Query($args);
         
+            // return array of posts
+            $field_types = array();
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $field_type = get_post_meta(get_the_ID(), 'system_doc', true);
+                    if (!in_array($field_type, $field_types)) {
+                        $field_types[$field_type] = $field_type;
+                    }
+                }
+                wp_reset_postdata();
+            }
+            return $field_types;
+
             // Optional: Check for query errors or no results
             if (!$query->have_posts()) {
                 // Log or handle the case when no results are found
