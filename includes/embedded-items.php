@@ -112,7 +112,7 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Number', 'textdomain' );?></th>
+                        <th><?php echo __( 'No.', 'textdomain' );?></th>
                         <th><?php echo __( 'Title', 'textdomain' );?></th>
                         <th><?php echo __( 'Public', 'textdomain' );?></th>
                     </thead>
@@ -392,7 +392,7 @@ if (!class_exists('embedded_items')) {
             <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
 
             <fieldset>
-                <label for="embedded-number"><?php echo __( 'Number', 'textdomain' );?></label>
+                <label for="embedded-number"><?php echo __( 'No.', 'textdomain' );?></label>
                 <input type="text" id="embedded-number" value="<?php echo esc_attr($embedded_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="embedded-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="embedded-title" value="<?php echo esc_attr($embedded_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -418,7 +418,7 @@ if (!class_exists('embedded_items')) {
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="duplicate-embedded-button" value="<?php echo __( 'Duplicate', 'textdomain' );?>" style="margin:3px;" />
                     <?php }?>
-                    <input type="button" id="exit-embedded-dialog" value="Exit" style="margin:5px;" />
+                    <input type="button" id="exit-embedded-dialog" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:5px;" />
                     </div>
                 </div>
             </fieldset>
@@ -454,8 +454,8 @@ if (!class_exists('embedded_items')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
                     'post_type'     => 'embedded',
-                    'post_title'    => 'New embedded',
-                    'post_content'  => 'Your post content goes here.',
+                    'post_title'    => __( 'New embedded', 'textdomain' ),
+                    'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                 );    
@@ -565,7 +565,7 @@ if (!class_exists('embedded_items')) {
             <table style="width:100%;">
                 <thead>
                     <tr>
-                        <th><?php echo __( 'Items', 'textdomain' );?></th>
+                        <th><?php echo __( 'Item', 'textdomain' );?></th>
                         <th><?php echo __( 'Type', 'textdomain' );?></th>
                         <th><?php echo __( 'Default', 'textdomain' );?></th>
                     </tr>
@@ -866,22 +866,6 @@ if (!class_exists('embedded_items')) {
             return $_array;
         }
 
-        function get_line_report_field_keys($embedded_id=false) {
-            $_array = array();
-            $inner_query = $this->retrieve_embedded_item_data($embedded_id, 0);
-            if ($inner_query->have_posts()) :
-                while ($inner_query->have_posts()) : $inner_query->the_post();
-                    $_list = array();
-                    $_list["embedded_item_id"] = get_the_ID();
-                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
-                    array_push($_array, $_list);
-
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            return $_array;
-        }
-
         // line-report
         function display_line_report_list($embedded_id=false, $report_id=false) {
             ob_start();
@@ -1023,6 +1007,22 @@ if (!class_exists('embedded_items')) {
             wp_send_json($response);
         }
 
+        function get_line_report_field_keys($embedded_id=false) {
+            $_array = array();
+            $inner_query = $this->retrieve_embedded_item_data($embedded_id, 0);
+            if ($inner_query->have_posts()) :
+                while ($inner_query->have_posts()) : $inner_query->the_post();
+                    $_list = array();
+                    $_list["embedded_item_id"] = get_the_ID();
+                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
+                    array_push($_array, $_list);
+
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            return $_array;
+        }
+
         // doc-category
         function register_doc_category_post_type() {
             $labels = array(
@@ -1143,7 +1143,7 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($category_id, 'iso_category', $iso_category);
 
                 $params = array(
-                    'log_message' => __( 'Category(', 'textdomain' ).$category_title.__( ') has been updated', 'textdomain' ),
+                    'log_message' => __( 'Category', 'textdomain' ).'('.$category_title.')'.__( ' has been updated.', 'textdomain' ),
                     'category_id' => $category_id,
                 );
                 $todo_class = new to_do_list();
@@ -1169,7 +1169,7 @@ if (!class_exists('embedded_items')) {
         function del_doc_category_dialog_data() {
             $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
             $params = array(
-                'log_message' => __( 'Category(', 'textdomain' ).get_the_title($category_id).__( ') has been deleted', 'textdomain' ),
+                'log_message' => __( 'Category', 'textdomain' ).'('.get_the_title($category_id).')'.__( ' has been deleted', 'textdomain' ),
                 'category_id' => $category_id,
             );
             $todo_class = new to_do_list();
@@ -1263,7 +1263,7 @@ if (!class_exists('embedded_items')) {
             if (current_user_can('administrator')) {
                 ?>
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( 'ISO類別', 'textdomain' );?></h2>
+                <h2 style="display:inline;"><?php echo 'ISO'.__( '類別', 'textdomain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $profiles_class->display_select_profile('iso-category');?></div>
@@ -1458,7 +1458,7 @@ if (!class_exists('embedded_items')) {
             $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '部門列表', 'textdomain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( '部門資料', 'textdomain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $profiles_class->display_select_profile('department-card');?></div>
@@ -1470,7 +1470,7 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Number', 'textdomain' );?></th>
+                        <th><?php echo __( 'No.', 'textdomain' );?></th>
                         <th><?php echo __( 'Title', 'textdomain' );?></th>
                         <th><?php echo __( 'Description', 'textdomain' );?></th>
                     </thead>
@@ -1577,7 +1577,7 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <input type="hidden" id="department-id" value="<?php echo esc_attr($department_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="department-number"><?php echo __( 'Number', 'textdomain' );?></label>
+                <label for="department-number"><?php echo __( 'N0.', 'textdomain' );?></label>
                 <input type="text" id="department-number" value="<?php echo esc_attr($department_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="department-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="department-title" value="<?php echo esc_attr($department_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -1645,7 +1645,7 @@ if (!class_exists('embedded_items')) {
         function del_department_card_dialog_data() {
             $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
             $params = array(
-                'log_message' => __( 'Department(', 'textdomain' ).get_the_title($department_id).__( ') has been deleted', 'textdomain' ),
+                'log_message' => __( 'Department', 'textdomain' ).'('.get_the_title($department_id).')'.__( ' has been deleted', 'textdomain' ),
                 'department_id' => $department_id,
             );
             $todo_class = new to_do_list();
@@ -1718,7 +1718,7 @@ if (!class_exists('embedded_items')) {
         }
 
         function get_department_user_list_data() {
-            $response = array();
+            //$response = array();
             $response = array('html_contain' => $this->display_department_user_list());
             wp_send_json($response);
         }

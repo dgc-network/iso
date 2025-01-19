@@ -400,7 +400,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo esc_html('Todo: '.get_the_title($todo_id));?></h2>
+            <h2 style="display:inline;"><?php echo esc_html(__( 'Todo: ', 'textdomain' ).get_the_title($todo_id));?></h2>
             <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
             <input type="hidden" id="prev-todo-id" value="<?php echo esc_attr($prev_todo_id); ?>" />
             <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
@@ -700,7 +700,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo esc_html('Start job: '.get_the_title($doc_id));?></h2>
+            <h2 style="display:inline;"><?php echo esc_html(__( 'Start job: ', 'textdomain' ).get_the_title($doc_id));?></h2>
             <input type="hidden" id="job-id" value="<?php echo $doc_id;?>" />
             <input type="hidden" id="prev-job-id" value="<?php echo esc_attr($prev_job_id); ?>" />
             <input type="hidden" id="next-job-id" value="<?php echo esc_attr($next_job_id); ?>" />
@@ -714,7 +714,7 @@ if (!class_exists('to_do_list')) {
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                        <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                        <input type="text" id="ask-gemini" placeholder="<?php echo __( '問問 Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                     </div>
                 </div>            
             <hr>
@@ -909,7 +909,7 @@ if (!class_exists('to_do_list')) {
                 $todo_title = get_the_title($doc_id);
             } else {
                 $doc_id = 0;
-                $todo_title = isset($params['log_message']) ? $params['log_message'] : 'No message.'; 
+                $todo_title = isset($params['log_message']) ? $params['log_message'] : __( 'No message.', 'textdomain' ); 
             }
 
             $next_job = get_post_meta($action_id, 'next_job', true);
@@ -1327,7 +1327,7 @@ if (!class_exists('to_do_list')) {
                         'type' => 'button',
                         'action' => array(
                             'type' => 'uri',
-                            'label' => 'Click me!',
+                            'label' => __( 'Click me!', 'textdomain' ),
                             'uri' => $link_uri, // Use the desired URI
                         ),
                         'style' => 'primary',

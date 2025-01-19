@@ -576,7 +576,7 @@ if (!class_exists('display_profiles')) {
             $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
             <div>
-                <h4><?php echo __( '設定「', 'textdomain' ).get_the_title($doc_id).__( '」職務的', 'textdomain' ).'「'.get_the_title($action_id).__( '」動作', 'textdomain' ).' → <span style="color:blue;">'.$is_authorized;?></span></h4>
+                <h4><?php echo __( '設定「', 'textdomain' ).get_the_title($doc_id).__( '」職務的「', 'textdomain' ).get_the_title($action_id).__( '」動作', 'textdomain' ).' → <span style="color:blue;">'.$is_authorized;?></span></h4>
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
                 <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'textdomain' );?></label>
@@ -957,39 +957,39 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email', 'textdomain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="job-list"><?php echo __( 'Job list', 'textdomain' );?></label>
-                    <fieldset>
-                        <table class="ui-widget" style="width:100%;">
-                            <thead>
-                                <th></th>
-                                <th><?php echo __( 'Job', 'textdomain' );?></th>
-                                <th><?php echo __( 'Title', 'textdomain' );?></th>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $query = $this->retrieve_site_job_list_data(0);
-                                if ($query->have_posts()) {
-                                    while ($query->have_posts()) : $query->the_post();
-                                        $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
-                                        $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                                        echo '<tr id="check-user-job-' . get_the_ID() . '">';
-                                        echo '<td style="text-align:center;"><input type="checkbox" id="is-user-doc-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
-                                        echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
-                                        echo '<td style="text-align:center;">' . get_the_title() . '</td>';
-                                        echo '</tr>';
-                                    endwhile;
-                                    wp_reset_postdata();                                    
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </fieldset>
+                <label for="job-list"><?php echo __( 'Job list', 'textdomain' );?></label>
+                <fieldset>
+                    <table class="ui-widget" style="width:100%;">
+                        <thead>
+                            <th></th>
+                            <th><?php echo __( 'Job', 'textdomain' );?></th>
+                            <th><?php echo __( 'Title', 'textdomain' );?></th>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $query = $this->retrieve_site_job_list_data(0);
+                            if ($query->have_posts()) {
+                                while ($query->have_posts()) : $query->the_post();
+                                    $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
+                                    $job_number = get_post_meta(get_the_ID(), 'job_number', true);
+                                    echo '<tr id="check-user-job-' . get_the_ID() . '">';
+                                    echo '<td style="text-align:center;"><input type="checkbox" id="is-user-doc-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
+                                    echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
+                                    echo '<td style="text-align:center;">' . get_the_title() . '</td>';
+                                    echo '</tr>';
+                                endwhile;
+                                wp_reset_postdata();                                    
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </fieldset>
                 <?php
                 $current_user_id = get_current_user_id();
                 $current_site_id = get_user_meta($current_user_id, 'site_id', true);
                 if (current_user_can('administrator')) {
                     ?>
-                    <label for="select-site"><?php echo __( 'Site:', 'textdomain' );?></label>
+                    <label for="select-site"><?php echo __( 'Site', 'textdomain' );?></label>
                     <select id="select-site" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id);?></select>
                     <div>
                     <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
@@ -1185,7 +1185,6 @@ if (!class_exists('display_profiles')) {
                             // display the warning if the job without assigned users
                             $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
                             $doc_title = (!empty($users_query)) ? $doc_title : '<span style="color:red;">'.$doc_title.'</span>';
-                            //$users_unassigned = (!empty($users_query)) ? '' : '<span style="color:red;">(U)</span>';
                             ?>
                             <tr id="edit-site-job-<?php the_ID();?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
@@ -1302,7 +1301,7 @@ if (!class_exists('display_profiles')) {
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="job-number"><?php echo __( 'Number', 'textdomain' );?></label>
+                <label for="job-number"><?php echo __( 'Job No.', 'textdomain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
@@ -1542,13 +1541,13 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="action-title">Title:</label>
+                <label for="action-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="action-content">Content:</label>
+                <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="next-job">Next job:</label>
+                <label for="next-job"><?php echo __( 'Next job', 'textdomain' );?></label>
                 <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
-                <label for="next-leadtime">Next leadtime:</label>
+                <label for="next-leadtime"><?php echo __( 'Next leadtime', 'textdomain' );?></label>
                 <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
             <?php
@@ -1694,7 +1693,7 @@ if (!class_exists('display_profiles')) {
             <?php }?>
             </fieldset>
             </div>
-            <div id="new-user-list-dialog" title="Add doc user"></div>
+            <div id="new-user-list-dialog" title="<?php echo __( 'Add doc user', 'textdomain' );?>"></div>
             <?php
             return ob_get_clean();
         }
@@ -1935,7 +1934,7 @@ if (!class_exists('display_profiles')) {
                 <div>
                     <label for="display-name"><b><?php echo __( '乙方', 'textdomain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="identity-number"><?php echo __( '身分證號碼', 'textdomain' );?></label>
+                    <label for="identity-number"><?php echo __( '身分證字號', 'textdomain' );?></label>
                     <input type="text" id="identity-number" value="<?php echo $identity_number;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
@@ -1972,7 +1971,7 @@ if (!class_exists('display_profiles')) {
                 <div>
                     <label for="select-nda-site"><b><?php echo __( '甲方', 'textdomain' );?></b></label>
                     <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
-                        <option value=""><?php echo __( 'Select Site', 'textdomain' );?></option>
+                        <option value=""><?php echo __( 'Select option', 'textdomain' );?></option>
                         <?php
                             $site_args = array(
                                 'post_type'      => 'site-profile',
@@ -2049,7 +2048,7 @@ if (!class_exists('display_profiles')) {
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
                     'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been rejected. Check the administrator.', 'textdomain' ), 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
                 ]);
 
                 $params = array(
@@ -2078,7 +2077,7 @@ if (!class_exists('display_profiles')) {
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
                     'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been approved. Check your profile.', 'textdomain' ), 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
                 ]);
 
                 $params = array(
@@ -2108,8 +2107,8 @@ if (!class_exists('display_profiles')) {
                     $line_bot_api->send_flex_message([
                         'to' => $line_user_id,
                         'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                        'body_contents'   => [['type' => 'text', 'text' => __( 'A new user ', 'textdomain' ).$user->display_name.__( ' has signed the NDA agreement of ', 'textdomain' ).get_the_title($site_id).'.', 'wrap' => true]],
-                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-profiles/?_nda_user_id=$user_id")], 'style' => 'primary']],
+                        'body_contents'   => [['type' => 'text', 'text' => $user->display_name.__( ' has signed the NDA of ', 'textdomain' ).get_the_title($site_id).'.', 'wrap' => true]],
+                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' =>  __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_nda_user_id=$user_id")], 'style' => 'primary']],
                     ]);
                 }
                 $response = array('nda'=>'submitted');

@@ -486,7 +486,7 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="job-title"><?php echo __( '職務名稱', 'textdomain' );?></label>
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
-                        <label for="job-content"><?php echo __( '職務說明', 'textdomain' );?></label>
+                        <label for="job-content"><?php echo __( '職務內容', 'textdomain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '按鍵設定', 'textdomain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
@@ -1504,12 +1504,12 @@ if (!class_exists('display_documents')) {
                     <option value="_embedded" <?php echo ($field_type=='_embedded') ? 'selected' : ''?>><?php echo __( 'Embedded', 'textdomain' );?></option>
                     <option value="_line_list" <?php echo ($field_type=='_line_list') ? 'selected' : ''?>><?php echo __( 'Line_list', 'textdomain' );?></option>
                     <option value="_select" <?php echo ($field_type=='_select') ? 'selected' : ''?>><?php echo __( 'Select', 'textdomain' );?></option>
-                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( 'IoT_device', 'textdomain' );?></option>
+                    <option value="_iot_device" <?php echo ($field_type=='_iot_device') ? 'selected' : ''?>><?php echo __( 'IoT devices', 'textdomain' );?></option>
                     <option value="_document" <?php echo ($field_type=='_document') ? 'selected' : ''?>><?php echo __( 'Document', 'textdomain' );?></option>
-                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( 'Doc_report', 'textdomain' );?></option>
+                    <option value="_doc_report" <?php echo ($field_type=='_doc_report') ? 'selected' : ''?>><?php echo __( 'Report', 'textdomain' );?></option>
                     <option value="_department" <?php echo ($field_type=='_department') ? 'selected' : ''?>><?php echo __( 'Department', 'textdomain' );?></option>
                     <option value='_employee' <?php echo ($field_type=='_employee') ? 'selected' : ''?>><?php echo __( 'Employee', 'textdomain' );?></option>
-                    <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Picture', 'textdomain' );?></option>
+                    <option value="image" <?php echo ($field_type=='image') ? 'selected' : ''?>><?php echo __( 'Image', 'textdomain' );?></option>
                     <option value="video" <?php echo ($field_type=='video') ? 'selected' : ''?>><?php echo __( 'Video', 'textdomain' );?></option>
             </select>
 
@@ -2114,7 +2114,7 @@ if (!class_exists('display_documents')) {
 
         function select_system_doc_options($selected_option=0, $params=array()) {
             $query = $this->retrieve_doc_report_data($params);
-            $options = '<option value="">Select option</option>';
+            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
@@ -2139,7 +2139,7 @@ if (!class_exists('display_documents')) {
 
         function select_document_list_options($selected_option=0, $is_doc_report=2) {
             $query = $this->retrieve_document_data(0, $is_doc_report);
-            $options = '<option value="">Select document</option>';
+            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
                 $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
@@ -2226,7 +2226,7 @@ if (!class_exists('display_documents')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <?php echo display_iso_helper_logo();?>
-                        <h2 style="display:inline;"><?php echo esc_html($iso_category_title.__( ' 啟動AI輔導', 'textdomain' ));?></h2>
+                        <h2 style="display:inline;"><?php echo esc_html($iso_category_title.__( '啟動AI輔導', 'textdomain' ));?></h2>
                     </div>
                 </div>
                 <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
@@ -2250,12 +2250,12 @@ if (!class_exists('display_documents')) {
                                 <?php }?>
                             </fieldset>
                             <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                                <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                                <input type="text" id="ask-gemini" placeholder="<?php echo __( '問問 Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                             </div>
                         </div>
                         <?php
                     } else {
-                        $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : __( '文件明細列表', 'textdomain' );
+                        $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : __( '文件表單明細列表', 'textdomain' );
                         $content = generate_content($iso_category_title.$prompt);
                         ?>
                         <div class="content">
@@ -2284,7 +2284,7 @@ if (!class_exists('display_documents')) {
                                 ?>
                             </fieldset>
                             <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                                <input type="text" id="ask-gemini" placeholder="問問 Gemini" class="text ui-widget-content ui-corner-all" />
+                                <input type="text" id="ask-gemini" placeholder="<?php echo __( '問問 Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                             </div>
                         </div>
                         <?php
@@ -2350,11 +2350,11 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'site_id', $site_id);
                 update_post_meta($draft_id, 'doc_title', $draft_title);
                 update_post_meta($draft_id, 'doc_number', '-');
-                update_post_meta($draft_id, 'doc_revision', 'draft');
+                update_post_meta($draft_id, 'doc_revision', __( 'draft', 'textdomain' ));
                 update_post_meta($draft_id, 'doc_category', $draft_category);
 
                 $params = array(
-                    'log_message' => $draft_title . ' has been created',
+                    'log_message' => $draft_title . __( ' has been created.', 'textdomain' ),
                     'doc_id' => $draft_id,
                 );
                 $todo_class = new to_do_list();
@@ -2426,7 +2426,7 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(
-                'log_message' => $doc_title . ' has been created',
+                'log_message' => $doc_title . __( ' has been created.', 'textdomain' ),
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
