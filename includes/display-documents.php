@@ -1438,9 +1438,9 @@ if (!class_exists('display_documents')) {
                 'image' => __('Image', 'textdomain'),
                 'video' => __('Video', 'textdomain'),
             ];
-        
+/*        
             // Get system document options
-            $query = $this->get_system_doc_list_query();
+            $query = $this->get_system_doc_query();
             if ($query->have_posts()) {
                 while ($query->have_posts()) {
                     $query->the_post();
@@ -1451,7 +1451,7 @@ if (!class_exists('display_documents')) {
                 }
                 wp_reset_postdata();
             }
-        
+*/        
             // If $field_type is set and exists in $field_types, return the label
             if ($field_type !== false && isset($field_types[$field_type])) {
                 return $field_types[$field_type];
@@ -1476,7 +1476,7 @@ if (!class_exists('display_documents')) {
                     <option value="heading" <?php echo ($field_type=='heading') ? 'selected' : ''?>><?php echo __( 'Heading', 'textdomain' );?></option>
                     <option value="canvas" <?php echo ($field_type=='canvas') ? 'selected' : ''?>><?php echo __( 'Canvas', 'textdomain' );?></option>
                     <?php
-                    $query = $this->get_system_doc_list_query();
+                    $query = $this->get_system_doc_query();
                     if ($query->have_posts()) {
                         while ($query->have_posts()) {
                             $query->the_post();
@@ -2086,7 +2086,7 @@ if (!class_exists('display_documents')) {
         }
         
         // document misc
-        function get_system_doc_list_query() {
+        function get_system_doc_query() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
