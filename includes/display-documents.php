@@ -2121,7 +2121,7 @@ if (!class_exists('display_documents')) {
                     $query->the_post();
                     $field_type = get_post_meta(get_the_ID(), 'system_doc', true);
                     if (!in_array($field_type, $field_types)) {
-                        $field_types[$field_type] = $field_type;
+                        $field_types[] = $field_type;
                     }
                 }
                 wp_reset_postdata();
