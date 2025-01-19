@@ -1438,7 +1438,7 @@ if (!class_exists('display_documents')) {
                 'image' => __('Image', 'textdomain'),
                 'video' => __('Video', 'textdomain'),
             ];
-/*
+
             // Get system document options
             $system_doc_query = $this->get_system_doc_query();
 
@@ -1450,7 +1450,7 @@ if (!class_exists('display_documents')) {
             
                     // Add the 'system_doc' to field_types if not empty
                     if (!empty($system_doc)) {
-                        $field_types[$system_doc] = $system_doc;
+                        $field_types[get_the_ID()] = $system_doc;
                     }
                 }
                 wp_reset_postdata(); // Restore original post data
