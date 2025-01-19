@@ -1559,7 +1559,7 @@ if (!class_exists('to_do_list')) {
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
                 if (!$submit_action) {
-                    echo echo __( 'system log!', 'textdomain' );
+                    echo __( 'system log!', 'textdomain' );
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
                     if ($doc_id) {
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
