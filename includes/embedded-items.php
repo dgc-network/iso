@@ -558,6 +558,36 @@ if (!class_exists('embedded_items')) {
             register_post_type( 'embedded-item', $args );
         }
 
+        function retrieve_embedded_item_data($embedded_id=false, $paged=1) {
+            $args = array(
+                'post_type'      => 'embedded-item',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_key'       => 'sorting_key',
+                'orderby'        => 'meta_value_num', // Specify meta value as numeric
+                'order'          => 'ASC', // Sorting order (ascending)
+            );
+        
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+
+            // Initialize meta_query if $embedded_id is provided
+            if ($embedded_id !== false) {
+                $args['meta_query'] = array(
+                    array(
+                        'key'   => 'embedded_id',
+                        'value' => $embedded_id,
+                        'compare' => '=' // Ensure exact match (optional)
+                    ),
+                );
+            }
+        
+            // Execute the query
+            $query = new WP_Query($args);
+            return $query;
+        }
+
         function display_embedded_item_list($embedded_id=false) {
             ob_start();
             $documents_class = new display_documents();
@@ -623,36 +653,6 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_embedded_item_data($embedded_id=false, $paged=1) {
-            $args = array(
-                'post_type'      => 'embedded-item',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_key'       => 'sorting_key',
-                'orderby'        => 'meta_value_num', // Specify meta value as numeric
-                'order'          => 'ASC', // Sorting order (ascending)
-            );
-        
-            if ($paged == 0) {
-                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
-            }
-
-            // Initialize meta_query if $embedded_id is provided
-            if ($embedded_id !== false) {
-                $args['meta_query'] = array(
-                    array(
-                        'key'   => 'embedded_id',
-                        'value' => $embedded_id,
-                        'compare' => '=' // Ensure exact match (optional)
-                    ),
-                );
-            }
-        
-            // Execute the query
-            $query = new WP_Query($args);
-            return $query;
-        }
-
         function display_embedded_item_dialog($embedded_item_id=false) {
             ob_start();
             $documents_class = new display_documents();
@@ -667,19 +667,20 @@ if (!class_exists('embedded_items')) {
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="embedded-item-title"><?php echo __( 'Item', 'textdomain' );?></label>
                 <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
-                <?php $types = $documents_class->get_field_type_data();?>
                 <label for="field-type"><?php echo __( '欄位型態', 'textdomain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
+                <?php $types = $documents_class->get_field_type_data();?>
                 <?php foreach ($types as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($field_type === $value) ? 'selected' : ''; ?>>
                         <?php echo esc_html($label); ?>
                     </option>
                 <?php endforeach; ?>
                 </select>
-                <?php $styles = $documents_class->get_listing_style_data();?>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
                 <textarea id="default-value" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
+                <label for="listing-style"><?php echo __( '對齊', 'textdomain' );?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">
+                <?php $styles = $documents_class->get_listing_style_data();?>
                 <?php foreach ($styles as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($listing_style === $value) ? 'selected' : ''; ?>>
                         <?php echo esc_html($label); ?>

@@ -1369,61 +1369,6 @@ if (!class_exists('display_documents')) {
             register_post_type( 'doc-field', $args );
         }
 
-        function display_doc_field_list($doc_id=false) {
-            ob_start();
-            ?>
-            <div id="fields-container">
-            <fieldset>
-                <table style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th><?php echo __( 'Title', 'textdomain' );?></th>
-                            <th><?php echo __( 'Type', 'textdomain' );?></th>
-                            <th><?php echo __( 'Default', 'textdomain' );?></th>
-                            <th><?php echo __( 'Align', 'textdomain' );?></th>
-                        </tr>
-                    </thead>
-                    <tbody id="sortable-doc-field-list">
-                        <?php
-                        $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
-                        if ($query->have_posts()) {
-                            while ($query->have_posts()) : $query->the_post();
-                                //$field_title = get_post_meta(get_the_ID(), 'field_title', true);
-                                $field_title = get_the_title();
-                                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                                $type = $this->get_field_type_data($field_type);
-                                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                                $style = $this->get_listing_style_data($listing_style);
-
-                                echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
-
-                                if ($field_type=='heading' && $default_value=='') {
-                                    echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
-                                } else {
-                                    echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
-                                }
-                                echo '<td style="text-align:center;">'.esc_html($type).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html($style).'</td>';
-
-                                echo '</tr>';
-                            endwhile;
-                            wp_reset_postdata();
-                        }
-                        ?>
-                    </tbody>
-                </table>
-                <?php if (is_site_admin()) {?>
-                    <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
-                <?php }?>
-            </fieldset>
-            </div>
-            <div id="doc-field-dialog" title="Field dialog"></div>
-            <?php
-            return ob_get_clean();
-        }
-        
         function retrieve_doc_field_data($params = array()) {
             $args = array(
                 'post_type'      => 'doc-field',
@@ -1562,6 +1507,59 @@ if (!class_exists('display_documents')) {
             //return ob_get_clean();
         }
 */
+        function display_doc_field_list($doc_id=false) {
+            ob_start();
+            ?>
+            <div id="fields-container">
+            <fieldset>
+                <table style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __( 'Title', 'textdomain' );?></th>
+                            <th><?php echo __( 'Type', 'textdomain' );?></th>
+                            <th><?php echo __( 'Default', 'textdomain' );?></th>
+                            <th><?php echo __( 'Align', 'textdomain' );?></th>
+                        </tr>
+                    </thead>
+                    <tbody id="sortable-doc-field-list">
+                        <?php
+                        $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
+                        if ($query->have_posts()) {
+                            while ($query->have_posts()) : $query->the_post();
+                                $field_title = get_the_title();
+                                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                                $type = $this->get_field_type_data($field_type);
+                                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                                $style = $this->get_listing_style_data($listing_style);
+                                echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
+
+                                if ($field_type=='heading' && $default_value=='') {
+                                    echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
+                                } else {
+                                    echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
+                                }
+                                echo '<td style="text-align:center;">'.esc_html($type).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html($style).'</td>';
+
+                                echo '</tr>';
+                            endwhile;
+                            wp_reset_postdata();
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <?php if (is_site_admin()) {?>
+                    <div id="new-doc-field" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php }?>
+            </fieldset>
+            </div>
+            <div id="doc-field-dialog" title="Field dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
         function display_doc_field_dialog($field_id=false) {
             ob_start();
             $field_title = get_the_title($field_id);
@@ -1614,10 +1612,10 @@ if (!class_exists('display_documents')) {
             if( isset($_POST['_field_id']) ) {
                 // Update the post
                 $field_id = sanitize_text_field($_POST['_field_id']);
-                $field_title = (isset($_POST['_field_title'])) ? sanitize_text_field($_POST['_field_title']) : '';
-                $field_type = (isset($_POST['_field_type'])) ? sanitize_text_field($_POST['_field_type']) : '';
-                $default_value = (isset($_POST['_default_value'])) ? sanitize_text_field($_POST['_default_value']) : '';
-                $listing_style = (isset($_POST['_listing_style'])) ? sanitize_text_field($_POST['_listing_style']) : '';
+                $field_title = isset($_POST['_field_title']) ? sanitize_text_field($_POST['_field_title']) : '';
+                $field_type = isset($_POST['_field_type']) ? sanitize_text_field($_POST['_field_type']) : '';
+                $default_value = isset($_POST['_default_value']) ? sanitize_text_field($_POST['_default_value']) : '';
+                $listing_style = isset($_POST['_listing_style']) ? sanitize_text_field($_POST['_listing_style']) : '';
                 wp_update_post(array(
                     'ID'          => $field_id,
                     'post_title'  => $field_title,
@@ -1631,7 +1629,7 @@ if (!class_exists('display_documents')) {
                 // Create the post
                 $new_post = array(
                     'post_type'     => 'doc-field',
-                    'post_title'    => __( 'Field title', 'textdomain' ),
+                    'post_title'    => __( 'New field', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => get_current_user_id(),
                 );    
