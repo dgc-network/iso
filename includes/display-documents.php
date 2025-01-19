@@ -1441,6 +1441,23 @@ if (!class_exists('display_documents')) {
 
             // Get system document options
             $system_doc_query = $this->get_system_doc_query();
+
+            if ($system_doc_query instanceof WP_Query && $system_doc_query->have_posts()) {
+                // Loop through the query results
+                while ($system_doc_query->have_posts()) {
+                    $system_doc_query->the_post();
+                    $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
+            
+                    // Add the 'system_doc' to field_types if not empty
+                    if (!empty($system_doc)) {
+                        $field_types[$system_doc] = $system_doc;
+                    }
+                }
+                wp_reset_postdata(); // Restore original post data
+            }
+/*            
+            // Get system document options
+            $system_doc_query = $this->get_system_doc_query();
             if ($system_doc_query->have_posts()) {
                 while ($system_doc_query->have_posts()) {
                     $system_doc_query->the_post();
@@ -1451,7 +1468,7 @@ if (!class_exists('display_documents')) {
                 }
                 wp_reset_postdata();
             }
-
+*/
             // If $field_type is set and exists in $field_types, return the label
             if ($field_type !== false && isset($field_types[$field_type])) {
                 return $field_types[$field_type];
@@ -2084,38 +2101,7 @@ if (!class_exists('display_documents')) {
         
             return $query;
         }
-/*        
-        function get_system_doc_query() {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $args = array(
-                'post_type'      => 'document', // Specify the post type
-                'posts_per_page' => -1, // Retrieve all matching posts
-                'meta_query'     => array(
-                    'relation' => 'AND', // Combine all conditions
-                    array(
-                        'relation' => 'OR', // Either the 'system_doc' is not empty OR does not exist
-                        array(
-                            'key'     => 'system_doc',
-                            'compare' => '!=', // 'system_doc' is not empty
-                            'value'   => '',
-                        ),
-                        array(
-                            'key'     => 'system_doc',
-                            'compare' => 'NOT EXISTS', // 'system_doc' does not exist
-                        ),
-                    ),
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id, // Match the 'site_id' meta value
-                        'compare' => '=', // Exact match
-                    ),
-                ),
-            );
-            $query = new WP_Query($args);
-            return $query;
-        }
-*/
+
         function get_system_doc_id($field_type = false) {
             // Ensure $field_type is provided
             if (!$field_type) {
