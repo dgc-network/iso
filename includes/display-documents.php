@@ -1443,6 +1443,11 @@ if (!class_exists('display_documents')) {
             $system_doc_query = $this->get_system_doc_query();
             if ($system_doc_query->have_posts()) {
                 while ($system_doc_query->have_posts()) {
+                    $system_doc_query->the_post();
+                    //$system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
+                    //if (!empty($system_doc)) {
+                    //    $field_types[$system_doc] = $system_doc;
+                    //}
                 }
                 wp_reset_postdata();
             }
