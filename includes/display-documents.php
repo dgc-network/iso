@@ -1461,7 +1461,7 @@ if (!class_exists('display_documents')) {
 /*        
         function get_listing_style_data($listing_style=false) {
             ?>
-            <label for="listing-style"><?php echo __( '列表排列', 'textdomain' );?></label>
+            <label for="listing-style"><?php echo __( '對齊', 'textdomain' );?></label>
             <select id="listing-style" class="text ui-widget-content ui-corner-all">
                 <option value=""></option>
                 <option value="left" <?php echo ($listing_style=='left') ? 'selected' : ''?>><?php echo __( '靠左', 'textdomain' );?></option>
@@ -1523,7 +1523,7 @@ if (!class_exists('display_documents')) {
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
-            $styles = $this->get_listing_style_data($listing_style);
+            $styles = $this->get_listing_style_data();
             ?>
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
@@ -1533,7 +1533,7 @@ if (!class_exists('display_documents')) {
                 <?php $this->get_field_type_data($field_type);?>
                 <label for="default-value"><?php echo __( '預設值', 'textdomain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="listing-style"><?php echo __( '列表排列', 'textdomain' ); ?></label>
+                <label for="listing-style"><?php echo __( '對齊', 'textdomain' ); ?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">
                 <?php foreach ($styles as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($listing_style === $value) ? 'selected' : ''; ?>>

@@ -658,7 +658,7 @@ if (!class_exists('embedded_items')) {
             $field_type = get_post_meta($embedded_item_id, 'field_type', true);
             $default_value = get_post_meta($embedded_item_id, 'default_value', true);
             $listing_style = get_post_meta($embedded_item_id, 'listing_style', true);
-            $styles = $documents_class->get_listing_style_data($listing_style);
+            $styles = $documents_class->get_listing_style_data();
             $field_note = get_post_meta($embedded_item_id, 'field_note', true);
             ?>
             <fieldset>
