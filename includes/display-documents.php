@@ -1442,6 +1442,9 @@ if (!class_exists('display_documents')) {
             // Get system document options
             $system_doc_query = $this->get_system_doc_query();
             if ($system_doc_query->have_posts()) {
+                while ($system_doc_query->have_posts()) {
+                }
+                wp_reset_postdata();
             }
 /*
             if ($system_doc_query instanceof WP_Query && $system_doc_query->have_posts()) {
