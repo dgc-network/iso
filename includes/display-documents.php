@@ -1438,7 +1438,7 @@ if (!class_exists('display_documents')) {
                 'image' => __('Image', 'textdomain'),
                 'video' => __('Video', 'textdomain'),
             ];
-
+/*
             // Get system document options
             $system_doc_query = $this->get_system_doc_query();
 
