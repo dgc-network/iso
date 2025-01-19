@@ -1441,8 +1441,8 @@ if (!class_exists('display_documents')) {
 
 
             // Get system document options
-            //$system_doc_array = $this->get_system_doc_query();
-            //$field_types = array_merge($field_types, $system_doc_array);
+            $system_doc_array = $this->get_system_doc_array();
+            $field_types = array_merge($field_types, $system_doc_array);
 
 
             // Integrate $system_doc_array to $field_types 
@@ -2078,12 +2078,12 @@ if (!class_exists('display_documents')) {
         }
         
         // document misc
-        function get_system_doc_query() {
+        function get_system_doc_array() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             
             if (empty($site_id)) {
-                return null; // Ensure the site_id exists before proceeding.
+                return array(); // Ensure the site_id exists before proceeding.
             }
         
             $args = array(
@@ -2098,10 +2098,10 @@ if (!class_exists('display_documents')) {
                             'compare' => '!=',
                             'value'   => '',
                         ),
-                        array(
-                            'key'     => 'system_doc',
-                            'compare' => 'NOT EXISTS',
-                        ),
+                        //array(
+                        //    'key'     => 'system_doc',
+                        //    'compare' => 'NOT EXISTS',
+                        //),
                     ),
                     array(
                         'key'     => 'site_id',
@@ -2127,14 +2127,6 @@ if (!class_exists('display_documents')) {
                 wp_reset_postdata();
             }
             return $field_types;
-
-            // Optional: Check for query errors or no results
-            if (!$query->have_posts()) {
-                // Log or handle the case when no results are found
-                return null; // or return false depending on your use case
-            }
-        
-            return $query;
         }
 
         function get_system_doc_id($field_type = false) {
