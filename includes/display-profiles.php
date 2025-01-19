@@ -576,7 +576,19 @@ if (!class_exists('display_profiles')) {
             $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
             <div>
+<?php /*                
                 <h4><?php echo __( '設定「', 'textdomain' ).get_the_title($doc_id).__( '」職務的「', 'textdomain' ).get_the_title($action_id).__( '」動作', 'textdomain' ).' → <span style="color:blue;">'.$is_authorized;?></span></h4>
+*/?>
+                <h4>
+                    <?php 
+                    printf(
+                        __( '設定「%s」在「%s」職務的動作', 'textdomain' ),
+                        get_the_title($action_id),
+                        get_the_title($doc_id),
+                    );
+                    ?>
+                    → <span class="authorized-status"><?php echo esc_html($is_authorized); ?></span>
+                </h4>                
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
                 <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'textdomain' );?></label>
