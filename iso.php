@@ -94,3 +94,26 @@ function isURL($str) {
 
 require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
+
+function remove_system_doc_meta_once() {
+    if (!get_option('removed_system_doc_meta')) {
+        $args = array(
+            'post_type'      => 'document',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        );
+        $query = new WP_Query($args);
+
+        if ($query->have_posts()) {
+            foreach ($query->posts as $post_id) {
+                delete_post_meta($post_id, 'system_doc');
+            }
+        }
+
+        wp_reset_postdata();
+
+        // Mark as done
+        update_option('removed_system_doc_meta', true);
+    }
+}
+add_action('init', 'remove_system_doc_meta_once');

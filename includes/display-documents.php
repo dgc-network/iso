@@ -2095,6 +2095,12 @@ if (!class_exists('display_documents')) {
                         'key'     => 'system_doc',
                         'compare' => 'EXISTS',
                     ),
+                    array(
+                        'key'     => 'system_doc',
+                        'compare' => '!=',
+                        'value'   => '',
+                    ),
+
 /*
                     array(
                         'relation' => 'OR',
