@@ -1,8 +1,3 @@
-/*
-Theme Name: Your Theme Name
-Text Domain: textdomain
-*/
-
 .page .entry-title {display: none;}
 .wp-block-post-title {display: none;}
 .wp-block-button__link {margin: 2px; display: inline-block;}
