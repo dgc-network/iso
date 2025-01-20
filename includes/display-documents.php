@@ -1444,53 +1444,8 @@ if (!class_exists('display_documents')) {
             $system_doc_array = $this->get_system_doc_array();
             error_log('$system_doc_array: ' . print_r($system_doc_array,true));
             $field_types = array_merge($field_types, $system_doc_array);
+            error_log('$field_types: ' . print_r($field_types,true));
 
-
-            // Integrate $system_doc_array to $field_types 
-
-
-
-/*            
-            if ($system_doc_query->have_posts()) {
-                while ($system_doc_query->have_posts()) {
-                    $system_doc_query->the_post();
-                    //$system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
-                    //if (!empty($system_doc)) {
-                    //    $field_types[$system_doc] = $system_doc;
-                    //}
-                }
-                wp_reset_postdata();
-            }
-/*
-            if ($system_doc_query instanceof WP_Query && $system_doc_query->have_posts()) {
-                // Loop through the query results
-
-                while ($system_doc_query->have_posts()) {
-                    $system_doc_query->the_post();
-                    //$system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
-            
-                    // Add the 'system_doc' to field_types if not empty
-                    if (!empty($system_doc)) {
-                        //$field_types[get_the_ID()] = $system_doc;
-                    }
-                }
-
-                wp_reset_postdata(); // Restore original post data
-            }
-/*            
-            // Get system document options
-            $system_doc_query = $this->get_system_doc_query();
-            if ($system_doc_query->have_posts()) {
-                while ($system_doc_query->have_posts()) {
-                    $system_doc_query->the_post();
-                    $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
-                    if (!empty($system_doc)) {
-                        $field_types[$system_doc] = $system_doc;
-                    }
-                }
-                wp_reset_postdata();
-            }
-*/
             // If $field_type is set and exists in $field_types, return the label
             if ($field_type !== false && isset($field_types[$field_type])) {
                 return $field_types[$field_type];
