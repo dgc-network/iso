@@ -2092,17 +2092,23 @@ if (!class_exists('display_documents')) {
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
+                        'key'     => 'system_doc',
+                        'compare' => 'EXISTS',
+                    ),
+/*
+                    array(
                         'relation' => 'OR',
                         array(
                             'key'     => 'system_doc',
                             'compare' => '!=',
                             'value'   => '',
                         ),
-                        //array(
-                        //    'key'     => 'system_doc',
-                        //    'compare' => 'NOT EXISTS',
-                        //),
+                        array(
+                            'key'     => 'system_doc',
+                            'compare' => 'NOT EXISTS',
+                        ),
                     ),
+*/
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
