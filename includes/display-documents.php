@@ -168,7 +168,7 @@ if (!class_exists('display_documents')) {
                         <select id="select-category"><?php echo $items_class->select_doc_category_options($doc_category);?></select>
                     </div>
                     <div style="text-align:right; display:flex;">
-                        <input type="text" id="search-document" style="display:inline" placeholder="Search..." />
+                        <input type="text" id="search-document" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                         <span id="document-setting-button" style="margin-left:5px;" class="dashicons dashicons-admin-generic button"></span>
                     </div>
                 </div>
@@ -490,7 +490,7 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="job-content"><?php echo __( '職務內容', 'textdomain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
-                        <label for="action-list"><?php echo __( '按鍵設定', 'textdomain' );?></label>
+                        <label for="action-list"><?php echo __( '按鍵資料', 'textdomain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                         <label for="department"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>

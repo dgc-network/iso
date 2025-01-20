@@ -237,16 +237,16 @@ function init_webhook_events() {
                             );
 /*                        
                             $body_contents = array();
-                            $text_message = __( '您可以點擊下方列示，直接執行「', 'textdomain' ) . $message['text'] . __( '」相關作業。', 'textdomain' );
+                            $text_message = __( '您可以點擊下方列示，直接執行按鍵「', 'textdomain' ) . $message['text'] . __( '」相關作業。', 'textdomain' );
                             $text_message = sprintf(
-                                __( '您可以點擊下方列示，直接執行「%s」相關作業。', 'textdomain' ),
+                                __( '您可以點擊下方列示，直接執行按鍵「%s」的相關作業。', 'textdomain' ),
                                 $message['text']
                             );
 */                            
                             $body_content = array(
                                 'type' => 'text',
                                 'text' => sprintf(
-                                    __( '您可以點擊下方列示，直接執行「%s」相關作業。', 'textdomain' ),
+                                    __( '您可以點擊下方列示，直接執行按鍵「%s」的相關作業。', 'textdomain' ),
                                     $message['text']
                                 ),
                                 'wrap' => true,

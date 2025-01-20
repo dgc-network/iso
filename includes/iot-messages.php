@@ -517,14 +517,14 @@ if (!class_exists('iot_messages')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $todo_class->display_select_todo('iot-devices');?></div>
                 <div style="text-align:right; display:flex;">
-                    <input type="text" id="search-device" style="display:inline" placeholder="Search..." />
+                    <input type="text" id="search-device" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                 </div>
             </div>
 
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Number', 'textdomain' );?></th>
+                        <th><?php echo __( 'No.', 'textdomain' );?></th>
                         <th><?php echo __( 'Title', 'textdomain' );?></th>
                         <th><?php echo __( 'Description', 'textdomain' );?></th>
                     </thead>

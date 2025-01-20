@@ -678,7 +678,7 @@ if (!class_exists('display_profiles')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><label for="site-jobs"><?php echo __( '工作職掌', 'textdomain' );?></label></div>
                     <div style="text-align: right">
-                        <input type="text" id="search-site-job" style="display:inline" placeholder="Search..." />
+                        <input type="text" id="search-site-job" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
                 </div>
                 <div id="site-job-list">
@@ -1015,8 +1015,8 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th>#</th>
-                        <th><?php echo __( 'Job', 'textdomain' );?></th>
+                        <th><?php echo __( 'No.', 'textdomain' );?></th>
+                        <th><?php echo __( 'Title', 'textdomain' );?></th>
                         <th><?php echo __( 'Description', 'textdomain' );?></th>
                     </thead>
                     <tbody>
@@ -1158,7 +1158,7 @@ if (!class_exists('display_profiles')) {
             ?>
                 <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="job-number"><?php echo __( 'Job No.', 'textdomain' );?></label>
+                <label for="job-number"><?php echo __( 'No.', 'textdomain' );?></label>
                 <input type="text" id="job-number" value="<?php echo esc_attr($job_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="job-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />

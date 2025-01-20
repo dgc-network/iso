@@ -525,7 +525,7 @@ if (!class_exists('embedded_items')) {
 
         function select_embedded_options($selected_option=0) {
             $query = $this->retrieve_embedded_data(0);
-            $options = '<option value="">Select option</option>';
+            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $embedded_id = get_the_ID();
                 $embedded_title = get_the_title();
@@ -595,7 +595,6 @@ if (!class_exists('embedded_items')) {
 
         function display_embedded_item_list($embedded_id=false) {
             ob_start();
-            $documents_class = new display_documents();
             ?>
             <fieldset>
             <table style="width:100%;">
@@ -619,6 +618,7 @@ if (!class_exists('embedded_items')) {
                         $embedded_item_title = get_the_title();
                         $field_note = get_post_meta($embedded_item_id, 'field_note', true);
                         $field_type = get_post_meta($embedded_item_id, 'field_type', true);
+                        $documents_class = new display_documents();
                         $type = $documents_class->get_field_type_data($field_type);
                         $default_value = get_post_meta($embedded_item_id, 'default_value', true);
                         if ($field_type=='heading') {
@@ -630,7 +630,7 @@ if (!class_exists('embedded_items')) {
                             $default_value='';
                         }
                         ?>
-                        <tr id="edit-item-<?php the_ID();?>" data-embedded-item-id="<?php echo esc_attr($embedded_item_id);?>">
+                        <tr id="edit-item-<?php echo $embedded_item_id;?>" data-embedded-item-id="<?php echo esc_attr($embedded_item_id);?>">
                             <td><?php echo $embedded_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($type);?></td>
                             <td style="text-align:center;"><?php echo esc_html($default_value);?></td>
@@ -1208,7 +1208,7 @@ if (!class_exists('embedded_items')) {
 
         function select_doc_category_options($selected_option=0) {
             $query = $this->retrieve_doc_category_data();
-            $options = '<option value="">Select category</option>';
+            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
                 $category_title = get_the_title();
@@ -1496,7 +1496,7 @@ if (!class_exists('embedded_items')) {
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $profiles_class->display_select_profile('department-card');?></div>
                 <div style="text-align:right; display:flex;">
-                    <input type="text" id="search-department" style="display:inline" placeholder="Search..." />
+                    <input type="text" id="search-department" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                 </div>
             </div>
 
@@ -1613,7 +1613,7 @@ if (!class_exists('embedded_items')) {
             <fieldset>
                 <input type="hidden" id="department-id" value="<?php echo esc_attr($department_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="department-number"><?php echo __( 'N0.', 'textdomain' );?></label>
+                <label for="department-number"><?php echo __( 'No.', 'textdomain' );?></label>
                 <input type="text" id="department-number" value="<?php echo esc_attr($department_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="department-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="department-title" value="<?php echo esc_attr($department_title);?>" class="text ui-widget-content ui-corner-all" />

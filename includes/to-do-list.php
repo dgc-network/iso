@@ -162,7 +162,7 @@ if (!class_exists('to_do_list')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('todo-list');?></div>
                     <div style="text-align: right">
-                        <input type="text" id="search-todo" style="display:inline" placeholder="Search..." />
+                        <input type="text" id="search-todo" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
                 </div>
 
@@ -484,7 +484,7 @@ if (!class_exists('to_do_list')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('start-job');?></div>
                     <div style="text-align: right">
-                        <input type="text" id="search-start-job" style="display:inline" placeholder="Search..." />
+                        <input type="text" id="search-start-job" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
                 </div>
 
@@ -736,7 +736,7 @@ if (!class_exists('to_do_list')) {
                 ?>
                 </div>
                 <div style="text-align: right">
-                    <input type="button" id="exit-start-job" value="Exit" style="margin:5px;" />
+                    <input type="button" id="exit-start-job" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:5px;" />
                 </div>
             </div>
             </fieldset>
@@ -1418,7 +1418,7 @@ if (!class_exists('to_do_list')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('action-log');?></div>
                     <div style="text-align: right">
-                        <input type="text" id="search-log" style="display:inline" placeholder="Search..." />
+                        <input type="text" id="search-log" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
                 </div>
                 <?php echo $this->get_action_log_list();?>
