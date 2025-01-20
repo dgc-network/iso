@@ -132,8 +132,8 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
         
             if ($query->have_posts()) {
-                while ($query->have_posts()) : $query->the_post();
-                    
+                while ($query->have_posts()) {
+                    $query->the_post();
                     // Retrieve the embedded number from 'default_value'
                     $embedded_number = get_post_meta(get_the_ID(), 'default_value', true);
                     $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
