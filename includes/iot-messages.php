@@ -793,9 +793,9 @@ if (!class_exists('iot_messages')) {
                     <label for="site-id"><?php echo __( 'Site', 'textdomain' );?></label>
                     <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $profiles_class->select_site_profile_options($site_id);?></select>
                 <?php }?>
-                <label for="temperature-offset"><?php echo __( 'Temperature offset', 'textdomain' );?></label>
+                <label for="temperature-offset"><?php echo __( 'Temperature Offset', 'textdomain' );?></label>
                 <input type="text" id="temperature-offset" value="<?php echo esc_attr($temperature_offset);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="record-frequency"><?php echo __( 'Record frequency', 'textdomain' );?></label>
+                <label for="record-frequency"><?php echo __( 'Record Frequency', 'textdomain' );?></label>
                 <select id="record-frequency" class="text ui-widget-content ui-corner-all" >
                     <option value="daily" <?php echo ($record_frequency=='daily') ? 'selected' : '';?>><?php echo __( '每日記錄一次', 'textdomain' );?></option>
                     <option value="twice-daily" <?php echo ($record_frequency=='twice-daily') ? 'selected' : '';?>><?php echo __( '12小時記錄一次', 'textdomain' );?></option>
@@ -803,7 +803,7 @@ if (!class_exists('iot_messages')) {
                     <option value="three-hours" <?php echo ($record_frequency=='three-hours') ? 'selected' : '';?>><?php echo __( '3小時記錄一次', 'textdomain' );?></option>
                     <option value="one-hour" <?php echo ($record_frequency=='one-hour') ? 'selected' : '';?>><?php echo __( '1小時記錄一次', 'textdomain' );?></option>
                 </select>
-                <label for="records-removed"><?php echo __( 'Records removed', 'textdomain' );?></label>
+                <label for="records-removed"><?php echo __( 'Records Removed', 'textdomain' );?></label>
                 <select id="records-removed" class="text ui-widget-content ui-corner-all" >
                     <option value="one-year" <?php echo ($records_removed=='one-year') ? 'selected' : '';?>><?php echo __( '一年以上', 'textdomain' );?></option>
                     <option value="two-years" <?php echo ($records_removed=='two-years') ? 'selected' : '';?>><?php echo __( '二年以上', 'textdomain' );?></option>

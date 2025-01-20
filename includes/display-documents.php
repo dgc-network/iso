@@ -174,9 +174,9 @@ if (!class_exists('display_documents')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __( '文件編號', 'textdomain' );?></th>
-                            <th><?php echo __( '文件名稱', 'textdomain' );?></th>
-                            <th><?php echo __( '文件版本', 'textdomain' );?></th>
+                            <th><?php echo __( 'No.', 'textdomain' );?></th>
+                            <th><?php echo __( 'Title', 'textdomain' );?></th>
+                            <th><?php echo __( 'Revision', 'textdomain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -491,7 +491,7 @@ if (!class_exists('display_documents')) {
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                         <label for="department"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
-                        <label for="user-list"><?php echo __( 'User list', 'textdomain' );?></label>
+                        <label for="user-list"><?php echo __( 'User List', 'textdomain' );?></label>
                         <?php echo $profiles_class->display_doc_user_list($doc_id);?>
                     </div>
 
@@ -583,7 +583,7 @@ if (!class_exists('display_documents')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
                     'post_type'     => 'document',
-                    'post_title'    => __( 'New job', 'textdomain' ),
+                    'post_title'    => __( 'New Job', 'textdomain' ),
                     'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -1440,7 +1440,7 @@ if (!class_exists('display_documents')) {
                 'heading' => __('Heading', 'textdomain'),
                 'canvas' => __('Canvas', 'textdomain'),
                 '_embedded' => __('Embedded', 'textdomain'),
-                '_line_list' => __('Line_list', 'textdomain'),
+                '_line_list' => __('Line List', 'textdomain'),
                 '_select' => __('Select', 'textdomain'),
                 '_iot_device' => __('IoT devices', 'textdomain'),
                 '_document' => __('Document', 'textdomain'),
@@ -1461,7 +1461,7 @@ if (!class_exists('display_documents')) {
                 return $field_types[$field_type];
             }
         
-            // Return the array of all field types if no specific $field_type is set
+            // Return the array of all Field Types if no specific $field_type is set
             return $field_types;
         }
 
@@ -1588,7 +1588,7 @@ if (!class_exists('display_documents')) {
                 // Create the post
                 $new_post = array(
                     'post_type'     => 'doc-field',
-                    'post_title'    => __( 'New field', 'textdomain' ),
+                    'post_title'    => __( 'New Field', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => get_current_user_id(),
                 );    
@@ -2146,7 +2146,7 @@ if (!class_exists('display_documents')) {
 
         function select_system_doc_options($selected_option=0, $params=array()) {
             $query = $this->retrieve_doc_report_data($params);
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $report_id = get_the_ID();
                 $report_title = get_the_title();
@@ -2176,7 +2176,7 @@ if (!class_exists('display_documents')) {
         // document misc
         function select_document_list_options($selected_option=0, $is_doc_report=2) {
             $query = $this->retrieve_document_data(0, $is_doc_report);
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $doc_id = get_the_ID();
                 $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -2393,7 +2393,8 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_category', $draft_category);
 
                 $params = array(
-                    'log_message' => $draft_title . __( ' has been created.', 'textdomain' ),
+                    //'log_message' => $draft_title . __( ' has been created.', 'textdomain' ),
+                    'log_message' => sprintf( __( 'Draft "%s" has been created.', 'textdomain' ), esc_html( $draft_title ) ),
                     'doc_id' => $draft_id,
                 );
                 $todo_class = new to_do_list();
@@ -2465,13 +2466,14 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(
-                'log_message' => $doc_title . __( ' has been created.', 'textdomain' ),
+                //'log_message' => $doc_title . __( ' has been created.', 'textdomain' ),
+                'log_message' => sprintf( __( 'Document %s has been created.', 'textdomain' ), esc_html( $doc_title ) ),
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);
 
-            // Create the Action list for $post_id
+            // Create the Action List for $post_id
             $profiles_class = new display_profiles();
             $query = $profiles_class->retrieve_doc_action_data($doc_id);
             if ($query->have_posts()) {

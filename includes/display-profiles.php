@@ -230,7 +230,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email', 'textdomain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="my-job-list"><?php echo __( 'Jobs & authorizations', 'textdomain' );?></label>
+                <label for="my-job-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
                 <label for="phone-number"><?php echo __( 'Phone', 'textdomain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
@@ -248,7 +248,7 @@ if (!class_exists('display_profiles')) {
                 $is_display = ($iot_messages->is_site_with_iot_device()) ? '' : 'display:none;';
                 ?>
                 <div style=<?php echo $is_display;?>>
-                    <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception notification setting', 'textdomain' );?></label>
+                    <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception Notification Settings', 'textdomain' );?></label>
                     <div id="my-exception-notification-setting"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
                 </div>
             </fieldset>
@@ -808,7 +808,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email', 'textdomain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $user_data->user_email;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="job-list"><?php echo __( 'Job list', 'textdomain' );?></label>
+                <label for="job-list"><?php echo __( 'Job List', 'textdomain' );?></label>
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
@@ -997,7 +997,7 @@ if (!class_exists('display_profiles')) {
                 'posts_per_page' => -1,
             );
             $query = new WP_Query($args);
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $site_id = get_the_ID();
                 $site_title = get_the_title();
@@ -1164,14 +1164,14 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="job-title" value="<?php echo esc_attr($job_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label style="display:none;" for="job-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <textarea style="display:none;" id="job-content" class="visual-editor"><?php echo $job_content;?></textarea>
-                <label for="action-list"><?php echo __( 'Action list', 'textdomain' );?></label>
+                <label for="action-list"><?php echo __( 'Action List', 'textdomain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
                 <label for="department"><?php echo __( 'Department', 'textdomain' );?></label>
                 <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
-                <label for="user-list"><?php echo __( 'User list', 'textdomain' );?></label>
+                <label for="user-list"><?php echo __( 'User List', 'textdomain' );?></label>
                 <?php echo $this->display_doc_user_list($doc_id);?>
                 <input type="checkbox" id="is-summary-job" <?php echo $is_checked?> />
-                <label for="is-summary-job"><?php echo __( 'Is summary job', 'textdomain' );?></label>
+                <label for="is-summary-job"><?php echo __( 'Is Summary Job', 'textdomain' );?></label>
             <?php
             return ob_get_clean();
         }
@@ -1215,7 +1215,7 @@ if (!class_exists('display_profiles')) {
                 // new job
                 $new_post = array(
                     'post_type'     => 'document',
-                    'post_title'    => __( 'New job', 'textdomain' ),
+                    'post_title'    => __( 'New Job', 'textdomain' ),
                     'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -1403,7 +1403,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="next-job"><?php echo __( 'Next job', 'textdomain' );?></label>
+                <label for="next-job"><?php echo __( 'Next Job', 'textdomain' );?></label>
                 <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
                 <label for="next-leadtime"><?php echo __( 'Leadtime', 'textdomain' );?></label>
                 <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
@@ -1442,7 +1442,7 @@ if (!class_exists('display_profiles')) {
                 $current_user_id = get_current_user_id();
                 $new_post = array(
                     'post_type'     => 'action',
-                    'post_title'    => __( 'New action', 'textdomain' ),
+                    'post_title'    => __( 'New Action', 'textdomain' ),
                     'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -1466,7 +1466,7 @@ if (!class_exists('display_profiles')) {
         }
 
         function select_site_job_option_data($selected_option=0) {
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
@@ -1553,7 +1553,7 @@ if (!class_exists('display_profiles')) {
             <?php }?>
             </fieldset>
             </div>
-            <div id="new-user-list-dialog" title="<?php echo __( 'Add doc user', 'textdomain' );?>"></div>
+            <div id="new-user-list-dialog" title="<?php echo __( 'Add User', 'textdomain' );?>"></div>
             <?php
             return ob_get_clean();
         }
@@ -1811,7 +1811,7 @@ if (!class_exists('display_profiles')) {
                         <div>
                             <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
                         </div>
-                        <button id="clear-signature" style="margin:3px;"><?php echo __( 'Clear signature', 'textdomain' );?></button>
+                        <button id="clear-signature" style="margin:3px;"><?php echo __( 'Clear Signature', 'textdomain' );?></button>
                     </div>
                 </div>
                 <div style="display:flex;">
@@ -1833,7 +1833,7 @@ if (!class_exists('display_profiles')) {
                 <div>
                     <label for="select-nda-site"><b><?php echo __( '甲方', 'textdomain' );?></b></label>
                     <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
-                        <option value=""><?php echo __( 'Select option', 'textdomain' );?></option>
+                        <option value=""><?php echo __( 'Select Option', 'textdomain' );?></option>
                         <?php
                             $site_args = array(
                                 'post_type'      => 'site-profile',
@@ -1878,7 +1878,7 @@ if (!class_exists('display_profiles')) {
                         <div>
                             <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
                         </div>
-                        <button id="clear-signature" style="margin:3px;"><?php echo __( 'Clear signature', 'textdomain' );?></button>
+                        <button id="clear-signature" style="margin:3px;"><?php echo __( 'Clear Signature', 'textdomain' );?></button>
                     </div>
                 </div>
                 <div style="display:flex;">

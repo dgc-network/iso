@@ -456,7 +456,7 @@ if (!class_exists('embedded_items')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
                     'post_type'     => 'embedded',
-                    'post_title'    => __( 'New embedded', 'textdomain' ),
+                    'post_title'    => __( 'New Embedded', 'textdomain' ),
                     'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -525,7 +525,7 @@ if (!class_exists('embedded_items')) {
 
         function select_embedded_options($selected_option=0) {
             $query = $this->retrieve_embedded_data(0);
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $embedded_id = get_the_ID();
                 $embedded_title = get_the_title();
@@ -729,7 +729,7 @@ if (!class_exists('embedded_items')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
                     'post_type'     => 'embedded-item',
-                    'post_title'    => __( 'New item', 'textdomain' ),
+                    'post_title'    => __( 'New Item', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                 );    
@@ -763,7 +763,7 @@ if (!class_exists('embedded_items')) {
 
         function select_embedded_item_options($selected_option=false, $embedded_id=false) {
             $query = $this->retrieve_embedded_item_data($embedded_id, 0);
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $embedded_item_id = get_the_ID();
                 $selected = ($selected_option == $embedded_item_id) ? 'selected' : '';
@@ -1216,7 +1216,7 @@ if (!class_exists('embedded_items')) {
 
         function select_doc_category_options($selected_option=0) {
             $query = $this->retrieve_doc_category_data();
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
                 $category_title = get_the_title();
@@ -1425,7 +1425,7 @@ if (!class_exists('embedded_items')) {
 
         function select_iso_category_options($selected_option=0) {
             $query = $this->retrieve_iso_category_data();
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
                 $category_title = get_the_title();
@@ -1437,7 +1437,7 @@ if (!class_exists('embedded_items')) {
         }
 
         function select_parent_category_options($selected_option=0) {
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $economic_selected = ($selected_option == 'economic-growth') ? 'selected' : '';
             $environmental_selected = ($selected_option == 'environmental-protection') ? 'selected' : '';
             $social_selected = ($selected_option == 'social-responsibility') ? 'selected' : '';
@@ -1676,7 +1676,7 @@ if (!class_exists('embedded_items')) {
                 $current_user_id = get_current_user_id();
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
-                    'post_title'    => __( 'New department', 'textdomain' ),
+                    'post_title'    => __( 'New Department', 'textdomain' ),
                     'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -1710,7 +1710,7 @@ if (!class_exists('embedded_items')) {
 
         function select_department_card_options($selected_option=0) {
             $query = $this->retrieve_department_card_data(0);
-            $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $department_id = get_the_ID();
                 $department_title = get_the_title();

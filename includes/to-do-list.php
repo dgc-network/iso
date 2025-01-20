@@ -702,7 +702,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo esc_html(__( 'Start job: ', 'textdomain' ).get_the_title($doc_id));?></h2>
+            <h2 style="display:inline;"><?php echo esc_html(__( 'Start Job: ', 'textdomain' ).get_the_title($doc_id));?></h2>
             <input type="hidden" id="job-id" value="<?php echo $doc_id;?>" />
             <input type="hidden" id="prev-job-id" value="<?php echo esc_attr($prev_job_id); ?>" />
             <input type="hidden" id="next-job-id" value="<?php echo esc_attr($next_job_id); ?>" />
@@ -913,7 +913,7 @@ if (!class_exists('to_do_list')) {
                 $todo_title = get_the_title($doc_id);
             } else {
                 $doc_id = 0;
-                $todo_title = isset($params['log_message']) ? $params['log_message'] : __( 'No message.', 'textdomain' ); 
+                $todo_title = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
             }
 
             $next_job = get_post_meta($action_id, 'next_job', true);
@@ -1087,7 +1087,7 @@ if (!class_exists('to_do_list')) {
             }
 
             if ($next_job>0) {
-                // Create the new Action list for next_job 
+                // Create the new Action List for next_job 
                 $profiles_class = new display_profiles();
                 $query = $profiles_class->retrieve_doc_action_data($next_job);
                 if ($query->have_posts()) {
@@ -1580,7 +1580,7 @@ if (!class_exists('to_do_list')) {
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
                 if (!$submit_action) {
-                    echo __( 'system log!', 'textdomain' );
+                    echo __( 'System log!', 'textdomain' );
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
                     if ($doc_id) {
                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
