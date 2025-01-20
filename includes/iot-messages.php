@@ -764,14 +764,9 @@ if (!class_exists('iot_messages')) {
 
         function display_iot_device_dialog($device_id=false) {
             ob_start();
+            $profiles_class = new display_profiles();
             $prev_device_id = $this->get_previous_device_id($device_id); // Fetch the previous device ID
             $next_device_id = $this->get_next_device_id($device_id);     // Fetch the next device ID
-            ?>
-            <input type="hidden" id="prev-device-id" value="<?php echo esc_attr($prev_device_id); ?>" />
-            <input type="hidden" id="next-device-id" value="<?php echo esc_attr($next_device_id); ?>" />
-            <?php
-            //$todo_class = new to_do_list();
-            $profiles_class = new display_profiles();
             $device_number = get_post_meta($device_id, 'device_number', true);
             $device_title = get_the_title($device_id);
             $device_content = get_post_field('post_content', $device_id);
@@ -783,22 +778,24 @@ if (!class_exists('iot_messages')) {
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'IoT devices', 'textdomain' );?></h2>
+            <input type="hidden" id="prev-device-id" value="<?php echo esc_attr($prev_device_id); ?>" />
+            <input type="hidden" id="next-device-id" value="<?php echo esc_attr($next_device_id); ?>" />
+            <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
+            <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
             <fieldset>
-                <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
-                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="device-number"><?php echo __( 'Number: ', 'textdomain' );?></label>
+                <label for="device-number"><?php echo __( 'No.', 'textdomain' );?></label>
                 <input type="text" id="device-number" value="<?php echo esc_attr($device_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="device-title"><?php echo __( 'Title: ', 'textdomain' );?></label>
+                <label for="device-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="device-title" value="<?php echo esc_attr($device_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="device-content"><?php echo __( 'Description: ', 'textdomain' );?></label>
+                <label for="device-content"><?php echo __( 'Description', 'textdomain' );?></label>
                 <textarea id="device-content" rows="3" style="width:100%;"><?php echo esc_html($device_content);?></textarea>
                 <?php if (current_user_can('administrator')) {?>
-                    <label for="site-id"><?php echo __( 'Site:', 'textdomain' );?></label>
+                    <label for="site-id"><?php echo __( 'Site', 'textdomain' );?></label>
                     <select id="site-id" class="text ui-widget-content ui-corner-all" ><?php echo $profiles_class->select_site_profile_options($site_id);?></select>
                 <?php }?>
-                <label for="temperature-offset"><?php echo __( 'Temperature offset:', 'textdomain' );?></label>
+                <label for="temperature-offset"><?php echo __( 'Temperature offset', 'textdomain' );?></label>
                 <input type="text" id="temperature-offset" value="<?php echo esc_attr($temperature_offset);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="record-frequency"><?php echo __( 'Record frequency:', 'textdomain' );?></label>
+                <label for="record-frequency"><?php echo __( 'Record frequency', 'textdomain' );?></label>
                 <select id="record-frequency" class="text ui-widget-content ui-corner-all" >
                     <option value="daily" <?php echo ($record_frequency=='daily') ? 'selected' : '';?>><?php echo __( '每日記錄一次', 'textdomain' );?></option>
                     <option value="twice-daily" <?php echo ($record_frequency=='twice-daily') ? 'selected' : '';?>><?php echo __( '12小時記錄一次', 'textdomain' );?></option>
@@ -806,7 +803,7 @@ if (!class_exists('iot_messages')) {
                     <option value="three-hours" <?php echo ($record_frequency=='three-hours') ? 'selected' : '';?>><?php echo __( '3小時記錄一次', 'textdomain' );?></option>
                     <option value="one-hour" <?php echo ($record_frequency=='one-hour') ? 'selected' : '';?>><?php echo __( '1小時記錄一次', 'textdomain' );?></option>
                 </select>
-                <label for="records-removed"><?php echo __( 'Records removed:', 'textdomain' );?></label>
+                <label for="records-removed"><?php echo __( 'Records removed', 'textdomain' );?></label>
                 <select id="records-removed" class="text ui-widget-content ui-corner-all" >
                     <option value="one-year" <?php echo ($records_removed=='one-year') ? 'selected' : '';?>><?php echo __( '一年以上', 'textdomain' );?></option>
                     <option value="two-years" <?php echo ($records_removed=='two-years') ? 'selected' : '';?>><?php echo __( '二年以上', 'textdomain' );?></option>
@@ -848,7 +845,7 @@ if (!class_exists('iot_messages')) {
                 </div>                
                 <?php }
                 ?>
-                <label for="iot-message"><?php echo __( 'IoT messages: ', 'textdomain' );?></label>
+                <label for="iot-message"><?php echo __( 'IoT messages', 'textdomain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id);?>
                 <?php
                 // transaction data vs card key/value
@@ -867,7 +864,7 @@ if (!class_exists('iot_messages')) {
                         <?php }?>
                     </div>
                     <div style="text-align: right">
-                        <input type="button" id="iot-dialog-exit" value="Exit" style="margin:5px;" />
+                        <input type="button" id="iot-dialog-exit" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:5px;" />
                     </div>
                 </div>
             </fieldset>
@@ -906,7 +903,11 @@ if (!class_exists('iot_messages')) {
                 update_post_meta($device_id, 'records_removed', $records_removed);
 
                 $params = array(
-                    'log_message' => 'IoT device(#'.$device_number.') has been updated successfully',
+                    //'log_message' => 'IoT device(#'.$device_number.') has been updated successfully',
+                    'log_message' => sprintf(
+                        __( 'IoT device (#%s) has been updated successfully.', 'textdomain' ),
+                        $device_number
+                    ),                    
                     'device_id' => $device_id,
                 );
                 $todo_class = new to_do_list();
@@ -934,16 +935,20 @@ if (!class_exists('iot_messages')) {
         }
 
         function del_iot_device_dialog_data() {
-            $device_id = (isset($_POST['_device_id'])) ? sanitize_text_field($_POST['_device_id']) : 0;
+            $device_id = isset($_POST['_device_id']) ? sanitize_text_field($_POST['_device_id']) : 0;
             $device_number = get_post_meta($device_id, 'device_number', true);
             $params = array(
-                'log_message' => 'IoT device(#'.$device_number.') has been deleted',
+                //'log_message' => 'IoT device(#'.$device_number.') has been deleted',
+                'log_message' => sprintf(
+                    __( 'IoT device (#%s) has been deleted', 'textdomain' ),
+                    $device_number
+                ),                
                 'device_id' => $device_id,
             );
             $todo_class = new to_do_list();
             $todo_class->create_action_log_and_go_next($params);    
 
-            wp_delete_post($_POST['_device_id'], true);
+            wp_delete_post($device_id, true);
             $response = array('html_contain' => $this->display_iot_device_list());
             wp_send_json($response);
         }

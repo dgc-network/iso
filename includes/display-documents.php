@@ -571,7 +571,11 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'multiple_select', $multiple_select);
 
                 $params = array(
-                    'log_message' => $doc_title.__( ' has been updated successfully.', 'textdomain' ),
+                    //'log_message' => $doc_title.__( ' has been updated successfully.', 'textdomain' ),
+                    'log_message' => sprintf(
+                        __( '%s has been updated successfully.', 'textdomain' ),
+                        $doc_title
+                    ),                    
                     'doc_id' => $doc_id,
                 );
                 $todo_class = new to_do_list();
@@ -603,7 +607,11 @@ if (!class_exists('display_documents')) {
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $params = array(
-                'log_message' => $doc_title.__( ' has been deleted.', 'textdomain' ),
+                //'log_message' => $doc_title.__( ' has been deleted.', 'textdomain' ),
+                'log_message' => sprintf(
+                    __( '%s has been deleted.', 'textdomain' ),
+                    $doc_title
+                ),                
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();

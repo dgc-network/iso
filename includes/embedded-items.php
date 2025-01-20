@@ -1169,7 +1169,11 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($category_id, 'iso_category', $iso_category);
 
                 $params = array(
-                    'log_message' => __( 'Category', 'textdomain' ).'('.$category_title.')'.__( ' has been updated successfully.', 'textdomain' ),
+                    //'log_message' => __( 'Category', 'textdomain' ).'('.$category_title.')'.__( ' has been updated successfully.', 'textdomain' ),
+                    'log_message' => sprintf(
+                        __( 'Category (%s) has been updated successfully.', 'textdomain' ),
+                        $category_title
+                    ),                    
                     'category_id' => $category_id,
                 );
                 $todo_class = new to_do_list();
@@ -1195,7 +1199,11 @@ if (!class_exists('embedded_items')) {
         function del_doc_category_dialog_data() {
             $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
             $params = array(
-                'log_message' => __( 'Category', 'textdomain' ).'('.get_the_title($category_id).')'.__( ' has been deleted', 'textdomain' ),
+                //'log_message' => __( 'Category', 'textdomain' ).'('.get_the_title($category_id).')'.__( ' has been deleted', 'textdomain' ),
+                'log_message' => sprintf(
+                    __( 'Category (%s) has been deleted.', 'textdomain' ),
+                    get_the_title($category_id)
+                ),                
                 'category_id' => $category_id,
             );
             $todo_class = new to_do_list();
@@ -1654,7 +1662,11 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($department_id, 'department_number', $department_number);
 
                 $params = array(
-                    'log_message' => 'Department('.$department_title.') has been updated successfully',
+                    //'log_message' => 'Department('.$department_title.') has been updated successfully',
+                    'log_message' => sprintf(
+                        __( 'Department (%s) has been updated successfully.', 'textdomain' ),
+                        $department_title
+                    ),                    
                     'department_id' => $department_id,
                 );
                 $todo_class = new to_do_list();
@@ -1681,7 +1693,11 @@ if (!class_exists('embedded_items')) {
         function del_department_card_dialog_data() {
             $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
             $params = array(
-                'log_message' => __( 'Department', 'textdomain' ).'('.get_the_title($department_id).')'.__( ' has been deleted', 'textdomain' ),
+                //'log_message' => __( 'Department', 'textdomain' ).'('.get_the_title($department_id).')'.__( ' has been deleted', 'textdomain' ),
+                'log_message' => sprintf(
+                    __( 'Department (%s) has been deleted.', 'textdomain' ),
+                    get_the_title($department_id)
+                ),                
                 'department_id' => $department_id,
             );
             $todo_class = new to_do_list();
