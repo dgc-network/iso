@@ -23,9 +23,6 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_get_doc_content_data', array( $this, 'get_doc_content_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_content_data', array( $this, 'get_doc_content_data' ) );
 
-            //add_action( 'wp_ajax_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
-            //add_action( 'wp_ajax_nopriv_get_doc_report_list_data', array( $this, 'get_doc_report_list_data' ) );
-
             add_action( 'wp_ajax_get_doc_report_dialog_data', array( $this, 'get_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_doc_report_dialog_data', array( $this, 'get_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_set_doc_report_dialog_data', array( $this, 'set_doc_report_dialog_data' ) );
@@ -156,7 +153,7 @@ if (!class_exists('display_documents')) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
-            $doc_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
+            $doc_category = isset($_GET['_category']) ? sanitize_text_field($_GET['_category']) : 0;
             $items_class = new embedded_items();
             ?>
             <div class="ui-widget" id="result-container">

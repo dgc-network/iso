@@ -117,3 +117,21 @@ function remove_system_doc_meta_once() {
     }
 }
 add_action('init', 'remove_system_doc_meta_once');
+
+function set_language_based_on_browser() {
+    // Check if the user is logged in or not
+    if (!is_admin()) {
+        // Get the browser's language setting from the HTTP_ACCEPT_LANGUAGE header
+        $browser_language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2); // Get the first two letters (language code)
+
+        // Check if the detected language is supported by WordPress
+        $supported_languages = ['en', 'fr', 'de', 'es', 'zh']; // Add the languages you support
+
+        // If the detected language is supported, set it as the site language
+        if (in_array($browser_language, $supported_languages)) {
+            // Set the language based on the browser setting
+            switch_to_locale($browser_language);
+        }
+    }
+}
+add_action('init', 'set_language_based_on_browser');
