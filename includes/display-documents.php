@@ -2123,6 +2123,9 @@ if (!class_exists('display_documents')) {
             // return array of posts
             $field_types = array();
             if ($query->have_posts()) {
+                foreach ($query->posts as $post_id) {
+                    delete_post_meta($post_id, 'system_doc');
+                }
                 while ($query->have_posts()) {
                     $query->the_post();
                     $field_type = get_post_meta(get_the_ID(), 'system_doc', true);
