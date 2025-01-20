@@ -124,12 +124,14 @@ if (!class_exists('embedded_items')) {
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $embedded_number = get_post_meta(get_the_ID(), 'embedded_number', true);
-                            $is_public = get_post_meta(get_the_ID(), 'is_public', true);
+                            $embedded_id = get_the_ID();
+                            $embedded_title = get_the_title();
+                            $embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
+                            $is_public = get_post_meta($embedded_id, 'is_public', true);
                             ?>
-                            <tr id="edit-embedded-<?php the_ID();?>">
+                            <tr id="edit-embedded-<?php echo $embedded_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($embedded_number);?></td>
-                                <td><?php the_title();?></td>
+                                <td><?php echo $embedded_title;?></td>
                                 <td style="text-align:center;"><?php echo esc_html(($is_public==1) ? 'V' : '');?></td>
                             </tr>
                             <?php 
@@ -495,10 +497,11 @@ if (!class_exists('embedded_items')) {
                 $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
-                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        $field_note = get_post_meta(get_the_ID(), 'field_note', true);
-                        $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                        $field_id = get_the_ID();
+                        $field_type = get_post_meta($field_id, 'field_type', true);
+                        $default_value = get_post_meta($field_id, 'default_value', true);
+                        $field_note = get_post_meta($field_id, 'field_note', true);
+                        $sorting_key = get_post_meta($field_id, 'sorting_key', true);
                         $new_embedded_item = array(
                             'post_type'     => 'embedded-item',
                             'post_title'    => get_the_title(),
@@ -524,9 +527,11 @@ if (!class_exists('embedded_items')) {
             $query = $this->retrieve_embedded_data(0);
             $options = '<option value="">Select option</option>';
             while ($query->have_posts()) : $query->the_post();
-                $embedded_number = get_post_meta(get_the_ID(), 'embedded_number', true);
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title().'('.$embedded_number.')') . '</option>';
+                $embedded_id = get_the_ID();
+                $embedded_title = get_the_title();
+                $embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
+                $selected = ($selected_option == $embedded_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($embedded_id) . '" '.$selected.' />' . esc_html($embedded_title.'('.$embedded_number.')') . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -610,11 +615,12 @@ if (!class_exists('embedded_items')) {
 
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
+                        $embedded_item_id = get_the_ID();
                         $embedded_item_title = get_the_title();
-                        $field_note = get_post_meta(get_the_ID(), 'field_note', true);
-                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                        $field_note = get_post_meta($embedded_item_id, 'field_note', true);
+                        $field_type = get_post_meta($embedded_item_id, 'field_type', true);
                         $type = $documents_class->get_field_type_data($field_type);
-                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                        $default_value = get_post_meta($embedded_item_id, 'default_value', true);
                         if ($field_type=='heading') {
                             if (!$default_value) {
                                 $field_note = '<b>'.$field_note.'</b>';
@@ -624,7 +630,7 @@ if (!class_exists('embedded_items')) {
                             $default_value='';
                         }
                         ?>
-                        <tr id="edit-item-<?php the_ID();?>" data-embedded-item-id="<?php echo esc_attr(get_the_ID());?>">
+                        <tr id="edit-item-<?php the_ID();?>" data-embedded-item-id="<?php echo esc_attr($embedded_item_id);?>">
                             <td><?php echo $embedded_item_title;?></td>
                             <td style="text-align:center;"><?php echo esc_html($type);?></td>
                             <td style="text-align:center;"><?php echo esc_html($default_value);?></td>
@@ -759,15 +765,16 @@ if (!class_exists('embedded_items')) {
             $query = $this->retrieve_embedded_item_data($embedded_id, 0);
             $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $field_note = get_post_meta(get_the_ID(), 'field_note', true);
-                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                $embedded_item_id = get_the_ID();
+                $selected = ($selected_option == $embedded_item_id) ? 'selected' : '';
+                $field_note = get_post_meta($embedded_item_id, 'field_note', true);
+                $field_type = get_post_meta($embedded_item_id, 'field_type', true);
                 if ($field_type=='heading'){
                     $embedded_item_title = '<b>'.get_the_title().'</b>';
                 } else {
                     $embedded_item_title = get_the_title();
                 }
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . $embedded_item_title . '</option>';
+                $options .= '<option value="' . esc_attr($embedded_item_id) . '" '.$selected.' />' . $embedded_item_title . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -852,8 +859,9 @@ if (!class_exists('embedded_items')) {
             $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                    $field_id = get_the_ID();
+                    $field_type = get_post_meta($field_id, 'field_type', true);
+                    $default_value = get_post_meta($field_id, 'default_value', true);
 
                     if ($field_type=='_embedded' && $default_value) {
                         $embedded_id = $this->get_embedded_id_by_number($default_value);
@@ -861,10 +869,11 @@ if (!class_exists('embedded_items')) {
                             $inner_query = $this->retrieve_embedded_item_data($embedded_id, 0);
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
+                                    $embedded_item_id = get_the_ID();
                                     $_list = array();
                                     $_list["embedded_id"] = $embedded_id;
-                                    $_list["embedded_item_id"] = get_the_ID();
-                                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
+                                    $_list["embedded_item_id"] = $embedded_item_id;
+                                    $_list["field_type"] = get_post_meta($embedded_item_id, 'field_type', true);
                                     array_push($_array, $_list);
                                 endwhile;
                                 wp_reset_postdata();
@@ -1001,8 +1010,9 @@ if (!class_exists('embedded_items')) {
             $query = $this->retrieve_embedded_item_data($embedded_id, 0);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-                    $field_value = $_POST[get_the_id()];
-                    update_post_meta($line_report_id, get_the_id(), $field_value);
+                    $embedded_item_id = get_the_ID();
+                    $field_value = $_POST[$embedded_item_id];
+                    update_post_meta($line_report_id, $embedded_item_id, $field_value);
                 endwhile;
                 wp_reset_postdata();
             endif;
@@ -1023,9 +1033,10 @@ if (!class_exists('embedded_items')) {
             $inner_query = $this->retrieve_embedded_item_data($embedded_id, 0);
             if ($inner_query->have_posts()) :
                 while ($inner_query->have_posts()) : $inner_query->the_post();
+                    $embedded_item_id = get_the_ID();
                     $_list = array();
-                    $_list["embedded_item_id"] = get_the_ID();
-                    $_list["field_type"] = get_post_meta(get_the_ID(), 'field_type', true);
+                    $_list["embedded_item_id"] = $embedded_item_id;
+                    $_list["field_type"] = get_post_meta($embedded_item_id, 'field_type', true);
                     array_push($_array, $_list);
 
                 endwhile;
@@ -1070,12 +1081,16 @@ if (!class_exists('embedded_items')) {
                     $query = $this->retrieve_doc_category_data();
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $iso_category = get_post_meta(get_the_ID(), 'iso_category', true);
+                            $category_id = get_the_ID();
+                            $category_title = get_the_title();
+                            $category_content = get_the_content();
+                            $iso_category = get_post_meta($category_id, 'iso_category', true);
+                            $iso_title = get_the_title($iso_category);
                             ?>
-                            <tr id="edit-doc-category-<?php the_ID();?>">
-                                <td style="text-align:center;"><?php the_title();?></td>
-                                <td><?php the_content();?></td>
-                                <td style="text-align:center;"><?php echo get_the_title($iso_category);?></td>
+                            <tr id="edit-doc-category-<?php echo $category_id;?>">
+                                <td style="text-align:center;"><?php echo $category_title;?></td>
+                                <td><?php echo $category_content;?></td>
+                                <td style="text-align:center;"><?php echo $iso_title;?></td>
                             </tr>
                             <?php 
                         endwhile;
@@ -1195,8 +1210,10 @@ if (!class_exists('embedded_items')) {
             $query = $this->retrieve_doc_category_data();
             $options = '<option value="">Select category</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $category_id = get_the_ID();
+                $category_title = get_the_title();
+                $selected = ($selected_option == $category_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' />' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             $selected = ($selected_option=="embedded") ? 'selected' : '';
@@ -1245,9 +1262,10 @@ if (!class_exists('embedded_items')) {
             $query = new WP_Query($args);
         
             while ($query->have_posts()) : $query->the_post();
-                $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-                $embedded = get_post_meta(get_the_ID(), 'embedded', true);
-                $start_ai_url = '/display-documents/?_start_ai=' . get_the_ID();
+                $category_id = get_the_ID();
+                $category_url = get_post_meta($category_id, 'category_url', true);
+                $embedded = get_post_meta($category_id, 'embedded', true);
+                $start_ai_url = '/display-documents/?_start_ai=' . $category_id;
                 ?>
                 <div class="iso-category-content">
                     <?php the_content(); ?>
@@ -1293,12 +1311,14 @@ if (!class_exists('embedded_items')) {
                         $query = $this->retrieve_iso_category_data();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
-                                $category_url = get_post_meta(get_the_ID(), 'category_url', true);
-                                $parent_category = get_post_meta(get_the_ID(), 'parent_category', true);
+                                $category_id = get_the_ID();
+                                $category_title = get_the_title();
+                                $category_content = get_the_content();
+                                $parent_category = get_post_meta($category_id, 'parent_category', true);
                                 ?>
-                                <tr id="edit-iso-category-<?php the_ID();?>">
-                                    <td style="text-align:center;"><?php the_title();?></td>
-                                    <td><?php the_content();?></td>
+                                <tr id="edit-iso-category-<?php echo $category_id;?>">
+                                    <td style="text-align:center;"><?php echo $category_title;?></td>
+                                    <td><?php echo $category_content;?></td>
                                     <td style="text-align:center;"><?php echo $parent_category;?></td>
                                 </tr>
                                 <?php 
@@ -1399,8 +1419,10 @@ if (!class_exists('embedded_items')) {
             $query = $this->retrieve_iso_category_data();
             $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $category_id = get_the_ID();
+                $category_title = get_the_title();
+                $selected = ($selected_option == $category_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' />' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -1493,12 +1515,15 @@ if (!class_exists('embedded_items')) {
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $department_number = get_post_meta(get_the_ID(), 'department_number', true);
+                            $department_id = get_the_ID();
+                            $department_title = get_the_title();
+                            $department_content = get_the_content();
+                            $department_number = get_post_meta($department_id, 'department_number', true);
                             ?>
-                            <tr id="edit-department-card-<?php the_ID();?>">
+                            <tr id="edit-department-card-<?php echo $department_id;?>">
                                 <td style="text-align:center;"><?php echo $department_number;?></td>
-                                <td style="text-align:center;"><?php the_title();?></td>
-                                <td><?php the_content();?></td>
+                                <td style="text-align:center;"><?php echo $department_title;?></td>
+                                <td><?php echo $department_content;?></td>
                             </tr>
                             <?php 
                         endwhile;
@@ -1671,8 +1696,10 @@ if (!class_exists('embedded_items')) {
             $query = $this->retrieve_department_card_data(0);
             $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $department_id = get_the_ID();
+                $department_title = get_the_title();
+                $selected = ($selected_option == $department_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($department_id) . '" '.$selected.' />' . esc_html($department_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;

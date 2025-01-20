@@ -191,12 +191,13 @@ if (!class_exists('display_documents')) {
 
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                            $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                            $doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
-                            $doc_category = get_post_meta(get_the_ID(), 'doc_category', true);
-                            $is_doc_report = get_post_meta(get_the_ID(), 'is_doc_report', true);
-                            $system_doc = get_post_meta(get_the_ID(), 'system_doc', true);
+                            $doc_id = get_the_ID();
+                            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+                            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                            $system_doc = get_post_meta($doc_id, 'system_doc', true);
 
                             if (!$doc_category) {
                                 $doc_number = '<span style="color:red;">' . $doc_number . '</span>';
@@ -462,11 +463,12 @@ if (!class_exists('display_documents')) {
                             $query = $profiles_class->retrieve_doc_action_data($doc_id, true);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
+                                    $action_id = get_the_ID();
                                     $action_title = get_the_title();
-                                    $action_content = get_post_field('post_content', get_the_ID());
-                                    $current_job = get_post_meta(get_the_ID(), 'doc_id', true);
+                                    $action_content = get_post_field('post_content', $action_id);
+                                    $current_job = get_post_meta($action_id, 'doc_id', true);
                                     $current_job_title = get_the_title($current_job);
-                                    $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                                    $next_job = get_post_meta($action_id, 'next_job', true);
                                     $next_job_title = get_the_title($next_job);
                                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                                     if ($next_job==-1) $next_job_title = __( '發行', 'textdomain' );
@@ -765,9 +767,10 @@ if (!class_exists('display_documents')) {
             }
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
-                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                    $field_value = get_post_meta($report_id, get_the_ID(), true);
+                    $field_id = get_the_ID();
+                    $field_type = get_post_meta($field_id, 'field_type', true);
+                    $listing_style = get_post_meta($field_id, 'listing_style', true);
+                    $field_value = get_post_meta($report_id, $field_id, true);
                     $is_checked = ($field_value==1) ? 'checked' : '';
                     echo '<td style="text-align:'.$listing_style.';">';
                     if ($field_type=='checkbox') {
@@ -935,7 +938,8 @@ if (!class_exists('display_documents')) {
             $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
-                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                    $field_id = get_the_ID();
+                    $field_type = get_post_meta($field_id, 'field_type', true);
 
                     if (!empty($params['key_value_pair'])) {
                         $key_value_pair = $params['key_value_pair'];
@@ -945,7 +949,7 @@ if (!class_exists('display_documents')) {
                                     if (is_array($value)) {
                                         foreach ($value as $val) {
                                             $args['meta_query'][0][] = array(
-                                                'key'     => get_the_ID(),
+                                                'key'     => $field_id,
                                                 'value'   => sprintf(':"%s";', (string)$val),
                                                 'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
                                             );
@@ -953,14 +957,14 @@ if (!class_exists('display_documents')) {
                                     } else {
                                         // If $value is not an array, treat it as a single value
                                         $args['meta_query'][0][] = array(
-                                            'key'     => get_the_ID(),
+                                            'key'     => $field_id,
                                             'value'   => sprintf(':"%s";', (string)$value),
                                             'compare' => 'LIKE', // Use 'LIKE' to match any part of the serialized array
                                         );
                                     }
                                 } else {
                                     $args['meta_query'][0][] = array(
-                                        'key'     => get_the_ID(),
+                                        'key'   => $field_id,
                                         'value' => (string)$value,
                                     );
                                 }
@@ -971,7 +975,7 @@ if (!class_exists('display_documents')) {
                     if (isset($_GET['_search'])) {
                         $search_doc_report = sanitize_text_field($_GET['_search']);
                         $args['meta_query'][1][] = array( // Append to the OR relation
-                            'key'     => get_the_ID(),
+                            'key'     => $field_id,
                             'value'   => $search_doc_report,
                             'compare' => 'LIKE',
                         );
@@ -1122,7 +1126,9 @@ if (!class_exists('display_documents')) {
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             if ($profiles_class->is_user_doc($doc_id)) {
-                                echo '<input type="button" id="doc-report-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                                $action_id = get_the_ID();
+                                $action_title = get_the_title();
+                                echo '<input type="button" id="doc-report-dialog-button-'.$action_id.'" value="'.$action_title.'" style="margin:5px;" />';
                             }
                         endwhile;
                         wp_reset_postdata();
@@ -1255,8 +1261,9 @@ if (!class_exists('display_documents')) {
 
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
+                    $field_id = get_the_ID();
                     while ($query->have_posts()) : $query->the_post();
-                        update_post_meta($post_id, get_the_ID(), $_POST[get_the_ID()]);
+                        update_post_meta($post_id, $field_id, $_POST[$field_id]);
                     endwhile;
                     wp_reset_postdata();
                 }
@@ -1440,9 +1447,9 @@ if (!class_exists('display_documents')) {
             ];
 
             $system_doc_array = $this->get_system_doc_array();
-            error_log('$system_doc_array: ' . print_r($system_doc_array,true));
+            //error_log('$system_doc_array: ' . print_r($system_doc_array,true));
             $field_types = $field_types + $system_doc_array;
-            error_log('$field_types: ' . print_r($field_types,true));
+            //error_log('$field_types: ' . print_r($field_types,true));
 
             // If $field_type is set and exists in $field_types, return the label
             if ($field_type !== false && isset($field_types[$field_type])) {
@@ -1616,10 +1623,11 @@ if (!class_exists('display_documents')) {
             $_array = array();
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
-                    $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                    $default_value = get_post_meta(get_the_ID(), 'default_value', true);
+                    $field_id = get_the_ID();
+                    $field_type = get_post_meta($field_id, 'field_type', true);
+                    $default_value = get_post_meta($field_id, 'default_value', true);
                     $_list = array();
-                    $_list["field_id"] = get_the_ID();
+                    $_list["field_id"] = $field_id;
                     $_list["field_type"] = $field_type;
                     $_list["default_value"] = $default_value;
                     array_push($_array, $_list);
@@ -1999,14 +2007,15 @@ if (!class_exists('display_documents')) {
             
                         if ($field_type=='_embedded'){
                             $items_class = new embedded_items();
-                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id && $default_value) {
-                                $inner_query = $items_class->retrieve_embedded_item_data($embedded_id, 0);
+                            $embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
+                            if ($embedded_id_by_number && $default_value) {
+                                $inner_query = $items_class->retrieve_embedded_item_data($embedded_id_by_number, 0);
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
-                                        $embedded_item_value = $_POST[get_the_ID()];
-                                        update_post_meta($report_id, get_the_ID(), $embedded_item_value);
-                                        error_log('Update '.$field_type . '('. get_the_ID() . ') value: ' . $embedded_item_value . ' for report_id: ' . $report_id);
+                                        $embedded_id = get_the_ID();
+                                        $embedded_item_value = $_POST[$embedded_id];
+                                        update_post_meta($report_id, $embedded_id, $embedded_item_value);
+                                        error_log('Update '.$field_type . '('. $embedded_id . ') value: ' . $embedded_item_value . ' for report_id: ' . $report_id);
                                     endwhile;
                                     wp_reset_postdata();
                                 endif;
@@ -2015,12 +2024,13 @@ if (!class_exists('display_documents')) {
             
                         if ($field_type=='_line_list'){
                             $items_class = new embedded_items();
-                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id && $default_value) {
-                                $inner_query = $items_class->retrieve_line_report_data($embedded_id);
+                            $embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
+                            if ($embedded_id_by_number && $default_value) {
+                                $inner_query = $items_class->retrieve_line_report_data($embedded_id_by_number);
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
-                                        update_post_meta(get_the_ID(), 'report_id', $report_id);
+                                        $embedded_id = get_the_ID();
+                                        update_post_meta($embedded_id, 'report_id', $report_id);
                                     endwhile;
                                     wp_reset_postdata();
                                 endif;
@@ -2133,8 +2143,10 @@ if (!class_exists('display_documents')) {
             $query = $this->retrieve_doc_report_data($params);
             $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $report_id = get_the_ID();
+                $report_title = get_the_title();
+                $selected = ($selected_option == $report_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' />' . esc_html($report_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -2147,8 +2159,10 @@ if (!class_exists('display_documents')) {
             $query = $this->retrieve_doc_report_data($params);
             $options = '';
             while ($query->have_posts()) : $query->the_post();
-                $selected = in_array(get_the_ID(), $selected_options) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $report_id = get_the_ID();
+                $report_title = get_the_title();
+                $selected = in_array($report_id, $selected_options) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' />' . esc_html($report_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -2159,11 +2173,12 @@ if (!class_exists('display_documents')) {
             $query = $this->retrieve_document_data(0, $is_doc_report);
             $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                $doc_revision = get_post_meta(get_the_ID(), 'doc_revision', true);
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision) . '</option>';
+                $doc_id = get_the_ID();
+                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+                $selected = ($selected_option == $doc_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($doc_id) . '" '.$selected.' />' . esc_html($doc_number.'-'.$doc_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -2283,14 +2298,15 @@ if (!class_exists('display_documents')) {
                                 $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
                                 if ($query->have_posts()) :
                                     while ($query->have_posts()) : $query->the_post();
-                                        $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                                        $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                                        $doc_category = get_post_meta(get_the_ID(), 'doc_category', true);
-                                        $site_id = get_post_meta(get_the_ID(), 'site_id', true);
+                                        $doc_id = get_the_ID();
+                                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                                        $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                                        $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                                        $site_id = get_post_meta($doc_id, 'site_id', true);
                                         ?>
                                         <div>
-                                            <input type="checkbox" class="copy-document-class" id="<?php the_ID();?>" checked />
-                                            <label for="<?php the_ID();?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
+                                            <input type="checkbox" class="copy-document-class" id="<?php echo $doc_id;?>" checked />
+                                            <label for="<?php echo $doc_id;?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
                                         </div>
                                         <?php
                                     endwhile;
@@ -2455,6 +2471,7 @@ if (!class_exists('display_documents')) {
             $query = $profiles_class->retrieve_doc_action_data($doc_id);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
+                    $action_id = get_the_ID();
                     $new_post = array(
                         'post_type'     => 'action',
                         'post_title'    => get_the_title(),
@@ -2463,8 +2480,8 @@ if (!class_exists('display_documents')) {
                         'post_author'   => $current_user_id,
                     );    
                     $new_action_id = wp_insert_post($new_post);
-                    $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                    $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                    $new_next_job = get_post_meta($action_id, 'next_job', true);
+                    $new_next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                     update_post_meta($new_action_id, 'doc_id', $post_id);
                     update_post_meta($new_action_id, 'next_job', $new_next_job);
                     update_post_meta($new_action_id, 'next_leadtime', $new_next_leadtime);
@@ -2476,23 +2493,24 @@ if (!class_exists('display_documents')) {
                 $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
+                        $field_id = get_the_ID();
                         $field_title = get_the_title();
-                        $field_type = get_post_meta(get_the_ID(), 'field_type', true);
-                        $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                        $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
-                        $sorting_key = get_post_meta(get_the_ID(), 'sorting_key', true);
+                        $field_type = get_post_meta($field_id, 'field_type', true);
+                        $default_value = get_post_meta($field_id, 'default_value', true);
+                        $listing_style = get_post_meta($field_id, 'listing_style', true);
+                        $sorting_key = get_post_meta($field_id, 'sorting_key', true);
                         $new_post = array(
                             'post_type'     => 'doc-field',
                             'post_title'    => $field_title,
                             'post_status'   => 'publish',
                             'post_author'   => $current_user_id,
                         );    
-                        $field_id = wp_insert_post($new_post);
-                        update_post_meta($field_id, 'doc_id', $post_id);
-                        update_post_meta($field_id, 'field_type', $field_type);
-                        update_post_meta($field_id, 'default_value', $default_value);
-                        update_post_meta($field_id, 'listing_style', $listing_style);
-                        update_post_meta($field_id, 'sorting_key', $sorting_key);
+                        $new_field_id = wp_insert_post($new_post);
+                        update_post_meta($new_field_id, 'doc_id', $post_id);
+                        update_post_meta($new_field_id, 'field_type', $field_type);
+                        update_post_meta($new_field_id, 'default_value', $default_value);
+                        update_post_meta($new_field_id, 'listing_style', $listing_style);
+                        update_post_meta($new_field_id, 'sorting_key', $sorting_key);
                     endwhile;
                     wp_reset_postdata();
                 }    

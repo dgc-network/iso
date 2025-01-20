@@ -434,7 +434,9 @@ if (!class_exists('to_do_list')) {
                         $query = $this->retrieve_todo_action_list_data($todo_id);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
-                                echo '<input type="button" id="todo-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                                $action_id = get_the_ID();
+                                $action_title = get_the_title();
+                                echo '<input type="button" id="todo-dialog-button-'.$action_id.'" value="'.$action_title.'" style="margin:5px;" />';
                             endwhile;
                             wp_reset_postdata();
                         }    
@@ -725,7 +727,9 @@ if (!class_exists('to_do_list')) {
                     $query = $profiles_class->retrieve_doc_action_data($doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
-                            echo '<input type="button" id="start-job-dialog-button-'.get_the_ID().'" value="'.get_the_title().'" style="margin:5px;" />';
+                            $action_id = get_the_ID();
+                            $action_title = get_the_title();
+                            echo '<input type="button" id="start-job-dialog-button-'.$action_id.'" value="'.$action_title.'" style="margin:5px;" />';
                         endwhile;
                         wp_reset_postdata();
                     }
@@ -1014,10 +1018,10 @@ if (!class_exists('to_do_list')) {
                     if ($query->have_posts()) {
                         while ($query->have_posts()) {
                             $query->the_post();
-                            // Perform actions for each matching post
-                            $todo_in_summary = get_post_meta(get_the_ID(), 'todo_in_summary', true);
+                            $todo_id = get_the_ID();
+                            $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                             $todo_in_summary[] = $prev_todo_id;
-                            update_post_meta(get_the_ID(), 'todo_in_summary', $todo_in_summary);
+                            update_post_meta($todo_id, 'todo_in_summary', $todo_in_summary);
                         }
                     } else {
                         //echo "No posts match the meta query conditions.";
@@ -1088,6 +1092,7 @@ if (!class_exists('to_do_list')) {
                 $query = $profiles_class->retrieve_doc_action_data($next_job);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
+                        $action_id = get_the_ID();
                         $new_post = array(
                             'post_type'     => 'action',
                             'post_title'    => get_the_title(),
@@ -1096,14 +1101,14 @@ if (!class_exists('to_do_list')) {
                             'post_author'   => $user_id,
                         );    
                         $new_action_id = wp_insert_post($new_post);
-                        $new_next_job = get_post_meta(get_the_ID(), 'next_job', true);
-                        $new_next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        $new_next_job = get_post_meta($action_id, 'next_job', true);
+                        $new_next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                         update_post_meta($new_action_id, 'todo_id', $new_todo_id);
                         update_post_meta($new_action_id, 'next_job', $new_next_job);
                         update_post_meta($new_action_id, 'next_leadtime', $new_next_leadtime);
                         
                         //Update the action_authorized_ids
-                        $action_authorized_ids = $profiles_class->is_action_authorized(get_the_ID());
+                        $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                         if ($action_authorized_ids){
                             update_post_meta($new_action_id, 'action_authorized_ids', $action_authorized_ids);
                         }
@@ -1364,8 +1369,9 @@ if (!class_exists('to_do_list')) {
             $query = $this->retrieve_todo_action_list_data($todo_id);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
+                    $action_id = get_the_ID();
                     $profiles_class = new display_profiles();
-                    if ($profiles_class->is_action_authorized(get_the_ID())) return true;
+                    if ($profiles_class->is_action_authorized($action_id)) return true;
                 endwhile;
                 wp_reset_postdata();
             endif;
@@ -1659,10 +1665,11 @@ if (!class_exists('to_do_list')) {
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                            $log_id = get_the_ID();
+                            $doc_id = get_post_meta($log_id, 'doc_id', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $todo_title = get_the_title();
-                            $report_id = get_post_meta(get_the_ID(), 'prev_report_id', true);
+                            $report_id = get_post_meta($log_id, 'prev_report_id', true);
                             if ($report_id) {
                                 $doc_title .= '(#'.$report_id.')';
                             }
@@ -1670,10 +1677,10 @@ if (!class_exists('to_do_list')) {
                                 $doc_title = get_the_title();
                                 $todo_title = __( 'system', 'textdomain' );
                             }
-                            $submit_action = get_post_meta(get_the_ID(), 'submit_action', true);
-                            $submit_user = get_post_meta(get_the_ID(), 'submit_user', true);
-                            $submit_time = get_post_meta(get_the_ID(), 'submit_time', true);
-                            $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                            $submit_action = get_post_meta($log_id, 'submit_action', true);
+                            $submit_user = get_post_meta($log_id, 'submit_user', true);
+                            $submit_time = get_post_meta($log_id, 'submit_time', true);
+                            $next_job = get_post_meta($log_id, 'next_job', true);
                             if (!$next_job) $next_job = get_post_meta($submit_action, 'next_job', true);
                             $job_title = ($next_job==-1) ? __( '發行', 'textdomain' ) : get_the_title($next_job);
                             $job_title = ($next_job==-2) ? __( '廢止', 'textdomain' ) : $job_title;

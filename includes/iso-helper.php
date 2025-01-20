@@ -256,8 +256,9 @@ function init_webhook_events() {
                             $footer_contents = array();
                             while ( $query->have_posts() ) {
                                 $query->the_post(); // Setup post data
-                                $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
-                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.get_the_ID();
+                                $doc_id = get_the_ID();
+                                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                                $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.$doc_id;
                                 $footer_content = array(
                                     'type' => 'button',
                                     'action' => array(

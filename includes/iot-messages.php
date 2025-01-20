@@ -317,10 +317,11 @@ if (!class_exists('iot_messages')) {
             $query = $this->retrieve_exception_notification_setting_data($device_id, -1);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-                    $max_value = get_post_meta(get_the_id(), '_max_value', true);
-                    $min_value = get_post_meta(get_the_id(), '_min_value', true);
-                    $employee_id = get_post_meta(get_the_id(), '_employee_id', true);
-                    $is_once_daily = get_post_meta(get_the_id(), '_is_once_daily', true);
+                    $setting_id = get_the_id();
+                    $max_value = get_post_meta($setting_id, '_max_value', true);
+                    $min_value = get_post_meta($setting_id, '_min_value', true);
+                    $employee_id = get_post_meta($setting_id, '_employee_id', true);
+                    $is_once_daily = get_post_meta($setting_id, '_is_once_daily', true);
                     $notification_message = $this->build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value);
                     $this->send_notification_handler($device_id, $employee_id, $notification_message, $is_once_daily);
                     error_log("Notification message: ".print_r($notification_message, true));
@@ -415,17 +416,17 @@ if (!class_exists('iot_messages')) {
 
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            // Get post creation time
-                            $post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
+                            $message_id = get_the_ID();
+                            $post_time = get_post_time('Y-m-d H:i:s', false, $message_id);
                             $topic = get_the_title();
                             $message = get_the_content();
-                            $device_number = get_post_meta(get_the_ID(), 'deviceID', true);
-                            $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                            $humidity = get_post_meta(get_the_ID(), 'humidity', true);
-                            $latitude = get_post_meta(get_the_ID(), 'latitude', true);
-                            $longitude = get_post_meta(get_the_ID(), 'longitude', true);
+                            $device_number = get_post_meta($message_id, 'deviceID', true);
+                            $temperature = get_post_meta($message_id, 'temperature', true);
+                            $humidity = get_post_meta($message_id, 'humidity', true);
+                            $latitude = get_post_meta($message_id, 'latitude', true);
+                            $longitude = get_post_meta($message_id, 'longitude', true);
                             ?>
-                            <tr id="edit-iot-message-<?php the_ID();?>">
+                            <tr id="edit-iot-message-<?php echo $message_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($post_time);?></td>
                                 <?php if ($temperature) {?>
                                     <td style="text-align:center;"><?php echo __( 'Temperature', 'textdomain' );?></td>
@@ -535,12 +536,15 @@ if (!class_exists('iot_messages')) {
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $device_number = get_post_meta(get_the_ID(), 'device_number', true);
+                            $device_id = get_the_ID();
+                            $device_title = get_the_title();
+                            $device_content = get_the_content();
+                            $device_number = get_post_meta($device_id, 'device_number', true);
                             ?>
-                            <tr id="edit-iot-device-<?php the_ID();?>">
+                            <tr id="edit-iot-device-<?php echo $device_id;?>">
                                 <td style="text-align:center;"><?php echo $device_number;?></td>
-                                <td><?php the_title();?></td>
-                                <td><?php the_content();?></td>
+                                <td><?php echo $device_title;?></td>
+                                <td><?php echo $device_content;?></td>
                             </tr>
                             <?php 
                         endwhile;
@@ -579,12 +583,13 @@ if (!class_exists('iot_messages')) {
             $total_count = 0;
         
             // Step 1: Get all iot-device posts
-            $iot_device_query = $this->retrieve_iot_device_data(0);
+            $query = $this->retrieve_iot_device_data(0);
         
-            if ($iot_device_query->have_posts()) {
-                while ($iot_device_query->have_posts()) {
-                    $iot_device_query->the_post();
-                    $device_number = get_post_meta(get_the_ID(), 'device_number', true);
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    $device_id = get_the_ID();
+                    $device_number = get_post_meta($device_id, 'device_number', true);
         
                     if (!empty($device_number)) {
                         // Step 2: Query iot-message posts where device_number matches deviceID
@@ -606,7 +611,6 @@ if (!class_exists('iot_messages')) {
                             ),
                             'fields'         => 'ids', // We only need the IDs for counting
                         );
-        
                         $iot_message_query = new WP_Query($iot_message_args);
         
                         // Step 3: Increment the total count by the number of matching posts
@@ -817,9 +821,9 @@ if (!class_exists('iot_messages')) {
                 $x_axis = [];
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $temperature = get_post_meta(get_the_ID(), 'temperature', true);
-                        //$post_time = get_post_time('Y-m-d H:i:s', false, get_the_ID());
-                        $post_time = get_post_time('H.i', false, get_the_ID());
+                        $message_id = get_the_ID();
+                        $temperature = get_post_meta($message_id, 'temperature', true);
+                        $post_time = get_post_time('H.i', false, $message_id);
                         if (is_numeric($temperature)) { // Ensure the temperature is a valid number
                             $x_axis[] = $post_time;
                             $data_points[] = $temperature;
@@ -948,8 +952,10 @@ if (!class_exists('iot_messages')) {
             $query = $this->retrieve_iot_device_data(0);
             $options = '<option value="">Select device</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $device_id = get_the_ID();
+                $device_title = get_the_title();
+                $selected = ($selected_option == $device_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($device_id) . '" '.$selected.' />' . esc_html($device_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -983,11 +989,12 @@ if (!class_exists('iot_messages')) {
                         $query = $this->retrieve_exception_notification_setting_data();
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
-                                $device_id = get_post_meta(get_the_ID(), '_device_id', true);
-                                echo '<tr id="edit-exception-notification-setting-'.esc_attr(get_the_ID()).'">';
+                                $setting_id = get_the_ID();
+                                $device_id = get_post_meta($setting_id, '_device_id', true);
+                                echo '<tr id="edit-exception-notification-setting-'.esc_attr($setting_id).'">';
                                 echo '<td style="text-align:center;">'.esc_html(get_the_title($device_id)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_max_value', true)).'</td>';
-                                echo '<td style="text-align:center;">'.esc_html(get_post_meta(get_the_ID(), '_min_value', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta($setting_id, '_max_value', true)).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html(get_post_meta($setting_id, '_min_value', true)).'</td>';
                                 echo '</tr>';
                             endwhile;
                             wp_reset_postdata();

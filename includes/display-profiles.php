@@ -117,11 +117,7 @@ if (!class_exists('display_profiles')) {
 
                 echo '</div>';
 
-                //if ($_GET['_select_profile']=='change_post_type_sub_item_to_embedded_item') echo $this->change_post_type_sub_item_to_embedded_item();
-                //if ($_GET['_select_profile']=='update_doc_field_titles') echo $this->update_doc_field_titles();
                 if ($_GET['_select_profile']=='update_post_type_and_meta_for_embedded_items') echo $this->update_post_type_and_meta_for_embedded_items();
-                //if ($_GET['_select_profile']=='migrate_embedded_item_meta_from_embedded_item') echo $this->migrate_embedded_item_meta_from_embedded_item();
-                //if ($_GET['_select_profile']=='migrate_embedded_item_meta_from_sub_item') echo $this->migrate_embedded_item_meta_from_sub_item();
             }
         }
 
@@ -133,12 +129,10 @@ if (!class_exists('display_profiles')) {
                 'posts_per_page' => -1,
                 'post_status'    => 'any',
             );
-        
             $query = new WP_Query($args);
         
             if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
+                while ($query->have_posts()) : $query->the_post();
                     
                     // Retrieve the embedded number from 'default_value'
                     $embedded_number = get_post_meta(get_the_ID(), 'default_value', true);
@@ -215,165 +209,7 @@ if (!class_exists('display_profiles')) {
                 error_log('No doc-field posts found with meta key "default_value".');
             }
         }
-/*        
-        function update_doc_field_titles() {
-            // Step 1: Query all posts of post type 'doc-field'
-            $args = array(
-                'post_type'      => 'doc-field',
-                'posts_per_page' => -1, // Retrieve all posts
-                'post_status'    => 'any',
-            );
-        
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    // Step 2: Get the post ID and the meta value for 'field_title'
-                    $post_id = get_the_ID();
-                    $field_title = get_post_meta($post_id, 'field_title', true);
-        
-                    if (!empty($field_title)) {
-                        // Step 3: Update the post title with the value from 'field_title'
-                        $post_args = array(
-                            'ID'         => $post_id,
-                            'post_title' => $field_title,
-                        );
-        
-                        wp_update_post($post_args);
-        
-                        // Optional: Log the updated post ID and title for debugging
-                        error_log('Post ID ' . $post_id . ' updated with title: ' . $field_title);
-                    }
-                }
-                wp_reset_postdata();
-            } else {
-                // No posts found
-                error_log('No posts found for post type doc-field');
-            }
-        }
 
-        function change_post_type_sub_item_to_embedded_item() {
-            global $wpdb;
-        
-            // Get all posts with post type 'sub-item'
-            $sub_items = $wpdb->get_results("
-                SELECT ID 
-                FROM $wpdb->posts 
-                WHERE post_type = 'sub-item'
-            ");
-        
-            if (!empty($sub_items)) {
-                foreach ($sub_items as $sub_item) {
-                    // Update the post type to 'embedded-item'
-                    $wpdb->update(
-                        $wpdb->posts,
-                        array('post_type' => 'embedded-item'), // New post type
-                        array('ID' => $sub_item->ID) // Target post ID
-                    );
-        
-                    // Optional: Clear the cache for the post
-                    clean_post_cache($sub_item->ID);
-                }
-                echo count($sub_items) . " posts have been updated from 'sub-item' to 'embedded-item'.";
-            } else {
-                echo "No posts found with the post type 'sub-item'.";
-            }
-        }
-        
-        function migrate_embedded_item_meta_from_embedded_item() {
-            // Query all posts of post type "embedded-item"
-            $args = array(
-                'post_type'      => 'embedded-item',
-                'posts_per_page' => -1, // Retrieve all posts
-                'post_status'    => 'any',
-            );
-        
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    $post_id = get_the_ID();
-        
-                    // Get the old 'sub_item' meta values
-                    $embedded_item_type = get_post_meta($post_id, 'embedded_item_type', true);
-                    $embedded_item_default = get_post_meta($post_id, 'embedded_item_default', true);
-                    $embedded_item_code = get_post_meta($post_id, 'embedded_item_code', true);
-        
-                    // Check if any of the old meta values exist
-                    if (!empty($embedded_item_type) || !empty($embedded_item_default) || !empty($embedded_item_code)) {
-                        // Update the meta keys to use the new 'embedded_item' prefix
-                        if (!empty($embedded_item_type)) {
-                            update_post_meta($post_id, 'field_type', $embedded_item_type);
-                            delete_post_meta($post_id, 'embedded_item_type');
-                        }
-        
-                        if (!empty($embedded_item_default)) {
-                            update_post_meta($post_id, 'default_value', $embedded_item_default);
-                            delete_post_meta($post_id, 'embedded_item_default');
-                        }
-        
-                        if (!empty($embedded_item_code)) {
-                            update_post_meta($post_id, 'field_note', $embedded_item_code);
-                            delete_post_meta($post_id, 'embedded_item_code');
-                        }
-                    }
-                }
-                wp_reset_postdata();
-            } else {
-                echo 'No posts found for post type "embedded-item".';
-            }
-        }
-
-        function migrate_embedded_item_meta_from_sub_item() {
-            // Query all posts of post type "embedded-item"
-            $args = array(
-                'post_type'      => 'embedded-item',
-                'posts_per_page' => -1, // Retrieve all posts
-                'post_status'    => 'any',
-            );
-        
-            $query = new WP_Query($args);
-        
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-        
-                    $post_id = get_the_ID();
-        
-                    // Get the old 'sub_item' meta values
-                    $sub_item_type = get_post_meta($post_id, 'sub_item_type', true);
-                    $sub_item_default = get_post_meta($post_id, 'sub_item_default', true);
-                    $sub_item_code = get_post_meta($post_id, 'sub_item_code', true);
-        
-                    // Check if any of the old meta values exist
-                    if (!empty($sub_item_type) || !empty($sub_item_default) || !empty($sub_item_code)) {
-                        // Update the meta keys to use the new 'embedded_item' prefix
-                        if (!empty($sub_item_type)) {
-                            update_post_meta($post_id, 'field_type', $sub_item_type);
-                            delete_post_meta($post_id, 'sub_item_type');
-                        }
-        
-                        if (!empty($sub_item_default)) {
-                            update_post_meta($post_id, 'default_value', $sub_item_default);
-                            delete_post_meta($post_id, 'sub_item_default');
-                        }
-        
-                        if (!empty($sub_item_code)) {
-                            update_post_meta($post_id, 'field_note', $sub_item_code);
-                            delete_post_meta($post_id, 'sub_item_code');
-                        }
-                    }
-                }
-                wp_reset_postdata();
-            } else {
-                echo 'No posts found for post type "embedded-item".';
-            }
-        }
-*/
         // my-profile
         function display_my_profile() {
             ob_start();
@@ -522,10 +358,10 @@ if (!class_exists('display_profiles')) {
                 $query = $this->retrieve_doc_action_data($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        $is_checked = $this->is_action_authorized(get_the_ID()) ? 'checked' : '';
+                        $action_id = get_the_ID();
                         $action_title = get_the_title();
-                        $action_content = get_post_field('post_content', get_the_ID());
-                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $action_content = get_post_field('post_content', $action_id);
+                        $next_job = get_post_meta($action_id, 'next_job', true);
                         $next_job_title = get_the_title($next_job);
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($next_job==-1) {
@@ -534,10 +370,11 @@ if (!class_exists('display_profiles')) {
                         if ($next_job==-2) {
                             $next_job_title = __( '廢止', 'textdomain' );
                         }
-                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+                        $is_checked = $this->is_action_authorized($action_id) ? 'checked' : '';
                         ?>
-                        <tr id="edit-my-job-action-<?php the_ID();?>">
-                            <td style="text-align:center;"><input type="radio" name="is_action_authorized" id="is-action-authorized-<?php the_ID();?>" <?php echo $is_checked;?> /></td>
+                        <tr id="edit-my-job-action-<?php echo $action_id;?>">
+                            <td style="text-align:center;"><input type="radio" name="is_action_authorized" id="is-action-authorized-<?php echo $action_id;?>" <?php echo $is_checked;?> /></td>
                             <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                             <td><?php echo esc_html($action_content);?></td>
                             <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
@@ -640,8 +477,9 @@ if (!class_exists('display_profiles')) {
                 $query = $this->retrieve_doc_action_data($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
-                        if (get_the_ID()!=$action_id){
-                            $action_authorized_ids = get_post_meta(get_the_ID(), 'action_authorized_ids', true);
+                        $inner_action_id = get_the_ID();
+                        if ($inner_action_id!=$action_id){
+                            $action_authorized_ids = get_post_meta($inner_action_id, 'action_authorized_ids', true);
                             if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
                             $authorize_exists = in_array($user_id, $action_authorized_ids);
 
@@ -651,7 +489,7 @@ if (!class_exists('display_profiles')) {
                             }
 
                             // Update 'action_authorized_ids' meta value
-                            update_post_meta(get_the_ID(), 'action_authorized_ids', $action_authorized_ids);            
+                            update_post_meta($inner_action_id, 'action_authorized_ids', $action_authorized_ids);            
                         }
                     endwhile;
                     wp_reset_postdata();
@@ -755,7 +593,8 @@ if (!class_exists('display_profiles')) {
             $query = $this->retrieve_doc_action_data($doc_id);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
-                    if ($this->is_action_authorized(get_the_ID())) return true;
+                    $action_id = get_the_ID();
+                    if ($this->is_action_authorized($action_id)) return true;
                 endwhile;
                 wp_reset_postdata();
             endif;
@@ -982,12 +821,14 @@ if (!class_exists('display_profiles')) {
                             $query = $this->retrieve_site_job_list_data(0);
                             if ($query->have_posts()) {
                                 while ($query->have_posts()) : $query->the_post();
-                                    $user_job_checked = $this->is_user_doc(get_the_ID(), $user_id) ? 'checked' : '';
-                                    $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                                    echo '<tr id="check-user-job-' . get_the_ID() . '">';
-                                    echo '<td style="text-align:center;"><input type="checkbox" id="is-user-doc-'.get_the_ID().'" ' . $user_job_checked . ' /></td>';
+                                    $job_id = get_the_ID();
+                                    $job_title = get_the_title();
+                                    $job_number = get_post_meta($job_id, 'job_number', true);
+                                    $user_job_checked = $this->is_user_doc($job_id, $user_id) ? 'checked' : '';
+                                    echo '<tr id="check-user-job-' . $job_id . '">';
+                                    echo '<td style="text-align:center;"><input type="checkbox" id="is-user-doc-'.$job_id.'" ' . $user_job_checked . ' /></td>';
                                     echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
-                                    echo '<td style="text-align:center;">' . get_the_title() . '</td>';
+                                    echo '<td style="text-align:center;">' . $job_title . '</td>';
                                     echo '</tr>';
                                 endwhile;
                                 wp_reset_postdata();                                    
@@ -1158,8 +999,10 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
             $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html(get_the_title()) . '</option>';
+                $site_id = get_the_ID();
+                $site_title = get_the_title();
+                $selected = ($selected_option == $site_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($site_id) . '" '.$selected.' />' . esc_html($site_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -1185,20 +1028,22 @@ if (!class_exists('display_profiles')) {
 
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                            $department_id = get_post_meta(get_the_ID(), 'department_id', true);
-                            $doc_number = get_post_meta(get_the_ID(), 'doc_number', true);
-                            $doc_title = get_post_meta(get_the_ID(), 'doc_title', true);
+                            $job_id = get_the_ID();
+                            $job_title = get_the_title();
+                            $job_number = get_post_meta($job_id, 'job_number', true);
+                            $department_id = get_post_meta($job_id, 'department_id', true);
+                            $doc_number = get_post_meta($job_id, 'doc_number', true);
+                            $doc_title = get_post_meta($job_id, 'doc_title', true);
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
                             else $doc_title = get_the_content();
                             // display the warning if the job without assigned actions
-                            $action_query = $this->retrieve_doc_action_data(get_the_ID());
-                            $job_title = ($action_query->have_posts()) ? get_the_title() : '<span style="color:red;">'.get_the_title().'</span>';
+                            $action_query = $this->retrieve_doc_action_data($job_id);
+                            $job_title = ($action_query->have_posts()) ? $job_title : '<span style="color:red;">'.$job_title.'</span>';
                             // display the warning if the job without assigned users
-                            $users_query = $this->retrieve_users_by_doc_id(get_the_ID());
+                            $users_query = $this->retrieve_users_by_doc_id($job_id);
                             $doc_title = (!empty($users_query)) ? $doc_title : '<span style="color:red;">'.$doc_title.'</span>';
                             ?>
-                            <tr id="edit-site-job-<?php the_ID();?>">
+                            <tr id="edit-site-job-<?php echo $job_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo $job_title;?></td>
                                 <td><?php echo $doc_title;?></td>
@@ -1426,9 +1271,10 @@ if (!class_exists('display_profiles')) {
                 $query = $this->retrieve_doc_action_data($doc_id);
                 if ($query->have_posts()) :
                     while ($query->have_posts()) : $query->the_post();
+                        $action_id = get_the_ID();
                         $action_title = get_the_title();
-                        $action_content = get_post_field('post_content', get_the_ID());
-                        $next_job = get_post_meta(get_the_ID(), 'next_job', true);
+                        $action_content = get_post_field('post_content', $action_id);
+                        $next_job = get_post_meta($action_id, 'next_job', true);
                         $next_job_title = get_the_title($next_job);
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($next_job==-1) {
@@ -1437,9 +1283,9 @@ if (!class_exists('display_profiles')) {
                         if ($next_job==-2) {
                             $next_job_title = __( '廢止', 'textdomain' );
                         }
-                        $next_leadtime = get_post_meta(get_the_ID(), 'next_leadtime', true);
+                        $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                         ?>
-                        <tr id="edit-doc-action-<?php the_ID();?>">
+                        <tr id="edit-doc-action-<?php echo $action_id;?>">
                             <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                             <td><?php echo esc_html($action_content);?></td>
                             <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
@@ -1654,10 +1500,12 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
 
             while ($query->have_posts()) : $query->the_post();
-                $job_number = get_post_meta(get_the_ID(), 'job_number', true);
-                $job_title = get_the_title().'('.$job_number.')';
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
+                $job_id = get_the_ID();
+                $job_title = get_the_title();
+                $job_number = get_post_meta($job_id, 'job_number', true);
+                $job_title = $job_title.'('.$job_number.')';
+                $selected = ($selected_option == $job_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             if ($selected_option==-1){
@@ -1881,9 +1729,11 @@ if (!class_exists('display_profiles')) {
             $_array = array();
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
+                    $site_id = get_the_ID();
+                    $site_title = get_the_title();
                     $_list = array();
-                    $_list["site_id"] = get_the_ID();
-                    $_list["site_title"] = get_the_title();
+                    $_list["site_id"] = $site_id;
+                    $_list["site_title"] = $site_title;
                     array_push($_array, $_list);
                 endwhile;
                 wp_reset_postdata();
