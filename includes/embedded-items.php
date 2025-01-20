@@ -1169,7 +1169,7 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($category_id, 'iso_category', $iso_category);
 
                 $params = array(
-                    'log_message' => __( 'Category', 'textdomain' ).'('.$category_title.')'.__( ' has been updated.', 'textdomain' ),
+                    'log_message' => __( 'Category', 'textdomain' ).'('.$category_title.')'.__( ' has been updated successfully.', 'textdomain' ),
                     'category_id' => $category_id,
                 );
                 $todo_class = new to_do_list();
@@ -1654,7 +1654,7 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($department_id, 'department_number', $department_number);
 
                 $params = array(
-                    'log_message' => 'Department('.$department_title.') has been updated',
+                    'log_message' => 'Department('.$department_title.') has been updated successfully',
                     'department_id' => $department_id,
                 );
                 $todo_class = new to_do_list();

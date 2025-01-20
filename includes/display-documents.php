@@ -571,7 +571,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'multiple_select', $multiple_select);
 
                 $params = array(
-                    'log_message' => $doc_title.__( ' has been updated.', 'textdomain' ),
+                    'log_message' => $doc_title.__( ' has been updated successfully.', 'textdomain' ),
                     'doc_id' => $doc_id,
                 );
                 $todo_class = new to_do_list();

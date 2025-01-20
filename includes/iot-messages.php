@@ -906,7 +906,7 @@ if (!class_exists('iot_messages')) {
                 update_post_meta($device_id, 'records_removed', $records_removed);
 
                 $params = array(
-                    'log_message' => 'IoT device(#'.$device_number.') has been updated',
+                    'log_message' => 'IoT device(#'.$device_number.') has been updated successfully',
                     'device_id' => $device_id,
                 );
                 $todo_class = new to_do_list();
