@@ -1472,13 +1472,14 @@ if (!class_exists('display_documents')) {
                         $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
+                                $field_id = get_the_ID();
                                 $field_title = get_the_title();
-                                $field_type = get_post_meta(get_the_ID(), 'field_type', true);
+                                $field_type = get_post_meta($field_id, 'field_type', true);
                                 $type = $this->get_field_type_data($field_type);
-                                $default_value = get_post_meta(get_the_ID(), 'default_value', true);
-                                $listing_style = get_post_meta(get_the_ID(), 'listing_style', true);
+                                $default_value = get_post_meta($field_id, 'default_value', true);
+                                $listing_style = get_post_meta($field_id, 'listing_style', true);
                                 $style = $this->get_listing_style_data($listing_style);
-                                echo '<tr id="edit-doc-field-'.esc_attr(get_the_ID()).'" data-field-id="'.esc_attr(get_the_ID()).'">';
+                                echo '<tr id="edit-doc-field-'.esc_attr($field_id).'" data-field-id="'.esc_attr($field_id).'">';
 
                                 if ($field_type=='heading' && $default_value=='') {
                                     echo '<td style="text-align:center;"><b>'.esc_html($field_title).'</b></td>';
