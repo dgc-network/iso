@@ -2076,8 +2076,58 @@ if (!class_exists('display_documents')) {
                 wp_reset_postdata();
             }
         }
+
+        // sysytem doc
+        function get_system_doc_array() {
+            // Get the current user's site ID
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
         
-        // document misc
+            // Return an empty array if site_id is not set
+            if (empty($site_id)) {
+                return array();
+            }
+        
+            // Query arguments for retrieving documents with system_doc meta
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => -1, // Retrieve all matching posts
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'system_doc',
+                        'compare' => '!=',
+                        'value'   => '', // Ensure system_doc is not empty
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id, // Match the site ID
+                        'compare' => '=', // Exact match
+                    ),
+                ),
+                'fields' => 'ids', // Only retrieve post IDs for efficiency
+            );
+        
+            // Perform the query
+            $query = new WP_Query($args);
+        
+            // Prepare the result array
+            $system_doc_array = array();
+        
+            if (!empty($query->posts)) {
+                foreach ($query->posts as $post_id) {
+                    $system_doc = sanitize_text_field(get_post_meta($post_id, 'system_doc', true));
+                    if (!empty($system_doc) && !in_array($system_doc, $system_doc_array, true)) {
+                        $system_doc_array[$post_id] = $system_doc;
+                    }
+                }
+            }
+        
+            // Reset post data and return the result
+            wp_reset_postdata();
+            return $system_doc_array;
+        }
+/*        
         function get_system_doc_array() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -2100,21 +2150,6 @@ if (!class_exists('display_documents')) {
                         'compare' => '!=',
                         'value'   => '',
                     ),
-
-/*
-                    array(
-                        'relation' => 'OR',
-                        array(
-                            'key'     => 'system_doc',
-                            'compare' => '!=',
-                            'value'   => '',
-                        ),
-                        array(
-                            'key'     => 'system_doc',
-                            'compare' => 'NOT EXISTS',
-                        ),
-                    ),
-*/
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
@@ -2129,9 +2164,6 @@ if (!class_exists('display_documents')) {
             // return array of posts
             $field_types = array();
             if ($query->have_posts()) {
-                foreach ($query->posts as $post_id) {
-                    delete_post_meta($post_id, 'system_doc');
-                }
                 while ($query->have_posts()) {
                     $query->the_post();
                     $field_type = get_post_meta(get_the_ID(), 'system_doc', true);
@@ -2143,7 +2175,7 @@ if (!class_exists('display_documents')) {
             }
             return $field_types;
         }
-
+*/
         function get_system_doc_id($field_type = false) {
             // Ensure $field_type is provided
             if (!$field_type) {
@@ -2215,6 +2247,7 @@ if (!class_exists('display_documents')) {
             return $options;
         }
 
+        // document misc
         function select_document_list_options($selected_option=0, $is_doc_report=2) {
             $query = $this->retrieve_document_data(0, $is_doc_report);
             $options = '<option value="">'.__( 'Select option', 'textdomain' ).'</option>';
