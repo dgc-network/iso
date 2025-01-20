@@ -1442,6 +1442,7 @@ if (!class_exists('display_documents')) {
 
             // Get system document options
             $system_doc_array = $this->get_system_doc_array();
+            error_log('$system_doc_array: ' . print_r($system_doc_array,true));
             $field_types = array_merge($field_types, $system_doc_array);
 
 
