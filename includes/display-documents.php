@@ -2298,7 +2298,8 @@ if (!class_exists('display_documents')) {
                             //print_r($content_lines);
                             foreach ($content_lines as $line) {
                                 $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
-                                $link = "https://yourdomain.com/path?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
+                                $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
+                                $link = home_url($link);
                                 echo "<a href=\"$link\">$line</a><br>";
                             }
                             ?>
