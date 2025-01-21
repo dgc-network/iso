@@ -2351,13 +2351,13 @@ if (!class_exists('display_documents')) {
                         <?php
                     } else {
                         $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( '適用性聲明書', 'textdomain' );
-                        $content = generate_content($iso_category_title.$prompt);
+                        $content = generate_content($iso_category_title.' '.$prompt);
                         $items_class = new embedded_items();
                         ?>
                         <div class="content">
                             <fieldset>
                                 <label for="draft-title"><?php echo __( 'Title', 'textdomain' );?></label><br>
-                                <input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" />
+                                <input type="text" id="draft-title" value="<?php echo $iso_category_title.' '.$prompt;?>" class="text ui-widget-content ui-corner-all" />
                                 <label for="draft-category"><?php echo __( 'Category', 'textdomain' );?></label><br>
                                 <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
                                 <label for="draft-content"><?php echo __( 'Content', 'textdomain' );?></label><br>
