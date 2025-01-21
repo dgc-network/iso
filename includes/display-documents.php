@@ -2293,7 +2293,7 @@ if (!class_exists('display_documents')) {
                         </div>
                         <?php
                     } else {
-                        $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : __( '文件表單明細列表', 'textdomain' );
+                        $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : __( 'ISO高階結構（High-Level Structure, HLS）文件表單列表', 'textdomain' );
                         $content = generate_content($iso_category_title.$prompt);
                         ?>
                         <div class="content">
