@@ -2273,8 +2273,8 @@ if (!class_exists('display_documents')) {
                     <?php
                     if ($paged==1) {
                         $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( '文件表單列表符合高階結構（High-Level Structure, HLS）', 'textdomain' );
-                        $content = generate_content($iso_category_title.' '.$prompt);
-
+                        $content_lines = generate_content($iso_category_title.' '.$prompt, true);
+/*
                         // Load HTML content into a DOMDocument
                         libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
                         $dom = new DOMDocument();

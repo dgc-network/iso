@@ -307,7 +307,7 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 // Google Gemini AI
-function generate_content($prompt) {
+function generate_content($prompt=false, $each_line_link=false) {
     $gemini_api_key = get_user_meta(get_current_user_id(), 'gemini_api_key', true);
     $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $gemini_api_key;
     
@@ -340,6 +340,22 @@ function generate_content($prompt) {
 
         if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
             $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
+            if ($each_line_link) {
+                // Split the content into an array by newlines
+                $content_lines = preg_split('/\r\n|\r|\n/', $generated_text);
+
+                // Trim whitespace from each line
+                $content_lines = array_map('trim', $content_lines);
+                
+                // Remove empty lines
+                $content_lines = array_filter($content_lines, function ($line) {
+                    return !empty($line);
+                });
+                
+                // Reset array keys
+                $content_lines = array_values($content_lines);
+                return $content_lines;
+            }
             return convert_content_to_styled_html($generated_text);
         } else {
             return __( 'Failed to generate text. Please enter the API key in my-profile page first.', 'textdomain' );
