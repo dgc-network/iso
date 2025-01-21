@@ -2272,32 +2272,36 @@ if (!class_exists('display_documents')) {
                 <fieldset>
                     <?php
                     if ($paged==1) {
-                        $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : __( '適用性聲明書', 'textdomain' );
+                        $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( '文件表單列表符合高階結構（High-Level Structure, HLS）', 'textdomain' );
                         $content = generate_content($iso_category_title.$prompt);
-                        $items_class = new embedded_items();
+
+                        // Split the content into an array by newlines
+                        $content_lines = preg_split('/\r\n|\r|\n/', $content);
+
+                        // Trim whitespace from each line
+                        $content_lines = array_map('trim', $content_lines);
+                        
+                        // Remove empty lines
+                        $content_lines = array_filter($content_lines, function ($line) {
+                            return !empty($line);
+                        });
+                        
+                        // Reset array keys
+                        $content_lines = array_values($content_lines);
+                        
+                        // Output the result for debugging
+                        
                         ?>
-                        <div class="content">
-                            <fieldset>
-                                <p>Title:<input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" /></p>
-                                <label for="draft-category"><?php echo __( '文件類別', 'textdomain' );?></label><br>
-                                <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
-                                <label for="draft-content"><?php echo __( '文件內容', 'textdomain' );?></label><br>
-                                <textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea>
-                                <?php if (is_site_admin()) {?>
-                                    <p><input type="button" id="save-draft" value="<?php echo __( 'Generate draft', 'textdomain' );?>" /></p>
-                                <?php }?>
-                            </fieldset>
-                            <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                                <input type="text" id="ask-gemini" placeholder="<?php echo __( '問問 Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
-                            </div>
-                        </div>
-                        <?php
-                    } else {
-                        $prompt = (isset($_GET['_prompt'])) ? $_GET['_prompt'] : __( 'ISO高階結構（High-Level Structure, HLS）文件表單列表', 'textdomain' );
-                        $content = generate_content($iso_category_title.$prompt);
-                        ?>
-                        <div class="content">
-                            <?php echo $content;?>
+                        <div class="content">                            
+                            <?php //echo $content;?>
+                            <?php
+                            //print_r($content_lines);
+                            foreach ($content_lines as $line) {
+                                $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
+                                $link = "https://yourdomain.com/path?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
+                                echo "<a href=\"$link\">$line</a><br>";
+                            }
+                            ?>
                             <fieldset>
                                 <?php
                                 $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
@@ -2323,7 +2327,29 @@ if (!class_exists('display_documents')) {
                                 ?>
                             </fieldset>
                             <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                                <input type="text" id="ask-gemini" placeholder="<?php echo __( '問問 Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
+                                <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
+                            </div>
+                        </div>
+                        <?php
+                    } else {
+                        $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( '適用性聲明書', 'textdomain' );
+                        $content = generate_content($iso_category_title.$prompt);
+                        $items_class = new embedded_items();
+                        ?>
+                        <div class="content">
+                            <fieldset>
+                                <label for="draft-title"><?php echo __( 'Title', 'textdomain' );?></label><br>
+                                <input type="text" id="draft-title" value="<?php echo $iso_category_title.$prompt;?>" class="text ui-widget-content ui-corner-all" />
+                                <label for="draft-category"><?php echo __( 'Category', 'textdomain' );?></label><br>
+                                <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
+                                <label for="draft-content"><?php echo __( 'Content', 'textdomain' );?></label><br>
+                                <textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea>
+                                <?php if (is_site_admin()) {?>
+                                    <p><input type="button" id="save-draft" value="<?php echo __( 'Generate draft', 'textdomain' );?>" /></p>
+                                <?php }?>
+                            </fieldset>
+                            <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                                <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                             </div>
                         </div>
                         <?php
