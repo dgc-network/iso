@@ -2273,8 +2273,25 @@ if (!class_exists('display_documents')) {
                     <?php
                     if ($paged==1) {
                         $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( '文件表單列表符合高階結構（High-Level Structure, HLS）', 'textdomain' );
-                        $content = generate_content($iso_category_title.$prompt);
+                        $content = generate_content($iso_category_title.' '.$prompt);
 
+                        // Load HTML content into a DOMDocument
+                        libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
+                        $dom = new DOMDocument();
+                        $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
+                        
+                        // Extract text content from the DOM while trimming unnecessary whitespace
+                        $content_lines = [];
+                        foreach ($dom->getElementsByTagName('body')->item(0)->childNodes as $node) {
+                            $line = trim($node->textContent);
+                            if (!empty($line)) {
+                                $content_lines[] = $line;
+                            }
+                        }
+                        
+                        // Reset array keys
+                        $content_lines = array_values($content_lines);
+/*                        
                         // Split the content into an array by newlines
                         $content_lines = preg_split('/\r\n|\r|\n/', $content);
 
@@ -2288,7 +2305,7 @@ if (!class_exists('display_documents')) {
                         
                         // Reset array keys
                         $content_lines = array_values($content_lines);
-                        
+*/                        
                         // Output the result for debugging
                         
                         ?>
