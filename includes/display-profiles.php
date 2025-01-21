@@ -219,7 +219,7 @@ if (!class_exists('display_profiles')) {
             $gemini_api_key = get_user_meta($current_user_id, 'gemini_api_key', true);
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '我的帳號', 'textdomain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'My Accounts', 'textdomain' );?></h2>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('my-profile');?></div>
                 <div style="text-align: right">
@@ -278,6 +278,7 @@ if (!class_exists('display_profiles')) {
             <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
+                        <th><?php echo __( 'No.', 'textdomain' );?></th>
                         <th><?php echo __( 'Job', 'textdomain' );?></th>
                         <th><?php echo __( 'Description', 'textdomain' );?></th>
                         <th><?php echo __( 'Authorized', 'textdomain' );?></th>
@@ -291,7 +292,7 @@ if (!class_exists('display_profiles')) {
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
                             if ($doc_site == $site_id) {
                                 $job_number = get_post_meta($doc_id, 'job_number', true);
-                                $job_title = get_the_title($doc_id).'('.$job_number.')';
+                                $job_title = get_the_title($doc_id);
                                 $doc_content = get_post_field('post_content', $doc_id);
                                 $doc_number = get_post_meta($doc_id, 'doc_number', true);
                                 $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -318,6 +319,7 @@ if (!class_exists('display_profiles')) {
                         foreach ($documents as $doc) {
                             ?>
                             <tr id="edit-my-job-<?php echo $doc['doc_id']; ?>">
+                                <td style="text-align:center;"><?php echo esc_html($doc['job_number']); ?></td>
                                 <td style="text-align:center;"><?php echo esc_html($doc['job_title']); ?></td>
                                 <td><?php echo esc_html($doc['doc_title']); ?></td>
                                 <td style="text-align:center;"><input type="radio" <?php echo $doc['is_checked']; ?> /></td>
@@ -662,8 +664,10 @@ if (!class_exists('display_profiles')) {
                 </fieldset>
                 </div>
 
-                <label for="site-members"><?php echo __( '組織成員', 'textdomain' );?></label>
-                <?php echo $this->display_site_user_list();?>
+                <?php if (is_site_admin()) {?>
+                    <label for="site-members"><?php echo __( '組織成員', 'textdomain' );?></label>
+                    <?php echo $this->display_site_user_list();?>
+                <?php }?>
 
                 <label for="site-content"><?php echo __( 'NDA條款', 'textdomain' );?></label>
                 <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
@@ -674,7 +678,7 @@ if (!class_exists('display_profiles')) {
                 <label for="unified-number"><?php echo __( '統一編號', 'textdomain' );?></label>
                 <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
 
-                
+                <?php if (is_site_admin()) {?>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><label for="site-jobs"><?php echo __( '工作職掌', 'textdomain' );?></label></div>
                     <div style="text-align: right">
@@ -684,6 +688,7 @@ if (!class_exists('display_profiles')) {
                 <div id="site-job-list">
                     <?php echo $this->display_site_job_list();?>
                 </div>
+                <?php }?>
 
             </fieldset>
             <?php if (is_site_admin()) {?>

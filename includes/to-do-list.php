@@ -479,7 +479,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '啟動表單', 'textdomain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( 'Start Job', 'textdomain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('start-job');?></div>
@@ -492,9 +492,9 @@ if (!class_exists('to_do_list')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
+                            <th><?php echo __( 'No.', 'textdomain' );?></th>
                             <th><?php echo __( 'Job', 'textdomain' );?></th>
                             <th><?php echo __( 'Document', 'textdomain' );?></th>
-                            <th><?php echo __( 'Authorized', 'textdomain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -509,7 +509,7 @@ if (!class_exists('to_do_list')) {
                             $doc_id = get_the_ID();
                             $job_title = get_the_title();
                             $job_number = get_post_meta($doc_id, 'job_number', true);
-                            if ($job_number) $job_title .= '('.$job_number.')';
+                            //if ($job_number) $job_title .= '('.$job_number.')';
 
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -519,9 +519,9 @@ if (!class_exists('to_do_list')) {
                             $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
                             ?>
                             <tr id="edit-start-job-<?php echo $doc_id;?>">
+                                <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
-                                <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
                             </tr>
                             <?php
                         endwhile;
