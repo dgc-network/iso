@@ -2317,7 +2317,7 @@ if (!class_exists('display_documents')) {
                                     endwhile;
                                     wp_reset_postdata();
                                     if (is_site_admin()) {?>
-                                        <button id="proceed-to-copy" class="button" style="margin:5px; text-align:center;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'textdomain' );?></button>
+                                        <button id="proceed-to-copy" class="button" style="margin:5px; width:99%;"><?php echo __( 'Copy the checked documents from iso-helper.com', 'textdomain' );?></button>
                                     <?php }
                                 endif;
                                 ?>
