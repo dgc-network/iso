@@ -466,7 +466,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#iso-category-dialog").html(response.html_contain);
-                    if ($("#is-site-admin").val() === "1") {
+                    //if ($("#is-site-admin").val() === "1") {
                         $("#iso-category-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
@@ -516,7 +516,7 @@ jQuery(document).ready(function($) {
                                 }
                             },
                         });
-                    }
+                    //}
                     $("#iso-category-dialog").dialog('open');
                 },
                 error: function (error) {

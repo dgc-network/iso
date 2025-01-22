@@ -2357,13 +2357,13 @@ if (!class_exists('display_documents')) {
                                     while ($query->have_posts()) : $query->the_post();
                                         $doc_id = get_the_ID();
                                         $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                                        $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                                        $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                                        $site_id = get_post_meta($doc_id, 'site_id', true);
+                                        //$doc_number = get_post_meta($doc_id, 'doc_number', true);
+                                        //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+                                        //$site_id = get_post_meta($doc_id, 'site_id', true);
                                         ?>
                                         <div>
                                             <input type="checkbox" class="copy-document-class" id="<?php echo $doc_id;?>" checked />
-                                            <label for="<?php echo $doc_id;?>"><?php echo $doc_title.'('.$doc_number.')';?></label>
+                                            <label for="<?php echo $doc_id;?>"><?php echo $doc_title;?></label>
                                         </div>
                                         <?php
                                     endwhile;
