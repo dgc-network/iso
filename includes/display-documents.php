@@ -2279,16 +2279,16 @@ if (!class_exists('display_documents')) {
                         // Load HTML content into a DOMDocument
                         libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
                         $dom = new DOMDocument();
-                        $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
+                        $dom->loadHTML(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'));
                         
                         // Initialize an array to store extracted content
-                        $content_parts = [];
+                        $content_lines = [];
                         
                         // Extract content from <li> tags
                         foreach ($dom->getElementsByTagName('li') as $li) {
                             $line = trim($li->textContent);
                             if (!empty($line)) {
-                                $content_parts[] = $line;
+                                $content_lines[] = $line;
                             }
                         }
                         
@@ -2296,80 +2296,22 @@ if (!class_exists('display_documents')) {
                         foreach ($dom->getElementsByTagName('p') as $p) {
                             $line = trim($p->textContent);
                             if (!empty($line)) {
-                                $content_parts[] = $line;
+                                $content_lines[] = $line;
                             }
                         }
                         
-                        // Extract content from <br> tags
-                        // Since <br> tags do not contain text, split by <br> manually
+                        // Handle <br> tags manually
                         $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $content);
                         $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
                         foreach ($lines_from_br as $line) {
                             $line = trim($line);
                             if (!empty($line)) {
-                                $content_parts[] = $line;
-                            }
-                        }
-                        
-                        // Remove duplicates and reset keys
-                        $content_parts = array_values(array_unique($content_parts));
-                        
-                        // Example output for testing/debugging
-                        //print_r($content_parts);
-/*                        
-                        // Load HTML content into a DOMDocument
-                        libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
-                        $dom = new DOMDocument();
-                        $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
-                        
-                        // Extract <li> content into an array
-                        $content_lines = [];
-                        foreach ($dom->getElementsByTagName('li') as $li) {
-                            $line = trim($li->textContent); // Extract and trim the text content
-                            if (!empty($line)) {
-                                $content_lines[] = $line; // Add non-empty lines to the array
-                            }
-                        }
-                        
-                        // Reset array keys
-                        $content_lines = array_values($content_lines);
-                        
-                        // Example output for testing/debugging
-                        //print_r($content_lines);
-                        
-/*
-                        // Load HTML content into a DOMDocument
-                        libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
-                        $dom = new DOMDocument();
-                        $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
-                        
-                        // Extract text content from the DOM while trimming unnecessary whitespace
-                        $content_lines = [];
-                        foreach ($dom->getElementsByTagName('body')->item(0)->childNodes as $node) {
-                            $line = trim($node->textContent);
-                            if (!empty($line)) {
                                 $content_lines[] = $line;
                             }
                         }
                         
-                        // Reset array keys
-                        $content_lines = array_values($content_lines);
-/*                        
-                        // Split the content into an array by newlines
-                        $content_lines = preg_split('/\r\n|\r|\n/', $content);
-
-                        // Trim whitespace from each line
-                        $content_lines = array_map('trim', $content_lines);
-                        
-                        // Remove empty lines
-                        $content_lines = array_filter($content_lines, function ($line) {
-                            return !empty($line);
-                        });
-                        
-                        // Reset array keys
-                        $content_lines = array_values($content_lines);
-*/                        
-                        // Output the result for debugging
+                        // Remove duplicates and reset keys
+                        $content_lines = array_values(array_unique($content_lines));
                         
                         ?>
                         <div class="content">                            
