@@ -2318,57 +2318,12 @@ if (!class_exists('display_documents')) {
                             foreach ($tempDom->getElementsByTagName('li') as $li) {
                                 $line = trim($li->textContent);
                                 if (!empty($line)) {
-                                    $content_lines[] = $line;
+                                    //$content_lines[] = $line;
+                                    $content_lines[] = '<li>'.$line.'</li>';
                                 }
                             }
                         }
-/*                        
-                        foreach ($dom->getElementsByTagName('p') as $p) {
-                            // Get the inner HTML of the <p> element
-                            $innerHTML = '';
-                            foreach ($p->childNodes as $child) {
-                                $innerHTML .= $dom->saveHTML($child);
-                            }
-                        
-                            // Replace <br> tags with <li> tags
-                            $html_with_li = preg_replace('/<br\s*\/?>/i', '</li><li>', $innerHTML);
-                        
-                            // Wrap the content in <ul> tags to ensure valid HTML
-                            $html_with_li_wrapped = "<ul><li>$html_with_li</li></ul>";
-                        
-                            // Load the updated HTML into a new DOMDocument
-                            $tempDom = new DOMDocument();
-                            @$tempDom->loadHTML($html_with_li_wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-                        
-                            // Extract content from <li> tags
-                            foreach ($tempDom->getElementsByTagName('li') as $li) {
-                                $line = trim($li->textContent);
-                                if (!empty($line)) {
-                                    $content_lines[] = $line;
-                                }
-                            }
-                        }
-/*                        
-                        foreach ($dom->getElementsByTagName('p') as $p) {
-                            // Get the inner HTML of the <p> element
-                            $innerHTML = '';
-                            foreach ($p->childNodes as $child) {
-                                $innerHTML .= $dom->saveHTML($child);
-                            }
-                        
-                            // Replace <br> tags with newlines
-                            $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $innerHTML);
-                        
-                            // Split the content into lines based on newlines
-                            $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
-                            foreach ($lines_from_br as $line) {
-                                $line = trim($line);
-                                if (!empty($line)) {
-                                    $content_lines[] = $line;
-                                }
-                            }
-                        }
-*/
+
                         // Remove duplicates and reset keys
                         $content_lines = array_values(array_unique($content_lines));
 
