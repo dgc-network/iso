@@ -2363,7 +2363,7 @@ if (!class_exists('display_documents')) {
                         
                         // Reset array keys
                         //$content_lines = array_values($content_lines);
-                        
+*/                        
                         ?>
                         <div class="content">                            
                             <?php echo $content;?>
