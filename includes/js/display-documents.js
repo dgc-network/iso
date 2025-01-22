@@ -410,7 +410,13 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 //$('#result-container').html(response.html_contain);
                 //activate_document_dialog_data($("#doc-id").val());
-                window.location.replace(window.location.href);
+                //window.location.replace(window.location.href);
+                // Get existing URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                // Remove or update the parameters
+                urlParams.set("paged", 1);
+                // Redirect to the updated URL
+                window.location.href = "?" + urlParams.toString();
             },
             error: function(error){
                 console.error(error);                    
