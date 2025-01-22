@@ -340,6 +340,7 @@ function generate_content($prompt=false, $each_line_link=false) {
 
         if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
             $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
+/*
             if ($each_line_link) {
                 // Split the content into an array by newlines
                 $content_lines = preg_split('/\r\n|\r|\n/', $generated_text);
@@ -356,6 +357,7 @@ function generate_content($prompt=false, $each_line_link=false) {
                 $content_lines = array_values($content_lines);
                 return $content_lines;
             }
+*/
             return convert_content_to_styled_html($generated_text);
         } else {
             return __( 'Failed to generate text. Please enter the API key in my-profile page first.', 'textdomain' );
