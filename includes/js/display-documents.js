@@ -408,8 +408,9 @@ jQuery(document).ready(function($) {
                 'action': 'set_document_dialog_data',
             },
             success: function (response) {
-                $('#result-container').html(response.html_contain);
-                activate_document_dialog_data($("#doc-id").val());
+                //$('#result-container').html(response.html_contain);
+                //activate_document_dialog_data($("#doc-id").val());
+                window.location.replace(window.location.href);
             },
             error: function(error){
                 console.error(error);                    

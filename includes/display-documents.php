@@ -512,7 +512,7 @@ if (!class_exists('display_documents')) {
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                        <input type="text" id="ask-gemini" placeholder="<?php echo __( '問問 Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
+                        <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                     </div>
                 </div>            
 
@@ -593,7 +593,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($post_id, 'doc_number', '-');
                 update_post_meta($post_id, 'doc_revision', __( 'draft', 'textdomain' ));
                 update_post_meta($post_id, 'is_doc_report', 0);
-                $response['html_contain'] = $this->display_document_dialog($post_id);
+                //$response['html_contain'] = $this->display_document_dialog($post_id);
             }
             wp_send_json($response);
         }
