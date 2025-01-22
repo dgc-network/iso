@@ -2280,11 +2280,19 @@ if (!class_exists('display_documents')) {
                         libxml_use_internal_errors(true);
 
                         // Create a new DOMDocument instance
-                        $dom = new DOMDocument();
+                        $dom = new DOMDocument('1.0', 'UTF-8');
+
+                        // Ensure the content is UTF-8 encoded
+                        if (!mb_check_encoding($content, 'UTF-8')) {
+                            $content = mb_convert_encoding($content, 'UTF-8', 'auto');
+                        }
                         
-                        // Load the HTML content as-is, ensuring the proper encoding
-                        $dom->loadHTML('<meta charset="UTF-8">' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                        // Add the necessary structure if the content is partial HTML
+                        $content = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' . $content . '</body></html>';
                         
+                        // Load the HTML content into the DOMDocument
+                        $dom->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
                         // Initialize an array to store extracted content
                         $content_lines = [];
                         
