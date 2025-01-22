@@ -2332,6 +2332,25 @@ if (!class_exists('display_documents')) {
                             <?php //echo $content;?>
                             <?php
                             foreach ($content_lines as $line) {
+                                $line = trim($line); // Ensure the line is trimmed
+                                $starts_with_number_or_roman = preg_match('/^(I{1,3}|IV|V|VI|\d+)/i', $line); // Check for numbers or Roman numerals
+                                $ends_with_colon = preg_match('/[:：]$/', $line); // Check if the string ends with ':' or '：'
+                            
+                                if (strlen($line) < 100) {
+                                    if ($starts_with_number_or_roman || $ends_with_colon) {
+                                        // Display the string without a link
+                                        echo htmlspecialchars($line) . "<br>";
+                                    } else {
+                                        // Create a link for the string
+                                        $prompt = urlencode($line); // URL-encode the prompt
+                                        $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
+                                        $link = home_url($link);
+                                        echo "<a href=\"$link\" target=\"_blank\">" . htmlspecialchars($line) . "</a><br>";
+                                    }
+                                }
+                            }
+/*                            
+                            foreach ($content_lines as $line) {
                                 $line = trim($line); // Ensure there is no leading or trailing whitespace
                             
                                 // Check if the string starts with a number or Roman numerals
