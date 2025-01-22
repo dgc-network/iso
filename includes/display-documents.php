@@ -2327,7 +2327,8 @@ if (!class_exists('display_documents')) {
                                 $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
                                 $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
                                 $link = home_url($link);
-                                echo "<a href=\"$link\">$line</a><br>";
+                                //echo "<a href=\"$link\">$line</a><br>";
+                                echo "<a href=\"$link\" target=\"_blank\">$line</a><br>";
                             }
                             ?>
                             <fieldset>
