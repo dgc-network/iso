@@ -2284,6 +2284,29 @@ if (!class_exists('display_documents')) {
                         // Initialize an array to store extracted content
                         $content_lines = [];
                         
+                        // Array of tags to process
+                        $tags = ['li', 'p'];
+
+                        // Extract content from <li> and <p> tags
+                        foreach ($tags as $tag) {
+                            foreach ($dom->getElementsByTagName($tag) as $element) {
+                                $line = trim($element->textContent);
+                                if (!empty($line)) {
+                                    $content_lines[] = $line;
+                                }
+                            }
+                        }
+                        
+                        // Handle <br> tags manually
+                        $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $content);
+                        $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
+                        foreach ($lines_from_br as $line) {
+                            $line = trim($line);
+                            if (!empty($line)) {
+                                $content_lines[] = $line;
+                            }
+                        }
+/*                        
                         // Extract content from <li> tags
                         foreach ($dom->getElementsByTagName('li') as $li) {
                             $line = trim($li->textContent);
@@ -2309,7 +2332,7 @@ if (!class_exists('display_documents')) {
                                 $content_lines[] = $line;
                             }
                         }
-                        
+*/                        
                         // Remove duplicates and reset keys
                         $content_lines = array_values(array_unique($content_lines));
                         
