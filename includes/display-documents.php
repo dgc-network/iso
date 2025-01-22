@@ -2281,6 +2281,47 @@ if (!class_exists('display_documents')) {
                         $dom = new DOMDocument();
                         $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
                         
+                        // Initialize an array to store extracted content
+                        $content_parts = [];
+                        
+                        // Extract content from <li> tags
+                        foreach ($dom->getElementsByTagName('li') as $li) {
+                            $line = trim($li->textContent);
+                            if (!empty($line)) {
+                                $content_parts[] = $line;
+                            }
+                        }
+                        
+                        // Extract content from <p> tags
+                        foreach ($dom->getElementsByTagName('p') as $p) {
+                            $line = trim($p->textContent);
+                            if (!empty($line)) {
+                                $content_parts[] = $line;
+                            }
+                        }
+                        
+                        // Extract content from <br> tags
+                        // Since <br> tags do not contain text, split by <br> manually
+                        $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $content);
+                        $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
+                        foreach ($lines_from_br as $line) {
+                            $line = trim($line);
+                            if (!empty($line)) {
+                                $content_parts[] = $line;
+                            }
+                        }
+                        
+                        // Remove duplicates and reset keys
+                        $content_parts = array_values(array_unique($content_parts));
+                        
+                        // Example output for testing/debugging
+                        //print_r($content_parts);
+/*                        
+                        // Load HTML content into a DOMDocument
+                        libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
+                        $dom = new DOMDocument();
+                        $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'));
+                        
                         // Extract <li> content into an array
                         $content_lines = [];
                         foreach ($dom->getElementsByTagName('li') as $li) {
