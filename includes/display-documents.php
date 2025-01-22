@@ -2374,7 +2374,7 @@ if (!class_exists('display_documents')) {
                         <div class="content">                            
                             <?php echo $content;?>
                             <?php
-                            print_r($content_lines);
+                            echo print_r($content_lines);
 
                             foreach ($content_lines as $line) {
                                 $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
