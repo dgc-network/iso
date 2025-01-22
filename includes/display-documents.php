@@ -2293,6 +2293,7 @@ if (!class_exists('display_documents')) {
                             $line_p = trim($p->textContent);
                             if (!empty($line_p)) {
                                 // Handle <br> tags manually
+                                $without_br = true;
                                 $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $line_p);
                                 $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
                                 foreach ($lines_from_br as $line) {
@@ -2300,7 +2301,9 @@ if (!class_exists('display_documents')) {
                                     if (!empty($line)) {
                                         $content_lines[] = $line;
                                     }
+                                    $without_br = false;
                                 }
+                                if ($without_br) $content_lines[] = $line_p;
                             }
                         }
                         
