@@ -2298,6 +2298,27 @@ if (!class_exists('display_documents')) {
                         
                         // Extract content from <p> tags
                         foreach ($dom->getElementsByTagName('p') as $p) {
+                            // Get the inner HTML of the <p> element
+                            $innerHTML = '';
+                            foreach ($p->childNodes as $child) {
+                                $innerHTML .= $dom->saveHTML($child);
+                            }
+                        
+                            // Replace <br> tags with newlines
+                            $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $innerHTML);
+                        
+                            // Split the content into lines based on newlines
+                            $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
+                            foreach ($lines_from_br as $line) {
+                                $line = trim($line);
+                                if (!empty($line)) {
+                                    $content_lines[] = $line;
+                                }
+                            }
+                        }
+/*                        
+                        // Extract content from <p> tags
+                        foreach ($dom->getElementsByTagName('p') as $p) {
                             $line_p = trim($p->textContent);
                             if (!empty($line_p)) {
                                 // Handle <br> tags manually
@@ -2314,7 +2335,7 @@ if (!class_exists('display_documents')) {
                                 if ($without_br) $content_lines[] = $line_p;
                             }
                         }
-                        
+*/                        
                         // Remove duplicates and reset keys
                         $content_lines = array_values(array_unique($content_lines));
 /*                        
@@ -2374,7 +2395,7 @@ if (!class_exists('display_documents')) {
                         <div class="content">                            
                             <?php echo $content;?>
                             <?php
-                            echo print_r($content_lines, true);
+                            //print_r($content_lines, true);
 
                             foreach ($content_lines as $line) {
                                 $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
