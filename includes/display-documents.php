@@ -2276,6 +2276,45 @@ if (!class_exists('display_documents')) {
                         //$content_lines = generate_content($iso_category_title.' '.$prompt, true);
                         $content = generate_content($iso_category_title.' '.$prompt);
 
+                        // Suppress warnings for invalid HTML
+                        libxml_use_internal_errors(true);
+
+                        // Create a new DOMDocument instance
+                        $dom = new DOMDocument();
+                        
+                        // Load the HTML content as-is, ensuring the proper encoding
+                        $dom->loadHTML('<meta charset="UTF-8">' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                        
+                        // Initialize an array to store extracted content
+                        $content_lines = [];
+                        
+                        // Extract content from <p> tags
+                        foreach ($dom->getElementsByTagName('p') as $p) {
+                            $line_p = trim($p->textContent);
+                            if (!empty($line_p)) {
+                                // Handle <br> tags manually
+                                $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $line_p);
+                                $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
+                                foreach ($lines_from_br as $line) {
+                                    $line = trim($line);
+                                    if (!empty($line)) {
+                                        $content_lines[] = $line;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Filter strings that include a colon (either `:` or `：`)
+                        $content_lines = array_filter($content_lines, function ($line) {
+                            return strpos($line, ':') !== false || strpos($line, '：') !== false;
+                        });
+                        
+                        // Remove duplicates and reset keys
+                        $content_lines = array_values(array_unique($content_lines));
+/*                        
+                        // Print the resulting array (for debugging)
+                        print_r($content_lines);
+                        
                         // Load HTML content into a DOMDocument
                         libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
                         $dom = new DOMDocument();
@@ -2288,7 +2327,7 @@ if (!class_exists('display_documents')) {
                         foreach ($dom->getElementsByTagName('p') as $p) {
                             $line_p = trim($p->textContent);
                             if (!empty($line_p)) {
-/*
+
                                 // Extract content from <li> tags
                                 foreach ($dom->getElementsByTagName('li') as $li) {
                                     $line = trim($li->textContent);
@@ -2296,7 +2335,7 @@ if (!class_exists('display_documents')) {
                                         $content_lines[] = $line;
                                     }
                                 }
-*/                                
+
                                 // Handle <br> tags manually
                                 $without_br = true;
                                 $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $line_p);
