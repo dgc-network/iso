@@ -2318,8 +2318,8 @@ if (!class_exists('display_documents')) {
                             foreach ($tempDom->getElementsByTagName('li') as $li) {
                                 $line = trim($li->textContent);
                                 if (!empty($line)) {
-                                    //$content_lines[] = $line;
-                                    $content_lines[] = '<li>'.$line.'</li>';
+                                    $content_lines[] = $line;
+                                    //$content_lines[] = '<li>'.$line.'</li>';
                                 }
                             }
                         }
@@ -2332,12 +2332,26 @@ if (!class_exists('display_documents')) {
                             <?php //echo $content;?>
                             <?php
                             foreach ($content_lines as $line) {
+                                if (strlen($line) < 100) { // Check if the string length is less than 100
+                                    if (preg_match('/^\d/', $line)) { // Check if the line begins with a numeric value
+                                        echo htmlspecialchars($line) . "<br>"; // Display the string without a link
+                                    } else {
+                                        $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
+                                        $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
+                                        $link = home_url($link);
+                                        echo "<li><a href=\"$link\" target=\"_blank\">" . htmlspecialchars($line) . "</a></li>";
+                                    }
+                                }
+                            }
+/*                            
+                            foreach ($content_lines as $line) {
                                 $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
                                 $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
                                 $link = home_url($link);
                                 //echo "<a href=\"$link\">$line</a><br>";
                                 echo "<a href=\"$link\" target=\"_blank\">$line</a><br>";
                             }
+*/
                             ?>
                             <fieldset>
                                 <?php
