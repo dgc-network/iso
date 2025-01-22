@@ -2339,54 +2339,16 @@ if (!class_exists('display_documents')) {
                                 if (strlen($line) < 100) {
                                     if ($starts_with_number_or_roman || $ends_with_colon) {
                                         // Display the string without a link
-                                        echo htmlspecialchars($line) . "<br>";
+                                        echo "<p>" . htmlspecialchars($line) . "</p>";
                                     } else {
                                         // Create a link for the string
                                         $prompt = urlencode($line); // URL-encode the prompt
-                                        $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
-                                        $link = home_url($link);
-                                        echo "<a href=\"$link\" target=\"_blank\">" . htmlspecialchars($line) . "</a><br>";
-                                    }
-                                }
-                            }
-/*                            
-                            foreach ($content_lines as $line) {
-                                $line = trim($line); // Ensure there is no leading or trailing whitespace
-                            
-                                // Check if the string starts with a number or Roman numerals
-                                if (preg_match('/^(\d+|[IVXLCDM]+)\b/', $line)) {
-                                    // Display the string without a link
-                                    echo "<p>$line</p>";
-                                } elseif (strlen($line) < 100) {
-                                    // For strings less than 100 characters, create a link
-                                    $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
-                                    $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
-                                    $link = home_url($link);
-                                    echo "<li><a href=\"$link\" target=\"_blank\">$line</a></li>";
-                                }
-                            }
-/*                            
-                            foreach ($content_lines as $line) {
-                                if (strlen($line) < 100) { // Check if the string length is less than 100
-                                    if (preg_match('/^\d/', $line)) { // Check if the line begins with a numeric value
-                                        echo htmlspecialchars($line) . "<br>"; // Display the string without a link
-                                    } else {
-                                        $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
                                         $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
                                         $link = home_url($link);
                                         echo "<li><a href=\"$link\" target=\"_blank\">" . htmlspecialchars($line) . "</a></li>";
                                     }
                                 }
                             }
-/*                            
-                            foreach ($content_lines as $line) {
-                                $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
-                                $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
-                                $link = home_url($link);
-                                //echo "<a href=\"$link\">$line</a><br>";
-                                echo "<a href=\"$link\" target=\"_blank\">$line</a><br>";
-                            }
-*/
                             ?>
                             <fieldset>
                                 <?php
