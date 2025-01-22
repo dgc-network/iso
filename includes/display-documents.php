@@ -2307,11 +2307,6 @@ if (!class_exists('display_documents')) {
                             }
                         }
                         
-                        // Filter strings that include a colon (either `:` or `：`)
-                        $content_lines = array_filter($content_lines, function ($line) {
-                            return strpos($line, ':') !== false || strpos($line, '：') !== false;
-                        });
-                        
                         // Remove duplicates and reset keys
                         $content_lines = array_values(array_unique($content_lines));
 /*                        
