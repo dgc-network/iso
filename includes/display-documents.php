@@ -2316,94 +2316,19 @@ if (!class_exists('display_documents')) {
                                 }
                             }
                         }
-/*                        
-                        // Extract content from <p> tags
-                        foreach ($dom->getElementsByTagName('p') as $p) {
-                            $line_p = trim($p->textContent);
-                            if (!empty($line_p)) {
-                                // Handle <br> tags manually
-                                $without_br = true;
-                                $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $line_p);
-                                $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
-                                foreach ($lines_from_br as $line) {
-                                    $line = trim($line);
-                                    if (!empty($line)) {
-                                        $content_lines[] = $line;
-                                    }
-                                    $without_br = false;
-                                }
-                                if ($without_br) $content_lines[] = $line_p;
-                            }
-                        }
-*/                        
                         // Remove duplicates and reset keys
                         $content_lines = array_values(array_unique($content_lines));
-/*                        
-                        // Print the resulting array (for debugging)
-                        print_r($content_lines);
-                        
-                        // Load HTML content into a DOMDocument
-                        libxml_use_internal_errors(true); // Suppress warnings for invalid HTML
-                        $dom = new DOMDocument();
-                        $dom->loadHTML(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'));
-                        
-                        // Initialize an array to store extracted content
-                        $content_lines = [];
-                        
-                        // Extract content from <p> tags
-                        foreach ($dom->getElementsByTagName('p') as $p) {
-                            $line_p = trim($p->textContent);
-                            if (!empty($line_p)) {
 
-                                // Extract content from <li> tags
-                                foreach ($dom->getElementsByTagName('li') as $li) {
-                                    $line = trim($li->textContent);
-                                    if (!empty($line)) {
-                                        $content_lines[] = $line;
-                                    }
-                                }
-
-                                // Handle <br> tags manually
-                                $without_br = true;
-                                $html_with_br_as_newlines = preg_replace('/<br\s*\/?>/i', "\n", $line_p);
-                                $lines_from_br = preg_split('/\n+/', strip_tags($html_with_br_as_newlines));
-                                foreach ($lines_from_br as $line) {
-                                    $line = trim($line);
-                                    if (!empty($line)) {
-                                        $content_lines[] = $line;
-                                    }
-                                    $without_br = false;
-                                }
-        
-                                if ($without_br) $content_lines[] = $line_p;
-                            }
-                        }
-                        
-
-                        // Filter strings that include a colon (either `:` or `：`)
-                        $content_lines = array_filter($content_lines, function ($line) {
-                            return strpos($line, ':') !== false || strpos($line, '：') !== false;
-                        });
-                        
-                        // Remove duplicates and reset keys
-                        $content_lines = array_values(array_unique($content_lines));
-                        
-                        // Reset array keys
-                        //$content_lines = array_values($content_lines);
-*/                        
                         ?>
                         <div class="content">                            
-                            <?php echo $content;?>
+                            <?php //echo $content;?>
                             <?php
-                            //print_r($content_lines, true);
-
                             foreach ($content_lines as $line) {
                                 $prompt = urlencode($line); // URL-encode the prompt to ensure proper formatting
                                 $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
                                 $link = home_url($link);
                                 echo "<a href=\"$link\">$line</a><br>";
                             }
-
                             ?>
                             <fieldset>
                                 <?php

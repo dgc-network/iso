@@ -373,6 +373,7 @@ function convert_content_to_styled_html($content) {
     $content = preg_replace('/^\#\#\s*(.+?)\s*$/um', '<h2>$1</h2>', $content);
     $content = preg_replace('/\*\*([^\*]+)\*\*/', '<strong>$1</strong>', $content); // Bold
     $content = preg_replace('/\*([^\*]+)\*/', '<em>$1</em>', $content);           // Italic
+/*
     $content = preg_replace('/^\s*\*\s(.+)$/m', '<li>$1</li>', $content);         // List items
     $content = preg_replace_callback(
         '/(<li>.*?<\/li>)+/s',
@@ -381,10 +382,11 @@ function convert_content_to_styled_html($content) {
         },
         $content
     );
+*/    
     $content = preg_replace('/\n{2,}/', '</p><p>', $content); // Paragraphs
     $content = '<p>' . $content . '</p>'; // Wrap in paragraph tags
     $content = str_replace("\n", '<br>', $content); // Line breaks
-    $content = preg_replace('/<\/ul>\s*<ul>/', '', $content); // Clean nested lists
+    //$content = preg_replace('/<\/ul>\s*<ul>/', '', $content); // Clean nested lists
     return $content;
 }
 
