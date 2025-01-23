@@ -808,7 +808,9 @@ if (!class_exists('display_profiles')) {
             ?>
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
+<?php /*                
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
+*/?>
                 <label for="display-name"><?php echo __( 'Name', 'textdomain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email', 'textdomain' );?></label>
