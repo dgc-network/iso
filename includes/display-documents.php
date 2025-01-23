@@ -255,6 +255,7 @@ if (!class_exists('display_documents')) {
                         'value'   => $site_id,
                         'compare' => '=',    
                     ),
+                ),
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'doc_number',
                 'order'          => 'ASC',
