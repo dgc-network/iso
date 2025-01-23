@@ -518,7 +518,7 @@ jQuery(document).ready(function($) {
                                         '_user_id': $("#user-id").val(),
                                         '_display_name': $("#display-name").val(),
                                         '_user_email': $("#user-email").val(),
-                                        '_is_site_admin': $('#is-site-admin').is(":checked") ? 1 : 0,
+                                        '_is_site_admin': $('#is-site-admin-setting').is(":checked") ? 1 : 0,
                                         '_select_site': $("#select-site").val(),
                                     },
                                     success: function (response) {

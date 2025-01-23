@@ -808,9 +808,7 @@ if (!class_exists('display_profiles')) {
             ?>
             <fieldset>
                 <input type="hidden" id="user-id" value="<?php echo $user_id;?>" />
-<?php /*                
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-*/?>
                 <label for="display-name"><?php echo __( 'Name', 'textdomain' );?></label>
                 <input type="text" id="display-name" value="<?php echo $user_data->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email', 'textdomain' );?></label>
@@ -852,8 +850,8 @@ if (!class_exists('display_profiles')) {
                     <label for="select-site"><?php echo __( 'Site', 'textdomain' );?></label>
                     <select id="select-site" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id);?></select>
                     <div>
-                    <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> />
-                    <label for="is-site-admin"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
+                    <input type="checkbox" id="is-site-admin-setting" <?php echo $is_admin_checked;?> />
+                    <label for="is-site-admin-setting"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
                     </div>
                     <?php
                 } else {
@@ -868,8 +866,8 @@ if (!class_exists('display_profiles')) {
                     }
                     ?>
                     <div>
-                    <input type="checkbox" id="is-site-admin" <?php echo $is_admin_checked;?> disabled />
-                    <label for="is-site-admin"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
+                    <input type="checkbox" id="is-site-admin-setting" <?php echo $is_admin_checked;?> disabled />
+                    <label for="is-site-admin-setting"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
                     </div>
                     <?php
                 }
