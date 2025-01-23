@@ -1608,11 +1608,11 @@ if (!class_exists('display_documents')) {
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="field-title"><?php echo __( 'Field Title', 'textdomain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
-                <?php $types = $this->get_field_type_data();?>
                 <label for="field-type"><?php echo __( 'Field Type', 'textdomain' );?></label>
+                <?php $types = $this->get_field_type_data();?>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
                 <?php foreach ($types as $value => $label): ?>
-                    <option value="<?php echo esc_attr($value); ?>" <?php echo ($field_type === $value) ? 'selected' : ''; ?>>
+                    <option value="<?php echo esc_attr($value); ?>" <?php echo ($field_type == $value) ? 'selected' : ''; ?>>
                         <?php echo esc_html($label); ?>
                     </option>
                 <?php endforeach; ?>
