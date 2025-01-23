@@ -73,12 +73,17 @@ if (!class_exists('display_documents')) {
             elseif (is_site_not_configured()) display_NDA_assignment();
             else {
                 // Display document list if no specific parameters are existed
-                if (($_GET['_category']!='embedded') && !isset($_GET['_doc_id']) && !isset($_GET['_duplicate_document']) && !isset($_GET['_start_ai'])) {
+                if (
+                    (!isset($_GET['_category']) || $_GET['_category'] != 'embedded') &&
+                    !isset($_GET['_doc_id']) &&
+                    !isset($_GET['_duplicate_document']) &&
+                    !isset($_GET['_start_ai'])
+                ) {
                     echo $this->display_document_list();
                 }
 
                 $items_class = new embedded_items();
-                if ($_GET['_category']=='embedded') {
+                if (isset($_GET['_category']) && $_GET['_category'] === 'embedded') {
                     if (isset($_GET['_embedded_id'])) echo $items_class->display_embedded_dialog($_GET['_embedded_id']);
                     else echo $items_class->display_embedded_list();
                 }
