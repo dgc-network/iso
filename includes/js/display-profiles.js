@@ -188,7 +188,7 @@ jQuery(document).ready(function($) {
                             });
                         },
                         "Cancel": function () {
-                            $("#my-job-action-dialog").dialog('close');
+                            $("#my-job-action-list").dialog('close');
                         },
                     });
                     $("#my-job-action-list").dialog('open');
