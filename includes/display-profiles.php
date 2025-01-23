@@ -14,10 +14,10 @@ if (!class_exists('display_profiles')) {
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
-
+/*
             add_action( 'wp_ajax_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
-
+*/
             add_action( 'wp_ajax_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
             add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
@@ -335,14 +335,16 @@ if (!class_exists('display_profiles')) {
             <?php
             return ob_get_clean();
         }
-
+/*
         function get_my_job_list_data() {
             $response = array('html_contain' => $this->display_my_job_list());
             wp_send_json($response);
         }
-
+*/
         function display_my_job_action_list($doc_id=false) {
             ob_start();
+            $job_content = get_post_field('post_content', $doc_id);
+            echo $job_content
             ?>
             <fieldset>
             <table style="width:100%;">
