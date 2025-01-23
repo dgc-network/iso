@@ -14,10 +14,7 @@ if (!class_exists('display_profiles')) {
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
-/*
-            add_action( 'wp_ajax_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
-*/
+
             add_action( 'wp_ajax_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
             add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
@@ -69,7 +66,6 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_get_site_list_data', array( $this, 'get_site_list_data' ) );
             add_action( 'wp_ajax_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
-    
         }
 
         function enqueue_display_profile_scripts() {
@@ -87,10 +83,10 @@ if (!class_exists('display_profiles')) {
         function display_select_profile($select_option=false) {
             ?>
             <select id="select-profile">
-                <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( '我的帳號', 'textdomain' );?></option>
-                <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( '組織設定', 'textdomain' );?></option>
-                <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( '部門資料', 'textdomain' );?></option>
-                <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( '文件類別', 'textdomain' );?></option>
+                <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( 'My Account', 'textdomain' );?></option>
+                <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( 'Site Configuration', 'textdomain' );?></option>
+                <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( 'Departments', 'textdomain' );?></option>
+                <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
             </select>
             <?php
         }
@@ -219,7 +215,7 @@ if (!class_exists('display_profiles')) {
             $gemini_api_key = get_user_meta($current_user_id, 'gemini_api_key', true);
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( 'My Accounts', 'textdomain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'My Account', 'textdomain' );?></h2>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('my-profile');?></div>
                 <div style="text-align: right">
@@ -335,12 +331,7 @@ if (!class_exists('display_profiles')) {
             <?php
             return ob_get_clean();
         }
-/*
-        function get_my_job_list_data() {
-            $response = array('html_contain' => $this->display_my_job_list());
-            wp_send_json($response);
-        }
-*/
+
         function display_my_job_action_list($doc_id=false) {
             ob_start();
             $job_content = get_post_field('post_content', $doc_id);
@@ -369,10 +360,10 @@ if (!class_exists('display_profiles')) {
                         $next_job_title = get_the_title($next_job);
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($next_job==-1) {
-                            $next_job_title = __( '發行', 'textdomain' );
+                            $next_job_title = __( 'Released', 'textdomain' );
                         }
                         if ($next_job==-2) {
-                            $next_job_title = __( '廢止', 'textdomain' );
+                            $next_job_title = __( 'Removed', 'textdomain' );
                         }
                         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                         $is_checked = $this->is_action_authorized($action_id) ? 'checked' : '';
@@ -412,18 +403,15 @@ if (!class_exists('display_profiles')) {
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
-            $is_authorized = $this->is_action_authorized($action_id) ? __( '取消已授權', 'textdomain' ) : __( '準備授權', 'textdomain' );
+            $is_authorized = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
             $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
             $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
             ?>
             <div>
-<?php /*                
-                <h4><?php echo __( '設定「', 'textdomain' ).get_the_title($doc_id).__( '」職務的「', 'textdomain' ).get_the_title($action_id).__( '」動作', 'textdomain' ).' → <span style="color:blue;">'.$is_authorized;?></span></h4>
-*/?>
                 <h4>
                     <?php 
                     printf(
-                        __( '設定「%s」在「%s」職務的動作', 'textdomain' ),
+                        __( 'Set the action %s of the job %s', 'textdomain' ),
                         get_the_title($action_id),
                         get_the_title($doc_id),
                     );
@@ -432,10 +420,10 @@ if (!class_exists('display_profiles')) {
                 </h4>                
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
-                <label for="frequence-report-setting"><?php echo __( '循環表單啟動設定', 'textdomain' );?></label>
+                <label for="frequence-report-setting"><?php echo __( 'Cycle Form Start Settings', 'textdomain' );?></label>
                 <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($frequence_report_setting);?></select>
                 <div id="frquence-report-start-time-div">
-                    <label for="frequence-report-start-time"><?php echo __( '循環表單啟動時間', 'textdomain' );?></label><br>
+                    <label for="frequence-report-start-time"><?php echo __( 'Cycle Form Start Time', 'textdomain' );?></label><br>
                     <input type="date" id="frequence-report-start-date" value="<?php echo wp_date('Y-m-d', $frequence_report_start_time);?>" />
                     <input type="time" id="frequence-report-start-time" value="<?php echo wp_date('H:i', $frequence_report_start_time);?>" />
                     <input type="hidden" id="prev-start-time" value="<?php echo $frequence_report_start_time;?>" />
@@ -641,7 +629,7 @@ if (!class_exists('display_profiles')) {
             $company_address = get_post_meta($site_id, 'company_address', true);
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '組織設定', 'textdomain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'Site Configuration', 'textdomain' );?></h2>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $this->display_select_profile('site-profile');?></div>
                 <div style="text-align: right">
@@ -650,7 +638,7 @@ if (!class_exists('display_profiles')) {
 
             <fieldset>
                 <input type="hidden" id="site-id" value="<?php echo $site_id;?>" />
-                <label for="site-title"><?php echo __( '組織名稱', 'textdomain' );?></label>
+                <label for="site-title"><?php echo __( 'Site Name', 'textdomain' );?></label>
                 <input type="text" id="site-title" value="<?php echo get_the_title($site_id);?>" class="text ui-widget-content ui-corner-all" />
                 <div id="site-hint" style="display:none; color:#999;"></div>
 
@@ -667,22 +655,22 @@ if (!class_exists('display_profiles')) {
                 </div>
 
                 <?php if (is_site_admin()) {?>
-                    <label for="site-members"><?php echo __( '組織成員', 'textdomain' );?></label>
+                    <label for="site-members"><?php echo __( 'Site Members', 'textdomain' );?></label>
                     <?php echo $this->display_site_user_list();?>
                 <?php }?>
 
-                <label for="site-content"><?php echo __( 'NDA條款', 'textdomain' );?></label>
+                <label for="site-content"><?php echo __( 'Non-Disclosure Agreement', 'textdomain' );?></label>
                 <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
-                <label for="company-phone"><?php echo __( '聯絡電話', 'textdomain' );?></label>
+                <label for="company-phone"><?php echo __( 'Phon', 'textdomain' );?></label>
                 <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="company-address"><?php echo __( '公司地址', 'textdomain' );?></label>
+                <label for="company-address"><?php echo __( 'Company Address', 'textdomain' );?></label>
                 <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
-                <label for="unified-number"><?php echo __( '統一編號', 'textdomain' );?></label>
+                <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
                 <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
 
                 <?php if (is_site_admin()) {?>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><label for="site-jobs"><?php echo __( '工作職掌', 'textdomain' );?></label></div>
+                    <div><label for="site-jobs"><?php echo __( 'Job List', 'textdomain' );?></label></div>
                     <div style="text-align: right">
                         <input type="text" id="search-site-job" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
@@ -1285,10 +1273,10 @@ if (!class_exists('display_profiles')) {
                         $next_job_title = get_the_title($next_job);
                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                         if ($next_job==-1) {
-                            $next_job_title = __( '發行', 'textdomain' );
+                            $next_job_title = __( 'Released', 'textdomain' );
                         }
                         if ($next_job==-2) {
-                            $next_job_title = __( '廢止', 'textdomain' );
+                            $next_job_title = __( 'Removed', 'textdomain' );
                         }
                         $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
                         ?>
@@ -1516,14 +1504,14 @@ if (!class_exists('display_profiles')) {
             endwhile;
             wp_reset_postdata();
             if ($selected_option==-1){
-                $options .= '<option value="-1" selected>'.__( '發行', 'textdomain' ).'</option>';
+                $options .= '<option value="-1" selected>'.__( 'Released', 'textdomain' ).'</option>';
             } else {
-                $options .= '<option value="-1">'.__( '發行', 'textdomain' ).'</option>';
+                $options .= '<option value="-1">'.__( 'Released', 'textdomain' ).'</option>';
             }
             if ($selected_option==-2){
-                $options .= '<option value="-2" selected>'.__( '廢止', 'textdomain' ).'</option>';
+                $options .= '<option value="-2" selected>'.__( 'Removed', 'textdomain' ).'</option>';
             } else {
-                $options .= '<option value="-2">'.__( '廢止', 'textdomain' ).'</option>';
+                $options .= '<option value="-2">'.__( 'Removed', 'textdomain' ).'</option>';
             }
             return $options;
         }
@@ -1792,28 +1780,28 @@ if (!class_exists('display_profiles')) {
             $submit_date = get_user_meta($user_id, 'submit_date', true);
             ?>
             <div class="ui-widget" id="result-container">
-                <h2 style="display:inline; text-align:center;"><?php echo __( '保密協議', 'textdomain' );?></h2>
+                <h2 style="display:inline; text-align:center;"><?php echo __( 'Non-Disclosure Agreement', 'textdomain' );?></h2>
                 <div>
-                    <label for="site-title"><b><?php echo __( '甲方', 'textdomain' );?></b></label>
+                    <label for="site-title"><b><?php echo __( 'Party A', 'textdomain' );?></b></label>
                     <input type="text" id="site-title" value="<?php echo $site_title;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="unified-number"><?php echo __( '統一編號', 'textdomain' );?></label>
+                    <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
                     <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
                 </div>
                 <div>
-                    <label for="display-name"><b><?php echo __( '乙方', 'textdomain' );?></b></label>
+                    <label for="display-name"><b><?php echo __( 'Party B', 'textdomain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-                    <label for="identity-number"><?php echo __( '身分證字號', 'textdomain' );?></label>
+                    <label for="identity-number"><?php echo __( 'ID Number', 'textdomain' );?></label>
                     <input type="text" id="identity-number" value="<?php echo $identity_number;?>" class="text ui-widget-content ui-corner-all" disabled />
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
                 <div id="nda-content"><?php echo $nda_content;?></div>
                 <div style="display:flex;">
-                    <?php echo __( '簽核日期', 'textdomain' );?>
+                    <?php echo __( 'Sign-off Date', 'textdomain' );?>
                     <input type="text" id="submit-date" value="<?php echo $submit_date;?>" disabled />
                 </div>
                 <div>
-                    <label for="signature-pad"><?php echo __( '審核簽名', 'textdomain' );?></label>
+                    <label for="signature-pad"><?php echo __( 'Review Signature', 'textdomain' );?></label>
                     <div id="signature-pad-div">
                         <div>
                             <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
@@ -1822,7 +1810,7 @@ if (!class_exists('display_profiles')) {
                     </div>
                 </div>
                 <div style="display:flex;">
-                    <?php echo __( '審核日期', 'textdomain' );?>
+                    <?php echo __( 'Approval Date', 'textdomain' );?>
                     <input type="date" id="nda-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
                 </div>
                 <hr>
@@ -1836,9 +1824,9 @@ if (!class_exists('display_profiles')) {
             $user = get_userdata($user_id);
             ?>
             <div class="ui-widget" id="result-container">
-                <h2 style="display:inline; text-align:center;"><?php echo __( '保密協議', 'textdomain' );?></h2>
+                <h2 style="display:inline; text-align:center;"><?php echo __( 'Non-Disclosure Agreement', 'textdomain' );?></h2>
                 <div>
-                    <label for="select-nda-site"><b><?php echo __( '甲方', 'textdomain' );?></b></label>
+                    <label for="select-nda-site"><b><?php echo __( 'Party A', 'textdomain' );?></b></label>
                     <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
                         <option value=""><?php echo __( 'Select Option', 'textdomain' );?></option>
                         <?php
@@ -1866,13 +1854,13 @@ if (!class_exists('display_profiles')) {
                             }
                         ?>
                     </select>
-                    <label for="unified-number"><?php echo __( '統一編號', 'textdomain' );?></label>
+                    <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
                     <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" disabled />
                 </div>
                 <div>
-                    <label for="display-name"><b><?php echo __( '乙方', 'textdomain' );?></b></label>
+                    <label for="display-name"><b><?php echo __( 'Party B', 'textdomain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-                    <label for="identity-number"><?php echo __( '身分證字號', 'textdomain' );?></label>
+                    <label for="identity-number"><?php echo __( 'ID Number', 'textdomain' );?></label>
                     <input type="text" id="identity-number" class="text ui-widget-content ui-corner-all" />
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
@@ -1880,7 +1868,7 @@ if (!class_exists('display_profiles')) {
                     <!-- The site content will be displayed here -->
                 </div>
                 <div>
-                    <label for="signature-pad"><?php echo __( '簽名', 'textdomain' );?></label>
+                    <label for="signature-pad"><?php echo __( 'Canvas', 'textdomain' );?></label>
                     <div id="signature-pad-div">
                         <div>
                             <canvas id="signature-pad" width="500" height="200" style="border:1px solid #000;"></canvas>
@@ -1889,7 +1877,7 @@ if (!class_exists('display_profiles')) {
                     </div>
                 </div>
                 <div style="display:flex;">
-                    <?php echo __( '日期：', 'textdomain' );?>
+                    <?php echo __( 'Approval Date', 'textdomain' );?>
                     <input type="date" id="submit-date" value="<?php echo wp_date('Y-m-d', time())?>"/>
                 </div>
                 <hr>
@@ -1916,7 +1904,6 @@ if (!class_exists('display_profiles')) {
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    //'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been rejected. Check to the administrator.', 'textdomain' ), 'wrap' => true]],
                     'body_contents' => [
                         [
                             'type' => 'text',
@@ -1931,7 +1918,6 @@ if (!class_exists('display_profiles')) {
                 ]);
 
                 $params = array(
-                    //'log_message' => 'The NDA of '.$user->display_name.' has been rejected by '.wp_get_current_user()->display_name,
                     'log_message' => sprintf(
                         __('The NDA of %s has been rejected by %s', 'textdomain'),
                         $user->display_name,
@@ -1960,7 +1946,6 @@ if (!class_exists('display_profiles')) {
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    //'body_contents'   => [['type' => 'text', 'text' => __( 'The NDA of ', 'textdomain' ).$user->display_name.__( ' has been approved. Go to your profile.', 'textdomain' ), 'wrap' => true]],
                     'body_contents' => [
                         [
                             'type' => 'text',
@@ -1975,7 +1960,6 @@ if (!class_exists('display_profiles')) {
                 ]);
 
                 $params = array(
-                    //'log_message' => 'The NDA of '.$user->display_name.' has been approved by '.wp_get_current_user()->display_name,
                     'log_message' => sprintf(
                         __('The NDA of %s has been approved by %s', 'textdomain'),
                         $user->display_name,
@@ -2006,7 +1990,6 @@ if (!class_exists('display_profiles')) {
                     $line_bot_api->send_flex_message([
                         'to' => $line_user_id,
                         'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                        //'body_contents'   => [['type' => 'text', 'text' => $user->display_name.__( ' has signed the NDA of ', 'textdomain' ).get_the_title($site_id).'.', 'wrap' => true]],
                         'body_contents' => [
                             [
                                 'type' => 'text',

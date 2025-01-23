@@ -52,9 +52,9 @@ if (!class_exists('to_do_list')) {
             $iot_messages = new iot_messages();
             ?>
             <select id="select-todo">
-                <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( '待辦事項', 'textdomain' );?></option>
+                <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( 'Todo List', 'textdomain' );?></option>
                 <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'textdomain' );?></option>
-                <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( '簽核記錄', 'textdomain' );?></option>
+                <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( 'Sign-off Record', 'textdomain' );?></option>
                 <?php if (current_user_can('administrator') || $iot_messages->is_site_with_iot_device()) {?>
                     <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'textdomain' );?></option>
                 <?php }?>
@@ -157,7 +157,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '待辦事項', 'textdomain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( 'Todo List', 'textdomain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('todo-list');?></div>
@@ -978,8 +978,8 @@ if (!class_exists('to_do_list')) {
             if (empty($next_leadtime)) $next_leadtime=86400;
         
             if ($next_job>0)   $todo_title = get_the_title($next_job);
-            if ($next_job==-1) $todo_title = __( '發行', 'textdomain' );
-            if ($next_job==-2) $todo_title = __( '廢止', 'textdomain' );
+            if ($next_job==-1) $todo_title = __( 'Released', 'textdomain' );
+            if ($next_job==-2) $todo_title = __( 'Removed', 'textdomain' );
 
             $params['todo_title'] = $todo_title;
             $params['user_id'] = $user_id;
@@ -1129,9 +1129,8 @@ if (!class_exists('to_do_list')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
-            //$text_message = __( '你在「', 'textdomain' ).$todo_title.__( '」的職務有一份文件需要在', 'textdomain' ).$due_date.__( '前簽核完成，你可以點擊下方連結查看該文件。', 'textdomain' );
             $text_message = sprintf(
-                __('你在「%s」的職務有一份文件需要在%s前簽核完成，你可以點擊下方連結查看該文件。', 'textdomain'),
+                __('Your job in %s has a document that needs to be signed and completed before %s. You can click the link below to view the document.', 'textdomain'),
                 $todo_title,
                 $due_date
             );            
@@ -1292,18 +1291,14 @@ if (!class_exists('to_do_list')) {
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $doc_title .= '('.$doc_number.')';
             $submit_time = get_post_meta($todo_id, 'submit_time', true);
-            $text_message=$doc_title.' has been released on '.wp_date( get_option('date_format'), $submit_time ).'.';
 
-            //$text_message = __( '文件「', 'textdomain' ).$doc_title.__( '」已經在', 'textdomain' ).wp_date( get_option('date_format'), $submit_time );
-            //if ($next_job==-1) $text_message .= __( '發行，你可以點擊下方連結查看該文件。', 'textdomain' );
-            //if ($next_job==-2) $text_message .= __( '廢止，你可以點擊下方連結查看該文件。', 'textdomain' );
             if ($next_job==-1) $text_message = sprintf(
-                __( '文件「%s」已經在%s發行，你可以點擊下方連結查看該文件。', 'textdomain' ),
+                __( 'The document %s has been released on %s, you can click the link below to view the document.', 'textdomain' ),
                 $doc_title,
                 wp_date( get_option('date_format'), $submit_time )
             );
             if ($next_job==-2) $text_message = sprintf(
-                __( '文件「%s」已經在%s廢止，你可以點擊下方連結查看該文件。', 'textdomain' ),
+                __( 'The document %s has been removed on %s, you can click the link below to view the document.', 'textdomain' ),
                 $doc_title,
                 wp_date( get_option('date_format'), $submit_time )
             );
@@ -1414,7 +1409,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '簽核記錄', 'textdomain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( 'Sign-off Record', 'textdomain' );?></h2>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $this->display_select_todo('action-log');?></div>
                     <div style="text-align: right">
@@ -1468,9 +1463,6 @@ if (!class_exists('to_do_list')) {
                     'compare' => '='
                 );
             }
-
-            // Query to get matching posts
-            //$query = new WP_Query($args);
 
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
@@ -1710,8 +1702,8 @@ if (!class_exists('to_do_list')) {
                             $submit_time = get_post_meta($log_id, 'submit_time', true);
                             $next_job = get_post_meta($log_id, 'next_job', true);
                             if (!$next_job) $next_job = get_post_meta($submit_action, 'next_job', true);
-                            $job_title = ($next_job==-1) ? __( '發行', 'textdomain' ) : get_the_title($next_job);
-                            $job_title = ($next_job==-2) ? __( '廢止', 'textdomain' ) : $job_title;
+                            $job_title = ($next_job==-1) ? __( 'Released', 'textdomain' ) : get_the_title($next_job);
+                            $job_title = ($next_job==-2) ? __( 'Removed', 'textdomain' ) : $job_title;
                             if ($submit_action) $submit_title = get_the_title($submit_action);
                             else {
                                 $submit_title = '';
@@ -1790,6 +1782,7 @@ if (!class_exists('to_do_list')) {
         }
 
         public function process_authorized_action_posts_daily() {
+            $profiles_class = new display_profiles();
             // process the todo-list
             $args = array(
                 'post_type'      => 'todo',
@@ -1812,7 +1805,6 @@ if (!class_exists('to_do_list')) {
                 while ($query->have_posts()) {
                     $query->the_post();
                     $todo_id = get_the_ID();
-                    $profiles_class = new display_profiles();
                     $action_query = $this->retrieve_todo_action_list_data($todo_id);
                     if ($action_query->have_posts()) :
                         while ($action_query->have_posts()) : $action_query->the_post();
@@ -1833,4 +1825,3 @@ if (!class_exists('to_do_list')) {
     }
     $todo_class = new to_do_list();
 }
-

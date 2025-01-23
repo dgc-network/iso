@@ -235,14 +235,7 @@ function init_webhook_events() {
                                     'weight' => 'bold',
                                 ),
                             );
-/*                        
-                            $body_contents = array();
-                            $text_message = __( '您可以點擊下方列示，直接執行按鍵「', 'textdomain' ) . $message['text'] . __( '」相關作業。', 'textdomain' );
-                            $text_message = sprintf(
-                                __( '您可以點擊下方列示，直接執行按鍵「%s」的相關作業。', 'textdomain' ),
-                                $message['text']
-                            );
-*/                            
+
                             $body_content = array(
                                 'type' => 'text',
                                 'text' => sprintf(
@@ -340,24 +333,6 @@ function generate_content($prompt=false, $each_line_link=false) {
 
         if (isset($decoded_response['candidates'][0]['content']['parts'][0]['text'])) {
             $generated_text = $decoded_response['candidates'][0]['content']['parts'][0]['text'];
-/*
-            if ($each_line_link) {
-                // Split the content into an array by newlines
-                $content_lines = preg_split('/\r\n|\r|\n/', $generated_text);
-
-                // Trim whitespace from each line
-                $content_lines = array_map('trim', $content_lines);
-                
-                // Remove empty lines
-                $content_lines = array_filter($content_lines, function ($line) {
-                    return !empty($line);
-                });
-                
-                // Reset array keys
-                $content_lines = array_values($content_lines);
-                return $content_lines;
-            }
-*/
             return convert_content_to_styled_html($generated_text);
         } else {
             return __( 'Failed to generate text. Please enter the API key in my-profile page first.', 'textdomain' );
@@ -395,16 +370,16 @@ function select_cron_schedules_option($selected_option = false) {
     $options = '<option value="">' . __('None', 'textdomain') . '</option>';
     
     $intervals = [
-        'hourly' => __('每小時', 'textdomain'),
-        'twicedaily' => __('每12小時', 'textdomain'),
-        'weekday_daily' => __('週間每日', 'textdomain'),
-        'daily' => __('每日', 'textdomain'),
-        'weekly' => __('每週', 'textdomain'),
-        'biweekly' => __('每二週', 'textdomain'),
-        'monthly' => __('每月', 'textdomain'),
-        'bimonthly' => __('每二月', 'textdomain'),
-        'half_yearly' => __('每半年', 'textdomain'),
-        'yearly' => __('每年', 'textdomain'),
+        'hourly' => __('Per hour', 'textdomain'),
+        'twicedaily' => __('Every 12 hours', 'textdomain'),
+        'weekday_daily' => __('Once Daily on Weekdays Only', 'textdomain'),
+        'daily' => __('Daily', 'textdomain'),
+        'weekly' => __('Weekly', 'textdomain'),
+        'biweekly' => __('Every Two Weeks', 'textdomain'),
+        'monthly' => __('Monthly', 'textdomain'),
+        'bimonthly' => __('Every Two Months', 'textdomain'),
+        'half_yearly' => __('Every Six Months', 'textdomain'),
+        'yearly' => __('Yearly', 'textdomain'),
     ];
 
     foreach ($intervals as $value => $label) {

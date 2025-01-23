@@ -98,7 +98,7 @@ if (!class_exists('embedded_items')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '嵌入項目', 'textdomain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'Embedded Items', 'textdomain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
@@ -387,7 +387,7 @@ if (!class_exists('embedded_items')) {
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '嵌入項目', 'textdomain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'Embedded Items', 'textdomain' );?></h2>
             <input type="hidden" id="embedded-id" value="<?php echo esc_attr($embedded_id);?>" />
             <input type="hidden" id="prev-embedded-id" value="<?php echo esc_attr($prev_embedded_id); ?>" />
             <input type="hidden" id="next-embedded-id" value="<?php echo esc_attr($next_embedded_id); ?>" />
@@ -673,7 +673,7 @@ if (!class_exists('embedded_items')) {
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="embedded-item-title"><?php echo __( 'Item', 'textdomain' );?></label>
                 <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
-                <label for="field-type"><?php echo __( '欄位型態', 'textdomain' );?></label>
+                <label for="field-type"><?php echo __( 'Field Type', 'textdomain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
                 <?php $types = $documents_class->get_field_type_data();?>
                 <?php foreach ($types as $value => $label): ?>
@@ -684,7 +684,7 @@ if (!class_exists('embedded_items')) {
                 </select>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
                 <textarea id="default-value" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
-                <label for="listing-style"><?php echo __( '對齊', 'textdomain' );?></label>
+                <label for="listing-style"><?php echo __( 'Align', 'textdomain' );?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">
                 <?php $styles = $documents_class->get_listing_style_data();?>
                 <?php foreach ($styles as $value => $label): ?>
@@ -1062,7 +1062,7 @@ if (!class_exists('embedded_items')) {
             $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '文件類別', 'textdomain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'Categories', 'textdomain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $profiles_class->display_select_profile('doc-category');?></div>
@@ -1169,7 +1169,6 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($category_id, 'iso_category', $iso_category);
 
                 $params = array(
-                    //'log_message' => __( 'Category', 'textdomain' ).'('.$category_title.')'.__( ' has been updated successfully.', 'textdomain' ),
                     'log_message' => sprintf(
                         __( 'Category (%s) has been updated successfully.', 'textdomain' ),
                         $category_title
@@ -1199,7 +1198,6 @@ if (!class_exists('embedded_items')) {
         function del_doc_category_dialog_data() {
             $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
             $params = array(
-                //'log_message' => __( 'Category', 'textdomain' ).'('.get_the_title($category_id).')'.__( ' has been deleted', 'textdomain' ),
                 'log_message' => sprintf(
                     __( 'Category (%s) has been deleted.', 'textdomain' ),
                     get_the_title($category_id)
@@ -1225,7 +1223,7 @@ if (!class_exists('embedded_items')) {
             endwhile;
             wp_reset_postdata();
             $selected = ($selected_option=="embedded") ? 'selected' : '';
-            $options .= '<option value="embedded" '.$selected.'>'.__( '嵌入項目', 'textdomain' ).'</option>';
+            $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
             return $options;
         }
         
@@ -1499,7 +1497,7 @@ if (!class_exists('embedded_items')) {
             $profiles_class = new display_profiles();
             ?>
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo __( '部門資料', 'textdomain' );?></h2>
+            <h2 style="display:inline;"><?php echo __( 'Departments', 'textdomain' );?></h2>
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div><?php $profiles_class->display_select_profile('department-card');?></div>
@@ -1627,7 +1625,7 @@ if (!class_exists('embedded_items')) {
                 <input type="text" id="department-title" value="<?php echo esc_attr($department_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="department-content"><?php echo __( 'Description', 'textdomain' );?></label>
                 <textarea id="department-content" rows="3" style="width:100%;"><?php echo esc_html($department_content);?></textarea>
-                <label for="department-members"><?php echo __( '部門成員', 'textdomain' );?></label>
+                <label for="department-members"><?php echo __( 'Department Members', 'textdomain' );?></label>
                 <?php echo $this->display_department_user_list($department_id);?>
                 <?php
                 // transaction data vs card key/value
@@ -1693,7 +1691,6 @@ if (!class_exists('embedded_items')) {
         function del_department_card_dialog_data() {
             $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
             $params = array(
-                //'log_message' => __( 'Department', 'textdomain' ).'('.get_the_title($department_id).')'.__( ' has been deleted', 'textdomain' ),
                 'log_message' => sprintf(
                     __( 'Department (%s) has been deleted.', 'textdomain' ),
                     get_the_title($department_id)

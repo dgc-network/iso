@@ -313,7 +313,6 @@ if (!class_exists('iot_messages')) {
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
-            //$profiles_class = new display_profiles();
             $query = $this->retrieve_exception_notification_setting_data($device_id, -1);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
@@ -797,19 +796,19 @@ if (!class_exists('iot_messages')) {
                 <input type="text" id="temperature-offset" value="<?php echo esc_attr($temperature_offset);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="record-frequency"><?php echo __( 'Record Frequency', 'textdomain' );?></label>
                 <select id="record-frequency" class="text ui-widget-content ui-corner-all" >
-                    <option value="daily" <?php echo ($record_frequency=='daily') ? 'selected' : '';?>><?php echo __( '每日記錄一次', 'textdomain' );?></option>
-                    <option value="twice-daily" <?php echo ($record_frequency=='twice-daily') ? 'selected' : '';?>><?php echo __( '12小時記錄一次', 'textdomain' );?></option>
-                    <option value="six-hours" <?php echo ($record_frequency=='six-hours') ? 'selected' : '';?>><?php echo __( '6小時記錄一次', 'textdomain' );?></option>
-                    <option value="three-hours" <?php echo ($record_frequency=='three-hours') ? 'selected' : '';?>><?php echo __( '3小時記錄一次', 'textdomain' );?></option>
-                    <option value="one-hour" <?php echo ($record_frequency=='one-hour') ? 'selected' : '';?>><?php echo __( '1小時記錄一次', 'textdomain' );?></option>
+                    <option value="daily" <?php echo ($record_frequency=='daily') ? 'selected' : '';?>><?php echo __( 'Record once a day', 'textdomain' );?></option>
+                    <option value="twice-daily" <?php echo ($record_frequency=='twice-daily') ? 'selected' : '';?>><?php echo __( 'Record once every 12 hours', 'textdomain' );?></option>
+                    <option value="six-hours" <?php echo ($record_frequency=='six-hours') ? 'selected' : '';?>><?php echo __( 'Record once every 6 hours', 'textdomain' );?></option>
+                    <option value="three-hours" <?php echo ($record_frequency=='three-hours') ? 'selected' : '';?>><?php echo __( 'Record once every 3 hours', 'textdomain' );?></option>
+                    <option value="one-hour" <?php echo ($record_frequency=='one-hour') ? 'selected' : '';?>><?php echo __( 'Record once every per hour', 'textdomain' );?></option>
                 </select>
                 <label for="records-removed"><?php echo __( 'Records Removed', 'textdomain' );?></label>
                 <select id="records-removed" class="text ui-widget-content ui-corner-all" >
-                    <option value="one-year" <?php echo ($records_removed=='one-year') ? 'selected' : '';?>><?php echo __( '一年以上', 'textdomain' );?></option>
-                    <option value="two-years" <?php echo ($records_removed=='two-years') ? 'selected' : '';?>><?php echo __( '二年以上', 'textdomain' );?></option>
-                    <option value="three-years" <?php echo ($records_removed=='three-years') ? 'selected' : '';?>><?php echo __( '三年以上', 'textdomain' );?></option>
-                    <option value="half-year" <?php echo ($records_removed=='half-year') ? 'selected' : '';?>><?php echo __( '六個月以上', 'textdomain' );?></option>
-                    <option value="three-months" <?php echo ($records_removed=='three-months') ? 'selected' : '';?>><?php echo __( '三個月以上', 'textdomain' );?></option>
+                    <option value="one-year" <?php echo ($records_removed=='one-year') ? 'selected' : '';?>><?php echo __( 'More than one year', 'textdomain' );?></option>
+                    <option value="two-years" <?php echo ($records_removed=='two-years') ? 'selected' : '';?>><?php echo __( 'Two years or more', 'textdomain' );?></option>
+                    <option value="three-years" <?php echo ($records_removed=='three-years') ? 'selected' : '';?>><?php echo __( 'Three years or more', 'textdomain' );?></option>
+                    <option value="half-year" <?php echo ($records_removed=='half-year') ? 'selected' : '';?>><?php echo __( 'More than six months', 'textdomain' );?></option>
+                    <option value="three-months" <?php echo ($records_removed=='three-months') ? 'selected' : '';?>><?php echo __( 'More than three months', 'textdomain' );?></option>
                 </select>
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number

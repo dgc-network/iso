@@ -119,11 +119,10 @@ if (!class_exists('display_documents')) {
                     $doc_id = sanitize_text_field($_GET['_duplicate_document']);
                     $this->generate_draft_document_data($doc_id);
                 }
-
             }
         }
 
-        // document post type
+        // document
         function register_document_post_type() {
             $labels = array(
                 'menu_name'     => _x('Documents', 'admin menu', 'textdomain'),
@@ -149,7 +148,7 @@ if (!class_exists('display_documents')) {
         function document_settings_content($post) {
             $doc_title = esc_attr(get_post_meta($post->ID, 'doc_title', true));
             ?>
-            <label for="doc_title"><?php echo __( '文件名稱', 'textdomain' );?></label>
+            <label for="doc_title"><?php echo __( 'Document Title', 'textdomain' );?></label>
             <input type="text" id="doc_title" name="doc_title" value="<?php echo $doc_title;?>" style="width:100%" >
             <?php
         }
@@ -163,7 +162,7 @@ if (!class_exists('display_documents')) {
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo __( '文件總覽', 'textdomain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( 'Documents', 'textdomain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
@@ -245,6 +244,84 @@ if (!class_exists('display_documents')) {
         function retrieve_document_data($paged=1, $is_doc_report=2) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'post_type'      => 'document',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        'compare' => '=',    
+                    ),
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'doc_number',
+                'order'          => 'ASC',
+            );
+
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
+            }
+
+            if ($is_doc_report == 0) {
+                $args['meta_query'][] = array(
+                    'key'     => 'is_doc_report',
+                    'value'   => 0,
+                    'compare' => '=',    
+                    'type'    => 'NUMERIC'
+                );
+            }
+
+            if ($is_doc_report == 1) {
+                $args['meta_query'][] = array(
+                    'key'     => 'is_doc_report',
+                    'value'   => 1,
+                    'compare' => '=',    
+                    'type'    => 'NUMERIC'
+                );
+            }
+
+            $select_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
+            if ($select_category) {
+                $args['meta_query'][] = array(
+                    'key'     => 'doc_category',
+                    'value'   => $select_category,
+                    'compare' => '=',
+                );
+            }
+
+            // Sanitize and handle search query
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
+            if (!empty($search_query)) {
+                $args['paged'] = 1;
+                $args['s'] = $search_query;
+            }
+
+            $query = new WP_Query($args);
+
+            // Check if query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('todo');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+            }
+
+            return $query;
+
+
+/*
             $site_filter = array(
                 'key'     => 'site_id',
                 'value'   => $site_id,
@@ -313,6 +390,7 @@ if (!class_exists('display_documents')) {
 
             $query = new WP_Query($args);
             return $query;
+*/            
         }
         
         function get_previous_doc_id($current_doc_id) {
@@ -431,19 +509,19 @@ if (!class_exists('display_documents')) {
             </div>
 
             <fieldset>
-                <label for="doc-number"><?php echo __( '文件編號', 'textdomain' );?></label>
+                <label for="doc-number"><?php echo __( 'Document No.', 'textdomain' );?></label>
                 <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-title"><?php echo __( '文件名稱', 'textdomain' );?></label>
+                <label for="doc-title"><?php echo __( 'Document Title', 'textdomain' );?></label>
                 <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-revision"><?php echo __( '文件版本', 'textdomain' );?></label>
+                <label for="doc-revision"><?php echo __( 'Document Rev.', 'textdomain' );?></label>
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="doc-category"><?php echo __( '文件類別', 'textdomain' );?></label><br>
+                <label for="doc-category"><?php echo __( 'Categories', 'textdomain' );?></label><br>
                 <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category);?></select>
 
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 
                 <div id="doc-content-div" style="<?php echo $is_content_display;?>">
-                    <label id="doc-content-label" class="button" for="doc-content"><?php echo __( '文件內容', 'textdomain' );?></label>
+                    <label id="doc-content-label" class="button" for="doc-content"><?php echo __( 'Document Content', 'textdomain' );?></label>
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="doc-content-preview" value="<?php echo __( 'Preview', 'textdomain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
@@ -451,12 +529,12 @@ if (!class_exists('display_documents')) {
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
-                    <label id="doc-field-label" class="button" for="doc-field"><?php echo __( '欄位設定', 'textdomain' );?></label>
+                    <label id="doc-field-label" class="button" for="doc-field"><?php echo __( 'Field Settings', 'textdomain' );?></label>
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="doc-report-preview" value="<?php echo __( 'Preview', 'textdomain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
                     <?php echo $this->display_doc_field_list($doc_id);?>
-                    <label id="doc-report-job-setting" class="button"><?php echo __( '職務設定', 'textdomain' );?></label>
+                    <label id="doc-report-job-setting" class="button"><?php echo __( 'Job Settings', 'textdomain' );?></label>
                 
                     <div id="mermaid-div">
                         <pre class="mermaid">
@@ -473,8 +551,8 @@ if (!class_exists('display_documents')) {
                                     $next_job = get_post_meta($action_id, 'next_job', true);
                                     $next_job_title = get_the_title($next_job);
                                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                                    if ($next_job==-1) $next_job_title = __( '發行', 'textdomain' );
-                                    if ($next_job==-2) $next_job_title = __( '廢止', 'textdomain' );
+                                    if ($next_job==-1) $next_job_title = __( 'Released', 'textdomain' );
+                                    if ($next_job==-2) $next_job_title = __( 'Removed', 'textdomain' );
                                     ?>
                                     <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
                                     <?php
@@ -502,7 +580,7 @@ if (!class_exists('display_documents')) {
 
                     <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'textdomain' );?></label>
                     <fieldset id="system-doc-div" style="display:none;">
-                        <label for="system-doc"><?php echo __( '欄位型態名稱', 'textdomain' );?></label>
+                        <label for="system-doc"><?php echo __( 'Field Type Name', 'textdomain' );?></label>
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
                         <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
                         <label for="multiple-select"><?php echo __( '是否多選', 'textdomain' );?></label>
@@ -858,7 +936,7 @@ if (!class_exists('display_documents')) {
                             echo '<th>'.esc_html($field_title).'</th>';
                         endwhile;
                         if (current_user_can('administrator')) {
-                            echo '<th>'. __( '待辦', 'textdomain' ).'</th>';
+                            echo '<th>'. __( 'Todo', 'textdomain' ).'</th>';
                         }
                         echo '</tr>';
                         wp_reset_postdata();
@@ -879,8 +957,8 @@ if (!class_exists('display_documents')) {
                             if (current_user_can('administrator')) {
                                 $next_job = get_post_meta($report_id, 'todo_status', true);
                                 $todo_status = ($next_job) ? get_the_title($next_job) : 'Draft';
-                                $todo_status = ($next_job==-1) ? __( '發行', 'textdomain' ) : $todo_status;
-                                $todo_status = ($next_job==-2) ? __( '廢止', 'textdomain' ) : $todo_status;
+                                $todo_status = ($next_job==-1) ? __( 'Released', 'textdomain' ) : $todo_status;
+                                $todo_status = ($next_job==-2) ? __( 'Removed', 'textdomain' ) : $todo_status;
                                 echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                             }
                             echo '</tr>';
@@ -1063,25 +1141,7 @@ if (!class_exists('display_documents')) {
             // Return the next report ID or null if no match is found
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-/*
-        function get_doc_report_list_data() {
-            $result = array();
-            // Check if _doc_id is set and not empty
-            if (!empty($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                // Optional search filter for doc report
-                $search_doc_report = isset($_POST['_search_doc_report']) ? sanitize_text_field($_POST['_search_doc_report']) : '';
-                $params = array(
-                    'doc_id'     => $doc_id,
-                    'search_doc_report' => $search_doc_report,
-                );
-                $result['html_contain'] = $this->display_doc_report_list($params);
-            } else {
-                $result['error'] = 'Document ID is missing.';
-            }
-            wp_send_json($result);
-        }
-*/
+
         function display_doc_report_dialog($report_id=false) {
             ob_start();
             $prev_report_id = $this->get_previous_report_id($report_id); // Fetch the previous ID
@@ -1119,7 +1179,7 @@ if (!class_exists('display_documents')) {
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                        <input type="text" id="ask-gemini" placeholder="<?php echo __( '問問 Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
+                        <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                     </div>
                 </div>            
                 
@@ -1158,7 +1218,7 @@ if (!class_exists('display_documents')) {
                     ?>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <input type="button" id="action-log-button" value="<?php echo __('簽核記錄', 'textdomain')?>" style="margin:3px;" />
+                        <input type="button" id="action-log-button" value="<?php echo __('Sign-off Record', 'textdomain')?>" style="margin:3px;" />
                         <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'textdomain' );?>" style="margin:3px;" />
                     </div>
                     <div style="text-align:right;">
@@ -1534,10 +1594,10 @@ if (!class_exists('display_documents')) {
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="field-title"><?php echo __( '欄位名稱', 'textdomain' );?></label>
+                <label for="field-title"><?php echo __( 'Field Title', 'textdomain' );?></label>
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <?php $types = $this->get_field_type_data();?>
-                <label for="field-type"><?php echo __( '欄位型態', 'textdomain' );?></label>
+                <label for="field-type"><?php echo __( 'Field Type', 'textdomain' );?></label>
                 <select id="field-type" class="text ui-widget-content ui-corner-all">
                 <?php foreach ($types as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($field_type === $value) ? 'selected' : ''; ?>>
@@ -1545,10 +1605,10 @@ if (!class_exists('display_documents')) {
                     </option>
                 <?php endforeach; ?>
                 </select>
-                <label for="default-value"><?php echo __( '預設值', 'textdomain' );?></label>
+                <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
                 <?php $styles = $this->get_listing_style_data();?>
-                <label for="listing-style"><?php echo __( '對齊', 'textdomain' ); ?></label>
+                <label for="listing-style"><?php echo __( 'Align', 'textdomain' ); ?></label>
                 <select id="listing-style" class="text ui-widget-content ui-corner-all">
                 <?php foreach ($styles as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($listing_style === $value) ? 'selected' : ''; ?>>
@@ -2277,7 +2337,7 @@ if (!class_exists('display_documents')) {
                 <fieldset>
                     <?php
                     if ($paged==1) {
-                        $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( '文件表單列表符合高階結構（High-Level Structure, HLS）', 'textdomain' );
+                        $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( 'The file list conforms to the High-Level Structure (HLS)', 'textdomain' );
                         //$content_lines = generate_content($iso_category_title.' '.$prompt, true);
                         $content = generate_content($iso_category_title.' '.$prompt);
 
@@ -2472,7 +2532,6 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_category', $draft_category);
 
                 $params = array(
-                    //'log_message' => $draft_title . __( ' has been created.', 'textdomain' ),
                     'log_message' => sprintf( __( 'Draft "%s" has been created.', 'textdomain' ), esc_html( $draft_title ) ),
                     'doc_id' => $draft_id,
                 );
@@ -2545,7 +2604,6 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(
-                //'log_message' => $doc_title . __( ' has been created.', 'textdomain' ),
                 'log_message' => sprintf( __( 'Document %s has been created.', 'textdomain' ), esc_html( $doc_title ) ),
                 'doc_id' => $doc_id,
             );
