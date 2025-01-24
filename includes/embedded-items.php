@@ -492,7 +492,7 @@ if (!class_exists('embedded_items')) {
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'embedded_number', time());
-                update_post_meta($post_id, 'is_public', 1);
+                //update_post_meta($post_id, 'is_public', 1);
 
                 $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) {
