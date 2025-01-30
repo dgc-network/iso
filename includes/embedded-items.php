@@ -608,7 +608,8 @@ if (!class_exists('embedded_items')) {
                 <tbody id="sortable-embedded-item-list">
                 <?php
                 $paged = max(1, get_query_var('paged')); // Get the current page number
-                $query = $this->retrieve_embedded_item_data($embedded_id, $paged);
+                //$query = $this->retrieve_embedded_item_data($embedded_id, $paged);
+                $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 $total_posts = $query->found_posts;
                 $total_pages = ceil($total_posts / get_option('operation_row_counts'));
 
@@ -853,8 +854,6 @@ if (!class_exists('embedded_items')) {
         }
 
         function get_embedded_item_keys($doc_id=false) {
-            //return array();
-            //if ($doc_id) $params = array('doc_id' => $doc_id);
             $_array = array();
             $documents_class = new display_documents();
             $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $doc_id));
