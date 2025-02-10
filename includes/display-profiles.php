@@ -1177,7 +1177,7 @@ if (!class_exists('display_profiles')) {
                 <label for="next-step"><?php echo __( 'Action', 'textdomain' );?></label>
                 <select id="next-step" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($next_step, true);?></select>
                 <label for="next-job"><?php echo __( 'Setup', 'textdomain' );?></label>
-                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
+                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job);?></select>
 <?php /*                                
                 <label for="next-leadtime"><?php echo __( 'Leadtime', 'textdomain' );?></label>
                 <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
@@ -1658,7 +1658,7 @@ if (!class_exists('display_profiles')) {
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="next-job"><?php echo __( 'Next Job', 'textdomain' );?></label>
-                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
+                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job);?></select>
                 <label for="next-leadtime"><?php echo __( 'Leadtime', 'textdomain' );?></label>
                 <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
@@ -1719,7 +1719,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function select_site_job_option_data($selected_option=0) {
+        function select_site_job_options($selected_option=0) {
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
