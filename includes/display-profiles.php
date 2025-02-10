@@ -113,10 +113,26 @@ if (!class_exists('display_profiles')) {
 
                 echo '</div>';
 
-                if ($_GET['_select_profile']=='update_post_type_and_meta_for_embedded_items') echo $this->update_post_type_and_meta_for_embedded_items();
+                if ($_GET['_select_profile']=='update_action_site_id_by_document') echo $this->update_action_site_id_by_document();
             }
         }
 
+        function update_action_site_id_by_document() {
+            $action_query = new WP_Query([
+                'post_type'  => 'action',
+                'posts_per_page' => -1
+            ]);
+
+            if ($action_query->have_posts()) {
+                foreach ($action_query->posts as $action_post) {
+                    $doc_id = get_post_meta($action_post->ID, 'doc_id', true);
+                    $site_id = get_post_meta($doc_id, 'site_id', true);
+                    update_post_meta($action_post->ID, 'site_id', $site_id);
+                }
+            }
+            wp_reset_postdata();
+        }
+        
         function update_post_type_and_meta_for_embedded_items() {
             // Step 1: Query posts of post type 'doc-field' with meta key 'default_value'
             $args = array(
@@ -1068,7 +1084,7 @@ if (!class_exists('display_profiles')) {
                     ?>
                 </div>
             </fieldset>
-            <div id="site-job-dialog" title="Job dialog"></div>
+            <div id="site-action-dialog" title="Action dialog"></div>
             <?php
             return ob_get_clean();
         }
