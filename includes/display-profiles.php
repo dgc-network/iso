@@ -618,7 +618,8 @@ if (!class_exists('display_profiles')) {
             register_post_type( 'site-profile', $args );
         }
 
-        function display_site_profile($_user_id=false) {
+        //function display_site_profile($_user_id=false) {
+        function display_site_profile() {
             ob_start();
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -676,7 +677,10 @@ if (!class_exists('display_profiles')) {
                     </div>
                 </div>
                 <div id="site-job-list">
-                    <?php echo $this->display_site_job_list();?>
+                    <?php //echo $this->display_site_job_list();?>
+                </div>
+                <div id="site-action-list">
+                    <?php echo $this->display_site_action_list();?>
                 </div>
                 <?php }?>
 
@@ -1003,6 +1007,132 @@ if (!class_exists('display_profiles')) {
             return $options;
         }
 
+        // Site actions
+        function display_site_action_list() {
+            ob_start();
+            ?>
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'No.', 'textdomain' );?></th>
+                        <th><?php echo __( 'Action', 'textdomain' );?></th>
+                        <th><?php echo __( 'Description', 'textdomain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_site_action_list_data($paged);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $action_id = get_the_ID();
+                            $action_title = get_the_title();
+                            $action_content = get_the_content();
+                            $action_number = get_post_meta($action_id, 'action_number', true);
+                            $doc_id = get_post_meta($action_id, 'doc_id', true);
+                            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            if ($doc_number) $doc_title .= '('.$doc_number.')';
+                            $action_title .= ': '.$doc_title
+                            //else $doc_title = get_the_content();
+                            // display the warning if the job without assigned actions
+                            //$action_query = $this->retrieve_doc_action_data($job_id);
+                            //$job_title = ($action_query->have_posts()) ? $job_title : '<span style="color:red;">'.$job_title.'</span>';
+                            // display the warning if the job without assigned users
+                            $users_query = $this->retrieve_users_by_doc_id($doc_id);
+                            $action_title = (!empty($users_query)) ? $action_title : '<span style="color:red;">'.$action_title.'</span>';
+                            ?>
+                            <tr id="edit-site-action-<?php echo $action_id;?>">
+                                <td style="text-align:center;"><?php echo esc_html($action_number);?></td>
+                                <td><?php echo $action_title;?></td>
+                                <td><?php echo $action_content;?></td>
+                            </tr>
+                            <?php 
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <?php if (is_site_admin()) {?>
+                    <div id="new-site-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <?php }?>
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    ?>
+                </div>
+            </fieldset>
+            <div id="site-job-dialog" title="Job dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_site_action_list_data($paged = 1) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            if (empty($user_doc_ids)) $user_doc_ids=array();
+
+            $args = array(
+                'post_type'      => 'action',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+                //'meta_key'       => 'job_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                //'order'          => 'ASC', // Sorting order (ascending)
+            );
+
+            if (!is_site_admin()) {
+            //    $args['post__in'] = $user_doc_ids; // Value is the array of job post IDs
+            }
+
+            if ($paged==0) $args['posts_per_page'] = -1;
+/*
+            if (isset($_GET['_search'])) {
+                $search_query = sanitize_text_field($_GET['_search']);
+                $args['meta_query'][] = array(
+                    'key'     => 'job_number',
+                    'value'   => $search_query,
+                    'compare' => 'LIKE',
+                );
+            }
+*/
+            $query = new WP_Query($args);
+
+            // Check if $query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+/*                
+                // Loop through meta query array to find and remove 'job_number'
+                foreach ($args['meta_query'] as $key => $meta_query) {
+                    if (isset($meta_query['key']) && $meta_query['key'] === 'job_number') {
+                        unset($args['meta_query'][$key]);
+                        break; // Stop looping once 'job_number' is found and removed
+                    }
+                }
+*/
+                // Set the search query parameter
+                $args['s'] = $search_query;            
+                // Reset pagination to page 1
+                $args['paged'] = 1;
+                $query = new WP_Query($args);
+            }
+
+            return $query;
+        }
+
         // Site job
         function display_site_job_list() {
             ob_start();
@@ -1108,8 +1238,6 @@ if (!class_exists('display_profiles')) {
 
             if ($paged==0) $args['posts_per_page'] = -1;
 
-
-            //if ($search_query) {
             if (isset($_GET['_search'])) {
                 $search_query = sanitize_text_field($_GET['_search']);
                 $args['meta_query'][] = array(
