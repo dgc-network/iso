@@ -1035,7 +1035,7 @@ if (!class_exists('display_profiles')) {
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
-                            $action_title .= ': '.$doc_title
+                            $action_title .= ': '.$doc_title;
                             //else $doc_title = get_the_content();
                             // display the warning if the job without assigned actions
                             //$action_query = $this->retrieve_doc_action_data($job_id);
