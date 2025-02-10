@@ -1149,6 +1149,106 @@ if (!class_exists('display_profiles')) {
             return $query;
         }
 
+        function display_site_action_dialog($action_id=false) {
+            ob_start();
+            $items_class = new embedded_items();
+            $action_number = get_post_meta($action_id, 'action_number', true);
+            $action_title = get_the_title($action_id);
+            $action_content = get_post_field('post_content', $action_id);
+            $department = get_post_meta($doc_id, 'department', true);
+            $department_id = get_post_meta($doc_id, 'department_id', true);
+            $is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
+            $is_checked = ($is_summary_job==1) ? 'checked' : '';
+            ?>
+                <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
+                <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
+                <label for="action-number"><?php echo __( 'No.', 'textdomain' );?></label>
+                <input type="text" id="action-number" value="<?php echo esc_attr($action_number);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="action-title"><?php echo __( 'Title', 'textdomain' );?></label>
+                <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
+                <textarea style="display:none;" id="action-content" class="visual-editor"><?php echo $action_content;?></textarea>
+<?php /*                
+                <label for="action-list"><?php echo __( 'Action List', 'textdomain' );?></label>
+                <?php echo $this->display_doc_action_list($doc_id);?>
+                <label for="department"><?php echo __( 'Department', 'textdomain' );?></label>
+                <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
+                <label for="user-list"><?php echo __( 'User List', 'textdomain' );?></label>
+                <?php echo $this->display_doc_user_list($doc_id);?>
+                <input type="checkbox" id="is-summary-job" <?php echo $is_checked?> />
+                <label for="is-summary-job"><?php echo __( 'Is Summary Job', 'textdomain' );?></label>
+*/?>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_site_job_dialog_data() {
+            $response = array();
+            if( isset($_POST['_action_id']) ) {
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $response = array('html_contain' => $this->display_site_action_dialog($action_id));
+            }
+            wp_send_json($response);
+        }
+
+        function set_site_job_dialog_data() {
+            $response = array();
+            if( isset($_POST['_action_id']) ) {
+                $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
+                $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
+                $action_number = isset($_POST['_action_number']) ? sanitize_text_field($_POST['_action_number']) : '';
+                $department_id = isset($_POST['_department_id']) ? sanitize_text_field($_POST['_department_id']) : 0;
+                $is_summary_job = isset($_POST['_is_summary_job']) ? sanitize_text_field($_POST['_is_summary_job']) : 0;
+                $data = array(
+                    'ID'           => $action_id,
+                    'post_title'   => $action_title,
+                    'post_content' => $_POST['_action_content'],
+                );
+                wp_update_post( $data );
+                update_post_meta($action_id, 'action_number', $action_number);
+                //update_post_meta($action_id, 'department_id', $department_id);
+                //update_post_meta($action_id, 'is_summary_job', $is_summary_job);
+
+                // Check if action_number is null
+                if ($action_number == null || $action_number === '') {
+                    // If null or empty, delete the meta key
+                    delete_post_meta($action_id, 'action_number');
+                }
+
+            } else {
+                $current_user_id = get_current_user_id();
+                $site_id = get_user_meta($current_user_id, 'site_id', true);
+                // new action
+                $new_post = array(
+                    'post_type'     => 'action',
+                    'post_title'    => __( 'New action', 'textdomain' ),
+                    'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
+                    'post_status'   => 'publish',
+                    'post_author'   => $current_user_id,
+                );    
+                $new_action_id = wp_insert_post($new_post);
+                update_post_meta($new_action_id, 'site_id', $site_id);
+                update_post_meta($new_action_id, 'action_number', '-');
+                
+                update_post_meta($new_action_id, 'doc_id', $new_doc_id);
+                update_post_meta($new_action_id, 'next_job', -1);
+                update_post_meta($new_action_id, 'next_leadtime', 86400);
+            }
+            $response['html_contain'] = $this->display_site_action_list();
+            wp_send_json($response);
+        }
+
+        function del_site_action_dialog_data() {
+            $response = array();
+            $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //if ($doc_title) echo 'You cannot delete this job';
+            //else wp_delete_post($doc_id, true);
+            wp_delete_post($action_id, true);
+            $response['html_contain'] = $this->display_site_action_list();
+            wp_send_json($response);
+        }
+
         // Site job
         function display_site_job_list() {
             ob_start();

@@ -620,6 +620,124 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // site-actions
+    activate_site_action_list_data();
+    function activate_site_action_list_data(){
+        $("#search-site-action").on( "change", function() {
+            // Get existing URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            var selectValue = $("#select-profile").val();
+            // Remove or Update the parameters
+            if (selectValue) urlParams.set("_select_profile", selectValue);
+            urlParams.set("_search", $(this).val());
+            urlParams.set("paged", 1);
+            // Redirect to the updated URL
+            window.location.href = "?" + urlParams.toString();
+        });
+
+        $("#new-site-action").on("click", function() {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_site_action_dialog_data',
+                },
+                success: function (response) {
+                    window.location.replace(window.location.href);
+                    activate_site_action_list_data();
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                }
+            });    
+        });
+    
+        $('[id^="edit-site-action-"]').on("click", function () {
+            const action_id = this.id.substring(17);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_site_action_dialog_data',
+                    '_action_id': action_id,
+                },
+                success: function (response) {
+                    $("#site-action-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#site-action-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_site_action_dialog_data',
+                                        '_action_id': $("#action-id").val(),
+                                        '_action_number': $("#action-number").val(),
+                                        '_action_title': $("#action-title").val(),
+                                        '_action_content': $("#action-content").val(),
+                                        //'_department_id': $("#department-id").val(),
+                                        //'_is_summary_job': $("#is-summary-job").is(":checked") ? 1 : 0,
+                                    },
+                                    success: function (response) {
+                                        $("#site-action-dialog").dialog('close');
+                                        window.location.replace(window.location.href);
+                                        //$("#site-job-list").html(response.html_contain);
+                                        //activate_site_job_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this site action?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_site_action_dialog_data',
+                                            '_action_id': $("#action-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#site-action-dialog").dialog('close');
+                                            window.location.replace(window.location.href);
+                                            //$("#site-job-list").html(response.html_contain);
+                                            //activate_site_job_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
+                    $("#site-action-dialog").dialog('open');
+                    activate_action_action_list_data(action_id);
+                    //activate_job_user_list_data(doc_id);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#site-action-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {}
+        });    
+    }
+
     // site-job
     activate_site_job_list_data();
     function activate_site_job_list_data(){
