@@ -41,6 +41,13 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_site_user_dialog_data', array( $this, 'del_site_user_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_site_user_dialog_data', array( $this, 'del_site_user_dialog_data' ) );
 
+            add_action( 'wp_ajax_get_site_action_dialog_data', array( $this, 'get_site_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_site_action_dialog_data', array( $this, 'get_site_action_dialog_data' ) );
+            add_action( 'wp_ajax_set_site_action_dialog_data', array( $this, 'set_site_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_site_action_dialog_data', array( $this, 'set_site_action_dialog_data' ) );
+            add_action( 'wp_ajax_del_site_action_dialog_data', array( $this, 'del_site_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_site_action_dialog_data', array( $this, 'del_site_action_dialog_data' ) );
+
             add_action( 'wp_ajax_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
             add_action( 'wp_ajax_set_site_job_dialog_data', array( $this, 'set_site_job_dialog_data' ) );
@@ -1155,10 +1162,10 @@ if (!class_exists('display_profiles')) {
             $action_number = get_post_meta($action_id, 'action_number', true);
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
-            $department = get_post_meta($doc_id, 'department', true);
-            $department_id = get_post_meta($doc_id, 'department_id', true);
-            $is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
-            $is_checked = ($is_summary_job==1) ? 'checked' : '';
+            //$department = get_post_meta($doc_id, 'department', true);
+            //$department_id = get_post_meta($doc_id, 'department_id', true);
+            //$is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
+            //$is_checked = ($is_summary_job==1) ? 'checked' : '';
             ?>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
@@ -1197,8 +1204,8 @@ if (!class_exists('display_profiles')) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
                 $action_number = isset($_POST['_action_number']) ? sanitize_text_field($_POST['_action_number']) : '';
-                $department_id = isset($_POST['_department_id']) ? sanitize_text_field($_POST['_department_id']) : 0;
-                $is_summary_job = isset($_POST['_is_summary_job']) ? sanitize_text_field($_POST['_is_summary_job']) : 0;
+                //$department_id = isset($_POST['_department_id']) ? sanitize_text_field($_POST['_department_id']) : 0;
+                //$is_summary_job = isset($_POST['_is_summary_job']) ? sanitize_text_field($_POST['_is_summary_job']) : 0;
                 $data = array(
                     'ID'           => $action_id,
                     'post_title'   => $action_title,
@@ -1230,7 +1237,7 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($new_action_id, 'site_id', $site_id);
                 update_post_meta($new_action_id, 'action_number', '-');
                 
-                update_post_meta($new_action_id, 'doc_id', $new_doc_id);
+                //update_post_meta($new_action_id, 'doc_id', $new_doc_id);
                 update_post_meta($new_action_id, 'next_job', -1);
                 update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
