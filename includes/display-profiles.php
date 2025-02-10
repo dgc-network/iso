@@ -1175,8 +1175,8 @@ if (!class_exists('display_profiles')) {
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="next-step"><?php echo __( 'Action', 'textdomain' );?></label>
-                <select id="next-step" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_step);?></select>
-                <label for="next-job"><?php echo __( 'Next Job', 'textdomain' );?></label>
+                <select id="next-step" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_option_data($next_step, true);?></select>
+                <label for="next-job"><?php echo __( 'Setup', 'textdomain' );?></label>
                 <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
 <?php /*                                
                 <label for="next-leadtime"><?php echo __( 'Leadtime', 'textdomain' );?></label>

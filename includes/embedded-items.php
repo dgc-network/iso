@@ -1108,22 +1108,34 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_doc_category_data() {
+        function retrieve_doc_category_data($is_action_category_included=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'doc-category',
                 'posts_per_page' => -1,        
                 'meta_query'     => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
+                    //array(
+                    //    'key'   => 'site_id',
+                    //    'value' => $site_id,
+                    //),
                 ),
                 'orderby'        => 'title',  // Order by post title
                 'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
 
             );
+            if ($is_action_category_included) {
+                $args['meta_query'][] = array(
+                    'key'   => 'is_action_category',
+                    'value' => 0,
+                    'compare' => '!='
+                );
+            } else {
+                $args['meta_query'][] = array(
+                    'key'   => 'site_id',
+                    'value' => $site_id,
+                );
+            }
             $query = new WP_Query($args);
             return $query;
         }
@@ -1212,8 +1224,8 @@ if (!class_exists('embedded_items')) {
             wp_send_json($response);
         }
 
-        function select_doc_category_options($selected_option=0) {
-            $query = $this->retrieve_doc_category_data();
+        function select_doc_category_options($selected_option=false, $is_action_category_included=false) {
+            $query = $this->retrieve_doc_category_data($is_action_category_included);
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
