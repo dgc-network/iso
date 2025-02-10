@@ -1078,7 +1078,10 @@ if (!class_exists('embedded_items')) {
                     </thead>
                     <tbody>
                     <?php
-                    $query = $this->retrieve_doc_category_data();
+                    if (current_user_can('administrator')) {
+                        $is_action_category_included=true;
+                    }
+                    $query = $this->retrieve_doc_category_data($is_action_category_included);
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $category_id = get_the_ID();
@@ -1115,25 +1118,22 @@ if (!class_exists('embedded_items')) {
                 'post_type'      => 'doc-category',
                 'posts_per_page' => -1,        
                 'meta_query'     => array(
-                    //array(
-                    //    'key'   => 'site_id',
-                    //    'value' => $site_id,
-                    //),
+                    'relation' => 'OR',
                 ),
                 'orderby'        => 'title',  // Order by post title
                 'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
 
             );
+            $args['meta_query'][] = array(
+                'key'   => 'site_id',
+                'value' => $site_id,
+            );
+
             if ($is_action_category_included) {
                 $args['meta_query'][] = array(
                     'key'   => 'is_action_category',
                     'value' => 0,
                     'compare' => '!='
-                );
-            } else {
-                $args['meta_query'][] = array(
-                    'key'   => 'site_id',
-                    'value' => $site_id,
                 );
             }
             $query = new WP_Query($args);
@@ -1145,6 +1145,8 @@ if (!class_exists('embedded_items')) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
+            $is_action_category = get_post_meta($category_id, 'is_action_category', true);
+            $is_checked = ($is_action_category==1) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
@@ -1155,6 +1157,10 @@ if (!class_exists('embedded_items')) {
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <label for="iso-category"><?php echo __( 'ISO', 'textdomain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
+                <?php if (current_user_can('administrator')) {?>
+                    <input type="checkbox" id="is-action-category" <?php echo $is_checked?> />
+                    <label for="is-action-category"><?php echo __( 'Is Action Category', 'textdomain' );?></label>
+                <?php }?>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1172,6 +1178,7 @@ if (!class_exists('embedded_items')) {
                 $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
                 $category_title = (isset($_POST['_category_title'])) ? sanitize_text_field($_POST['_category_title']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
+                $is_action_category = (isset($_POST['_is_action_category'])) ? sanitize_text_field($_POST['_is_action_category']) : 0;
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => $category_title,
@@ -1179,6 +1186,7 @@ if (!class_exists('embedded_items')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($category_id, 'iso_category', $iso_category);
+                update_post_meta($category_id, 'is_action_category', $is_action_category);
 
                 $params = array(
                     'log_message' => sprintf(
@@ -1234,8 +1242,10 @@ if (!class_exists('embedded_items')) {
                 $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' />' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-            $selected = ($selected_option=="embedded") ? 'selected' : '';
-            $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
+            if (!$is_action_category_included) {
+                $selected = ($selected_option=="embedded") ? 'selected' : '';
+                $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
+            }
             return $options;
         }
         

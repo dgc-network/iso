@@ -90,6 +90,7 @@ jQuery(document).ready(function($) {
                                         '_category_title': $("#category-title").val(),
                                         '_category_content': $("#category-content").val(),
                                         '_iso_category': $("#iso-category").val(),
+                                        '_is_action_category': $("#is-action-category").is(":checked") ? 1 : 0,
                                     },
                                     success: function (response) {
                                         $("#doc-category-dialog").dialog('close');
