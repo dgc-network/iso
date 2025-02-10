@@ -1162,19 +1162,27 @@ if (!class_exists('display_profiles')) {
             $action_number = get_post_meta($action_id, 'action_number', true);
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
-            //$department = get_post_meta($doc_id, 'department', true);
+            $next_job = get_post_meta($action_id, 'next_job', true);
             //$department_id = get_post_meta($doc_id, 'department_id', true);
             //$is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
             //$is_checked = ($is_summary_job==1) ? 'checked' : '';
             ?>
+            <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="action-number"><?php echo __( 'No.', 'textdomain' );?></label>
-                <input type="text" id="action-number" value="<?php echo esc_attr($action_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
-                <textarea style="display:none;" id="action-content" class="visual-editor"><?php echo $action_content;?></textarea>
+                <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
+                <label for="next-step"><?php echo __( 'Action', 'textdomain' );?></label>
+                <select id="next-step" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_step);?></select>
+                <label for="next-job"><?php echo __( 'Next Job', 'textdomain' );?></label>
+                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_option_data($next_job);?></select>
+<?php /*                                
+                <label for="next-leadtime"><?php echo __( 'Leadtime', 'textdomain' );?></label>
+                <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
+*/?>                
+            </fieldset>
 <?php /*                
                 <label for="action-list"><?php echo __( 'Action List', 'textdomain' );?></label>
                 <?php echo $this->display_doc_action_list($doc_id);?>
@@ -1255,7 +1263,6 @@ if (!class_exists('display_profiles')) {
             $response['html_contain'] = $this->display_site_action_list();
             wp_send_json($response);
         }
-
         
         // Site job
         function display_site_job_list() {
