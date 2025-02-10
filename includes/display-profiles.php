@@ -1189,7 +1189,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function get_site_job_dialog_data() {
+        function get_site_action_dialog_data() {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
@@ -1198,7 +1198,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function set_site_job_dialog_data() {
+        function set_site_action_dialog_data() {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
@@ -1238,8 +1238,8 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($new_action_id, 'action_number', '-');
                 
                 //update_post_meta($new_action_id, 'doc_id', $new_doc_id);
-                update_post_meta($new_action_id, 'next_job', -1);
-                update_post_meta($new_action_id, 'next_leadtime', 86400);
+                //update_post_meta($new_action_id, 'next_job', -1);
+                //update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
             $response['html_contain'] = $this->display_site_action_list();
             wp_send_json($response);
@@ -1256,6 +1256,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
+        
         // Site job
         function display_site_job_list() {
             ob_start();
@@ -1397,7 +1398,7 @@ if (!class_exists('display_profiles')) {
             $job_number = get_post_meta($doc_id, 'job_number', true);
             $job_title = get_the_title($doc_id);
             $job_content = get_post_field('post_content', $doc_id);
-            $department = get_post_meta($doc_id, 'department', true);
+            //$department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
             $is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
             $is_checked = ($is_summary_job==1) ? 'checked' : '';
