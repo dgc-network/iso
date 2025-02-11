@@ -1699,7 +1699,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function select_site_job_options($selected_option=false, $next_step=false) {
+        function select_site_job_options($selected_option=false, $next_category=false) {
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1733,10 +1733,10 @@ if (!class_exists('display_profiles')) {
                 'order'          => 'ASC',
             );
 
-            if ($next_step) {
+            if ($next_category) {
                 $args['meta_query'][] = array(
-                    'key'   => 'is_summary_job',
-                    'value' => 1,
+                    'key'   => 'doc_category',
+                    'value' => $next_category,
                 );
             } else {
                 $args['meta_query'][] = array(
@@ -1764,16 +1764,20 @@ if (!class_exists('display_profiles')) {
                 $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-            if ($selected_option==-1){
-                $options .= '<option value="-1" selected>'.__( 'Released', 'textdomain' ).'</option>';
-            } else {
-                $options .= '<option value="-1">'.__( 'Released', 'textdomain' ).'</option>';
+
+            if (!$next_category) {
+                if ($selected_option==-1){
+                    $options .= '<option value="-1" selected>'.__( 'Released', 'textdomain' ).'</option>';
+                } else {
+                    $options .= '<option value="-1">'.__( 'Released', 'textdomain' ).'</option>';
+                }
+                if ($selected_option==-2){
+                    $options .= '<option value="-2" selected>'.__( 'Removed', 'textdomain' ).'</option>';
+                } else {
+                    $options .= '<option value="-2">'.__( 'Removed', 'textdomain' ).'</option>';
+                }
             }
-            if ($selected_option==-2){
-                $options .= '<option value="-2" selected>'.__( 'Removed', 'textdomain' ).'</option>';
-            } else {
-                $options .= '<option value="-2">'.__( 'Removed', 'textdomain' ).'</option>';
-            }
+
             return $options;
         }
 
