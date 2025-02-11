@@ -532,7 +532,7 @@ if (!class_exists('display_documents')) {
                 <label for="doc-revision"><?php echo __( 'Document Rev.', 'textdomain' );?></label>
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="doc-category"><?php echo __( 'Categories', 'textdomain' );?></label><br>
-                <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category);?></select>
+                <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category, $is_action_category);?></select>
 
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 

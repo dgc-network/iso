@@ -1124,16 +1124,23 @@ if (!class_exists('embedded_items')) {
                 'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
 
             );
-            $args['meta_query'][] = array(
-                'key'   => 'site_id',
-                'value' => $site_id,
-            );
 
             if ($is_action_category) {
                 $args['meta_query'][] = array(
-                    'key'   => 'is_action_category',
-                    'value' => 0,
-                    'compare' => '!='
+                    'relation' => 'OR',
+                    array(
+                        'key'   => 'is_action_category',
+                        'value' => 1,
+                    ),
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                );
+            } else {
+                $args['meta_query'][] = array(
+                    'key'   => 'site_id',
+                    'value' => $site_id,
                 );
             }
             $query = new WP_Query($args);
