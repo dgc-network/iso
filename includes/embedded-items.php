@@ -1079,9 +1079,9 @@ if (!class_exists('embedded_items')) {
                     <tbody>
                     <?php
                     if (current_user_can('administrator')) {
-                        $is_action_category_included=true;
+                        $is_action_category=true;
                     }
-                    $query = $this->retrieve_doc_category_data($is_action_category_included);
+                    $query = $this->retrieve_doc_category_data($is_action_category);
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $category_id = get_the_ID();
@@ -1111,7 +1111,7 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_doc_category_data($is_action_category_included=false) {
+        function retrieve_doc_category_data($is_action_category=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
@@ -1129,7 +1129,7 @@ if (!class_exists('embedded_items')) {
                 'value' => $site_id,
             );
 
-            if ($is_action_category_included) {
+            if ($is_action_category) {
                 $args['meta_query'][] = array(
                     'key'   => 'is_action_category',
                     'value' => 0,
@@ -1232,8 +1232,8 @@ if (!class_exists('embedded_items')) {
             wp_send_json($response);
         }
 
-        function select_doc_category_options($selected_option=false, $is_action_category_included=false) {
-            $query = $this->retrieve_doc_category_data($is_action_category_included);
+        function select_doc_category_options($selected_option=false, $is_action_category=false) {
+            $query = $this->retrieve_doc_category_data($is_action_category);
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
@@ -1242,7 +1242,7 @@ if (!class_exists('embedded_items')) {
                 $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' />' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-            if (!$is_action_category_included) {
+            if (!$is_action_category) {
                 $selected = ($selected_option=="embedded") ? 'selected' : '';
                 $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
             }
