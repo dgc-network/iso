@@ -252,7 +252,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
         
-        function retrieve_document_data($paged=1, $is_doc_report=2) {
+        function retrieve_document_data($paged=1, $is_doc_report=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
@@ -2263,7 +2263,7 @@ if (!class_exists('display_documents')) {
         }
 
         // document misc
-        function select_document_list_options($selected_option=0, $is_doc_report=2) {
+        function select_document_list_options($selected_option=false, $is_doc_report=false) {
             $query = $this->retrieve_document_data(0, $is_doc_report);
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
