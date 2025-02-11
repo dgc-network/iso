@@ -442,7 +442,7 @@ if (!class_exists('display_documents')) {
             $is_multiple_select = ($multiple_select==1) ? 'checked' : '';
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
             if (current_user_can('administrator')) {
-                $is_action_category=true;
+                $is_connector=true;
             }
 
             ?>
@@ -463,7 +463,7 @@ if (!class_exists('display_documents')) {
                 <label for="doc-revision"><?php echo __( 'Document Rev.', 'textdomain' );?></label>
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="doc-category"><?php echo __( 'Categories', 'textdomain' );?></label><br>
-                <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category, $is_action_category);?></select>
+                <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category, $is_connector);?></select>
 
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 
@@ -517,7 +517,7 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="job-content"><?php echo __( '職務內容', 'textdomain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
-                        <label for="action-list"><?php echo __( '執行按鍵設定', 'textdomain' );?></label>
+                        <label for="action-list"><?php echo __( '動作設定', 'textdomain' );?></label>
                         <?php echo $profiles_class->display_doc_action_list($doc_id);?>
                         <label for="department"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>

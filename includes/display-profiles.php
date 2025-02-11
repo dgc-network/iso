@@ -1059,10 +1059,6 @@ if (!class_exists('display_profiles')) {
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
                             $action_title .= ': '.$doc_title;
-                            //else $doc_title = get_the_content();
-                            // display the warning if the job without assigned actions
-                            //$action_query = $this->retrieve_doc_action_data($job_id);
-                            //$job_title = ($action_query->have_posts()) ? $job_title : '<span style="color:red;">'.$job_title.'</span>';
                             // display the warning if the job without assigned users
                             $users_query = $this->retrieve_users_by_doc_id($doc_id);
                             $action_title = (!empty($users_query)) ? $action_title : '<span style="color:red;">'.$action_title.'</span>';
@@ -1162,20 +1158,20 @@ if (!class_exists('display_profiles')) {
             $action_number = get_post_meta($action_id, 'action_number', true);
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
-            $next_category = get_post_meta($action_id, 'next_category', true);
+            $connector = get_post_meta($action_id, 'connector', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
             ?>
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="action-title"><?php echo __( 'Title', 'textdomain' );?></label>
-                <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
+                <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" />
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="next-category"><?php echo __( 'Action', 'textdomain' );?></label>
-                <select id="next-category" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($next_category, true);?></select>
-                <label for="next-job"><?php echo __( 'Setup', 'textdomain' );?></label>
-                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $next_category);?></select>
+                <label for="connector"><?php echo __( 'Connector', 'textdomain' );?></label>
+                <select id="connector" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($connector, true);?></select>
+                <label for="next-job"><?php echo __( 'Action', 'textdomain' );?></label>
+                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $connector);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1196,7 +1192,7 @@ if (!class_exists('display_profiles')) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
                 $action_number = isset($_POST['_action_number']) ? sanitize_text_field($_POST['_action_number']) : '';
-                $next_category = isset($_POST['_next_category']) ? sanitize_text_field($_POST['_next_category']) : 0;
+                $connector = isset($_POST['_connector']) ? sanitize_text_field($_POST['_connector']) : 0;
                 $next_job = isset($_POST['_next_job']) ? sanitize_text_field($_POST['_next_job']) : 0;
                 $data = array(
                     'ID'           => $action_id,
@@ -1205,7 +1201,7 @@ if (!class_exists('display_profiles')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($action_id, 'action_number', $action_number);
-                update_post_meta($action_id, 'next_category', $next_category);
+                update_post_meta($action_id, 'connector', $connector);
                 update_post_meta($action_id, 'next_job', $next_job);
 
                 // Check if action_number is null
@@ -1699,7 +1695,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function select_site_job_options($selected_option=false, $next_category=false) {
+        function select_site_job_options($selected_option=false, $connector=false) {
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1712,10 +1708,10 @@ if (!class_exists('display_profiles')) {
                 'order'          => 'ASC',
             );
 
-            if ($next_category) {
+            if ($connector) {
                 $args['meta_query'][] = array(
                     'key'   => 'doc_category',
-                    'value' => $next_category,
+                    'value' => $connector,
                 );
             } else {
                 $args['meta_query'][] = array(
@@ -1741,14 +1737,14 @@ if (!class_exists('display_profiles')) {
                 $doc_number = get_post_meta($job_id, 'doc_number', true);
                 $doc_title = get_post_meta($job_id, 'doc_title', true);
                 $job_title = $job_title.'('.$job_number.')';
-                if ($next_category) $job_title = $doc_title.'('.$doc_number.')';
+                if ($connector) $job_title = $doc_title.'('.$doc_number.')';
 
                 $selected = ($selected_option == $job_id) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
             endwhile;
             wp_reset_postdata();
 
-            if (!$next_category) {
+            if (!$connector) {
                 if ($selected_option==-1){
                     $options .= '<option value="-1" selected>'.__( 'Released', 'textdomain' ).'</option>';
                 } else {

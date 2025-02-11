@@ -679,7 +679,7 @@ jQuery(document).ready(function($) {
                                         '_action_number': $("#action-number").val(),
                                         '_action_title': $("#action-title").val(),
                                         '_action_content': $("#action-content").val(),
-                                        '_next_category': $("#next-category").val(),
+                                        '_connector': $("#connector").val(),
                                         '_next_job': $("#next-job").val(),
                                     },
                                     success: function (response) {

@@ -239,7 +239,7 @@ function init_webhook_events() {
                             $body_content = array(
                                 'type' => 'text',
                                 'text' => sprintf(
-                                    __( '您可以點擊下方列示，直接執行按鍵「%s」的相關作業。', 'textdomain' ),
+                                    __( 'You can click on the list below to directly execute the %s related tasks.', 'textdomain' ),
                                     $message['text']
                                 ),
                                 'wrap' => true,
