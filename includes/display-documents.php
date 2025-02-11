@@ -252,7 +252,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
         
-        function retrieve_document_data($paged=1, $is_doc_report=false) {
+        function retrieve_document_data($paged=1, $is_doc_report=2) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
@@ -264,7 +264,7 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',    
+                        //'compare' => '=',    
                     ),
                 ),
                 'orderby'        => 'meta_value',
@@ -277,16 +277,6 @@ if (!class_exists('display_documents')) {
             }
 
             if ($is_doc_report == 0) {
-            }
-
-            if ($is_doc_report == 1) {
-                $args['meta_query'][] = array(
-                    'key'     => 'is_doc_report',
-                    'value'   => 1,
-                    //'compare' => '=',    
-                    //'type'    => 'NUMERIC'
-                );
-            } else {
                 $args['meta_query'][] = array(
                     'relation' => 'OR',
                     array(
@@ -296,9 +286,14 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'is_doc_report',
                         'value'   => 0,
-                        //'compare' => '=',    
-                        //'type'    => 'NUMERIC'
                     )
+                );
+            }
+
+            if ($is_doc_report == 1) {
+                $args['meta_query'][] = array(
+                    'key'     => 'is_doc_report',
+                    'value'   => 1,
                 );
             }
 
@@ -339,78 +334,6 @@ if (!class_exists('display_documents')) {
             }
 
             return $query;
-
-
-/*
-            $site_filter = array(
-                'key'     => 'site_id',
-                'value'   => $site_id,
-                'compare' => '=',
-            );
-
-            $select_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
-            $category_filter = array(
-                'key'     => 'doc_category',
-                'value'   => $select_category,
-                'compare' => '=',
-            );
-
-            $search_query = (isset($_GET['_search'])) ? sanitize_text_field($_GET['_search']) : false;
-            $number_filter = array(
-                'key'     => 'doc_number',
-                'value'   => $search_query,
-                'compare' => 'LIKE',
-            );
-            $title_filter = array(
-                'key'     => 'doc_title',
-                'value'   => $search_query,
-                'compare' => 'LIKE',
-            );
-
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    ($site_id) ? $site_filter : '',
-                    ($select_category) ? $category_filter : '',
-                    array(
-                        'relation' => 'OR',
-                        ($search_query) ? $number_filter : '',
-                        ($search_query) ? $title_filter : '',
-                    ),
-                ),
-                'orderby'        => 'meta_value',
-                'meta_key'       => 'doc_number',
-                'order'          => 'ASC',
-            );
-
-            if ($paged == 0) {
-                $args['posts_per_page'] = -1; // Retrieve all posts if $paged is 0
-            }
-
-            if ($is_doc_report == 0) {
-                $args['meta_query'][] = array(
-                    'key'     => 'is_doc_report',
-                    'value'   => 0,
-                    'compare' => '=',    
-                    'type'    => 'NUMERIC'
-                );
-            }
-
-            if ($is_doc_report == 1) {
-                $args['meta_query'][] = array(
-                    'key'     => 'is_doc_report',
-                    'value'   => 1,
-                    'compare' => '=',    
-                    'type'    => 'NUMERIC'
-                );
-            }
-
-            $query = new WP_Query($args);
-            return $query;
-*/            
         }
         
         function get_previous_doc_id($current_doc_id) {
