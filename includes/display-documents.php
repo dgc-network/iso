@@ -277,20 +277,28 @@ if (!class_exists('display_documents')) {
             }
 
             if ($is_doc_report == 0) {
-                $args['meta_query'][] = array(
-                    'key'     => 'is_doc_report',
-                    'value'   => 0,
-                    'compare' => '=',    
-                    'type'    => 'NUMERIC'
-                );
             }
 
             if ($is_doc_report == 1) {
                 $args['meta_query'][] = array(
                     'key'     => 'is_doc_report',
                     'value'   => 1,
-                    'compare' => '=',    
-                    'type'    => 'NUMERIC'
+                    //'compare' => '=',    
+                    //'type'    => 'NUMERIC'
+                );
+            } else {
+                $args['meta_query'][] = array(
+                    'relation' => 'OR',
+                    array(
+                        'key'   => 'is_doc_report',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                    array(
+                        'key'     => 'is_doc_report',
+                        'value'   => 0,
+                        //'compare' => '=',    
+                        //'type'    => 'NUMERIC'
+                    )
                 );
             }
 
@@ -299,7 +307,7 @@ if (!class_exists('display_documents')) {
                 $args['meta_query'][] = array(
                     'key'     => 'doc_category',
                     'value'   => $select_category,
-                    'compare' => '=',
+                    //'compare' => '=',
                 );
             }
 
