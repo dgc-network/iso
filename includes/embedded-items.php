@@ -1118,7 +1118,7 @@ if (!class_exists('embedded_items')) {
                 'post_type'      => 'doc-category',
                 'posts_per_page' => -1,        
                 'meta_query'     => array(
-                    'relation' => 'OR',
+                    'relation' => 'AND',
                 ),
                 'orderby'        => 'title',  // Order by post title
                 'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
@@ -1139,8 +1139,15 @@ if (!class_exists('embedded_items')) {
                 );
             } else {
                 $args['meta_query'][] = array(
-                    'key'   => 'site_id',
-                    'value' => $site_id,
+                    'relation' => 'AND',
+                    array(
+                        'key'   => 'is_action_category',
+                        'value' => 0,
+                    ),
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
                 );
             }
             $query = new WP_Query($args);
