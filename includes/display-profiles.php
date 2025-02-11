@@ -1160,12 +1160,15 @@ if (!class_exists('display_profiles')) {
             $action_content = get_post_field('post_content', $action_id);
             $connector = get_post_meta($action_id, 'connector', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
+            $doc_id = get_post_meta($action_id, 'doc_id', true);
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
             ?>
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <label for="action-title"><?php echo __( 'Title', 'textdomain' );?></label>
                 <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" />
+                <?php echo $doc_title;?><br>
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="connector"><?php echo __( 'Connector', 'textdomain' );?></label>
