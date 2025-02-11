@@ -1162,10 +1162,8 @@ if (!class_exists('display_profiles')) {
             $action_number = get_post_meta($action_id, 'action_number', true);
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
+            $next_category = get_post_meta($action_id, 'next_category', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
-            //$department_id = get_post_meta($doc_id, 'department_id', true);
-            //$is_summary_job = get_post_meta($doc_id, 'is_summary_job', true);
-            //$is_checked = ($is_summary_job==1) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
@@ -1174,25 +1172,11 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="next-step"><?php echo __( 'Action', 'textdomain' );?></label>
-                <select id="next-step" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($next_step, true);?></select>
+                <label for="next-category"><?php echo __( 'Action', 'textdomain' );?></label>
+                <select id="next-category" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($next_category, true);?></select>
                 <label for="next-job"><?php echo __( 'Setup', 'textdomain' );?></label>
-                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job);?></select>
-<?php /*                                
-                <label for="next-leadtime"><?php echo __( 'Leadtime', 'textdomain' );?></label>
-                <input type="text" id="next-leadtime" value="<?php echo esc_attr($next_leadtime);?>" class="text ui-widget-content ui-corner-all" />
-*/?>                
+                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $next_category);?></select>
             </fieldset>
-<?php /*                
-                <label for="action-list"><?php echo __( 'Action List', 'textdomain' );?></label>
-                <?php echo $this->display_doc_action_list($doc_id);?>
-                <label for="department"><?php echo __( 'Department', 'textdomain' );?></label>
-                <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
-                <label for="user-list"><?php echo __( 'User List', 'textdomain' );?></label>
-                <?php echo $this->display_doc_user_list($doc_id);?>
-                <input type="checkbox" id="is-summary-job" <?php echo $is_checked?> />
-                <label for="is-summary-job"><?php echo __( 'Is Summary Job', 'textdomain' );?></label>
-*/?>
             <?php
             return ob_get_clean();
         }
@@ -1212,8 +1196,8 @@ if (!class_exists('display_profiles')) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
                 $action_number = isset($_POST['_action_number']) ? sanitize_text_field($_POST['_action_number']) : '';
-                //$department_id = isset($_POST['_department_id']) ? sanitize_text_field($_POST['_department_id']) : 0;
-                //$is_summary_job = isset($_POST['_is_summary_job']) ? sanitize_text_field($_POST['_is_summary_job']) : 0;
+                $next_category = isset($_POST['_next_category']) ? sanitize_text_field($_POST['_next_category']) : 0;
+                $next_job = isset($_POST['_next_job']) ? sanitize_text_field($_POST['_next_job']) : 0;
                 $data = array(
                     'ID'           => $action_id,
                     'post_title'   => $action_title,
@@ -1221,8 +1205,8 @@ if (!class_exists('display_profiles')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($action_id, 'action_number', $action_number);
-                //update_post_meta($action_id, 'department_id', $department_id);
-                //update_post_meta($action_id, 'is_summary_job', $is_summary_job);
+                update_post_meta($action_id, 'next_category', $next_category);
+                update_post_meta($action_id, 'next_job', $next_job);
 
                 // Check if action_number is null
                 if ($action_number == null || $action_number === '') {
@@ -1244,8 +1228,7 @@ if (!class_exists('display_profiles')) {
                 $new_action_id = wp_insert_post($new_post);
                 update_post_meta($new_action_id, 'site_id', $site_id);
                 update_post_meta($new_action_id, 'action_number', '-');
-                
-                //update_post_meta($new_action_id, 'doc_id', $new_doc_id);
+                update_post_meta($new_action_id, 'site_id', $site_id);
                 //update_post_meta($new_action_id, 'next_job', -1);
                 //update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
@@ -1256,9 +1239,6 @@ if (!class_exists('display_profiles')) {
         function del_site_action_dialog_data() {
             $response = array();
             $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
-            //if ($doc_title) echo 'You cannot delete this job';
-            //else wp_delete_post($doc_id, true);
             wp_delete_post($action_id, true);
             $response['html_contain'] = $this->display_site_action_list();
             wp_send_json($response);
@@ -1719,7 +1699,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function select_site_job_options($selected_option=0) {
+        function select_site_job_options($selected_option=false, $next_step=false) {
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1728,6 +1708,7 @@ if (!class_exists('display_profiles')) {
                 'posts_per_page' => -1,
                 'meta_query'     => array(
                     'relation' => 'AND',
+/*                    
                     array(
                         'key'   => 'site_id',
                         'value' => $site_id,
@@ -1745,12 +1726,33 @@ if (!class_exists('display_profiles')) {
                             'compare' => 'NOT EXISTS',
                         ),    
                     ),
+*/
                 ),
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'job_number',
                 'order'          => 'ASC',
             );
 
+            if ($next_step) {
+                $args['meta_query'][] = array(
+                    'key'   => 'is_summary_job',
+                    'value' => 1,
+                );
+            } else {
+                $args['meta_query'][] = array(
+                    'relation' => 'OR',
+                    array(
+                        'key'   => 'is_doc_report',
+                        'value' => 1,
+                        'compare' => '=',
+                        'type'    => 'NUMERIC'
+                    ),
+                    array(
+                        'key'   => 'is_doc_report',
+                        'compare' => 'NOT EXISTS',
+                    ),    
+                );
+            }
             $query = new WP_Query($args);
 
             while ($query->have_posts()) : $query->the_post();
