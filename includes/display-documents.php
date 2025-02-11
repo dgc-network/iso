@@ -358,7 +358,7 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',    
+                        //'compare' => '=',
                     ),
                     array(
                         'key'     => 'doc_number',
@@ -397,7 +397,7 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',    
+                        //'compare' => '=',    
                     ),
                     array(
                         'key'     => 'doc_number',
@@ -1039,7 +1039,7 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'   => 'doc_id',
                         'value' => $doc_id,
-                        'compare' => '=', // Ensure only reports matching the same 'doc_id'
+                        //'compare' => '=', // Ensure only reports matching the same 'doc_id'
                     ),
                 ),
                 'date_query'     => array(
@@ -1072,7 +1072,7 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'   => 'doc_id',
                         'value' => $doc_id,
-                        'compare' => '=', // Ensure only reports matching the same 'doc_id'
+                        //'compare' => '=', // Ensure only reports matching the same 'doc_id'
                     ),
                 ),
                 'date_query'     => array(
@@ -1344,7 +1344,7 @@ if (!class_exists('display_documents')) {
                             array(
                                 'key'   => 'field_type',
                                 'value' => $key,
-                                'compare' => '='
+                                //'compare' => '='
                             )
                         ),
                         'fields' => 'ids' // Only return post IDs
@@ -1942,7 +1942,7 @@ if (!class_exists('display_documents')) {
                 array(
                     'key'     => 'site_id',
                     'value'   => $site_id,
-                    'compare' => '=',
+                    //'compare' => '=',
                 ),
             );
             $users = get_users(array('meta_query' => $meta_query_args));
@@ -2084,7 +2084,7 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id, // Match the site ID
-                        'compare' => '=', // Exact match
+                        //'compare' => '=', // Exact match
                     ),
                 ),
                 'fields' => 'ids', // Only retrieve post IDs for efficiency
@@ -2138,7 +2138,7 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id', // Check site_id meta key
                         'value'   => $site_id, // Match the 'site_id' meta value
-                        'compare' => '=', // Exact match
+                        //'compare' => '=', // Exact match
                     ),
                 ),
             );
@@ -2226,12 +2226,12 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '='
+                        //'compare' => '='
                     ),
                     array(
                         'key'     => 'iso_category',
                         'value'   => $iso_category_id,
-                        'compare' => '='
+                        //'compare' => '='
                     ),
                 ),
                 'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'

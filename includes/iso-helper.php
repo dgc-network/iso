@@ -112,7 +112,7 @@ function get_site_admin_ids_for_site($site_id=false) {
             array(
                 'key'     => 'site_id',    // User meta key where site_id is stored
                 'value'   => $site_id,    // Match the provided site ID
-                'compare' => '=',         // Comparison operator
+                //'compare' => '=',         // Comparison operator
             ),
         ),
     );

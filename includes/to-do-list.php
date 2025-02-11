@@ -564,12 +564,12 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',
+                        //'compare' => '=',
                     ),
                     array(
                         'key'     => 'is_doc_report',
                         'value'   => 1,
-                        'compare' => '=',
+                        //'compare' => '=',
                     ),
                 ),
             );
@@ -621,12 +621,12 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',    
+                        //'compare' => '=',    
                     ),
                     array(
                         'key'     => 'is_doc_report',
                         'value'   => 1,
-                        'compare' => '=',
+                        //'compare' => '=',
                     ),
                     array(
                         'key'     => 'job_number',
@@ -670,12 +670,12 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',    
+                        //'compare' => '=',    
                     ),
                     array(
                         'key'     => 'is_doc_report',
                         'value'   => 1,
-                        'compare' => '=',
+                        //'compare' => '=',
                     ),
                     array(
                         'key'     => 'job_number',
@@ -1442,7 +1442,7 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',
+                        //'compare' => '=',
                     ),
                 ),
                 'orderby'        => 'meta_value',
@@ -1460,7 +1460,7 @@ if (!class_exists('to_do_list')) {
                 $args['meta_query'][] = array(
                     'key'   => 'prev_report_id',
                     'value' => $report_id,
-                    'compare' => '='
+                    //'compare' => '='
                 );
             }
 
@@ -1522,7 +1522,7 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',            // Match the site ID
+                        //'compare' => '=',            // Match the site ID
                     ),
                     array(
                         'key'     => 'submit_time',
@@ -1566,7 +1566,7 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '=',            // Match the site ID
+                        //'compare' => '=',            // Match the site ID
                     ),
                     array(
                         'key'     => 'submit_time',

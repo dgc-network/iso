@@ -787,7 +787,7 @@ if (!class_exists('display_profiles')) {
                             array(
                                 'key'     => 'site_id',
                                 'value'   => $site_id,
-                                'compare' => '=',
+                                //'compare' => '=',
                             ),
                         );
                         $users = get_users(array('meta_query' => $meta_query_args));
@@ -1329,8 +1329,8 @@ if (!class_exists('display_profiles')) {
                         array(
                             'key'   => 'is_doc_report',
                             'value' => 1,
-                            'compare' => '=',
-                            'type'    => 'NUMERIC'
+                            //'compare' => '=',
+                            //'type'    => 'NUMERIC'
                         ),
                         array(
                             'key'   => 'is_doc_report',
@@ -1706,28 +1706,7 @@ if (!class_exists('display_profiles')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-/*                    
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                    array(
-                        'relation' => 'OR',
-                        array(
-                            'key'   => 'is_doc_report',
-                            'value' => 1,
-                            'compare' => '=',
-                            'type'    => 'NUMERIC'
-                        ),
-                        array(
-                            'key'   => 'is_doc_report',
-                            'compare' => 'NOT EXISTS',
-                        ),    
-                    ),
-*/
-                ),
+                'meta_query'     => array(),
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'job_number',
                 'order'          => 'ASC',
@@ -1744,8 +1723,8 @@ if (!class_exists('display_profiles')) {
                     array(
                         'key'   => 'is_doc_report',
                         'value' => 1,
-                        'compare' => '=',
-                        'type'    => 'NUMERIC'
+                        //'compare' => '=',
+                        //'type'    => 'NUMERIC'
                     ),
                     array(
                         'key'   => 'is_doc_report',
@@ -1759,7 +1738,11 @@ if (!class_exists('display_profiles')) {
                 $job_id = get_the_ID();
                 $job_title = get_the_title();
                 $job_number = get_post_meta($job_id, 'job_number', true);
+                $doc_number = get_post_meta($job_id, 'doc_number', true);
+                $doc_title = get_post_meta($job_id, 'doc_title', true);
                 $job_title = $job_title.'('.$job_number.')';
+                if ($next_category) $job_title = $doc_title.'('.$doc_number.')';
+
                 $selected = ($selected_option == $job_id) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
             endwhile;
@@ -1872,7 +1855,7 @@ if (!class_exists('display_profiles')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        'compare' => '='
+                        //'compare' => '='
                     )
                 )
             );

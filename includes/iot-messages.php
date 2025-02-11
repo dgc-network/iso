@@ -102,7 +102,7 @@ if (!class_exists('iot_messages')) {
                     array(
                         'key'   => 'device_number', // Meta key
                         'value' => $device_number,  // Meta value to match
-                        'compare' => '=',           // Comparison operator
+                        //'compare' => '=',           // Comparison operator
                     ),
                 ),
                 'posts_per_page' => 1, // Limit to one result
@@ -221,7 +221,7 @@ if (!class_exists('iot_messages')) {
                             array(
                                 'key'     => 'deviceID',
                                 'value'   => $device_number,
-                                'compare' => '=',
+                                //'compare' => '=',
                             ),
                         ),
                         'orderby'        => 'date',
@@ -274,7 +274,7 @@ if (!class_exists('iot_messages')) {
                             array(
                                 'key'     => 'deviceID',
                                 'value'   => $device_number,
-                                'compare' => '=',
+                                //'compare' => '=',
                             ),
                         ),
                         'date_query'     => array(
@@ -476,7 +476,7 @@ if (!class_exists('iot_messages')) {
                     array(
                         'key'     => 'deviceID',
                         'value'   => $device_number,
-                        'compare' => '=',
+                        //'compare' => '=',
                     ),
                 ),
             );
@@ -599,7 +599,7 @@ if (!class_exists('iot_messages')) {
                                 array(
                                     'key'   => 'deviceID',
                                     'value' => $device_number,
-                                    'compare' => '=',
+                                    //'compare' => '=',
                                 ),
                             ),
                             'date_query'     => array(
@@ -1031,14 +1031,14 @@ if (!class_exists('iot_messages')) {
                 $args['meta_query'][] = array(
                     'key'     => '_device_id',
                     'value'   => $device_id,
-                    'compare' => '='
+                    //'compare' => '='
                 );
             }
             if ($employee_id!=-1) {
                 $args['meta_query'][] = array(
                     'key'     => '_employee_id',
                     'value'   => $employee_id,
-                    'compare' => '='
+                    //'compare' => '='
                 );
             }
             $query = new WP_Query($args);
