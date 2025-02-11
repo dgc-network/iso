@@ -10,7 +10,7 @@ if (!class_exists('display_documents')) {
             add_shortcode( 'display-documents', array( $this, 'display_documents'  ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
-            //add_action( 'init', array( $this, 'register_document_post_type' ) );
+            add_action( 'init', array( $this, 'register_document_post_type' ) );
             add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
             //add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
@@ -317,7 +317,7 @@ if (!class_exists('display_documents')) {
                 // Remove the initial search query
                 unset($args['s']);
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('todo');
+                $meta_keys = get_post_type_meta_keys('document');
                 $meta_query_all_keys = array('relation' => 'OR');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
