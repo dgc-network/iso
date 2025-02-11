@@ -1141,8 +1141,15 @@ if (!class_exists('embedded_items')) {
                 $args['meta_query'][] = array(
                     'relation' => 'AND',
                     array(
-                        'key'   => 'is_action_category',
-                        'value' => 0,
+                        'relation' => 'OR',
+                        array(
+                            'key'   => 'is_action_category',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key'   => 'is_action_category',
+                            'value' => 0,
+                        )
                     ),
                     array(
                         'key'   => 'site_id',
