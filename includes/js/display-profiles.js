@@ -679,8 +679,8 @@ jQuery(document).ready(function($) {
                                         '_action_number': $("#action-number").val(),
                                         '_action_title': $("#action-title").val(),
                                         '_action_content': $("#action-content").val(),
-                                        //'_department_id': $("#department-id").val(),
-                                        //'_is_summary_job': $("#is-summary-job").is(":checked") ? 1 : 0,
+                                        '_next_category': $("#next-category").val(),
+                                        '_next_job': $("#next-job").val(),
                                     },
                                     success: function (response) {
                                         $("#site-action-dialog").dialog('close');
