@@ -1037,9 +1037,9 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'No.', 'textdomain' );?></th>
+                        <th><?php echo __( 'Trigger', 'textdomain' );?></th>
+                        <th><?php echo __( 'Connector', 'textdomain' );?></th>
                         <th><?php echo __( 'Action', 'textdomain' );?></th>
-                        <th><?php echo __( 'Description', 'textdomain' );?></th>
                     </thead>
                     <tbody>
                     <?php
@@ -1054,6 +1054,8 @@ if (!class_exists('display_profiles')) {
                             $action_title = get_the_title();
                             $action_content = get_the_content();
                             $action_number = get_post_meta($action_id, 'action_number', true);
+                            $connector = get_post_meta($action_id, 'connector', true);
+                            $next_job = get_post_meta($action_id, 'next_job', true);
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -1064,9 +1066,12 @@ if (!class_exists('display_profiles')) {
                             $action_title = (!empty($users_query)) ? $action_title : '<span style="color:red;">'.$action_title.'</span>';
                             ?>
                             <tr id="edit-site-action-<?php echo $action_id;?>">
+<?php /*?>                                
                                 <td style="text-align:center;"><?php echo esc_html($action_number);?></td>
+*/?>
                                 <td><?php echo $action_title;?></td>
-                                <td><?php echo $action_content;?></td>
+                                <td><?php echo get_the_title($connector);?></td>
+                                <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
                             </tr>
                             <?php 
                         endwhile;
@@ -1726,8 +1731,6 @@ if (!class_exists('display_profiles')) {
                     array(
                         'key'   => 'is_doc_report',
                         'value' => 1,
-                        //'compare' => '=',
-                        //'type'    => 'NUMERIC'
                     ),
                     array(
                         'key'   => 'is_doc_report',
