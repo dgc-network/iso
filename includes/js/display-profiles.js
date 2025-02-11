@@ -720,7 +720,8 @@ jQuery(document).ready(function($) {
                         });
                     }
                     $("#site-action-dialog").dialog('open');
-                    activate_action_action_list_data(action_id);
+                    activate_site_action_dialog_data($("#action-id").val());
+                    //activate_action_action_list_data(action_id);
                     //activate_job_user_list_data(doc_id);
                 },
                 error: function (error) {
@@ -736,6 +737,82 @@ jQuery(document).ready(function($) {
             autoOpen: false,
             buttons: {}
         });    
+    }
+
+    function activate_site_action_dialog_data(action_id){
+        $("#connector").on( "change", function() {
+            $.ajax({
+                url: ajax_object.ajax_url,
+                type: 'post',
+                data: {
+                    action: 'get_site_action_dialog_data',
+                    '_action_id': action_id,
+                    _connector: $(this).val(),
+                },
+                success: function (response) {
+                    $("#site-action-dialog").html(response.html_contain);
+                    if ($("#is-site-admin").val() === "1") {
+                        $("#site-action-dialog").dialog("option", "buttons", {
+                            "Save": function () {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: ajax_object.ajax_url,
+                                    dataType: "json",
+                                    data: {
+                                        'action': 'set_site_action_dialog_data',
+                                        '_action_id': $("#action-id").val(),
+                                        '_action_number': $("#action-number").val(),
+                                        '_action_title': $("#action-title").val(),
+                                        '_action_content': $("#action-content").val(),
+                                        '_connector': $("#connector").val(),
+                                        '_next_job': $("#next-job").val(),
+                                    },
+                                    success: function (response) {
+                                        $("#site-action-dialog").dialog('close');
+                                        window.location.replace(window.location.href);
+                                        //$("#site-job-list").html(response.html_contain);
+                                        //activate_site_job_list_data();
+                                    },
+                                    error: function (error) {
+                                        console.error(error);
+                                        alert(error);
+                                    }
+                                });
+                            },
+                            "Delete": function () {
+                                if (window.confirm("Are you sure you want to delete this site action?")) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: ajax_object.ajax_url,
+                                        dataType: "json",
+                                        data: {
+                                            'action': 'del_site_action_dialog_data',
+                                            '_action_id': $("#action-id").val(),
+                                        },
+                                        success: function (response) {
+                                            $("#site-action-dialog").dialog('close');
+                                            window.location.replace(window.location.href);
+                                            //$("#site-job-list").html(response.html_contain);
+                                            //activate_site_job_list_data();
+                                        },
+                                        error: function (error) {
+                                            console.error(error);
+                                            alert(error);
+                                        }
+                                    });
+                                }
+                            },
+                        });
+                    }
+                    $("#site-action-dialog").dialog('open');
+                    activate_site_action_dialog_data(action_id);
+                },
+                error: function(error){
+                    console.error(error);
+                    alert(error);
+                },
+            });
+        });
     }
 
     // site-job

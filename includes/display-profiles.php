@@ -1166,7 +1166,7 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
-                <label for="action-title"><?php echo __( 'Title', 'textdomain' );?></label>
+                <label for="action-title"><?php echo __( 'Title', 'textdomain' );?></label><br>
                 <input type="text" id="action-title" value="<?php echo esc_attr($action_title);?>" />
                 <?php echo $doc_title;?><br>
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
@@ -1184,6 +1184,10 @@ if (!class_exists('display_profiles')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
+                if( isset($_POST['_connector']) ) {
+                    $connector = sanitize_text_field($_POST['_connector']);
+                    update_post_meta($action_id, 'connector', $connector);
+                }
                 $response = array('html_contain' => $this->display_site_action_dialog($action_id));
             }
             wp_send_json($response);
