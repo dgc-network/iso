@@ -1079,9 +1079,9 @@ if (!class_exists('embedded_items')) {
                     <tbody>
                     <?php
                     if (current_user_can('administrator')) {
-                        $is_connector=true;
+                        $is_action_connector=true;
                     }
-                    $query = $this->retrieve_doc_category_data($is_connector);
+                    $query = $this->retrieve_doc_category_data($is_action_connector);
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $category_id = get_the_ID();
@@ -1111,7 +1111,7 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_doc_category_data($is_connector=false) {
+        function retrieve_doc_category_data($is_action_connector=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
@@ -1125,11 +1125,11 @@ if (!class_exists('embedded_items')) {
 
             );
 
-            if ($is_connector) {
+            if ($is_action_connector) {
                 $args['meta_query'][] = array(
                     'relation' => 'OR',
                     array(
-                        'key'   => 'is_connector',
+                        'key'   => 'is_action_connector',
                         'value' => 1,
                     ),
                     array(
@@ -1143,11 +1143,11 @@ if (!class_exists('embedded_items')) {
                     array(
                         'relation' => 'OR',
                         array(
-                            'key'   => 'is_connector',
+                            'key'   => 'is_action_connector',
                             'compare' => 'NOT EXISTS',
                         ),
                         array(
-                            'key'   => 'is_connector',
+                            'key'   => 'is_action_connector',
                             'value' => 0,
                         )
                     ),
@@ -1166,8 +1166,8 @@ if (!class_exists('embedded_items')) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
-            $is_connector = get_post_meta($category_id, 'is_connector', true);
-            $is_checked = ($is_connector==1) ? 'checked' : '';
+            $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
+            $is_checked = ($is_action_connector==1) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
@@ -1179,8 +1179,8 @@ if (!class_exists('embedded_items')) {
                 <label for="iso-category"><?php echo __( 'ISO', 'textdomain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
                 <?php if (current_user_can('administrator')) {?>
-                    <input type="checkbox" id="is-connector" <?php echo $is_checked?> />
-                    <label for="is-connector"><?php echo __( 'Is connector', 'textdomain' );?></label>
+                    <input type="checkbox" id="is-action-connector" <?php echo $is_checked?> />
+                    <label for="is-action-connector"><?php echo __( 'Is Connector', 'textdomain' );?></label>
                 <?php }?>
             </fieldset>
             <?php
@@ -1199,7 +1199,7 @@ if (!class_exists('embedded_items')) {
                 $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
                 $category_title = (isset($_POST['_category_title'])) ? sanitize_text_field($_POST['_category_title']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
-                $is_connector = (isset($_POST['_is_connector'])) ? sanitize_text_field($_POST['_is_connector']) : 0;
+                $is_action_connector = (isset($_POST['_is_action_connector'])) ? sanitize_text_field($_POST['_is_action_connector']) : 0;
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => $category_title,
@@ -1207,7 +1207,7 @@ if (!class_exists('embedded_items')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($category_id, 'iso_category', $iso_category);
-                update_post_meta($category_id, 'is_connector', $is_connector);
+                update_post_meta($category_id, 'is_action_connector', $is_action_connector);
 
                 $params = array(
                     'log_message' => sprintf(
@@ -1253,8 +1253,8 @@ if (!class_exists('embedded_items')) {
             wp_send_json($response);
         }
 
-        function select_doc_category_options($selected_option=false, $is_connector=false) {
-            $query = $this->retrieve_doc_category_data($is_connector);
+        function select_doc_category_options($selected_option=false, $is_action_connector=false) {
+            $query = $this->retrieve_doc_category_data($is_action_connector);
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
@@ -1263,7 +1263,7 @@ if (!class_exists('embedded_items')) {
                 $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' />' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-            if (!$is_connector) {
+            if (!$is_action_connector) {
                 $selected = ($selected_option=="embedded") ? 'selected' : '';
                 $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
             }

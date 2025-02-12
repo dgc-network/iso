@@ -48,6 +48,15 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_site_action_dialog_data', array( $this, 'del_site_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_site_action_dialog_data', array( $this, 'del_site_action_dialog_data' ) );
 
+            add_action( 'wp_ajax_get_new_action_user', array( $this, 'get_new_action_user' ) );
+            add_action( 'wp_ajax_nopriv_get_new_action_user', array( $this, 'get_new_action_user' ) );                                                                    
+            add_action( 'wp_ajax_set_action_user_data', array( $this, 'set_action_user_data' ) );
+            add_action( 'wp_ajax_nopriv_set_action_user_data', array( $this, 'set_action_user_data' ) );                                                                    
+            add_action( 'wp_ajax_del_action_user_data', array( $this, 'del_action_user_data' ) );
+            add_action( 'wp_ajax_nopriv_del_action_user_data', array( $this, 'del_action_user_data' ) );                                                                    
+
+
+
             add_action( 'wp_ajax_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
             add_action( 'wp_ajax_set_site_job_dialog_data', array( $this, 'set_site_job_dialog_data' ) );
@@ -1054,7 +1063,7 @@ if (!class_exists('display_profiles')) {
                             $action_title = get_the_title();
                             $action_content = get_the_content();
                             $action_number = get_post_meta($action_id, 'action_number', true);
-                            $connector = get_post_meta($action_id, 'connector', true);
+                            $action_connector = get_post_meta($action_id, 'action_connector', true);
                             $next_job = get_post_meta($action_id, 'next_job', true);
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -1070,7 +1079,7 @@ if (!class_exists('display_profiles')) {
                                 <td style="text-align:center;"><?php echo esc_html($action_number);?></td>
 */?>
                                 <td><?php echo $action_title;?></td>
-                                <td><?php echo get_the_title($connector);?></td>
+                                <td><?php echo get_the_title($action_connector);?></td>
                                 <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
                             </tr>
                             <?php 
@@ -1163,7 +1172,7 @@ if (!class_exists('display_profiles')) {
             $action_number = get_post_meta($action_id, 'action_number', true);
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
-            $connector = get_post_meta($action_id, 'connector', true);
+            $action_connector = get_post_meta($action_id, 'action_connector', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
@@ -1176,10 +1185,12 @@ if (!class_exists('display_profiles')) {
                 <?php echo $doc_title;?><br>
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
-                <label for="connector"><?php echo __( 'Connector', 'textdomain' );?></label>
-                <select id="connector" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($connector, true);?></select>
+                <label for="action-connector"><?php echo __( 'Connector', 'textdomain' );?></label>
+                <select id="action-connector" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($action_connector, true);?></select>
                 <label for="next-job"><?php echo __( 'Action', 'textdomain' );?></label>
-                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $connector);?></select>
+                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $action_connector);?></select>
+                <label for="user-list"><?php echo __( 'User List', 'textdomain' );?></label>
+                <?php echo $this->display_action_user_list($action_id);?>
             </fieldset>
             <?php
             return ob_get_clean();
@@ -1189,9 +1200,9 @@ if (!class_exists('display_profiles')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                if( isset($_POST['_connector']) ) {
-                    $connector = sanitize_text_field($_POST['_connector']);
-                    update_post_meta($action_id, 'connector', $connector);
+                if( isset($_POST['_action_connector']) ) {
+                    $action_connector = sanitize_text_field($_POST['_action_connector']);
+                    update_post_meta($action_id, 'action_connector', $action_connector);
                 }
                 $response = array('html_contain' => $this->display_site_action_dialog($action_id));
             }
@@ -1204,7 +1215,7 @@ if (!class_exists('display_profiles')) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
                 $action_number = isset($_POST['_action_number']) ? sanitize_text_field($_POST['_action_number']) : '';
-                $connector = isset($_POST['_connector']) ? sanitize_text_field($_POST['_connector']) : 0;
+                $action_connector = isset($_POST['_action_connector']) ? sanitize_text_field($_POST['_action_connector']) : 0;
                 $next_job = isset($_POST['_next_job']) ? sanitize_text_field($_POST['_next_job']) : 0;
                 $data = array(
                     'ID'           => $action_id,
@@ -1213,7 +1224,7 @@ if (!class_exists('display_profiles')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($action_id, 'action_number', $action_number);
-                update_post_meta($action_id, 'connector', $connector);
+                update_post_meta($action_id, 'action_connector', $action_connector);
                 update_post_meta($action_id, 'next_job', $next_job);
 
                 // Check if action_number is null
@@ -1252,6 +1263,205 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
         
+        // action-user
+        function display_action_user_list($action_id=false) {
+            ob_start();
+            ?>
+            <div id="action-user-list">
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Name', 'textdomain' );?></th>
+                        <th><?php echo __( 'Email', 'textdomain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $users = $this->retrieve_users_by_action_id($action_id);
+                foreach ($users as $user) {
+                    ?>
+                    <tr id="del-doc-user-<?php echo $user->ID;?>">
+                        <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+            <?php if (is_site_admin()) {?>
+                <div id="new-action-user" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+            <?php }?>
+            </fieldset>
+            </div>
+            <div id="new-action-users-dialog" title="<?php echo __( 'Add User', 'textdomain' );?>"></div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function retrieve_users_by_action_id($action_id) {
+            $args = array(
+                'meta_query' => array(
+                    array(
+                        'key'     => 'user_action_ids',
+                        'value'   => $action_id,
+                        'compare' => 'LIKE'
+                    )
+                )
+            );
+            $user_query = new WP_User_Query($args);
+            // Get the results
+            $users = $user_query->get_results();
+            return $users;
+        }
+
+        function display_new_action_user_list() {
+            ob_start();
+            ?>
+            <fieldset>
+            <table style="width:100%;">
+                <thead>
+                    <tr>
+                        <th><?php echo __( 'Name', 'textdomain' );?></th>
+                        <th><?php echo __( 'Email', 'textdomain' );?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $users = $this->retrieve_users_by_site_id();
+                foreach ($users as $user) {
+                    ?>
+                    <tr id="add-action-user-<?php echo $user->ID;?>">
+                        <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
+                        <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
+        function get_new_action_user() {
+            $response = array();
+            $response['html_contain'] = $this->display_new_action_user_list();
+            wp_send_json($response);
+        }
+
+        function set_action_user_data() {
+            $response = array();
+            $action_id = sanitize_text_field($_POST['_action_id']);
+            $user_id = sanitize_text_field($_POST['_user_id']);
+
+            // Check if user exists
+            if (get_userdata($user_id) === false) {
+                $response['status'] = 'error';
+                $response['message'] = 'Invalid user ID.';
+                wp_send_json($response);
+            }
+        
+            // Retrieve current user_action_ids
+            $user_action_ids = get_user_meta($user_id, 'user_action_ids', true);
+        
+            if (empty($user_action_ids)) {
+                $user_action_ids = array();
+            } elseif (is_string($user_action_ids)) {
+                // Handle if user_action_ids is a serialized array or a comma-separated list
+                $user_action_ids_array = maybe_unserialize($user_action_ids);
+                if (is_array($user_action_ids_array)) {
+                    $user_action_ids = $user_action_ids_array;
+                } else {
+                    $user_action_ids = explode(',', $user_action_ids);
+                }
+            }
+        
+            // Add the new action_id if it doesn't already exist
+            if (!in_array($action_id, $user_action_ids)) {
+                $user_action_ids[] = $action_id;
+                update_user_meta($user_id, 'user_action_ids', $user_action_ids);
+        
+                $response['status'] = 'success';
+                $response['message'] = 'ID added successfully.';
+            } else {
+                $response['status'] = 'info';
+                $response['message'] = 'ID already exists for this user.';
+            }
+
+            $action_id = sanitize_text_field($_POST['_action_id']);
+            $response['html_contain'] = $this->display_action_user_list($action_id);
+            wp_send_json($response);
+        }
+
+        function del_action_user_data() {
+            $response = array();
+            $action_id = sanitize_text_field($_POST['_action_id']);
+            $user_id = sanitize_text_field($_POST['_user_id']);
+
+            // Check if user exists
+            if (get_userdata($user_id) === false) {
+                $response['status'] = 'error';
+                $response['message'] = 'Invalid user ID.';
+                wp_send_json($response);
+            }
+        
+            // Retrieve current user_action_ids
+            $user_action_ids = get_user_meta($user_id, 'user_action_ids', true);
+        
+            if (empty($user_action_ids)) {
+                $user_action_ids = array();
+            } elseif (is_string($user_action_ids)) {
+                // Handle if user_action_ids is a serialized array or a comma-separated list
+                $user_action_ids_array = maybe_unserialize($user_action_ids);
+                if (is_array($user_action_ids_array)) {
+                    $user_action_ids = $user_action_ids_array;
+                } else {
+                    $user_action_ids = explode(',', $user_action_ids);
+                }
+            }
+        
+            // Remove the action_id if it exists
+            if (in_array($action_id, $user_action_ids)) {
+                $user_action_ids = array_diff($user_action_ids, array($action_id));
+                update_user_meta($user_id, 'user_action_ids', $user_action_ids);
+        
+                $response['status'] = 'success';
+                $response['message'] = 'ID deleted successfully.';
+            } else {
+                $response['status'] = 'info';
+                $response['message'] = 'ID does not exist for this user.';
+            }
+
+            $action_id = sanitize_text_field($_POST['_action_id']);
+            $response['html_contain'] = $this->display_action_user_list($action_id);
+            wp_send_json($response);
+        }
+
+/*
+        function retrieve_users_by_site_id() {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $args = array(
+                'meta_query' => array(
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                        //'compare' => '='
+                    )
+                )
+            );
+            $user_query = new WP_User_Query($args);
+            // Get the results
+            $users = $user_query->get_results();
+            return $users;
+        }
+*/
+
+
+
         // Site job
         function display_site_job_list() {
             ob_start();
@@ -1707,7 +1917,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function select_site_job_options($selected_option=false, $connector=false) {
+        function select_site_job_options($selected_option=false, $action_connector=false) {
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1720,10 +1930,10 @@ if (!class_exists('display_profiles')) {
                 'order'          => 'ASC',
             );
 
-            if ($connector) {
+            if ($action_connector) {
                 $args['meta_query'][] = array(
                     'key'   => 'doc_category',
-                    'value' => $connector,
+                    'value' => $action_connector,
                 );
             } else {
                 $args['meta_query'][] = array(
@@ -1747,14 +1957,14 @@ if (!class_exists('display_profiles')) {
                 $doc_number = get_post_meta($job_id, 'doc_number', true);
                 $doc_title = get_post_meta($job_id, 'doc_title', true);
                 $job_title = $job_title.'('.$job_number.')';
-                if ($connector) $job_title = $doc_title.'('.$doc_number.')';
+                if ($action_connector) $job_title = $doc_title.'('.$doc_number.')';
 
                 $selected = ($selected_option == $job_id) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
             endwhile;
             wp_reset_postdata();
 
-            if (!$connector) {
+            if (!$action_connector) {
                 if ($selected_option==-1){
                     $options .= '<option value="-1" selected>'.__( 'Released', 'textdomain' ).'</option>';
                 } else {
