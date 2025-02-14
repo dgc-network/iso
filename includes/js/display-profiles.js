@@ -745,8 +745,6 @@ jQuery(document).ready(function($) {
                     $("#site-action-dialog").dialog('open');
                     activate_site_action_dialog_data(action_id);
                     activate_action_users_data(action_id);
-                    //activate_site_action_list_data(action_id);
-                    //activate_job_user_list_data(doc_id);
                 },
                 error: function (error) {
                     console.error(error);
@@ -775,78 +773,7 @@ jQuery(document).ready(function($) {
                     '_next_job': $("#next-job").val(),
                 },
                 success: function (response) {
-                    console.log(response.next_job);
                     $("#next-job").html(response.next_job);
-/*                    
-                    $("#site-action-dialog").html(response.html_contain);
-                    if ($("#is-site-admin").val() === "1") {
-                        //const urlParams = new URLSearchParams(window.location.search);
-                        //const paged = urlParams.get("paged"); // Get the value of "paged"
-                        const pathSegments = window.location.pathname.split('/'); // Split the URL path
-                        const pagedIndex = pathSegments.indexOf("page"); // Find the "page" keyword
-                        let paged = null;
-                        if (pagedIndex !== -1 && pathSegments[pagedIndex + 1]) {
-                            paged = pathSegments[pagedIndex + 1]; // Get the next segment as the paged value
-                        }
-                        console.log(paged); // Output: "2" if the URL contains "/page/2/"
-                        $("#site-action-dialog").dialog("option", "buttons", {
-                            "Save": function () {
-                                $.ajax({
-                                    type: 'POST',
-                                    url: ajax_object.ajax_url,
-                                    dataType: "json",
-                                    data: {
-                                        'action': 'set_site_action_dialog_data',
-                                        '_action_id': action_id,
-                                        '_paged': paged,
-                                        '_action_number': $("#action-number").val(),
-                                        '_action_title': $("#action-title").val(),
-                                        '_action_content': $("#action-content").val(),
-                                        '_action_connector': $("#action-connector").val(),
-                                        '_next_job': $("#next-job").val(),
-                                    },
-                                    success: function (response) {
-                                        $("#site-action-dialog").dialog('close');
-                                        //window.location.replace(window.location.href);
-                                        $("#site-action-list").html(response.html_contain);
-                                        activate_site_action_list_data();
-                                    },
-                                    error: function (error) {
-                                        console.error(error);
-                                        alert(error);
-                                    }
-                                });
-                            },
-                            "Delete": function () {
-                                if (window.confirm("Are you sure you want to delete this site action?")) {
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: ajax_object.ajax_url,
-                                        dataType: "json",
-                                        data: {
-                                            'action': 'del_site_action_dialog_data',
-                                            '_action_id': action_id,
-                                            '_paged': paged,
-                                        },
-                                        success: function (response) {
-                                            $("#site-action-dialog").dialog('close');
-                                            //window.location.replace(window.location.href);
-                                            $("#site-action-list").html(response.html_contain);
-                                            activate_site_action_list_data();
-                                        },
-                                        error: function (error) {
-                                            console.error(error);
-                                            alert(error);
-                                        }
-                                    });
-                                }
-                            },
-                        });
-                    }
-                    $("#site-action-dialog").dialog('open');
-                    activate_site_action_dialog_data(action_id);
-                    activate_action_users_data(action_id);
-*/                    
                 },
                 error: function(error){
                     console.error(error);
