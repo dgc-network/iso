@@ -1200,8 +1200,8 @@ if (!class_exists('display_profiles')) {
                 if( isset($_POST['_action_connector']) ) {
                     $action_connector = sanitize_text_field($_POST['_action_connector']);
                     $next_job = isset($_POST['_next_job']) ? sanitize_text_field($_POST['_next_job']) : 0;
-                    $response = array('next_job' => $this->select_site_job_options($next_job, $action_connector));
                     update_post_meta($action_id, 'action_connector', $action_connector);
+                    $response = array('next_job' => $this->select_site_job_options($next_job, $action_connector));
                 }
                 $response = array('html_contain' => $this->display_site_action_dialog($action_id));
             }
