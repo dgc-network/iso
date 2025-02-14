@@ -694,7 +694,7 @@ if (!class_exists('display_profiles')) {
 
                 <label for="site-content"><?php echo __( 'Non-Disclosure Agreement', 'textdomain' );?></label>
                 <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
-                <label for="company-phone"><?php echo __( 'Phon', 'textdomain' );?></label>
+                <label for="company-phone"><?php echo __( 'Phone', 'textdomain' );?></label>
                 <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="company-address"><?php echo __( 'Company Address', 'textdomain' );?></label>
                 <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
@@ -1040,7 +1040,7 @@ if (!class_exists('display_profiles')) {
         }
 
         // Site actions
-        function display_site_action_list() {
+        function display_site_action_list($paged=1) {
             ob_start();
             ?>
             <fieldset>
@@ -1208,6 +1208,7 @@ if (!class_exists('display_profiles')) {
 
         function set_site_action_dialog_data() {
             $response = array();
+            $paged = isset($_POST['_paged']) ? sanitize_text_field($_POST['_paged']) : 1;
             if( isset($_POST['_action_id']) ) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
@@ -1248,15 +1249,16 @@ if (!class_exists('display_profiles')) {
                 //update_post_meta($new_action_id, 'next_job', -1);
                 //update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
-            $response['html_contain'] = $this->display_site_action_list();
+            $response['html_contain'] = $this->display_site_action_list($paged);
             wp_send_json($response);
         }
 
         function del_site_action_dialog_data() {
             $response = array();
             $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
+            $paged = isset($_POST['_paged']) ? sanitize_text_field($_POST['_paged']) : 1;
             wp_delete_post($action_id, true);
-            $response['html_contain'] = $this->display_site_action_list();
+            $response['html_contain'] = $this->display_site_action_list($paged);
             wp_send_json($response);
         }
         

@@ -636,12 +636,15 @@ jQuery(document).ready(function($) {
         });
 
         $("#new-site-action").on("click", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paged = urlParams.get("paged"); // Get the value of "paged"
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'set_site_action_dialog_data',
+                    '_paged': paged,
                 },
                 success: function (response) {
                     //window.location.replace(window.location.href);
@@ -668,6 +671,8 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-action-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const paged = urlParams.get("paged"); // Get the value of "paged"
                         $("#site-action-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
@@ -677,6 +682,7 @@ jQuery(document).ready(function($) {
                                     data: {
                                         'action': 'set_site_action_dialog_data',
                                         '_action_id': action_id,
+                                        '_paged': paged,
                                         '_action_number': $("#action-number").val(),
                                         '_action_title': $("#action-title").val(),
                                         '_action_content': $("#action-content").val(),
@@ -704,6 +710,7 @@ jQuery(document).ready(function($) {
                                         data: {
                                             'action': 'del_site_action_dialog_data',
                                             '_action_id': action_id,
+                                            '_paged': paged,
                                         },
                                         success: function (response) {
                                             $("#site-action-dialog").dialog('close');
@@ -754,6 +761,8 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-action-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const paged = urlParams.get("paged"); // Get the value of "paged"
                         $("#site-action-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
@@ -763,6 +772,7 @@ jQuery(document).ready(function($) {
                                     data: {
                                         'action': 'set_site_action_dialog_data',
                                         '_action_id': action_id,
+                                        '_paged': paged,
                                         '_action_number': $("#action-number").val(),
                                         '_action_title': $("#action-title").val(),
                                         '_action_content': $("#action-content").val(),
@@ -790,6 +800,7 @@ jQuery(document).ready(function($) {
                                         data: {
                                             'action': 'del_site_action_dialog_data',
                                             '_action_id': action_id,
+                                            '_paged': paged,
                                         },
                                         success: function (response) {
                                             $("#site-action-dialog").dialog('close');
