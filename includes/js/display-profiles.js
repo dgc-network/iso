@@ -775,7 +775,7 @@ jQuery(document).ready(function($) {
                     '_next_job': $("#next-job").val(),
                 },
                 success: function (response) {
-                    $("#next-job").html(response.html_contain);
+                    $("#next-job").html(response.next_job);
 /*                    
                     $("#site-action-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
