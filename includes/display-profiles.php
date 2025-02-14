@@ -1076,7 +1076,7 @@ if (!class_exists('display_profiles')) {
                             ?>
                             <tr id="edit-site-action-<?php echo $action_id;?>">
                                 <td><?php echo $action_title;?></td>
-                                <td><?php echo get_the_title($action_connector);?></td>
+                                <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
                                 <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
                             </tr>
                             <?php 
