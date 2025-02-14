@@ -772,8 +772,11 @@ jQuery(document).ready(function($) {
                     action: 'get_site_action_dialog_data',
                     '_action_id': action_id,
                     _action_connector: $(this).val(),
+                    '_next_job': $("#next-job").val(),
                 },
                 success: function (response) {
+                    $("#next-job").html(response.html_contain);
+/*                    
                     $("#site-action-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
                         //const urlParams = new URLSearchParams(window.location.search);
@@ -842,6 +845,7 @@ jQuery(document).ready(function($) {
                     $("#site-action-dialog").dialog('open');
                     activate_site_action_dialog_data(action_id);
                     activate_action_users_data(action_id);
+*/                    
                 },
                 error: function(error){
                     console.error(error);
