@@ -262,7 +262,7 @@ if (!class_exists('display_profiles')) {
                 <label for="my-job-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
 */?>
-                <label for="my-action-list"><?php echo __( 'Actions & Authorizations', 'textdomain' );?></label>
+                <label for="my-action-list"><?php echo __( 'Authorizations', 'textdomain' );?></label>
                 <div id="my-action-list"><?php echo $this->display_my_action_list();?></div>
                 <label for="phone-number"><?php echo __( 'Phone', 'textdomain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
@@ -333,7 +333,7 @@ if (!class_exists('display_profiles')) {
                                 <tr id="edit-my-action-<?php echo $action['action_id']; ?>">
                                     <td><?php echo $action_title.': '.$doc_title; ?></td>
                                     <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
-                                    <td><?php echo get_the_title($next_job);?></td>
+                                    <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
                                     <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
                                 </tr>
                                 <?php
