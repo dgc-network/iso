@@ -644,6 +644,8 @@ jQuery(document).ready(function($) {
             if (pagedIndex !== -1 && pathSegments[pagedIndex + 1]) {
                 paged = pathSegments[pagedIndex + 1]; // Get the next segment as the paged value
             }
+            console.log(paged); // Output: "2" if the URL contains "/page/2/"
+                        
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -685,7 +687,7 @@ jQuery(document).ready(function($) {
                         if (pagedIndex !== -1 && pathSegments[pagedIndex + 1]) {
                             paged = pathSegments[pagedIndex + 1]; // Get the next segment as the paged value
                         }
-
+                        console.log(paged); // Output: "2" if the URL contains "/page/2/"
                         $("#site-action-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
@@ -782,7 +784,7 @@ jQuery(document).ready(function($) {
                         if (pagedIndex !== -1 && pathSegments[pagedIndex + 1]) {
                             paged = pathSegments[pagedIndex + 1]; // Get the next segment as the paged value
                         }
-
+                        console.log(paged); // Output: "2" if the URL contains "/page/2/"
                         $("#site-action-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
