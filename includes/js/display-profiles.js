@@ -636,8 +636,14 @@ jQuery(document).ready(function($) {
         });
 
         $("#new-site-action").on("click", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const paged = urlParams.get("paged"); // Get the value of "paged"
+            //const urlParams = new URLSearchParams(window.location.search);
+            //const paged = urlParams.get("paged"); // Get the value of "paged"
+            const pathSegments = window.location.pathname.split('/'); // Split the URL path
+            const pagedIndex = pathSegments.indexOf("page"); // Find the "page" keyword
+            let paged = null;
+            if (pagedIndex !== -1 && pathSegments[pagedIndex + 1]) {
+                paged = pathSegments[pagedIndex + 1]; // Get the next segment as the paged value
+            }
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -671,8 +677,15 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-action-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const paged = urlParams.get("paged"); // Get the value of "paged"
+                        //const urlParams = new URLSearchParams(window.location.search);
+                        //const paged = urlParams.get("paged"); // Get the value of "paged"
+                        const pathSegments = window.location.pathname.split('/'); // Split the URL path
+                        const pagedIndex = pathSegments.indexOf("page"); // Find the "page" keyword
+                        let paged = null;
+                        if (pagedIndex !== -1 && pathSegments[pagedIndex + 1]) {
+                            paged = pathSegments[pagedIndex + 1]; // Get the next segment as the paged value
+                        }
+
                         $("#site-action-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
@@ -761,8 +774,15 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-action-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const paged = urlParams.get("paged"); // Get the value of "paged"
+                        //const urlParams = new URLSearchParams(window.location.search);
+                        //const paged = urlParams.get("paged"); // Get the value of "paged"
+                        const pathSegments = window.location.pathname.split('/'); // Split the URL path
+                        const pagedIndex = pathSegments.indexOf("page"); // Find the "page" keyword
+                        let paged = null;
+                        if (pagedIndex !== -1 && pathSegments[pagedIndex + 1]) {
+                            paged = pathSegments[pagedIndex + 1]; // Get the next segment as the paged value
+                        }
+
                         $("#site-action-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
