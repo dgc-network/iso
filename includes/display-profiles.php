@@ -1103,7 +1103,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_site_action_list_data($paged = 1) {
+        function retrieve_site_action_list_data($paged=1, $doc_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
@@ -1130,36 +1130,42 @@ if (!class_exists('display_profiles')) {
             }
 
             if ($paged==0) $args['posts_per_page'] = -1;
-/*
-            if (isset($_GET['_search'])) {
-                $search_query = sanitize_text_field($_GET['_search']);
+
+            if ($doc_id) {
+                $args['posts_per_page'] = -1;
                 $args['meta_query'][] = array(
-                    'key'     => 'job_number',
-                    'value'   => $search_query,
-                    'compare' => 'LIKE',
+                    'key'     => 'doc_id',
+                    'value'   => $doc_id,
+                    'compare' => '=',
                 );
             }
-*/
-            $query = new WP_Query($args);
 
-            // Check if $query is empty and search query is not empty
-            if (!$query->have_posts() && !empty($search_query)) {
-/*                
-                // Loop through meta query array to find and remove 'job_number'
-                foreach ($args['meta_query'] as $key => $meta_query) {
-                    if (isset($meta_query['key']) && $meta_query['key'] === 'job_number') {
-                        unset($args['meta_query'][$key]);
-                        break; // Stop looping once 'job_number' is found and removed
-                    }
-                }
-*/
+            if (isset($_GET['_search'])) {
                 // Set the search query parameter
                 $args['s'] = $search_query;            
                 // Reset pagination to page 1
                 $args['paged'] = 1;
-                $query = new WP_Query($args);
             }
 
+            $query = new WP_Query($args);
+
+            // Check if $query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('action');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+            }
             return $query;
         }
 
