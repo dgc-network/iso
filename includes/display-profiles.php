@@ -1052,7 +1052,7 @@ if (!class_exists('display_profiles')) {
                     </thead>
                     <tbody>
                     <?php
-                    $paged = if (empty($paged)) max(1, get_query_var('paged')); // Get the current page number
+                    $paged = empty($paged) ? max(1, get_query_var('paged')); // Get the current page number
                     $query = $this->retrieve_site_action_list_data($paged);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
