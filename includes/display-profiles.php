@@ -1040,7 +1040,7 @@ if (!class_exists('display_profiles')) {
         }
 
         // Site actions
-        function display_site_action_list($paged=false) {
+        function display_site_action_list($paged=false, $doc_id=false) {
             ob_start();
             ?>
             <fieldset>
@@ -1053,7 +1053,7 @@ if (!class_exists('display_profiles')) {
                     <tbody>
                     <?php
                     $paged = empty($paged) ? max(1, get_query_var('paged')) : $paged; // Get the current page number
-                    $query = $this->retrieve_site_action_list_data($paged);
+                    $query = $this->retrieve_site_action_list_data($paged, $doc_id);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -1089,14 +1089,16 @@ if (!class_exists('display_profiles')) {
                 <?php if (is_site_admin()) {?>
                     <div id="new-site-action" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
-                <div class="pagination">
+                <?php if (!$doc_id) {?>
+                    <div class="pagination">
                     <?php
                     // Display pagination links
                     if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
                     echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
                     if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
-                </div>
+                    </div>
+                <?php }?>
             </fieldset>
             <div id="site-action-dialog" title="Action dialog"></div>
             <?php
