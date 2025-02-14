@@ -775,6 +775,7 @@ jQuery(document).ready(function($) {
                     '_next_job': $("#next-job").val(),
                 },
                 success: function (response) {
+                    console.log(response.next_job);
                     $("#next-job").html(response.next_job);
 /*                    
                     $("#site-action-dialog").html(response.html_contain);
