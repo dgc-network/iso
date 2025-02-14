@@ -644,7 +644,8 @@ jQuery(document).ready(function($) {
                     'action': 'set_site_action_dialog_data',
                 },
                 success: function (response) {
-                    window.location.replace(window.location.href);
+                    //window.location.replace(window.location.href);
+                    $("#site-action-list").html(response.html_contain);
                     activate_site_action_list_data();
                 },
                 error: function(error){
@@ -684,9 +685,9 @@ jQuery(document).ready(function($) {
                                     },
                                     success: function (response) {
                                         $("#site-action-dialog").dialog('close');
-                                        window.location.replace(window.location.href);
-                                        //$("#site-job-list").html(response.html_contain);
-                                        //activate_site_job_list_data();
+                                        //window.location.replace(window.location.href);
+                                        $("#site-action-list").html(response.html_contain);
+                                        activate_site_action_list_data();
                                     },
                                     error: function (error) {
                                         console.error(error);
@@ -706,9 +707,9 @@ jQuery(document).ready(function($) {
                                         },
                                         success: function (response) {
                                             $("#site-action-dialog").dialog('close');
-                                            window.location.replace(window.location.href);
-                                            //$("#site-job-list").html(response.html_contain);
-                                            //activate_site_job_list_data();
+                                            //window.location.replace(window.location.href);
+                                            $("#site-action-list").html(response.html_contain);
+                                            activate_site_action_list_data();
                                         },
                                         error: function (error) {
                                             console.error(error);
@@ -722,7 +723,7 @@ jQuery(document).ready(function($) {
                     $("#site-action-dialog").dialog('open');
                     activate_site_action_dialog_data(action_id);
                     activate_action_users_data(action_id);
-                    //activate_action_action_list_data(action_id);
+                    //activate_site_action_list_data(action_id);
                     //activate_job_user_list_data(doc_id);
                 },
                 error: function (error) {

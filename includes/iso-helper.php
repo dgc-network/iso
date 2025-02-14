@@ -464,3 +464,130 @@ function enqueue_export_scripts() {
     );
 }
 add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
+
+// Add the custom REST API endpoint
+function custom_api_get_data( WP_REST_Request $request ) {
+    $param = $request->get_param('param');
+
+    // Custom logic (modify based on your needs)
+    $response_data = [
+        'status'  => 'success',
+        'message' => 'API works!',
+        'param'   => $param
+    ];
+
+    return new WP_REST_Response($response_data, 200);
+}
+
+// Register API endpoint
+function custom_register_api_routes() {
+    register_rest_route('api/v1', '/data/', [
+        'methods'  => 'GET', // Or 'POST'
+        'callback' => 'custom_api_get_data',
+        'permission_callback' => '__return_true' // Public API (Restrict if needed)
+    ]);
+}
+add_action('rest_api_init', 'custom_register_api_routes');
+
+// Add the custom REST API endpoint
+function custom_api_post_data( WP_REST_Request $request ) {
+    $data = $request->get_json_params(); // Get JSON payload
+
+    if (empty($data['name'])) {
+        return new WP_REST_Response(['error' => 'Missing name'], 400);
+    }
+
+    return new WP_REST_Response([
+        'message' => 'Received!',
+        'name'    => sanitize_text_field($data['name'])
+    ], 200);
+}
+
+function custom_register_post_api() {
+    register_rest_route('api/v1', '/submit/', [
+        'methods'  => 'POST',
+        'callback' => 'custom_api_post_data',
+        'permission_callback' => '__return_true'
+    ]);
+}
+add_action('rest_api_init', 'custom_register_post_api');
+
+function general_api_permission_callback() {
+    return is_user_logged_in(); // Allow only logged-in users
+}
+
+// Securely handle API request
+function send_message_api_post_data(WP_REST_Request $request) {
+    $data = $request->get_json_params(); // Get JSON payload
+
+    // Validate 'body_contents' exists and is an array
+    if (empty($data['body_contents']) || !is_array($data['body_contents'])) {
+        return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);
+    }
+
+    // Sanitize input data
+    foreach ($data['body_contents'] as $key => $content) {
+        if (isset($content['text'])) {
+            $data['body_contents'][$key]['text'] = sanitize_text_field($content['text']);
+        }
+    }
+
+    // Send message via Line Bot API
+    $line_bot_api = new line_bot_api();
+    $line_bot_api->send_flex_message($data);
+
+    return new WP_REST_Response([
+        'message' => 'Message Sent!',
+        'alt_text' => $data['body_contents'][0]['text'] ?? ''
+    ], 200);
+}
+
+// Register the API endpoint
+function send_message_register_post_api() {
+    register_rest_route('api/v1', '/send-message/', [
+        'methods'  => 'POST',
+        'callback' => 'send_message_api_post_data',
+        'permission_callback' => 'general_api_permission_callback'
+    ]);
+}
+add_action('rest_api_init', 'send_message_register_post_api');
+
+// Send a message using the custom API endpoint
+function send_message_to_user($user, $header_contents, $body_contents, $footer_contents) {
+
+    $api_url = home_url('/wp-json/api/v1/send-message/'); // API Endpoint URL
+
+    // Prepare the payload
+    $request_data = [
+        'to' => get_user_meta($user->ID, 'line_user_id', true),
+        'header_contents' => $header_contents,
+        'body_contents' => $body_contents,
+        'footer_contents' => $footer_contents,
+    ];
+    
+    // Make the API request
+    $response = wp_remote_post($api_url, [
+        'method'    => 'POST',
+        'headers'   => [
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . wp_get_current_user()->user_login // Example authentication
+        ],
+        'body'      => wp_json_encode($request_data),
+        'data_format' => 'body',
+    ]);
+    
+    // Handle response
+    if (is_wp_error($response)) {
+        error_log('API Error: ' . $response->get_error_message());
+    } else {
+        $response_code = wp_remote_retrieve_response_code($response);
+        $response_body = wp_remote_retrieve_body($response);
+        
+        if ($response_code === 200) {
+            error_log('Message Sent Successfully: ' . $response_body);
+        } else {
+            error_log('API Response Error: ' . $response_body);
+        }
+    }
+    
+}

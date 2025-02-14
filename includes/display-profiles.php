@@ -1075,9 +1075,6 @@ if (!class_exists('display_profiles')) {
                             $action_title = (!empty($users_query)) ? $action_title : '<span style="color:red;">'.$action_title.'</span>';
                             ?>
                             <tr id="edit-site-action-<?php echo $action_id;?>">
-<?php /*?>                                
-                                <td style="text-align:center;"><?php echo esc_html($action_number);?></td>
-*/?>
                                 <td><?php echo $action_title;?></td>
                                 <td><?php echo get_the_title($action_connector);?></td>
                                 <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
