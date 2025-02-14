@@ -1040,7 +1040,7 @@ if (!class_exists('display_profiles')) {
         }
 
         // Site actions
-        function display_site_action_list($paged=1) {
+        function display_site_action_list($paged=false) {
             ob_start();
             ?>
             <fieldset>
