@@ -144,8 +144,6 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#my-action-dialog").html(response.html_contain);
-
-                    //$("#my-job-action-list").html(response.html_contain);
                     $("#my-action-dialog").dialog("option", "buttons", {
                         "Update": function () {
                             $.ajax({
@@ -175,7 +173,6 @@ jQuery(document).ready(function($) {
                             $("#my-action-dialog").dialog('close');
                         },
                     });
-                    //$("#my-job-action-list").dialog('open');
                     $("#my-action-dialog").dialog('open');
 
                 },
@@ -192,13 +189,7 @@ jQuery(document).ready(function($) {
             autoOpen: false,
             buttons: {}
         });
-/*
-        $("#my-job-action-list").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-        });
-*/
+
         if ($("#recurrence-setting").val()) {
             $("#recurrence-start-time-div").show();
         }
@@ -210,7 +201,7 @@ jQuery(document).ready(function($) {
                 $("#recurrence-start-time-div").hide();
             }
         });
-
+/*
         $('[id^="edit-my-job-"]').on("click", function () {
             const doc_id = this.id.substring(12);
             $.ajax({
@@ -288,7 +279,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+*/
         // exception notifiction
         $("#my-exception-notification-setting-label").on("click", function () {
             $("#my-exception-notification-setting").toggle();
@@ -697,8 +688,6 @@ jQuery(document).ready(function($) {
         });
 
         $("#new-site-action").on("click", function() {
-            //const urlParams = new URLSearchParams(window.location.search);
-            //const paged = urlParams.get("paged"); // Get the value of "paged"
             const pathSegments = window.location.pathname.split('/'); // Split the URL path
             const pagedIndex = pathSegments.indexOf("page"); // Find the "page" keyword
             let paged = null;
@@ -714,9 +703,9 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'set_site_action_dialog_data',
                     '_paged': paged,
+                    '_doc_id': $("#doc-id").val(),
                 },
                 success: function (response) {
-                    //window.location.replace(window.location.href);
                     $("#site-action-list").html(response.html_contain);
                     activate_site_action_list_data();
                 },
@@ -740,8 +729,6 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#site-action-dialog").html(response.html_contain);
                     if ($("#is-site-admin").val() === "1") {
-                        //const urlParams = new URLSearchParams(window.location.search);
-                        //const paged = urlParams.get("paged"); // Get the value of "paged"
                         const pathSegments = window.location.pathname.split('/'); // Split the URL path
                         const pagedIndex = pathSegments.indexOf("page"); // Find the "page" keyword
                         let paged = null;

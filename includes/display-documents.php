@@ -264,12 +264,11 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '=',    
                     ),
                 ),
-                'orderby'        => 'meta_value',
-                'meta_key'       => 'doc_number',
-                'order'          => 'ASC',
+                //'orderby'        => 'meta_value',
+                //'meta_key'       => 'doc_number',
+                //'order'          => 'ASC',
             );
 
             if ($paged == 0) {
@@ -523,7 +522,7 @@ if (!class_exists('display_documents')) {
                         <label for="action-list"><?php echo __( '動作設定', 'textdomain' );?></label>
                         <?php //echo $profiles_class->display_doc_action_list($doc_id);?>
                         <div id="site-action-list">
-                        <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
+                            <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
                         </div>
 
                         <label for="department"><?php echo __( '部門', 'textdomain' );?></label>
