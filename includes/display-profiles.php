@@ -335,7 +335,7 @@ if (!class_exists('display_profiles')) {
                             $is_action_authorized = $this->is_action_authorized($action_id) ? 'checked' : '';
                             if ($action_site == $site_id) {
                                 ?>
-                                <tr id="edit-my-action-<?php echo $action['action_id']; ?>">
+                                <tr id="edit-my-action-<?php echo $action_id; ?>">
                                     <td><?php echo $action_title.': '.$doc_title; ?></td>
                                     <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
                                     <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>

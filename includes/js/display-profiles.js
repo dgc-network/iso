@@ -143,12 +143,6 @@ jQuery(document).ready(function($) {
                     '_action_id': action_id,
                 },
                 success: function (response) {
-                    $("#my-action-dialog").dialog({
-                        width: 390,
-                        modal: true,
-                        autoOpen: false,
-                        buttons: {}
-                    });
                     $("#my-action-dialog").html(response.html_contain);
 
                     //$("#my-job-action-list").html(response.html_contain);
@@ -192,12 +186,19 @@ jQuery(document).ready(function($) {
             });
         });
 
+        $("#my-action-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {}
+        });
+/*
         $("#my-job-action-list").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
         });
-
+*/
         if ($("#recurrence-setting").val()) {
             $("#recurrence-start-time-div").show();
         }
