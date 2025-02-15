@@ -1314,13 +1314,13 @@ if (!class_exists('display_profiles')) {
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
-                            $action_title .= ': '.$doc_title;
+                            //$action_title .= ': '.$doc_title;
                             // display the warning if the job without assigned users
-                            $users_query = $this->retrieve_users_by_doc_id($doc_id);
-                            $action_title = (!empty($users_query)) ? $action_title : '<span style="color:red;">'.$action_title.'</span>';
+                            //$users_query = $this->retrieve_users_by_doc_id($doc_id);
+                            //$action_title = (!empty($users_query)) ? $action_title : '<span style="color:red;">'.$action_title.'</span>';
                             ?>
                             <tr id="edit-site-action-<?php echo $action_id;?>">
-                                <td><?php echo $action_title;?></td>
+                                <td><?php echo '<span style="color:blue;">'.$action_title.'</span>: '.$doc_title;?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
                                 <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
                             </tr>
