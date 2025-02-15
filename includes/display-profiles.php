@@ -1464,6 +1464,7 @@ if (!class_exists('display_profiles')) {
         function set_site_action_dialog_data() {
             $response = array();
             $paged = isset($_POST['_paged']) ? sanitize_text_field($_POST['_paged']) : 1;
+            $doc_id = isset($_POST['_doc_id']) ? sanitize_text_field($_POST['_doc_id']) : 0;
             if( isset($_POST['_action_id']) ) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
@@ -1504,7 +1505,7 @@ if (!class_exists('display_profiles')) {
                 //update_post_meta($new_action_id, 'next_job', -1);
                 //update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
-            $response['html_contain'] = $this->display_site_action_list($paged);
+            $response['html_contain'] = $this->display_site_action_list($paged, $doc_id);
             wp_send_json($response);
         }
 
@@ -1512,8 +1513,9 @@ if (!class_exists('display_profiles')) {
             $response = array();
             $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
             $paged = isset($_POST['_paged']) ? sanitize_text_field($_POST['_paged']) : 1;
+            $doc_id = isset($_POST['_doc_id']) ? sanitize_text_field($_POST['_doc_id']) : 0;
             wp_delete_post($action_id, true);
-            $response['html_contain'] = $this->display_site_action_list($paged);
+            $response['html_contain'] = $this->display_site_action_list($paged, $doc_id);
             wp_send_json($response);
         }
         

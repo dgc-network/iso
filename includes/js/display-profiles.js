@@ -759,6 +759,7 @@ jQuery(document).ready(function($) {
                                         'action': 'set_site_action_dialog_data',
                                         '_action_id': action_id,
                                         '_paged': paged,
+                                        '_doc_id': $("#doc-id").val(),
                                         '_action_number': $("#action-number").val(),
                                         '_action_title': $("#action-title").val(),
                                         '_action_content': $("#action-content").val(),
@@ -787,10 +788,10 @@ jQuery(document).ready(function($) {
                                             'action': 'del_site_action_dialog_data',
                                             '_action_id': action_id,
                                             '_paged': paged,
+                                            '_doc_id': $("#doc-id").val(),
                                         },
                                         success: function (response) {
                                             $("#site-action-dialog").dialog('close');
-                                            //window.location.replace(window.location.href);
                                             $("#site-action-list").html(response.html_contain);
                                             activate_site_action_list_data();
                                         },
