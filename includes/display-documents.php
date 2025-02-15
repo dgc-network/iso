@@ -494,7 +494,7 @@ if (!class_exists('display_documents')) {
                                     $action_content = get_post_field('post_content', $action_id);
                                     $current_job = get_post_meta($action_id, 'doc_id', true);
                                     $current_job_title = get_the_title($current_job);
-                                    $current_job_title = get_post_meta($current_job, 'doc_title', true);
+                                    //$current_job_title = get_post_meta($current_job, 'doc_title', true);
                                     $next_job = get_post_meta($action_id, 'next_job', true);
                                     $next_job_title = get_the_title($next_job);
                                     //$next_job_title = get_post_meta($next_job, 'doc_title', true);
