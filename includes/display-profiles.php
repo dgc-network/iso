@@ -332,14 +332,14 @@ if (!class_exists('display_profiles')) {
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $action_connector = get_post_meta($action_id, 'action_connector', true);
                             $next_job = get_post_meta($action_id, 'next_job', true);
-                            $is_checked = $this->is_action_authorized($action_id) ? 'checked' : '';
+                            $is_action_authorized = $this->is_action_authorized($action_id) ? 'checked' : '';
                             if ($action_site == $site_id) {
                                 ?>
                                 <tr id="edit-my-action-<?php echo $action['action_id']; ?>">
                                     <td><?php echo $action_title.': '.$doc_title; ?></td>
                                     <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
                                     <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
-                                    <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
+                                    <td style="text-align:center;"><input type="radio" <?php echo $is_action_authorized;?> /></td>
                                 </tr>
                                 <?php
                             }
@@ -368,9 +368,9 @@ if (!class_exists('display_profiles')) {
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
-            $is_authorized = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
-            $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
-            $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
+            $authorized_status = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
+            $recurrence_setting = get_post_meta($action_id, 'recurrence_setting', true);
+            $recurrence_start_time = get_post_meta($action_id, 'recurrence_start_time', true);
             ?>
             <div>
                 <h4>
@@ -378,20 +378,21 @@ if (!class_exists('display_profiles')) {
                     printf(
                         __( 'Set the action %s of the job %s', 'textdomain' ),
                         get_the_title($action_id),
-                        get_the_title($doc_id),
+                        //get_the_title($doc_id),
+                        $doc_title,
                     );
                     ?>
-                    → <span class="authorized-status"><?php echo esc_html($is_authorized); ?></span>
+                    → <span class="authorized-status"><?php echo esc_html($authorized_status); ?></span>
                 </h4>                
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
-                <label for="frequence-report-setting"><?php echo __( 'Cycle Form Start Settings', 'textdomain' );?></label>
-                <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($frequence_report_setting);?></select>
-                <div id="frquence-report-start-time-div">
-                    <label for="frequence-report-start-time"><?php echo __( 'Cycle Form Start Time', 'textdomain' );?></label><br>
-                    <input type="date" id="frequence-report-start-date" value="<?php echo wp_date('Y-m-d', $frequence_report_start_time);?>" />
-                    <input type="time" id="frequence-report-start-time" value="<?php echo wp_date('H:i', $frequence_report_start_time);?>" />
-                    <input type="hidden" id="prev-start-time" value="<?php echo $frequence_report_start_time;?>" />
+                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings', 'textdomain' );?></label>
+                <select id="recurrence-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
+                <div id="recurrence-start-time-div">
+                    <label for="recurrence-start-time"><?php echo __( 'Recurrence Start Time', 'textdomain' );?></label><br>
+                    <input type="date" id="recurrence-start-date" value="<?php echo wp_date('Y-m-d', $recurrence_start_time);?>" />
+                    <input type="time" id="recurrence-start-time" value="<?php echo wp_date('H:i', $recurrence_start_time);?>" />
+                    <input type="hidden" id="prev-start-time" value="<?php echo $recurrence_start_time;?>" />
                 </div>
             </div>
             <?php
@@ -420,7 +421,7 @@ if (!class_exists('display_profiles')) {
 
                 // Update 'action_authorized_ids' meta value
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
-
+/*
                 // update the other actions
                 $doc_id = get_post_meta($action_id, 'doc_id', true);
                 $query = $this->retrieve_doc_action_data($doc_id);
@@ -443,19 +444,19 @@ if (!class_exists('display_profiles')) {
                     endwhile;
                     wp_reset_postdata();
                 endif;
-
+*/
                 // Get the timezone offset from WordPress settings
                 $timezone_offset = get_option('gmt_offset');
                 $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
 
                 // Calculate and save start time
-                $frequence_report_start_date = sanitize_text_field($_POST['_frequence_report_start_date']);
-                $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
-                $start_time = strtotime($frequence_report_start_date . ' ' . $frequence_report_start_time) - $offset_seconds;
-                update_post_meta($action_id, 'frequence_report_start_time', $start_time);
+                $recurrence_start_date = sanitize_text_field($_POST['_recurrence_start_date']);
+                $recurrence_start_time = sanitize_text_field($_POST['_recurrence_start_time']);
+                $start_time = strtotime($recurrence_start_date . ' ' . $recurrence_start_time) - $offset_seconds;
+                update_post_meta($action_id, 'recurrence_start_time', $start_time);
 
                 $hook_name = 'iso_helper_post_event';
-                $interval = sanitize_text_field($_POST['_frequence_report_setting']);
+                $interval = sanitize_text_field($_POST['_recurrence_setting']);
                 $args = array(
                     'action_id' => $action_id,
                     'user_id' => $user_id,
@@ -463,7 +464,7 @@ if (!class_exists('display_profiles')) {
 
                 if (!$is_action_authorized && !$authorize_exists) {
                     // Frequency Report Setting
-                    update_post_meta($action_id, 'frequence_report_setting', $interval);
+                    update_post_meta($action_id, 'recurrence_setting', $interval);
 
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
@@ -507,8 +508,8 @@ if (!class_exists('display_profiles')) {
                     update_option('schedule_event_hook_name', $hook_name);
 
                 } else {
-                    delete_post_meta($action_id, 'frequence_report_setting');
-                    delete_post_meta($action_id, 'frequence_report_start_time');
+                    delete_post_meta($action_id, 'recurrence_setting');
+                    delete_post_meta($action_id, 'recurrence_start_time');
                     if ($interval=='weekday_daily') {
                         $hook_name = 'weekday_daily_post_event';
                     }
@@ -679,9 +680,9 @@ if (!class_exists('display_profiles')) {
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
-            $is_authorized = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
-            $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
-            $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
+            $authorized_status = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
+            $recurrence_setting = get_post_meta($action_id, 'recurrence_setting', true);
+            $recurrence_start_time = get_post_meta($action_id, 'recurrence_start_time', true);
             ?>
             <div>
                 <h4>
@@ -692,17 +693,17 @@ if (!class_exists('display_profiles')) {
                         get_the_title($doc_id),
                     );
                     ?>
-                    → <span class="authorized-status"><?php echo esc_html($is_authorized); ?></span>
+                    → <span class="authorized-status"><?php echo esc_html($authorized_status); ?></span>
                 </h4>                
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
-                <label for="frequence-report-setting"><?php echo __( 'Cycle Form Start Settings', 'textdomain' );?></label>
-                <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($frequence_report_setting);?></select>
-                <div id="frquence-report-start-time-div">
-                    <label for="frequence-report-start-time"><?php echo __( 'Cycle Form Start Time', 'textdomain' );?></label><br>
-                    <input type="date" id="frequence-report-start-date" value="<?php echo wp_date('Y-m-d', $frequence_report_start_time);?>" />
-                    <input type="time" id="frequence-report-start-time" value="<?php echo wp_date('H:i', $frequence_report_start_time);?>" />
-                    <input type="hidden" id="prev-start-time" value="<?php echo $frequence_report_start_time;?>" />
+                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings', 'textdomain' );?></label>
+                <select id="recurrence-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
+                <div id="recurrence-start-time-div">
+                    <label for="recurrence-start-time"><?php echo __( 'Recurrence Start Time', 'textdomain' );?></label><br>
+                    <input type="date" id="recurrence-start-date" value="<?php echo wp_date('Y-m-d', $recurrence_start_time);?>" />
+                    <input type="time" id="recurrence-start-time" value="<?php echo wp_date('H:i', $recurrence_start_time);?>" />
+                    <input type="hidden" id="prev-start-time" value="<?php echo $recurrence_start_time;?>" />
                 </div>
             </div>
             <?php
@@ -768,13 +769,13 @@ if (!class_exists('display_profiles')) {
                 $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
 
                 // Calculate and save start time
-                $frequence_report_start_date = sanitize_text_field($_POST['_frequence_report_start_date']);
-                $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
-                $start_time = strtotime($frequence_report_start_date . ' ' . $frequence_report_start_time) - $offset_seconds;
-                update_post_meta($action_id, 'frequence_report_start_time', $start_time);
+                $recurrence_start_date = sanitize_text_field($_POST['_recurrence_start_date']);
+                $recurrence_start_time = sanitize_text_field($_POST['_recurrence_start_time']);
+                $start_time = strtotime($recurrence_start_date . ' ' . $recurrence_start_time) - $offset_seconds;
+                update_post_meta($action_id, 'recurrence_start_time', $start_time);
 
                 $hook_name = 'iso_helper_post_event';
-                $interval = sanitize_text_field($_POST['_frequence_report_setting']);
+                $interval = sanitize_text_field($_POST['_recurrence_setting']);
                 $args = array(
                     'action_id' => $action_id,
                     'user_id' => $user_id,
@@ -782,7 +783,7 @@ if (!class_exists('display_profiles')) {
 
                 if (!$is_action_authorized && !$authorize_exists) {
                     // Frequency Report Setting
-                    update_post_meta($action_id, 'frequence_report_setting', $interval);
+                    update_post_meta($action_id, 'recurrence_setting', $interval);
 
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
@@ -826,8 +827,8 @@ if (!class_exists('display_profiles')) {
                     update_option('schedule_event_hook_name', $hook_name);
 
                 } else {
-                    delete_post_meta($action_id, 'frequence_report_setting');
-                    delete_post_meta($action_id, 'frequence_report_start_time');
+                    delete_post_meta($action_id, 'recurrence_setting');
+                    delete_post_meta($action_id, 'recurrence_start_time');
                     if ($interval=='weekday_daily') {
                         $hook_name = 'weekday_daily_post_event';
                     }

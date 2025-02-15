@@ -1750,7 +1750,7 @@ if (!class_exists('to_do_list')) {
             wp_send_json($response);
         }
 
-        // doc-report frequence setting
+        // doc-report recurrence setting
         function schedule_event_callback($params) {
             $action_id = $params['action_id'];
             $user_id = $params['user_id'];

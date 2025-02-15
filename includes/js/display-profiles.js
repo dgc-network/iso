@@ -162,9 +162,9 @@ jQuery(document).ready(function($) {
                                     'action': 'set_my_action_dialog_data',
                                     _action_id: $("#action-id").val(),
                                     _is_action_authorized: $("#is-action-authorized").val(),
-                                    _frequence_report_setting: $("#frequence-report-setting").val(),
-                                    _frequence_report_start_date: $("#frequence-report-start-date").val(),
-                                    _frequence_report_start_time: $("#frequence-report-start-time").val(),
+                                    _recurrence_setting: $("#recurrence-setting").val(),
+                                    _recurrence_start_date: $("#recurrence-start-date").val(),
+                                    _recurrence_start_time: $("#recurrence-start-time").val(),
                                     _prev_start_time: $("#prev-start-time").val(),
                                 },
                                 success: function (response) {
@@ -198,15 +198,15 @@ jQuery(document).ready(function($) {
             autoOpen: false,
         });
 
-        if ($("#frequence-report-setting").val()) {
-            $("#frquence-report-start-time-div").show();
+        if ($("#recurrence-setting").val()) {
+            $("#recurrence-start-time-div").show();
         }
 
-        $("#frequence-report-setting").on("change", function () {
+        $("#recurrence-setting").on("change", function () {
             if ($(this).val()) {
-                $("#frquence-report-start-time-div").show();
+                $("#recurrence-start-time-div").show();
             } else {
-                $("#frquence-report-start-time-div").hide();
+                $("#recurrence-start-time-div").hide();
             }
         });
 
@@ -232,9 +232,9 @@ jQuery(document).ready(function($) {
                                     'action': 'set_my_job_action_dialog_data',
                                     _action_id: $("#action-id").val(),
                                     _is_action_authorized: $("#is-action-authorized").val(),
-                                    _frequence_report_setting: $("#frequence-report-setting").val(),
-                                    _frequence_report_start_date: $("#frequence-report-start-date").val(),
-                                    _frequence_report_start_time: $("#frequence-report-start-time").val(),
+                                    _recurrence_setting: $("#recurrence-setting").val(),
+                                    _recurrence_start_date: $("#recurrence-start-date").val(),
+                                    _recurrence_start_time: $("#recurrence-start-time").val(),
                                     _prev_start_time: $("#prev-start-time").val(),
                                 },
                                 success: function (response) {
