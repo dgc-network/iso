@@ -15,6 +15,11 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
 
+            add_action( 'wp_ajax_get_my_action_dialog_data', array( $this, 'get_my_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_my_action_dialog_data', array( $this, 'get_my_action_dialog_data' ) );
+            add_action( 'wp_ajax_set_my_action_dialog_data', array( $this, 'set_my_action_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_my_action_dialog_data', array( $this, 'set_my_action_dialog_data' ) );
+
             add_action( 'wp_ajax_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
             add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
@@ -343,11 +348,197 @@ if (!class_exists('display_profiles')) {
                     ?>
                     </tbody>
                 </table>
-                <div id="my-job-action-list" title="Action authorization"></div>
+                <div id="my-action-dialog" title="Action authorization"></div>
             </fieldset>
             <?php
             return ob_get_clean();
         }
+
+        function get_my_action_dialog_data() {
+            if (isset($_POST['_action_id'])) {
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $response = array('html_contain' => $this->display_my_action_dialog($action_id));    
+            }
+            wp_send_json($response);
+        }
+
+        function display_my_action_dialog($action_id=false) {
+            ob_start();
+            $todo_class = new to_do_list();
+            $doc_id = get_post_meta($action_id, 'doc_id', true);
+            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $is_action_authorized = $this->is_action_authorized($action_id);
+            $is_authorized = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
+            $frequence_report_setting = get_post_meta($action_id, 'frequence_report_setting', true);
+            $frequence_report_start_time = get_post_meta($action_id, 'frequence_report_start_time', true);
+            ?>
+            <div>
+                <h4>
+                    <?php 
+                    printf(
+                        __( 'Set the action %s of the job %s', 'textdomain' ),
+                        get_the_title($action_id),
+                        get_the_title($doc_id),
+                    );
+                    ?>
+                    → <span class="authorized-status"><?php echo esc_html($is_authorized); ?></span>
+                </h4>                
+                <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
+                <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
+                <label for="frequence-report-setting"><?php echo __( 'Cycle Form Start Settings', 'textdomain' );?></label>
+                <select id="frequence-report-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($frequence_report_setting);?></select>
+                <div id="frquence-report-start-time-div">
+                    <label for="frequence-report-start-time"><?php echo __( 'Cycle Form Start Time', 'textdomain' );?></label><br>
+                    <input type="date" id="frequence-report-start-date" value="<?php echo wp_date('Y-m-d', $frequence_report_start_time);?>" />
+                    <input type="time" id="frequence-report-start-time" value="<?php echo wp_date('H:i', $frequence_report_start_time);?>" />
+                    <input type="hidden" id="prev-start-time" value="<?php echo $frequence_report_start_time;?>" />
+                </div>
+            </div>
+            <?php
+            return ob_get_clean();
+        }
+
+        function set_my_action_dialog_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+
+            if (isset($_POST['_action_id']) && isset($_POST['_is_action_authorized'])) {
+                $user_id = get_current_user_id();
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
+                $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
+                if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
+                $authorize_exists = in_array($user_id, $action_authorized_ids);
+        
+                // Check the condition and update 'action_authorized_ids' accordingly
+                if (!$is_action_authorized && !$authorize_exists) {
+                    // Add $user_id to 'action_authorized_ids'
+                    $action_authorized_ids[] = $user_id;
+                } elseif ($is_action_authorized && $authorize_exists) {
+                    // Remove $user_id from 'action_authorized_ids'
+                    $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
+                }
+
+                // Update 'action_authorized_ids' meta value
+                update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
+
+                // update the other actions
+                $doc_id = get_post_meta($action_id, 'doc_id', true);
+                $query = $this->retrieve_doc_action_data($doc_id);
+                if ($query->have_posts()) :
+                    while ($query->have_posts()) : $query->the_post();
+                        $inner_action_id = get_the_ID();
+                        if ($inner_action_id!=$action_id){
+                            $action_authorized_ids = get_post_meta($inner_action_id, 'action_authorized_ids', true);
+                            if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
+                            $authorize_exists = in_array($user_id, $action_authorized_ids);
+
+                            if ($authorize_exists) {
+                                // Remove $user_id from 'action_authorized_ids'
+                                $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
+                            }
+
+                            // Update 'action_authorized_ids' meta value
+                            update_post_meta($inner_action_id, 'action_authorized_ids', $action_authorized_ids);            
+                        }
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
+
+                // Get the timezone offset from WordPress settings
+                $timezone_offset = get_option('gmt_offset');
+                $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
+
+                // Calculate and save start time
+                $frequence_report_start_date = sanitize_text_field($_POST['_frequence_report_start_date']);
+                $frequence_report_start_time = sanitize_text_field($_POST['_frequence_report_start_time']);
+                $start_time = strtotime($frequence_report_start_date . ' ' . $frequence_report_start_time) - $offset_seconds;
+                update_post_meta($action_id, 'frequence_report_start_time', $start_time);
+
+                $hook_name = 'iso_helper_post_event';
+                $interval = sanitize_text_field($_POST['_frequence_report_setting']);
+                $args = array(
+                    'action_id' => $action_id,
+                    'user_id' => $user_id,
+                );
+
+                if (!$is_action_authorized && !$authorize_exists) {
+                    // Frequency Report Setting
+                    update_post_meta($action_id, 'frequence_report_setting', $interval);
+
+                    // Check if an event with the same hook and args is already scheduled
+                    if (!wp_next_scheduled($hook_name, array($args))) {
+                        switch ($interval) {
+                            case 'hourly':
+                                wp_schedule_event($start_time, 'hourly', $hook_name, array($args));
+                                break;
+                            case 'twicedaily':
+                                wp_schedule_event($start_time, 'twicedaily', $hook_name, array($args));
+                                break;
+                            case 'weekday_daily':
+                                $hook_name = 'weekday_daily_post_event';
+                                wp_schedule_event($start_time, 'weekday_daily', $hook_name, array($args));
+                                break;
+                            case 'daily':
+                                wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+                                break;
+                            case 'weekly':
+                                wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+                                break;
+                            case 'biweekly':
+                                wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
+                                break;
+                            case 'monthly':
+                                wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+                                break;
+                            case 'bimonthly':
+                                wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
+                                break;
+                            case 'half_yearly':
+                                wp_schedule_event($start_time, 'half_yearly', $hook_name, array($args));
+                                break;
+                            case 'yearly':
+                                wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+                                break;
+                            default:
+                                return new WP_Error('invalid_interval', 'The specified interval is invalid.');
+                        }
+                    }
+                    // Store the hook name in options for later use
+                    update_option('schedule_event_hook_name', $hook_name);
+
+                } else {
+                    delete_post_meta($action_id, 'frequence_report_setting');
+                    delete_post_meta($action_id, 'frequence_report_start_time');
+                    if ($interval=='weekday_daily') {
+                        $hook_name = 'weekday_daily_post_event';
+                    }
+                    $cron_jobs = _get_cron_array(); // Fetch all cron jobs
+                    if ($cron_jobs) {
+                        foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
+                            if (isset($scheduled_hooks[$hook_name])) {
+                                foreach ($scheduled_hooks[$hook_name] as $event) {
+                                    // Check if event args match the specified args
+                                    if (isset($event['args'][0]) && $event['args'][0] == $args) {
+                                        wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $response = array(
+                    'success' => true, 
+                    'action_id' => $action_id,
+                    'is_action_authorized' => $is_action_authorized,
+                    'authoriz_exists' => $authorize_exists,
+                    'action_authorized_ids' => $action_authorized_ids,
+                );
+            }
+            wp_send_json($response);
+        }
+
+
 
         // my-job
         function display_my_job_list() {

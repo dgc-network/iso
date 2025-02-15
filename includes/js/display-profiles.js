@@ -132,6 +132,66 @@ jQuery(document).ready(function($) {
             });            
         });
 
+        $('[id^="edit-my-action-"]').on("click", function () {
+            const action_id = this.id.substring(15);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_my_action_dialog_data',
+                    '_action_id': action_id,
+                },
+                success: function (response) {
+                    $("#my-action-dialog").dialog({
+                        width: 390,
+                        modal: true,
+                        autoOpen: false,
+                        buttons: {}
+                    });
+                    $("#my-action-dialog").html(response.html_contain);
+
+                    //$("#my-job-action-list").html(response.html_contain);
+                    $("#my-action-dialog").dialog("option", "buttons", {
+                        "Update": function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_my_action_dialog_data',
+                                    _action_id: $("#action-id").val(),
+                                    _is_action_authorized: $("#is-action-authorized").val(),
+                                    _frequence_report_setting: $("#frequence-report-setting").val(),
+                                    _frequence_report_start_date: $("#frequence-report-start-date").val(),
+                                    _frequence_report_start_time: $("#frequence-report-start-time").val(),
+                                    _prev_start_time: $("#prev-start-time").val(),
+                                },
+                                success: function (response) {
+                                    console.log(response);
+                                    window.location.replace(window.location.href);
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        },
+                        "Cancel": function () {
+                            $("#my-action-dialog").dialog('close');
+                        },
+                    });
+                    //$("#my-job-action-list").dialog('open');
+                    $("#my-action-dialog").dialog('open');
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
         $("#my-job-action-list").dialog({
             width: 390,
             modal: true,
