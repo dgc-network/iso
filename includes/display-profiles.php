@@ -336,7 +336,7 @@ if (!class_exists('display_profiles')) {
                             if ($action_site == $site_id) {
                                 ?>
                                 <tr id="edit-my-action-<?php echo $action_id; ?>">
-                                    <td><?php echo $action_title.': '.$doc_title; ?></td>
+                                    <td><?php echo '<span style="color:blue;">'.$action_title.'</span>: '.$doc_title;?></td>
                                     <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
                                     <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
                                     <td style="text-align:center;"><input type="radio" <?php echo $is_action_authorized;?> /></td>
