@@ -498,7 +498,7 @@ if (!class_exists('display_documents')) {
                                     $next_job = get_post_meta($action_id, 'next_job', true);
                                     $next_job_title = get_the_title($next_job);
                                     //$next_job_title = get_post_meta($next_job, 'doc_title', true);
-                                    if (empty($next_job_title)) $next_job_title = __( 'ISO50001訓練記錄表', 'textdomain' );
+                                    if (empty($next_job_title)) $next_job_title = __( 'ISO-50001訓練記錄表', 'textdomain' );
                                     //if (empty($next_job_title)) $next_job_title = get_post_meta($next_job, 'doc_title', true);
                                     $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                                     if ($next_job==-1) $next_job_title = __( 'Released', 'textdomain' );
