@@ -272,7 +272,8 @@ if (!class_exists('display_profiles')) {
                             $action_site = get_post_meta($action_id, 'site_id', true);
                             $action_title = get_the_title($action_id);
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_title = get_the_title($doc_id);
                             $action_connector = get_post_meta($action_id, 'action_connector', true);
                             $next_job = get_post_meta($action_id, 'next_job', true);
                             $is_action_authorized = $this->is_action_authorized($action_id) ? 'checked' : '';
@@ -281,7 +282,7 @@ if (!class_exists('display_profiles')) {
                                 <tr id="edit-my-action-<?php echo $action_id; ?>">
                                     <td><?php echo '<span style="color:blue;">'.$action_title.'</span>: '.$doc_title;?></td>
                                     <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
-                                    <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
+                                    <td><?php echo get_the_title($next_job);?></td>
                                     <td style="text-align:center;"><input type="radio" <?php echo $is_action_authorized;?> /></td>
                                 </tr>
                                 <?php
@@ -309,7 +310,7 @@ if (!class_exists('display_profiles')) {
             ob_start();
             $todo_class = new to_do_list();
             $doc_id = get_post_meta($action_id, 'doc_id', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
             $authorized_status = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
             $recurrence_setting = get_post_meta($action_id, 'recurrence_setting', true);
@@ -321,8 +322,7 @@ if (!class_exists('display_profiles')) {
                     printf(
                         __( 'Set the action %s of the job %s', 'textdomain' ),
                         get_the_title($action_id),
-                        //get_the_title($doc_id),
-                        $doc_title,
+                        get_the_title($doc_id),
                     );
                     ?>
                     → <span class="authorized-status"><?php echo esc_html($authorized_status); ?></span>
@@ -364,30 +364,7 @@ if (!class_exists('display_profiles')) {
 
                 // Update 'action_authorized_ids' meta value
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
-/*
-                // update the other actions
-                $doc_id = get_post_meta($action_id, 'doc_id', true);
-                $query = $this->retrieve_doc_action_data($doc_id);
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
-                        $inner_action_id = get_the_ID();
-                        if ($inner_action_id!=$action_id){
-                            $action_authorized_ids = get_post_meta($inner_action_id, 'action_authorized_ids', true);
-                            if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
-                            $authorize_exists = in_array($user_id, $action_authorized_ids);
 
-                            if ($authorize_exists) {
-                                // Remove $user_id from 'action_authorized_ids'
-                                $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
-                            }
-
-                            // Update 'action_authorized_ids' meta value
-                            update_post_meta($inner_action_id, 'action_authorized_ids', $action_authorized_ids);            
-                        }
-                    endwhile;
-                    wp_reset_postdata();
-                endif;
-*/
                 // Get the timezone offset from WordPress settings
                 $timezone_offset = get_option('gmt_offset');
                 $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
@@ -483,7 +460,7 @@ if (!class_exists('display_profiles')) {
         }
 
 
-
+/*
         // my-job
         function display_my_job_list() {
             ob_start();
@@ -800,7 +777,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-
+*/
         function is_doc_authorized($doc_id=false) {
             $query = $this->retrieve_doc_action_data($doc_id);
             if ($query->have_posts()) :
@@ -896,9 +873,6 @@ if (!class_exists('display_profiles')) {
                         <input type="text" id="search-site-job" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
                 </div>
-                <div id="site-job-list">
-                    <?php //echo $this->display_site_job_list();?>
-                </div>
                 <div id="site-action-list">
                     <?php echo $this->display_site_action_list();?>
                 </div>
@@ -984,7 +958,6 @@ if (!class_exists('display_profiles')) {
                             array(
                                 'key'     => 'site_id',
                                 'value'   => $site_id,
-                                //'compare' => '=',
                             ),
                         );
                         $users = get_users(array('meta_query' => $meta_query_args));
@@ -1255,17 +1228,14 @@ if (!class_exists('display_profiles')) {
                             $next_job = get_post_meta($action_id, 'next_job', true);
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_title = get_the_title($doc_id);
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
-                            //$action_title .= ': '.$doc_title;
-                            // display the warning if the job without assigned users
-                            //$users_query = $this->retrieve_users_by_doc_id($doc_id);
-                            //$action_title = (!empty($users_query)) ? $action_title : '<span style="color:red;">'.$action_title.'</span>';
                             ?>
                             <tr id="edit-site-action-<?php echo $action_id;?>">
                                 <td><?php echo '<span style="color:blue;">'.$action_title.'</span>: '.$doc_title;?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
-                                <td><?php echo get_post_meta($next_job, 'doc_title', true);?></td>
+                                <td><?php echo get_the_title($next_job);?></td>
                             </tr>
                             <?php 
                         endwhile;
@@ -1334,7 +1304,7 @@ if (!class_exists('display_profiles')) {
                 // Set the search query parameter
                 $args['s'] = $search_query;            
                 // Reset pagination to page 1
-                $args['paged'] = 1;
+                //$args['paged'] = 1;
             }
 
             $query = new WP_Query($args);
@@ -1368,7 +1338,8 @@ if (!class_exists('display_profiles')) {
             $action_connector = get_post_meta($action_id, 'action_connector', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_title = get_the_title($doc_id);
             ?>
             <fieldset>
                 <input type="hidden" id="action-id" value="<?php echo esc_attr($action_id);?>" />
@@ -1660,7 +1631,7 @@ if (!class_exists('display_profiles')) {
 */
 
 
-
+/*
         // Site job
         function display_site_job_list() {
             ob_start();
@@ -1901,7 +1872,7 @@ if (!class_exists('display_profiles')) {
             $response['html_contain'] = $this->display_site_job_list();
             wp_send_json($response);
         }
-
+*/
         // doc-action
         function display_doc_action_list($doc_id=false) {
             ob_start();
@@ -2150,16 +2121,13 @@ if (!class_exists('display_profiles')) {
             $query = new WP_Query($args);
 
             while ($query->have_posts()) : $query->the_post();
-                $job_id = get_the_ID();
-                $job_title = get_the_title();
-                $job_number = get_post_meta($job_id, 'job_number', true);
-                $doc_number = get_post_meta($job_id, 'doc_number', true);
-                $doc_title = get_post_meta($job_id, 'doc_title', true);
-                $job_title = $job_title.'('.$job_number.')';
-                if ($action_connector) $job_title = $doc_title.'('.$doc_number.')';
+                $doc_id = get_the_ID();
+                $doc_title = get_the_title();
+                $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                if ($doc_number) $doc_title .= '('.$doc_number.')';
 
-                $selected = ($selected_option == $job_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($job_id) . '" '.$selected.' />' . esc_html($job_title) . '</option>';
+                $selected = ($selected_option == $doc_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($doc_id) . '" '.$selected.' />' . esc_html($doc_title) . '</option>';
             endwhile;
             wp_reset_postdata();
 

@@ -144,7 +144,7 @@ if (!class_exists('display_documents')) {
             );
             register_post_type( 'document', $args );
         }
-
+/*
         function add_document_settings_metabox() {
             add_meta_box(
                 'document_settings_id',
@@ -163,7 +163,7 @@ if (!class_exists('display_documents')) {
             <input type="text" id="doc_title" name="doc_title" value="<?php echo $doc_title;?>" style="width:100%" >
             <?php
         }
-
+*/
         function display_document_list() {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
@@ -205,7 +205,8 @@ if (!class_exists('display_documents')) {
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_the_ID();
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_title = get_the_title();
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $doc_category = get_post_meta($doc_id, 'doc_category', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -266,9 +267,9 @@ if (!class_exists('display_documents')) {
                         'value'   => $site_id,
                     ),
                 ),
-                //'orderby'        => 'meta_value',
-                //'meta_key'       => 'doc_number',
-                //'order'          => 'ASC',
+                'orderby'        => 'meta_value',
+                'meta_key'       => 'doc_number',
+                'order'          => 'ASC',
             );
 
             if ($paged == 0) {
@@ -301,14 +302,12 @@ if (!class_exists('display_documents')) {
                 $args['meta_query'][] = array(
                     'key'     => 'doc_category',
                     'value'   => $select_category,
-                    //'compare' => '=',
                 );
             }
 
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
-                //$args['paged'] = 1;
                 $args['s'] = $search_query;
             }
 
@@ -429,7 +428,8 @@ if (!class_exists('display_documents')) {
 
             $doc_content = get_post_field('post_content', $doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_title = get_the_title($doc_id);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
@@ -494,11 +494,11 @@ if (!class_exists('display_documents')) {
                                     $action_content = get_post_field('post_content', $action_id);
                                     $current_job = get_post_meta($action_id, 'doc_id', true);
                                     $current_job_title = get_the_title($current_job);
-                                    $current_job_title = get_post_meta($current_job, 'doc_title', true);
+                                    //$current_job_title = get_post_meta($current_job, 'doc_title', true);
                                     $current_job_title = str_replace(' ', '-', $current_job_title);
                                     $next_job = get_post_meta($action_id, 'next_job', true);
                                     $next_job_title = get_the_title($next_job);
-                                    $next_job_title = get_post_meta($next_job, 'doc_title', true);
+                                    //$next_job_title = get_post_meta($next_job, 'doc_title', true);
                                     $next_job_title = str_replace(' ', '-', $next_job_title);
                                     //if (empty($next_job_title)) $next_job_title = __( 'ISO 50001訓練記錄表', 'textdomain' );
                                     //if (empty($next_job_title)) $next_job_title = get_post_meta($next_job, 'doc_title', true);
@@ -516,26 +516,14 @@ if (!class_exists('display_documents')) {
                     </div>
 
                     <div id="job-setting-div" style="display:none;">
-<?php /*                        
-                        <label for="job-number"><?php echo __( '職務編號', 'textdomain' );?></label>
-                        <input type="text" id="job-number" value="<?php echo esc_html($job_number);?>" class="text ui-widget-content ui-corner-all" />
-                        <label for="job-title"><?php echo __( '職務名稱', 'textdomain' );?></label>
-                        <input type="text" id="job-title" value="<?php echo esc_html($job_title);?>" class="text ui-widget-content ui-corner-all" />
-*/?>
                         <label for="job-content"><?php echo __( '職務內容', 'textdomain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '動作設定', 'textdomain' );?></label>
-                        <?php //echo $profiles_class->display_doc_action_list($doc_id);?>
                         <div id="site-action-list">
                             <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
                         </div>
-
                         <label for="department"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
-<?php /*                        
-                        <label for="user-list"><?php echo __( 'User List', 'textdomain' );?></label>
-                        <?php echo $profiles_class->display_doc_user_list($doc_id);?>
-*/?>
                     </div>
 
                     <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'textdomain' );?></label>
@@ -595,15 +583,15 @@ if (!class_exists('display_documents')) {
                 $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
                 $doc_post_args = array(
                     'ID'           => $doc_id,
-                    'post_title'   => $job_title,
+                    'post_title'   => $doc_title,
                     'post_content' => $doc_content,
                 );
                 wp_update_post($doc_post_args);
-                if ($job_number) update_post_meta($doc_id, 'job_number', $job_number);
-                else update_post_meta($doc_id, 'job_number', $doc_number);
+                //if ($job_number) update_post_meta($doc_id, 'job_number', $job_number);
+                //else update_post_meta($doc_id, 'job_number', $doc_number);
                 update_post_meta($doc_id, 'department_id', $department_id);
                 update_post_meta($doc_id, 'doc_number', $doc_number);
-                update_post_meta($doc_id, 'doc_title', $doc_title);
+                //update_post_meta($doc_id, 'doc_title', $doc_title);
                 update_post_meta($doc_id, 'doc_revision', $doc_revision);
                 update_post_meta($doc_id, 'doc_category', $doc_category);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
@@ -611,7 +599,6 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'multiple_select', $multiple_select);
 
                 $params = array(
-                    //'log_message' => $doc_title.__( ' has been updated successfully.', 'textdomain' ),
                     'log_message' => sprintf(
                         __( '%s has been updated successfully.', 'textdomain' ),
                         $doc_title
@@ -626,7 +613,7 @@ if (!class_exists('display_documents')) {
                 $site_id = get_user_meta($current_user_id, 'site_id', true);
                 $new_post = array(
                     'post_type'     => 'document',
-                    'post_title'    => __( 'New Job', 'textdomain' ),
+                    'post_title'    => __( 'New Document', 'textdomain' ),
                     'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
@@ -636,7 +623,6 @@ if (!class_exists('display_documents')) {
                 update_post_meta($post_id, 'doc_number', '-');
                 update_post_meta($post_id, 'doc_revision', __( 'draft', 'textdomain' ));
                 update_post_meta($post_id, 'is_doc_report', 0);
-                //$response['html_contain'] = $this->display_document_dialog($post_id);
             }
             wp_send_json($response);
         }
@@ -644,13 +630,11 @@ if (!class_exists('display_documents')) {
         function del_document_dialog_data() {
             $response = array();
             $doc_id = (isset($_POST['_doc_id'])) ? sanitize_text_field($_POST['_doc_id']) : 0;
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $params = array(
-                //'log_message' => $doc_title.__( ' has been deleted.', 'textdomain' ),
                 'log_message' => sprintf(
                     __( '%s has been deleted.', 'textdomain' ),
-                    $doc_title
+                    get_the_title($doc_id)
                 ),                
                 'doc_id' => $doc_id,
             );
@@ -664,7 +648,8 @@ if (!class_exists('display_documents')) {
         // doc-content
         function display_doc_content($doc_id=false) {
             ob_start();
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_content = get_post_field('post_content', $doc_id);
@@ -725,7 +710,8 @@ if (!class_exists('display_documents')) {
             ob_start();
             $profiles_class = new display_profiles();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             ?>
@@ -762,7 +748,6 @@ if (!class_exists('display_documents')) {
                 <?php
                 $params = array(
                     'doc_id'     => $doc_id,
-                    //'search_doc_report' => $search_doc_report,
                 );
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $params['paged'] = $paged;
@@ -859,7 +844,8 @@ if (!class_exists('display_documents')) {
                     } elseif ($field_type=='_select') {
                         echo esc_html(get_the_title($field_value));
                     } elseif ($field_type=='_document') {
-                        $doc_title = get_post_meta($field_value, 'doc_title', true);
+                        //$doc_title = get_post_meta($field_value, 'doc_title', true);
+                        $doc_title = get_the_title($field_value);
                         $doc_number = get_post_meta($field_value, 'doc_number', true);
                         $doc_revision = get_post_meta($field_value, 'doc_revision', true);
                         echo esc_html($doc_number.'-'.$doc_title.'-'.$doc_revision);
@@ -1107,7 +1093,8 @@ if (!class_exists('display_documents')) {
             $prev_report_id = $this->get_previous_report_id($report_id); // Fetch the previous ID
             $next_report_id = $this->get_next_report_id($report_id);     // Fetch the next ID
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $todo_status = get_post_meta($report_id, 'todo_status', true);
             ?>
@@ -1370,7 +1357,8 @@ if (!class_exists('display_documents')) {
                         foreach ($query->posts as $field_id) {
                             $doc_id = get_post_meta($field_id, 'doc_id', true);
                             $doc_site = get_post_meta($doc_id, 'site_id', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_title = get_the_title($doc_id);
                             // Ensure the doc ID is unique
                             if (!isset($doc_ids[$doc_id]) && $doc_site == $site_id) {                                
                                 $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
@@ -2204,7 +2192,8 @@ if (!class_exists('display_documents')) {
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $doc_id = get_the_ID();
-                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                $doc_title = get_the_title($doc_id);
                 $doc_number = get_post_meta($doc_id, 'doc_number', true);
                 $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                 $selected = ($selected_option == $doc_id) ? 'selected' : '';
@@ -2239,12 +2228,10 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '='
                     ),
                     array(
                         'key'     => 'iso_category',
                         'value'   => $iso_category_id,
-                        //'compare' => '='
                     ),
                 ),
                 'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'
@@ -2381,7 +2368,8 @@ if (!class_exists('display_documents')) {
                                 if ($query->have_posts()) :
                                     while ($query->have_posts()) : $query->the_post();
                                         $doc_id = get_the_ID();
-                                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                                        //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                                        $doc_title = get_the_title();
                                         //$doc_number = get_post_meta($doc_id, 'doc_number', true);
                                         //$doc_category = get_post_meta($doc_id, 'doc_category', true);
                                         //$site_id = get_post_meta($doc_id, 'site_id', true);
@@ -2486,7 +2474,7 @@ if (!class_exists('display_documents')) {
                 );
                 $draft_id = wp_insert_post($draft_post);
                 update_post_meta($draft_id, 'site_id', $site_id);
-                update_post_meta($draft_id, 'doc_title', $draft_title);
+                //update_post_meta($draft_id, 'doc_title', $draft_title);
                 update_post_meta($draft_id, 'doc_number', '-');
                 update_post_meta($draft_id, 'doc_revision', __( 'draft', 'textdomain' ));
                 update_post_meta($draft_id, 'doc_category', $draft_category);
@@ -2541,14 +2529,15 @@ if (!class_exists('display_documents')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $job_number = get_post_meta($doc_id, 'job_number', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             // Create the post
             $new_post = array(
                 'post_type'     => 'document',
-                'post_title'    => get_the_title($doc_id),
+                'post_title'    => $doc_title,
                 'post_content'  => get_post_field('post_content', $doc_id),
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
@@ -2556,8 +2545,8 @@ if (!class_exists('display_documents')) {
             $post_id = wp_insert_post($new_post);
 
             update_post_meta($post_id, 'site_id', $site_id);
-            update_post_meta($post_id, 'job_number', $job_number);
-            update_post_meta($post_id, 'doc_title', $doc_title);
+            //update_post_meta($post_id, 'job_number', $job_number);
+            //update_post_meta($post_id, 'doc_title', $doc_title);
             update_post_meta($post_id, 'doc_number', $doc_number);
             update_post_meta($post_id, 'doc_revision', 'draft');
             update_post_meta($post_id, 'doc_frame', $doc_frame);

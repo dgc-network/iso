@@ -193,7 +193,8 @@ if (!class_exists('to_do_list')) {
                             if ($todo_due < time()) $todo_due_color='color:red;';
                             $todo_due = wp_date(get_option('date_format'), $todo_due);
                             $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_title = get_the_title($doc_id);
                             $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                             $doc_title .= '(#'.$report_id.')';
                             $is_todo_authorized = $this->is_todo_authorized($todo_id) ? 'checked' : '';
@@ -202,9 +203,6 @@ if (!class_exists('to_do_list')) {
                                 <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
                                 <td><?php echo esc_html($doc_title);?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
-<?php /*                                
-                                <td style="text-align:center;"><input type="radio" <?php echo $is_todo_authorized;?> /></td>
-*/?>                                
                             </tr>
                             <?php
                         endwhile;
@@ -277,7 +275,6 @@ if (!class_exists('to_do_list')) {
                 //$args['paged'] = 1;
                 $args['s'] = $search_query;
             }
-
             $query = new WP_Query($args);
 
             // Check if query is empty and search query is not empty
@@ -297,22 +294,6 @@ if (!class_exists('to_do_list')) {
                 $args['meta_query'][] = $meta_query_all_keys;
                 $query = new WP_Query($args);
             }
-/*            
-            // Add meta query for searching across all meta keys
-            $meta_keys = get_post_type_meta_keys('todo');
-            $meta_query_all_keys = array('relation' => 'OR');
-            foreach ($meta_keys as $meta_key) {
-                $meta_query_all_keys[] = array(
-                    'key'     => $meta_key,
-                    'value'   => $search_query,
-                    'compare' => 'LIKE',
-                );
-            }
-            
-            $args['meta_query'][] = $meta_query_all_keys;
-            
-            $query = new WP_Query($args);
-*/
             return $query;
         }
 
@@ -537,18 +518,9 @@ if (!class_exists('to_do_list')) {
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_the_ID();
-                            $job_title = get_the_title();
-                            $job_number = get_post_meta($doc_id, 'job_number', true);
-                            //if ($job_number) $job_title .= '('.$job_number.')';
-
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_title = get_the_title();
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                            //if ($doc_number) $doc_title .= '('.$doc_number.')';
-
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
-
-                            //$profiles_class = new display_profiles();
-                            //$is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
                             ?>
                             <tr id="edit-start-job-<?php echo $doc_id;?>">
                                 <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
@@ -597,7 +569,6 @@ if (!class_exists('to_do_list')) {
             }
         
             wp_reset_postdata();
-            //return $titles;
             // Return titles as a comma-separated string
             return implode(', ', $titles);
         }
@@ -670,61 +641,7 @@ if (!class_exists('to_do_list')) {
         
             return $query;
         }
-/*        
-        function retrieve_start_job_data($paged=1, $current_user_id=false, $search_query=false){
-            if (!$current_user_id) $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
-            if (!$search_query && isset($_GET['_search'])) $search_query = sanitize_text_field($_GET['_search']);
-            //if ($search_query) $paged = 1;
-
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                //'meta_key'       => 'job_number', // Meta key for sorting
-                //'orderby'        => 'meta_value', // Sort by meta value
-                //'order'          => 'ASC', // Sorting order (ascending)
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                        //'compare' => '=',
-                    ),
-                    array(
-                        'key'     => 'is_doc_report',
-                        'value'   => 1,
-                        //'compare' => '=',
-                    ),
-                ),
-            );
-
-            if ($paged==0) $args['posts_per_page'] = -1;
-
-            if (!is_site_admin()||current_user_can('administrator')) {
-                $args['post__in'] = $user_doc_ids; // Array of document post IDs
-            }
-
-            // Add meta query for searching across all meta keys
-            $meta_keys = get_post_type_meta_keys('document');
-            $meta_query_all_keys = array('relation' => 'OR');
-            foreach ($meta_keys as $meta_key) {
-                $meta_query_all_keys[] = array(
-                    'key'     => $meta_key,
-                    'value'   => $search_query,
-                    'compare' => 'LIKE',
-                );
-            }            
-            $args['meta_query'][] = $meta_query_all_keys;
-
-            $query = new WP_Query($args);
-
-            return $query;
-        }
-*/        
         function get_previous_job_id($current_job_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -838,7 +755,8 @@ if (!class_exists('to_do_list')) {
                 <?php
                 $documents_class = new display_documents();
                 $documents_class->get_doc_field_contains(array('doc_id' => $doc_id));
-                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                $doc_title = get_the_title($doc_id);
                 $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
                 <div class="content">
@@ -1251,19 +1169,7 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($new_todo_id, 'todo_in_summary', array($prev_todo_id));
                     update_post_meta($next_job, 'summary_todos', array($new_todo_id));
                 }    
-            //}
-/*
-            if ($next_job==-1 || $next_job==-2) {
-                update_post_meta($new_todo_id, 'submit_user', $user_id);
-                update_post_meta($new_todo_id, 'submit_action', $action_id);
-                update_post_meta($new_todo_id, 'submit_time', time());
-                update_post_meta($new_todo_id, 'next_job', $next_job);
-                if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
-                // Notice the persons in site
-                $this->notice_the_persons_in_site($new_todo_id, $next_job);
-            }
-*/
-            //if ($next_job>0) {
+
                 // Create the new Action List for next_job 
                 $profiles_class = new display_profiles();
                 $query = $profiles_class->retrieve_doc_action_data($next_job);
@@ -1463,7 +1369,8 @@ if (!class_exists('to_do_list')) {
             $report_id = get_post_meta($todo_id, 'report_id', true);
             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $doc_title .= '('.$doc_number.')';
@@ -1780,7 +1687,8 @@ if (!class_exists('to_do_list')) {
                     echo __( 'System log!', 'textdomain' );
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
                     if ($doc_id) {
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        $doc_title = get_the_title($doc_id);
                         echo '<h3>'.$doc_title.'</h3>';
                     }
                     $user_id = get_post_meta($log_id, 'user_id', true);
@@ -1864,7 +1772,8 @@ if (!class_exists('to_do_list')) {
                         while ($query->have_posts()) : $query->the_post();
                             $log_id = get_the_ID();
                             $doc_id = get_post_meta($log_id, 'doc_id', true);
-                            $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                            $doc_title = get_the_title($doc_id);
                             $todo_title = get_the_title();
                             $report_id = get_post_meta($log_id, 'prev_report_id', true);
                             if ($report_id) {

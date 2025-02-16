@@ -164,8 +164,8 @@ function init_webhook_events() {
                     if (isset($query_params['_duplicate_document'])) {
                         // Retrieve the value of the 'doc_id' parameter
                         $doc_id = $query_params['_duplicate_document'];
-                        $doc_title = get_post_meta($doc_id, 'doc_title', true);
-                        //$text_message = __( '您可以點擊下方按鍵將文件「', 'textdomain' ).$doc_title.__( '」加入您的文件匣中。', 'textdomain' );
+                        //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                        $doc_title = get_the_title($doc_id);
                         $text_message = sprintf(
                             __( '您可以點擊下方按鍵將文件「%s」加入您的文件匣中。', 'textdomain' ),
                             $doc_title
@@ -250,7 +250,8 @@ function init_webhook_events() {
                             while ( $query->have_posts() ) {
                                 $query->the_post(); // Setup post data
                                 $doc_id = get_the_ID();
-                                $doc_title = get_post_meta($doc_id, 'doc_title', true);
+                                //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+                                $doc_title = get_the_title($doc_id);
                                 $link_uri = home_url().'/to-do-list/?_select_todo=start-job&_job_id='.$doc_id;
                                 $footer_content = array(
                                     'type' => 'button',
@@ -610,12 +611,13 @@ function release_document_api_post_data(WP_REST_Request $request) {
         return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
     }
 
+    update_post_meta($new_todo_id, 'submit_user', $user_id);
+    update_post_meta($new_todo_id, 'submit_action', $action_id);
+    update_post_meta($new_todo_id, 'submit_time', time());
+    if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
+
     //if ($next_job==-1 || $next_job==-2) {
-        update_post_meta($new_todo_id, 'submit_user', $user_id);
-        update_post_meta($new_todo_id, 'submit_action', $action_id);
-        update_post_meta($new_todo_id, 'submit_time', time());
         //update_post_meta($new_todo_id, 'next_job', $next_job);
-        if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
         // Notice the persons in site
         //$this->notice_the_persons_in_site($new_todo_id, $next_job);
     //}
