@@ -2095,9 +2095,9 @@ if (!class_exists('display_profiles')) {
                 'post_type'      => 'document',
                 'posts_per_page' => -1,
                 'meta_query'     => array(),
-                'orderby'        => 'meta_value',
-                'meta_key'       => 'job_number',
-                'order'          => 'ASC',
+                //'orderby'        => 'meta_value',
+                //'meta_key'       => 'job_number',
+                //'order'          => 'ASC',
             );
 
             if ($action_connector) {
@@ -2130,7 +2130,7 @@ if (!class_exists('display_profiles')) {
                 $options .= '<option value="' . esc_attr($doc_id) . '" '.$selected.' />' . esc_html($doc_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-
+/*
             if (!$action_connector) {
                 if ($selected_option==-1){
                     $options .= '<option value="-1" selected>'.__( 'Released', 'textdomain' ).'</option>';
@@ -2143,7 +2143,7 @@ if (!class_exists('display_profiles')) {
                     $options .= '<option value="-2">'.__( 'Removed', 'textdomain' ).'</option>';
                 }
             }
-
+*/
             return $options;
         }
 
