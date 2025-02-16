@@ -619,7 +619,7 @@ if (!class_exists('display_documents')) {
                     'doc_id' => $doc_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->create_action_log_and_go_next($params);    
+                $todo_class->set_action_log_and_go_next($params);    
 
             } else {
                 $current_user_id = get_current_user_id();
@@ -655,7 +655,7 @@ if (!class_exists('display_documents')) {
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->create_action_log_and_go_next($params);    
+            $todo_class->set_action_log_and_go_next($params);    
 
             wp_delete_post($_POST['_doc_id'], true);
             wp_send_json($response);
@@ -1263,7 +1263,7 @@ if (!class_exists('display_documents')) {
                         'report_id' => $report_id,
                     );        
                     $todo_class = new to_do_list();
-                    $todo_class->create_action_log_and_go_next($params);
+                    $todo_class->set_action_log_and_go_next($params);
                 }
             }
             wp_send_json($response);
@@ -2496,7 +2496,7 @@ if (!class_exists('display_documents')) {
                     'doc_id' => $draft_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->create_action_log_and_go_next($params);
+                $todo_class->set_action_log_and_go_next($params);
 
                 $response = array('success' => true, 'data' => $draft_id);
 
@@ -2568,7 +2568,7 @@ if (!class_exists('display_documents')) {
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->create_action_log_and_go_next($params);
+            $todo_class->set_action_log_and_go_next($params);
 
             // Create the Action List for $post_id
             $profiles_class = new display_profiles();

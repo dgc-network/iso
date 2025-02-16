@@ -516,33 +516,8 @@ function general_api_permission_callback() {
     return is_user_logged_in(); // Allow only logged-in users
 }
 
-// Securely handle API request
-function send_message_api_post_data(WP_REST_Request $request) {
-    $data = $request->get_json_params(); // Get JSON payload
-
-    // Validate 'body_contents' exists and is an array
-    if (empty($data['body_contents']) || !is_array($data['body_contents'])) {
-        return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);
-    }
-
-    // Sanitize input data
-    foreach ($data['body_contents'] as $key => $content) {
-        if (isset($content['text'])) {
-            $data['body_contents'][$key]['text'] = sanitize_text_field($content['text']);
-        }
-    }
-
-    // Send message via Line Bot API
-    $line_bot_api = new line_bot_api();
-    $line_bot_api->send_flex_message($data);
-
-    return new WP_REST_Response([
-        'message' => 'Message Sent!',
-        'alt_text' => $data['body_contents'][0]['text'] ?? ''
-    ], 200);
-}
-
-// Register the API endpoint
+// API endpoint
+// Register the send-message API endpoint
 function send_message_register_post_api() {
     register_rest_route('api/v1', '/send-message/', [
         'methods'  => 'POST',
@@ -552,6 +527,106 @@ function send_message_register_post_api() {
 }
 add_action('rest_api_init', 'send_message_register_post_api');
 
+// Securely handle API request
+function send_message_api_post_data(WP_REST_Request $request) {
+    $data = $request->get_json_params(); // Get JSON payload
+    $user_id = sanitize_text_field($data['user_id']);
+    $user = get_userdata($user_id);
+    $text_message = sanitize_text_field($data['text_message']);
+    $link_uri = sanitize_text_field($data['link_uri']);
+    $new_todo_id = sanitize_text_field($data['new_todo_id']);
+
+    // Validate 'body_contents' exists and is an array
+    if (empty($user_id) || empty($text_message) || empty($link_uri)) {
+        return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);
+    }
+
+    $header_contents = array(
+        array(
+            'type' => 'text',
+            'text' => 'Hello, ' . $user->display_name,
+            'size' => 'lg',
+            'weight' => 'bold',
+        ),
+    );
+
+    $body_contents = array(
+        array(
+            'type' => 'text',
+            'text' => $text_message,
+            'wrap' => true,
+        ),
+    );
+
+    $footer_contents = array(
+        array(
+            'type' => 'button',
+            'action' => array(
+                'type' => 'uri',
+                'label' => get_the_title($new_todo_id),
+                'uri' => $link_uri, // Use the desired URI
+            ),
+            'style' => 'primary',
+            'margin' => 'sm',
+        ),
+    );
+
+    // Send message via Line Bot API
+    $line_bot_api = new line_bot_api();
+    $line_bot_api->send_flex_message([
+        'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+        'header_contents' => $header_contents,
+        'body_contents' => $body_contents,
+        'footer_contents' => $footer_contents,
+    ]);
+
+    return new WP_REST_Response([
+        'message' => 'Message Sent!',
+        'alt_text' => $text_message,
+    ], 200);
+}
+
+// Register the release-document API endpoint
+function release_document_register_post_api() {
+    register_rest_route('api/v1', '/release-document/', [
+        'methods'  => 'POST',
+        'callback' => 'release_document_api_post_data',
+        'permission_callback' => 'general_api_permission_callback'
+    ]);
+}
+add_action('rest_api_init', 'release_document_register_post_api');
+
+// Securely handle API request
+function release_document_api_post_data(WP_REST_Request $request) {
+    $data = $request->get_json_params(); // Get JSON payload
+    $new_todo_id = sanitize_text_field($data['new_todo_id']);
+    $user_id = sanitize_text_field($data['user_id']);
+    $action_id = sanitize_text_field($data['action_id']);
+    $next_job = sanitize_text_field($data['next_job']);
+    $prev_report_id = sanitize_text_field($data['prev_report_id']);
+
+    // Validate 'todo_id' exists and is an array
+    if (empty($new_todo_id) || empty($user_id) || empty($action_id)) {
+        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
+    }
+
+    //if ($next_job==-1 || $next_job==-2) {
+        update_post_meta($new_todo_id, 'submit_user', $user_id);
+        update_post_meta($new_todo_id, 'submit_action', $action_id);
+        update_post_meta($new_todo_id, 'submit_time', time());
+        //update_post_meta($new_todo_id, 'next_job', $next_job);
+        if ($prev_report_id) update_post_meta($prev_report_id, 'todo_status', $next_job );
+        // Notice the persons in site
+        //$this->notice_the_persons_in_site($new_todo_id, $next_job);
+    //}
+
+    return new WP_REST_Response([
+        'message' => 'Message Sent!',
+        'new_todo_id' => $new_todo_id,
+    ], 200);
+}
+
+// Example usage
 // Send a message using the custom API endpoint
 function send_message_to_user($user, $header_contents, $body_contents, $footer_contents) {
 

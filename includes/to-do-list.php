@@ -499,7 +499,7 @@ if (!class_exists('to_do_list')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                $this->create_todo_dialog_and_go_next($action_id);
+                $this->set_todo_dialog_and_go_next($action_id);
             }
             wp_send_json($response);
         }
@@ -889,13 +889,13 @@ if (!class_exists('to_do_list')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                $this->create_start_job_and_go_next($action_id);
+                $this->set_start_job_and_go_next($action_id);
             }
             wp_send_json($response);
         }
         
-        // to-do-list misc
-        function create_todo_dialog_and_go_next($action_id=false, $user_id=false, $is_default=false) {
+        // set_todo_dialog
+        function set_todo_dialog_and_go_next($action_id=false, $user_id=false, $is_default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $next_job = get_post_meta($action_id, 'next_job', true);
@@ -952,7 +952,7 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) $this->initial_next_todo_and_actions($params);
         }
         
-        function create_start_job_and_go_next($action_id=false, $user_id=false, $is_default=false) {
+        function set_start_job_and_go_next($action_id=false, $user_id=false, $is_default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
@@ -1023,7 +1023,7 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) $this->initial_next_todo_and_actions($params);
         }
         
-        function create_action_log_and_go_next($params=array()) {
+        function set_action_log_and_go_next($params=array()) {
             // Create the new To-do
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1077,10 +1077,10 @@ if (!class_exists('to_do_list')) {
         }
 
         function initial_next_todo_and_actions($params=array()) {
-            // 1. From create_todo_dialog_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 2. From create_action_log_and_go_next(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
-            // 3. From create_start_job_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 4. From schedule_event_callback($params), create a create_start_job_and_go_next() then go item 3
+            // 1. From set_todo_dialog_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
+            // 2. From set_action_log_and_go_next(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
+            // 3. From set_start_job_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
+            // 4. From schedule_event_callback($params), create a set_start_job_and_go_next() then go item 3
 
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
@@ -1099,9 +1099,10 @@ if (!class_exists('to_do_list')) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
             } else {
-                // create_action_log_and_go_next() and recurrence doc_report
+                // set_action_log_and_go_next() and recurrence doc_report
                 $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
-                if ($next_job==0) $next_job = $doc_id; // recurrence doc_report               
+                // recurrence doc_report
+                if ($next_job==0) $next_job = $doc_id; 
             }
             if (empty($next_leadtime)) $next_leadtime=86400;
         
@@ -1189,7 +1190,55 @@ if (!class_exists('to_do_list')) {
             if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
 
             if ($next_job>0) {
-                update_post_meta($new_todo_id, 'doc_id', $next_job );
+
+                $doc_category = get_post_meta($next_job, 'doc_category', true);
+                $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                if ($is_action_connector) {
+                    $api_endpoint = get_post_meta($next_job, 'api_endpoint', true);
+
+                    // Define data sources
+                    $request_data = $params;
+                    $text_message = sprintf(
+                        __('Your job in %s has a document that needs to be signed and completed before %s. You can click the link below to view the document.', 'textdomain'),
+                        $todo_title,
+                        $due_date
+                    );            
+                    $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
+                    $request_data['text_message'] = $text_message;
+                    $request_data['link_uri'] = $link_uri;
+                    $request_data['new_todo_id'] = $new_todo_id;
+
+                    if ($api_endpoint) {
+                        // Make the API request
+                        $response = wp_remote_post($api_endpoint, [
+                            'method'    => 'POST',
+                            'headers'   => [
+                                'Content-Type'  => 'application/json',
+                                'Authorization' => 'Bearer ' . wp_get_current_user()->user_login // Example authentication
+                            ],
+                            'body'      => wp_json_encode($request_data),
+                            'data_format' => 'body',
+                        ]);
+                        
+                        // Handle response
+                        if (is_wp_error($response)) {
+                            error_log('API Error: ' . $response->get_error_message());
+                        } else {
+                            $response_code = wp_remote_retrieve_response_code($response);
+                            $response_body = wp_remote_retrieve_body($response);
+                            
+                            if ($response_code === 200) {
+                                error_log('Message Sent Successfully: ' . $response_body);
+                            } else {
+                                error_log('API Response Error: ' . $response_body);
+                            }
+                        }                    
+                    }
+                } else {
+                    update_post_meta($new_todo_id, 'doc_id', $next_job );
+                }
+
+                //update_post_meta($new_todo_id, 'doc_id', $next_job );
                 $doc_number = get_post_meta($next_job, 'doc_number', true);
                 // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
                 if (empty($doc_number)) {
@@ -1202,8 +1251,8 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($new_todo_id, 'todo_in_summary', array($prev_todo_id));
                     update_post_meta($next_job, 'summary_todos', array($new_todo_id));
                 }    
-            }
-
+            //}
+/*
             if ($next_job==-1 || $next_job==-2) {
                 update_post_meta($new_todo_id, 'submit_user', $user_id);
                 update_post_meta($new_todo_id, 'submit_action', $action_id);
@@ -1213,8 +1262,8 @@ if (!class_exists('to_do_list')) {
                 // Notice the persons in site
                 $this->notice_the_persons_in_site($new_todo_id, $next_job);
             }
-
-            if ($next_job>0) {
+*/
+            //if ($next_job>0) {
                 // Create the new Action List for next_job 
                 $profiles_class = new display_profiles();
                 $query = $profiles_class->retrieve_doc_action_data($next_job);
@@ -1882,7 +1931,7 @@ if (!class_exists('to_do_list')) {
         function schedule_event_callback($params) {
             $action_id = $params['action_id'];
             $user_id = $params['user_id'];
-            $this->create_start_job_and_go_next($action_id, $user_id, true);
+            $this->set_start_job_and_go_next($action_id, $user_id, true);
         }
         
         function weekday_event_callback($params) {
@@ -1893,7 +1942,7 @@ if (!class_exists('to_do_list')) {
                 // Your weekday-specific code here, e.g., send_email_reminder(), update_daily_task(), etc.
                 $action_id = $params['action_id'];
                 $user_id = $params['user_id'];
-                $this->create_start_job_and_go_next($action_id, $user_id, true);
+                $this->set_start_job_and_go_next($action_id, $user_id, true);
             }
         }
         
@@ -1940,7 +1989,7 @@ if (!class_exists('to_do_list')) {
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
                                 foreach ($action_authorized_ids as $user_id) {
-                                    $this->create_todo_dialog_and_go_next($action_id, $user_id, true);
+                                    $this->set_todo_dialog_and_go_next($action_id, $user_id, true);
                                 }
                             }
                         endwhile;

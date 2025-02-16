@@ -2646,7 +2646,7 @@ if (!class_exists('display_profiles')) {
                     'user_id' => $user_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->create_action_log_and_go_next($params);    
+                $todo_class->set_action_log_and_go_next($params);    
 
                 $response = array('nda'=>'rejected', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
             }
@@ -2688,7 +2688,7 @@ if (!class_exists('display_profiles')) {
                     'user_id' => $user_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->create_action_log_and_go_next($params);    
+                $todo_class->set_action_log_and_go_next($params);    
 
                 $response = array('nda'=>'approved', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
             }
