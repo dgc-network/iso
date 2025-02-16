@@ -194,13 +194,13 @@ if (!class_exists('to_do_list')) {
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                             $doc_title .= '(#'.$report_id.')';
-                            $is_checked = $this->is_todo_authorized($todo_id) ? 'checked' : '';
+                            $is_todo_authorized = $this->is_todo_authorized($todo_id) ? 'checked' : '';
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
                                 <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
                                 <td><?php echo esc_html($doc_title);?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
-                                <td style="text-align:center;"><input type="radio" <?php echo $is_checked;?> /></td>
+                                <td style="text-align:center;"><input type="radio" <?php echo $is_todo_authorized;?> /></td>
                             </tr>
                             <?php
                         endwhile;
@@ -581,9 +581,9 @@ if (!class_exists('to_do_list')) {
             }
 
             // Add meta query for searching across all meta keys
-            $document_meta_keys = get_post_type_meta_keys('document');
+            $meta_keys = get_post_type_meta_keys('document');
             $meta_query_all_keys = array('relation' => 'OR');
-            foreach ($document_meta_keys as $meta_key) {
+            foreach ($meta_keys as $meta_key) {
                 $meta_query_all_keys[] = array(
                     'key'     => $meta_key,
                     'value'   => $search_query,
@@ -716,7 +716,7 @@ if (!class_exists('to_do_list')) {
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                        <input type="text" id="ask-gemini" placeholder="<?php echo __( '問問 Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
+                        <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                     </div>
                 </div>            
             <hr>
@@ -971,9 +971,9 @@ if (!class_exists('to_do_list')) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
             } else {
-                // create_action_log_and_go_next() and frquence doc_report
+                // create_action_log_and_go_next() and recurrence doc_report
                 $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
-                if ($next_job==0) $next_job = $doc_id; // frquence doc_report                    
+                if ($next_job==0) $next_job = $doc_id; // recurrence doc_report               
             }
             if (empty($next_leadtime)) $next_leadtime=86400;
         
@@ -1467,7 +1467,7 @@ if (!class_exists('to_do_list')) {
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
-                $args['paged'] = 1;
+                //$args['paged'] = 1;
                 $args['s'] = $search_query;
             }
 
