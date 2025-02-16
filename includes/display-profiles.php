@@ -135,6 +135,7 @@ if (!class_exists('display_profiles')) {
                 echo '</div>';
 
                 if ($_GET['_select_profile']=='update_action_site_id_by_document') echo $this->update_action_site_id_by_document();
+                if ($_GET['_select_profile']=='update_document_titles_and_remove_meta') echo $this->update_document_titles_and_remove_meta();
             }
         }
 
@@ -154,94 +155,36 @@ if (!class_exists('display_profiles')) {
             wp_reset_postdata();
         }
         
-        function update_post_type_and_meta_for_embedded_items() {
-            // Step 1: Query posts of post type 'doc-field' with meta key 'default_value'
-            $args = array(
-                'post_type'      => 'doc-field',
-                'meta_key'       => 'default_value',
-                'posts_per_page' => -1,
-                'post_status'    => 'any',
-            );
-            $query = new WP_Query($args);
+        function update_document_titles_and_remove_meta() {
+            // Query all posts of type 'document'
+            $query = new WP_Query([
+                'post_type'      => 'document',
+                'posts_per_page' => -1, // Retrieve all posts
+                'fields'         => 'ids', // Retrieve only post IDs for efficiency
+            ]);
         
             if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    // Retrieve the embedded number from 'default_value'
-                    $embedded_number = get_post_meta(get_the_ID(), 'default_value', true);
-                    $doc_id = get_post_meta(get_the_ID(), 'doc_id', true);
+                foreach ($query->posts as $post_id) {
+                    // Get the 'doc_title' meta value
+                    $doc_title = get_post_meta($post_id, 'doc_title', true);
         
-                    if (!empty($embedded_number)) {
-                        // Step 2: Query the post with post type 'embedded' and meta key 'embedded_number'
-                        $args_embedded = array(
-                            'post_type'      => 'embedded',
-                            'meta_key'       => 'embedded_number',
-                            'meta_value'     => $embedded_number,
-                            'posts_per_page' => 1,
-                            'post_status'    => 'any',
-                        );
-        
-                        $embedded_query = new WP_Query($args_embedded);
-        
-                        if ($embedded_query->have_posts()) {
-                            $embedded_query->the_post();
-                            $matched_post_id = get_the_ID(); // Matched 'embedded' post ID
-                            wp_reset_postdata();
-        
-                            // Step 3: Query posts of post type 'embedded-item' with meta key 'embedded_id'
-                            $args_update = array(
-                                'post_type'      => 'embedded-item',
-                                'meta_key'       => 'embedded_id',
-                                'meta_value'     => $matched_post_id,
-                                'posts_per_page' => -1,
-                                'post_status'    => 'any',
-                            );
-        
-                            $query_update = new WP_Query($args_update);
-        
-                            if ($query_update->have_posts()) {
-                                while ($query_update->have_posts()) {
-                                    $query_update->the_post();
-        
-                                    // Step 4: Replace meta keys and update the post type
-                                    $post_id = get_the_ID();
-
-                                    if ($doc_id) {
-                                        update_post_meta($post_id, 'doc_id', $doc_id);
-                                        delete_post_meta($post_id, 'embedded_id');
-                                    }
-        
-                                    // Fetch the current title to ensure it is preserved
-                                    $current_title = get_the_title($post_id);
-        
-                                    // Update post type to 'doc-field'
-                                    $post_args = array(
-                                        'ID'          => $post_id,
-                                        'post_type'   => 'doc-field',
-                                        'post_title'  => $current_title, // Preserve the title
-                                    );
-        
-                                    wp_update_post($post_args);
-        
-                                    // Optional: Log the updated post ID for debugging
-                                    error_log('Post ID updated to doc-field with meta changes: ' . $post_id);
-                                }
-                                wp_reset_postdata();
-                            }
-
-                            // Step 5: Delete the matched 'embedded' post
-                            wp_delete_post($matched_post_id, true); // true to force deletion
-                            error_log('Deleted embedded post ID: ' . $matched_post_id);
-
-                        }
+                    // Update the post title with 'doc_title' if available
+                    if (!empty($doc_title)) {
+                        wp_update_post([
+                            'ID'         => $post_id,
+                            'post_title' => sanitize_text_field($doc_title),
+                        ]);
                     }
+        
+                    // Delete the 'job_number' meta key
+                    delete_post_meta($post_id, 'job_number');
+                    delete_post_meta($post_id, 'doc_title');
                 }
-                wp_reset_postdata();
-            } else {
-                // No posts found for the given parameters
-                error_log('No doc-field posts found with meta key "default_value".');
             }
+        
+            wp_reset_postdata();
         }
+        
 
         // my-profile
         function display_my_profile() {
