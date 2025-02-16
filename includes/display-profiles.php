@@ -315,9 +315,9 @@ if (!class_exists('display_profiles')) {
             <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Trigger', 'textdomain' );?></th>
-                        <th><?php echo __( 'Connector', 'textdomain' );?></th>
                         <th><?php echo __( 'Action', 'textdomain' );?></th>
+                        <th><?php echo __( 'Connector', 'textdomain' );?></th>
+                        <th><?php echo __( 'Next', 'textdomain' );?></th>
                         <th><?php echo __( 'Authorized', 'textdomain' );?></th>
                     </thead>
                     <tbody>
@@ -1291,9 +1291,9 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
-                        <th><?php echo __( 'Trigger', 'textdomain' );?></th>
-                        <th><?php echo __( 'Connector', 'textdomain' );?></th>
                         <th><?php echo __( 'Action', 'textdomain' );?></th>
+                        <th><?php echo __( 'Connector', 'textdomain' );?></th>
+                        <th><?php echo __( 'Next', 'textdomain' );?></th>
                     </thead>
                     <tbody>
                     <?php

@@ -173,7 +173,9 @@ if (!class_exists('to_do_list')) {
                             <th><?php echo __( 'Todo', 'textdomain' );?></th>
                             <th><?php echo __( 'Document', 'textdomain' );?></th>
                             <th><?php echo __( 'Due date', 'textdomain' );?></th>
+<?php /*                            
                             <th><?php echo __( 'Authorized', 'textdomain' );?></th>
+*/?>
                         </tr>
                     </thead>
                     <tbody>
@@ -200,7 +202,9 @@ if (!class_exists('to_do_list')) {
                                 <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
                                 <td><?php echo esc_html($doc_title);?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
+<?php /*                                
                                 <td style="text-align:center;"><input type="radio" <?php echo $is_todo_authorized;?> /></td>
+*/?>                                
                             </tr>
                             <?php
                         endwhile;
@@ -227,8 +231,6 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
-
-            $search_query = (isset($_GET['_search'])) ? sanitize_text_field($_GET['_search']) : false;
 
             // Define the WP_Query arguments
             $args = array(
@@ -269,6 +271,33 @@ if (!class_exists('to_do_list')) {
                 }
             }
 
+            // Sanitize and handle search query
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
+            if (!empty($search_query)) {
+                //$args['paged'] = 1;
+                $args['s'] = $search_query;
+            }
+
+            $query = new WP_Query($args);
+
+            // Check if query is empty and search query is not empty
+            if (!$query->have_posts() && !empty($search_query)) {
+                // Remove the initial search query
+                unset($args['s']);
+                // Add meta query for searching across all meta keys
+                $meta_keys = get_post_type_meta_keys('document');
+                $meta_query_all_keys = array('relation' => 'OR');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+            }
+/*            
             // Add meta query for searching across all meta keys
             $meta_keys = get_post_type_meta_keys('todo');
             $meta_query_all_keys = array('relation' => 'OR');
@@ -283,6 +312,7 @@ if (!class_exists('to_do_list')) {
             $args['meta_query'][] = $meta_query_all_keys;
             
             $query = new WP_Query($args);
+*/
             return $query;
         }
 
@@ -493,8 +523,8 @@ if (!class_exists('to_do_list')) {
                     <thead>
                         <tr>
                             <th><?php echo __( 'No.', 'textdomain' );?></th>
-                            <th><?php echo __( 'Job', 'textdomain' );?></th>
-                            <th><?php echo __( 'Document', 'textdomain' );?></th>
+                            <th><?php echo __( 'Title', 'textdomain' );?></th>
+                            <th><?php echo __( 'Action', 'textdomain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -513,15 +543,17 @@ if (!class_exists('to_do_list')) {
 
                             $doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                            if ($doc_number) $doc_title .= '('.$doc_number.')';
+                            //if ($doc_number) $doc_title .= '('.$doc_number.')';
 
-                            $profiles_class = new display_profiles();
-                            $is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
+                            $action_titles = $this->get_action_titles_by_doc_id($doc_id);
+
+                            //$profiles_class = new display_profiles();
+                            //$is_checked = $profiles_class->is_doc_authorized($doc_id) ? 'checked' : '';
                             ?>
                             <tr id="edit-start-job-<?php echo $doc_id;?>">
-                                <td style="text-align:center;"><?php echo esc_html($job_number);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($doc_number);?></td>
                                 <td><?php echo esc_html($doc_title); ?></td>
+                                <td style="text-align:center;"><?php echo esc_html($action_titles);?></td>
                             </tr>
                             <?php
                         endwhile;
@@ -543,6 +575,102 @@ if (!class_exists('to_do_list')) {
             <?php
         }
 
+        function get_action_titles_by_doc_id($doc_id) {
+            $titles = [];
+        
+            $query = new WP_Query([
+                'post_type'      => 'action',
+                'posts_per_page' => -1,
+                'meta_query'     => [
+                    [
+                        'key'   => 'doc_id',
+                        'value' => $doc_id,
+                    ],
+                ],
+                'fields'         => 'ids', // Only retrieve post IDs for performance
+            ]);
+        
+            if ($query->have_posts()) {
+                foreach ($query->posts as $post_id) {
+                    $titles[] = get_the_title($post_id);
+                }
+            }
+        
+            wp_reset_postdata();
+            //return $titles;
+            // Return titles as a comma-separated string
+            return implode(', ', $titles);
+        }
+
+        function retrieve_start_job_data($paged = 1, $current_user_id = false, $search_query = false) {
+            if (!$current_user_id) $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
+            if (!is_array($user_action_ids)) $user_action_ids = array();
+        
+            if (!$search_query && isset($_GET['_search'])) {
+                $search_query = sanitize_text_field($_GET['_search']);
+            }
+        
+            // Retrieve all "doc_id" values from "action" posts that match $user_action_ids
+            $doc_ids = [];
+            if (!empty($user_action_ids)) {
+                $action_query = new WP_Query([
+                    'post_type'      => 'action',
+                    'posts_per_page' => -1,
+                    'post__in'       => $user_action_ids,
+                    'meta_query'     => [
+                        [
+                            'key'     => 'doc_id',
+                            'compare' => 'EXISTS',
+                        ],
+                    ],
+                    'fields'         => 'ids', // Get only post IDs for efficiency
+                ]);
+        
+                if ($action_query->have_posts()) {
+                    foreach ($action_query->posts as $action_post_id) {
+                        $doc_id = get_post_meta($action_post_id, 'doc_id', true);
+                        if (!empty($doc_id)) {
+                            $doc_ids[] = $doc_id;
+                        }
+                    }
+                }
+                wp_reset_postdata();
+            }
+        
+            // Prepare WP_Query args for "document" post type
+            $args = [
+                'post_type'      => 'document',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => [
+                    'relation' => 'AND',
+                    [
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                    ],
+                    [
+                        'key'     => 'is_doc_report',
+                        'value'   => 1,
+                    ],
+                ],
+            ];
+        
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1;
+            }
+        
+            // Filter only documents that match doc_id from actions
+            if (!empty($doc_ids)) {
+                $args['post__in'] = $doc_ids;
+            }
+        
+            $query = new WP_Query($args);
+        
+            return $query;
+        }
+/*        
         function retrieve_start_job_data($paged=1, $current_user_id=false, $search_query=false){
             if (!$current_user_id) $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -550,15 +678,15 @@ if (!class_exists('to_do_list')) {
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             if (!$search_query && isset($_GET['_search'])) $search_query = sanitize_text_field($_GET['_search']);
-            if ($search_query) $paged = 1;
+            //if ($search_query) $paged = 1;
 
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
-                'meta_key'       => 'job_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value
-                'order'          => 'ASC', // Sorting order (ascending)
+                //'meta_key'       => 'job_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value
+                //'order'          => 'ASC', // Sorting order (ascending)
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -596,7 +724,7 @@ if (!class_exists('to_do_list')) {
 
             return $query;
         }
-        
+*/        
         function get_previous_job_id($current_job_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
