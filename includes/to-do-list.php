@@ -1143,12 +1143,22 @@ if (!class_exists('to_do_list')) {
                             'method'    => 'POST',
                             'headers'   => [
                                 'Content-Type'  => 'application/json',
+                                'X-WP-Nonce'    => wp_create_nonce('wp_rest') // ✅ Secure authentication
+                            ],
+                            'body'      => wp_json_encode($request_data),
+                            'data_format' => 'body',
+                        ]);
+/*                        
+                        $response = wp_remote_post($api_endpoint, [
+                            'method'    => 'POST',
+                            'headers'   => [
+                                'Content-Type'  => 'application/json',
                                 'Authorization' => 'Bearer ' . wp_get_current_user()->user_login // Example authentication
                             ],
                             'body'      => wp_json_encode($request_data),
                             'data_format' => 'body',
                         ]);
-                        
+*/                        
                         // Handle response
                         if (is_wp_error($response)) {
                             error_log('API Error: ' . $response->get_error_message());

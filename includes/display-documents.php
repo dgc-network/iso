@@ -1824,7 +1824,7 @@ if (!class_exists('display_documents')) {
                                 <?php if ($field_value) {?>
                                     <div><img id="<?php echo esc_attr($field_id);?>" src="<?php echo esc_attr($field_value);?>" alt="Signature Image" /></div>
                                 <?php }?>
-                                <?php if (!$todo_status) {?>
+                                <?php if (!isset($todo_status)) {?>
                                     <button id="redraw-signature" style="margin:3px;"><?php echo __( 'Redraw', 'textdomain' );?></button>
                                 <?php }?>
                             </div>
