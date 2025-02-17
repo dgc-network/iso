@@ -1113,7 +1113,9 @@ if (!class_exists('to_do_list')) {
                 $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                 if ($is_action_connector) {
                     $api_endpoint = get_post_meta($next_job, 'api_endpoint', true);
-
+                    if (!preg_match('/^https?:\/\//', $api_endpoint)) {
+                        $api_endpoint = home_url($api_endpoint);
+                    }
                     // Define data sources
                     $request_data = $params;
                     $text_message = sprintf(
