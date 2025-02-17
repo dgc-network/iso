@@ -10,8 +10,8 @@ if (!class_exists('display_documents')) {
             add_shortcode( 'display-documents', array( $this, 'display_documents'  ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
-            add_action( 'init', array( $this, 'register_document_post_type' ) );
-            add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
+            //add_action( 'init', array( $this, 'register_document_post_type' ) );
+            //add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
             //add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
 
@@ -115,13 +115,6 @@ if (!class_exists('display_documents')) {
                                 echo $this->display_doc_content($doc_id);
                             }
                         }
-/*                        
-                        if (is_site_admin() && $_GET['_is_doc_report']!=1) echo $this->display_document_dialog($doc_id);
-                        else {
-                            if ($is_doc_report==1 || $_GET['_is_doc_report']==1) echo $this->display_doc_report_list(array('doc_id' => $doc_id));
-                            else echo $this->display_doc_content($doc_id);
-                        }
-*/
                     }
                 }
 
@@ -356,7 +349,6 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '=',
                     ),
                     array(
                         'key'     => 'doc_number',
@@ -436,6 +428,7 @@ if (!class_exists('display_documents')) {
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
+            $api_endpoint = get_post_meta($doc_id, 'api_endpoint', true);
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
             $multiple_select = get_post_meta($doc_id, 'multiple_select', true);
             $is_multiple_select = ($multiple_select==1) ? 'checked' : '';
@@ -524,6 +517,8 @@ if (!class_exists('display_documents')) {
                         </div>
                         <label for="department"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
+                        <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
+                        <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
                     </div>
 
                     <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'textdomain' );?></label>
@@ -578,6 +573,7 @@ if (!class_exists('display_documents')) {
                 $job_title = (isset($_POST['_job_title'])) ? sanitize_text_field($_POST['_job_title']) : '';
                 $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
+                $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
                 $system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
                 $multiple_select = (isset($_POST['_multiple_select'])) ? sanitize_text_field($_POST['_multiple_select']) : 0;
                 $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
@@ -595,6 +591,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_revision', $doc_revision);
                 update_post_meta($doc_id, 'doc_category', $doc_category);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
+                update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
                 update_post_meta($doc_id, 'multiple_select', $multiple_select);
 

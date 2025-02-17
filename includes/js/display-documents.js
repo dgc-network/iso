@@ -408,9 +408,6 @@ jQuery(document).ready(function($) {
                 'action': 'set_document_dialog_data',
             },
             success: function (response) {
-                //$('#result-container').html(response.html_contain);
-                //activate_document_dialog_data($("#doc-id").val());
-                //window.location.replace(window.location.href);
                 // Get existing URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 // Remove or update the parameters
@@ -495,6 +492,7 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_content'] = $("#doc-content").val();
             ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
+            ajaxData['_api_endpoint'] = $("#api-endpoint").val();
             ajaxData['_system_doc'] = $("#system-doc").val();
             ajaxData['_multiple_select'] = $("#multiple-select").is(":checked") ? 1 : 0;
 
