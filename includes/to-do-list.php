@@ -1124,6 +1124,7 @@ if (!class_exists('to_do_list')) {
                     if (!preg_match('/^https?:\/\//', $api_endpoint)) {
                         $api_endpoint = home_url($api_endpoint);
                     }
+                    error_log('API endpoint: ' . $api_endpoint);
                     // Define data sources
                     $request_data = $params;
                     $text_message = sprintf(
