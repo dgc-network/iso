@@ -170,7 +170,9 @@ if (!class_exists('to_do_list')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
+<?php /*                            
                             <th><?php echo __( 'Todo', 'textdomain' );?></th>
+*/?>
                             <th><?php echo __( 'Document', 'textdomain' );?></th>
                             <th><?php echo __( 'Due date', 'textdomain' );?></th>
 <?php /*                            
@@ -200,7 +202,9 @@ if (!class_exists('to_do_list')) {
                             $is_todo_authorized = $this->is_todo_authorized($todo_id) ? 'checked' : '';
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
+<?php /*                                
                                 <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
+*/?>
                                 <td><?php echo esc_html($doc_title);?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
                             </tr>
@@ -408,10 +412,11 @@ if (!class_exists('to_do_list')) {
             $documents_class = new display_documents();
             $prev_todo_id = $this->get_previous_todo_id($todo_id); // Fetch the previous ID
             $next_todo_id = $this->get_next_todo_id($todo_id);     // Fetch the next ID
+            $doc_id = get_post_meta($todo_id, 'doc_id', true);
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
-            <h2 style="display:inline;"><?php echo esc_html(__( 'Todo: ', 'textdomain' ).get_the_title($todo_id));?></h2>
+            <h2 style="display:inline;"><?php echo esc_html(__( 'Todo: ', 'textdomain' ).get_the_title($doc_id));?></h2>
             <input type="hidden" id="todo-id" value="<?php echo $todo_id;?>" />
             <input type="hidden" id="prev-todo-id" value="<?php echo esc_attr($prev_todo_id); ?>" />
             <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
@@ -871,6 +876,7 @@ if (!class_exists('to_do_list')) {
         }
         
         function set_start_job_and_go_next($action_id=false, $user_id=false, $is_default=false) {
+            // Create a set_start_job_and_go_next() from schedule_event_callback($params).
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
@@ -909,12 +915,14 @@ if (!class_exists('to_do_list')) {
             }
 
             // Update the doc-field meta for new doc-report
-            $documents_class->update_doc_field_contains(array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id));
+            $documents_class->update_doc_field_contains(
+                array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
+            );
 
             // Add a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
-                'post_title'    => get_the_title($doc_id),
+                //'post_title'    => get_the_title($doc_id),
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
             );    
@@ -942,11 +950,12 @@ if (!class_exists('to_do_list')) {
         }
         
         function set_action_log_and_go_next($params=array()) {
-            // Create the new To-do
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
 
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+            $next_job = get_post_meta($action_id, 'next_job', true);
+
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
             $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
@@ -962,26 +971,26 @@ if (!class_exists('to_do_list')) {
                 $todo_title = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
             }
 
-            $next_job = get_post_meta($action_id, 'next_job', true);
+            // Create a new To-do for the current action
             $new_post = array(
                 'post_type'     => 'todo',
                 'post_title'    => $todo_title,
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
             );    
-            $todo_id = wp_insert_post($new_post);    
+            $new_todo_id = wp_insert_post($new_post);    
 
-            update_post_meta($todo_id, 'site_id', $site_id );
-            update_post_meta($todo_id, 'doc_id', $doc_id);
-            update_post_meta($todo_id, 'prev_report_id', $report_id);
-            update_post_meta($todo_id, 'submit_user', $current_user_id);
-            update_post_meta($todo_id, 'submit_action', $action_id);
-            update_post_meta($todo_id, 'submit_time', time());
-            update_post_meta($todo_id, 'next_job', $next_job);
-            if ($user_id) update_post_meta($todo_id, 'user_id', $user_id);
-            if ($category_id) update_post_meta($todo_id, 'category_id', $category_id);
-            if ($department_id) update_post_meta($todo_id, 'department_id', $department_id);
-            if ($device_id) update_post_meta($todo_id, 'device_id', $device_id);
+            update_post_meta($new_todo_id, 'site_id', $site_id );
+            update_post_meta($new_todo_id, 'doc_id', $doc_id);
+            update_post_meta($new_todo_id, 'prev_report_id', $report_id);
+            update_post_meta($new_todo_id, 'submit_user', $current_user_id);
+            update_post_meta($new_todo_id, 'submit_action', $action_id);
+            update_post_meta($new_todo_id, 'submit_time', time());
+            update_post_meta($new_todo_id, 'next_job', $next_job);
+            if ($user_id) update_post_meta($new_todo_id, 'user_id', $user_id);
+            if ($category_id) update_post_meta($new_todo_id, 'category_id', $category_id);
+            if ($department_id) update_post_meta($new_todo_id, 'department_id', $department_id);
+            if ($device_id) update_post_meta($new_todo_id, 'device_id', $device_id);
 
             update_post_meta($report_id, 'todo_status', $next_job);
 
@@ -989,16 +998,15 @@ if (!class_exists('to_do_list')) {
             $params = array(
                 'next_job' => $next_job,
                 'prev_report_id' => $report_id,
-                'prev_todo_id' => $todo_id,
+                'prev_todo_id' => $new_todo_id,
             );        
             if ($next_job>0) $this->initial_next_todo_and_actions($params);
         }
 
         function initial_next_todo_and_actions($params=array()) {
             // 1. From set_todo_dialog_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 2. From set_action_log_and_go_next(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
-            // 3. From set_start_job_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            // 4. From schedule_event_callback($params), create a set_start_job_and_go_next() then go item 3
+            // 2. From set_start_job_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
+            // 3. From set_action_log_and_go_next(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
 
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
@@ -1017,18 +1025,18 @@ if (!class_exists('to_do_list')) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
             } else {
-                // set_action_log_and_go_next() and recurrence doc_report
+                // set_action_log_and_go_next()
                 $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
                 // recurrence doc_report
-                if ($next_job==0) $next_job = $doc_id; 
+                //if ($next_job==0) $next_job = $doc_id; 
             }
             if (empty($next_leadtime)) $next_leadtime=86400;
         
-            if ($next_job>0)   $todo_title = get_the_title($next_job);
-            if ($next_job==-1) $todo_title = __( 'Released', 'textdomain' );
-            if ($next_job==-2) $todo_title = __( 'Removed', 'textdomain' );
+            //if ($next_job>0)   $todo_title = get_the_title($next_job);
+            //if ($next_job==-1) $todo_title = __( 'Released', 'textdomain' );
+            //if ($next_job==-2) $todo_title = __( 'Removed', 'textdomain' );
 
-            $params['todo_title'] = $todo_title;
+            //$params['todo_title'] = $todo_title;
             $params['user_id'] = $user_id;
             $params['doc_id'] = $doc_id;
             $params['next_job'] = $next_job;
@@ -1084,7 +1092,7 @@ if (!class_exists('to_do_list')) {
         }
 
         function create_new_todo_for_next_job($params=array()) {
-            $todo_title = isset($params['todo_title']) ? $params['todo_title'] : 0;
+            //$todo_title = isset($params['todo_title']) ? $params['todo_title'] : 0;
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
@@ -1096,7 +1104,7 @@ if (!class_exists('to_do_list')) {
             // Create a new To-do for next_job
             $new_post = array(
                 'post_type'     => 'todo',
-                'post_title'    => $todo_title,
+                //'post_title'    => $todo_title,
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
             );    
@@ -1758,7 +1766,9 @@ if (!class_exists('to_do_list')) {
                         <tr>
                             <th><?php echo __( 'Time', 'textdomain' );?></th>
                             <th><?php echo __( 'Description', 'textdomain' );?></th>
+<?php /*                            
                             <th><?php echo __( 'Todo', 'textdomain' );?></th>
+*/ ?>                            
                             <th><?php echo __( 'User', 'textdomain' );?></th>
                             <th><?php echo __( 'Action', 'textdomain' );?></th>
                             <th><?php echo __( 'Next', 'textdomain' );?></th>
@@ -1802,7 +1812,9 @@ if (!class_exists('to_do_list')) {
                             <tr id="edit-action-log<?php esc_attr(the_ID()); ?>">
                                 <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
                                 <td><?php echo esc_html($doc_title);?></td>
+<?php /*
                                 <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
+*/ ?>
                                 <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($submit_title);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
