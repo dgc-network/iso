@@ -1201,7 +1201,7 @@ if (!class_exists('to_do_list')) {
                     wp_reset_postdata();
                 }
                 // Notice the persons in charge the job
-                $this->notice_the_responsible_persons($new_todo_id);
+                //$this->notice_the_responsible_persons($new_todo_id);
             }
         }
 
