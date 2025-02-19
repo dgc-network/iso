@@ -1839,11 +1839,11 @@ if (!class_exists('to_do_list')) {
                             $submit_action = get_post_meta($log_id, 'submit_action', true);
                             if ($submit_action) {
                                 $action_title = get_the_title($submit_action);
+                                $next_job = get_post_meta($submit_action, 'next_job', true);
                             } else {
                                 $action_title = __( 'System log', 'textdomain' );
-                                $next_job = get_post_meta($submit_action, 'next_job', true);
-                                $next_job_title = get_the_title($next_job);
                             }
+                            $next_job_title = get_the_title($next_job);
                             $submit_time = get_post_meta($log_id, 'submit_time', true);
                             $submit_user = get_post_meta($log_id, 'submit_user', true);
                             $user_data = get_userdata( $submit_user );
