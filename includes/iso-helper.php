@@ -523,7 +523,8 @@ function send_message_register_post_api() {
     register_rest_route('api/v1', '/send-message/', [
         'methods'  => 'POST',
         'callback' => 'send_message_api_post_data',
-        'permission_callback' => 'general_api_permission_callback'
+        'permission_callback' => '__return_true', // Allow external authentication
+        //'permission_callback' => 'general_api_permission_callback'
     ]);
 }
 add_action('rest_api_init', 'send_message_register_post_api');
@@ -592,7 +593,8 @@ function release_document_register_post_api() {
     register_rest_route('api/v1', '/release-document/', [
         'methods'  => 'POST',
         'callback' => 'release_document_api_post_data',
-        'permission_callback' => 'general_api_permission_callback'
+        'permission_callback' => '__return_true', // Allow external authentication
+        //'permission_callback' => 'general_api_permission_callback'
     ]);
 }
 add_action('rest_api_init', 'release_document_register_post_api');
