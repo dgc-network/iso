@@ -1811,10 +1811,7 @@ if (!class_exists('to_do_list')) {
                     <thead>
                         <tr>
                             <th><?php echo __( 'Time', 'textdomain' );?></th>
-                            <th><?php echo __( 'Description', 'textdomain' );?></th>
-<?php /*                            
-                            <th><?php echo __( 'Todo', 'textdomain' );?></th>
-*/ ?>                            
+                            <th><?php echo __( 'Log', 'textdomain' );?></th>
                             <th><?php echo __( 'Action', 'textdomain' );?></th>
                             <th><?php echo __( 'Next', 'textdomain' );?></th>
                             <th><?php echo __( 'User', 'textdomain' );?></th>
@@ -1830,38 +1827,32 @@ if (!class_exists('to_do_list')) {
                         while ($query->have_posts()) : $query->the_post();
                             $log_id = get_the_ID();
                             $doc_id = get_post_meta($log_id, 'doc_id', true);
-                            $doc_title = get_the_title($doc_id);
-                            $todo_title = get_the_title();
                             $report_id = get_post_meta($log_id, 'prev_report_id', true);
-                            if ($report_id) {
-                                $doc_title .= '(#'.$report_id.')';
-                            }
-                            else {
-                                $doc_title = get_the_title();
-                                $todo_title = __( 'system', 'textdomain' );
+                            if ($doc_id) {
+                                $log_title = get_the_title($doc_id);
+                                if ($report_id) {
+                                    $log_title .= '(#'.$report_id.')';
+                                }
+                            } else {
+                                $log_title = get_the_title();
                             }
                             $submit_action = get_post_meta($log_id, 'submit_action', true);
-                            $submit_user = get_post_meta($log_id, 'submit_user', true);
+                            if ($submit_action) {
+                                $action_title = get_the_title($submit_action);
+                            } else {
+                                $action_title = __( 'System log', 'textdomain' );
+                                $next_job = get_post_meta($submit_action, 'next_job', true);
+                                $next_job_title = get_the_title($next_job);
+                            }
                             $submit_time = get_post_meta($log_id, 'submit_time', true);
-                            $next_job = get_post_meta($log_id, 'next_job', true);
-                            if (!$next_job) $next_job = get_post_meta($submit_action, 'next_job', true);
-                            $job_title = ($next_job==-1) ? __( 'Released', 'textdomain' ) : get_the_title($next_job);
-                            $job_title = ($next_job==-2) ? __( 'Removed', 'textdomain' ) : $job_title;
-                            if ($submit_action) $action_title = get_the_title($submit_action);
-                            else {
-                                $action_title = '';
-                                $job_title = '';
-                            } 
+                            $submit_user = get_post_meta($log_id, 'submit_user', true);
                             $user_data = get_userdata( $submit_user );
                             ?>
                             <tr id="edit-action-log<?php esc_attr(the_ID()); ?>">
                                 <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
-                                <td><?php echo esc_html($doc_title);?></td>
-<?php /*
-                                <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
-*/ ?>
+                                <td><?php echo esc_html($log_title);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($job_title);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                             </tr>
                             <?php
