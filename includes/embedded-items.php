@@ -1217,7 +1217,7 @@ if (!class_exists('embedded_items')) {
                     'category_id' => $category_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_action_log_and_go_next($params);    
+                $todo_class->set_system_log($params);    
 
             } else {
                 $current_user_id = get_current_user_id();
@@ -1246,7 +1246,7 @@ if (!class_exists('embedded_items')) {
                 'category_id' => $category_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->set_action_log_and_go_next($params);    
+            $todo_class->set_system_log($params);    
 
             wp_delete_post($_POST['_category_id'], true);
             $response = array('html_contain' => $this->display_doc_category_list());
@@ -1711,7 +1711,7 @@ if (!class_exists('embedded_items')) {
                     'department_id' => $department_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_action_log_and_go_next($params);    
+                $todo_class->set_system_log($params);    
 
             } else {
                 $current_user_id = get_current_user_id();
@@ -1741,7 +1741,7 @@ if (!class_exists('embedded_items')) {
                 'department_id' => $department_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->set_action_log_and_go_next($params);    
+            $todo_class->set_system_log($params);    
 
             wp_delete_post($_POST['_department_id'], true);
             $response = array('html_contain' => $this->display_department_card_list());

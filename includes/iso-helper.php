@@ -512,9 +512,13 @@ function custom_register_post_api() {
     ]);
 }
 add_action('rest_api_init', 'custom_register_post_api');
-
+/*
 function general_api_permission_callback() {
     return is_user_logged_in(); // Allow only logged-in users
+}
+*/
+function general_api_permission_callback($request) {
+    return is_user_logged_in() || jwt_auth_check_token($request);
 }
 
 // API endpoint
@@ -523,8 +527,11 @@ function send_message_register_post_api() {
     register_rest_route('api/v1', '/send-message/', [
         'methods'  => 'POST',
         'callback' => 'send_message_api_post_data',
-        'permission_callback' => '__return_true', // Allow external authentication
+        //'permission_callback' => '__return_true', // Allow external authentication
         //'permission_callback' => 'general_api_permission_callback'
+        'permission_callback' => function ($request) {
+            return is_user_logged_in() || jwt_auth_check_token($request);
+        }
     ]);
 }
 add_action('rest_api_init', 'send_message_register_post_api');
@@ -593,8 +600,11 @@ function release_document_register_post_api() {
     register_rest_route('api/v1', '/release-document/', [
         'methods'  => 'POST',
         'callback' => 'release_document_api_post_data',
-        'permission_callback' => '__return_true', // Allow external authentication
+        //'permission_callback' => '__return_true', // Allow external authentication
         //'permission_callback' => 'general_api_permission_callback'
+        'permission_callback' => function ($request) {
+            return is_user_logged_in() || jwt_auth_check_token($request);
+        }
     ]);
 }
 add_action('rest_api_init', 'release_document_register_post_api');
@@ -628,45 +638,4 @@ function release_document_api_post_data(WP_REST_Request $request) {
         'message' => 'Message Sent!',
         'new_todo_id' => $new_todo_id,
     ], 200);
-}
-
-// Example usage
-// Send a message using the custom API endpoint
-function send_message_to_user($user, $header_contents, $body_contents, $footer_contents) {
-
-    $api_url = home_url('/wp-json/api/v1/send-message/'); // API Endpoint URL
-
-    // Prepare the payload
-    $request_data = [
-        'to' => get_user_meta($user->ID, 'line_user_id', true),
-        'header_contents' => $header_contents,
-        'body_contents' => $body_contents,
-        'footer_contents' => $footer_contents,
-    ];
-    
-    // Make the API request
-    $response = wp_remote_post($api_url, [
-        'method'    => 'POST',
-        'headers'   => [
-            'Content-Type'  => 'application/json',
-            'Authorization' => 'Bearer ' . wp_get_current_user()->user_login // Example authentication
-        ],
-        'body'      => wp_json_encode($request_data),
-        'data_format' => 'body',
-    ]);
-    
-    // Handle response
-    if (is_wp_error($response)) {
-        error_log('API Error: ' . $response->get_error_message());
-    } else {
-        $response_code = wp_remote_retrieve_response_code($response);
-        $response_body = wp_remote_retrieve_body($response);
-        
-        if ($response_code === 200) {
-            error_log('Message Sent Successfully: ' . $response_body);
-        } else {
-            error_log('API Response Error: ' . $response_body);
-        }
-    }
-    
 }
