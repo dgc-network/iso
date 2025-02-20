@@ -965,16 +965,17 @@ if (!class_exists('to_do_list')) {
 
             if ($report_id) {
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $todo_title = get_the_title($doc_id);
+                $log_title = get_the_title($doc_id);
             } else {
-                $doc_id = 0;
-                $todo_title = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
+                $log_title = __( 'System log!', 'textdomain' ); 
+                $log_content = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
             }
 
             // Create a new To-do for the current action
             $new_post = array(
                 'post_type'     => 'todo',
-                'post_title'    => $todo_title,
+                'post_title'    => $log_title,
+                'post_content'  => $log_content,
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
             );    
@@ -1723,15 +1724,15 @@ if (!class_exists('to_do_list')) {
             $documents_class = new display_documents();
             $prev_log_id = $this->get_previous_log_id($log_id); // Fetch the previous ID
             $next_log_id = $this->get_next_log_id($log_id);     // Fetch the next ID
-            $submit_time = get_post_meta($log_id, 'submit_time', true);
             $doc_id = get_post_meta($log_id, 'doc_id', true);
-            $log_title = get_the_title($doc_id);
+            if ($doc_id) $log_title = get_the_title($doc_id);
             $category_id = get_post_meta($log_id, 'category_id', true);
             if ($category_id) $log_title = get_the_title($category_id);
             $department_id = get_post_meta($log_id, 'department_id', true);
             if ($department_id) $log_title = get_the_title($department_id);
             $device_id = get_post_meta($log_id, 'device_id', true);
             if ($device_id) $log_title = get_the_title($device_id);
+            $log_title = isset($log_title) ? $log_title : __( 'System log!', 'textdomain' );
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
@@ -1742,13 +1743,14 @@ if (!class_exists('to_do_list')) {
             <fieldset>
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
+                $submit_time = get_post_meta($log_id, 'submit_time', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
                 if (!$submit_action) {
-                    echo __( 'System log!', 'textdomain' );
+                    echo get_the_content($log_id);
                     $user_id = get_post_meta($log_id, 'user_id', true);
                     if ($user_id) {
                         $nda_content = get_user_meta($user_id, 'nda_content', true);
-                        echo '<h3>'.$nda_content.'</h3>';
+                        echo $nda_content;
                     }
                 }
                 // Figure out the summary-job Step 3
