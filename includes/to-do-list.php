@@ -1826,10 +1826,11 @@ if (!class_exists('to_do_list')) {
                             if ($submit_action) {
                                 $action_title = get_the_title($submit_action);
                                 $next_job = get_post_meta($submit_action, 'next_job', true);
+                                $next_job_title = get_the_title($next_job);
                             } else {
                                 $action_title = __( 'System log', 'textdomain' );
                             }
-                            $next_job_title = get_the_title($next_job);
+                            $next_job_title = isset($next_job_title) ? $next_job_title : '';
                             $submit_time = get_post_meta($log_id, 'submit_time', true);
                             $submit_user = get_post_meta($log_id, 'submit_user', true);
                             $user_data = get_userdata( $submit_user );
