@@ -1088,6 +1088,7 @@ if (!class_exists('to_do_list')) {
                         $due_date
                     );            
                     $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
+                    $request_data['user_id'] = $user_id;
                     $request_data['text_message'] = $text_message;
                     $request_data['link_uri'] = $link_uri;
                     $request_data['new_todo_id'] = $new_todo_id;
