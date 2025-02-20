@@ -582,13 +582,29 @@ function send_message_api_post_data(WP_REST_Request $request) {
 
     // Send message via Line Bot API
     $line_bot_api = new line_bot_api();
+
+    $request_data = [
+        'header_contents' => $header_contents,
+        'body_contents' => $body_contents,
+        'footer_contents' => $footer_contents,
+    ];
+    
+    $line_user_id = get_user_meta($user->ID, 'line_user_id', true);
+    
+    if (!empty($line_user_id)) {
+        $request_data['to'] = $line_user_id;
+    }
+    
+    $line_bot_api->send_flex_message($request_data);
+/*    
+    $line_bot_api = new line_bot_api();
     $line_bot_api->send_flex_message([
         'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
         'header_contents' => $header_contents,
         'body_contents' => $body_contents,
         'footer_contents' => $footer_contents,
     ]);
-
+*/
     return new WP_REST_Response([
         'message' => 'Message Sent!',
         'alt_text' => $text_message,
