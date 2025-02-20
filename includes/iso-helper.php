@@ -600,8 +600,6 @@ function release_document_register_post_api() {
     register_rest_route('api/v1', '/release-document/', [
         'methods'  => 'POST',
         'callback' => 'release_document_api_post_data',
-        //'permission_callback' => '__return_true', // Allow external authentication
-        //'permission_callback' => 'general_api_permission_callback'
         'permission_callback' => function ($request) {
             return is_user_logged_in() || jwt_auth_check_token($request);
         }
