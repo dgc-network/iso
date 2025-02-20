@@ -226,7 +226,6 @@ if (!class_exists('embedded_items')) {
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
-                //$args['paged'] = 1;
                 $args['s'] = $search_query;
             }
 
@@ -1625,7 +1624,6 @@ if (!class_exists('embedded_items')) {
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
-                //$args['paged'] = 1;
                 $args['s'] = $search_query;
             }
         

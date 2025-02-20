@@ -276,7 +276,6 @@ if (!class_exists('to_do_list')) {
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
-                //$args['paged'] = 1;
                 $args['s'] = $search_query;
             }
             $query = new WP_Query($args);
@@ -1031,6 +1030,7 @@ if (!class_exists('to_do_list')) {
                 $doc_category = get_post_meta($next_job, 'doc_category', true);
                 $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                 if ($is_action_connector) {
+                    
                     $jwt_token = get_option('jwt_token', '');
                     $username = 'iot-manager';
                     $user = get_user_by('login', $username);
@@ -1069,29 +1069,35 @@ if (!class_exists('to_do_list')) {
                             $data = json_decode($response_body, true);
                             update_option('jwt_token', $data['token']);
                             error_log('JWT Token:'.' '.$data['token']);
-                            //return $data['token'] ?? 'Error: Token not found';
-                        } else {
-                            //return 'Error: ' . $response_body;
                         }
                     }
 
+                    // Get the API endpoint
                     $api_endpoint = get_post_meta($next_job, 'api_endpoint', true);
                     if (!preg_match('/^https?:\/\//', $api_endpoint)) {
                         $api_endpoint = home_url($api_endpoint);
                     }
                     error_log('API endpoint: ' . $api_endpoint);
+
                     // Define data sources
                     $request_data = $params;
-                    $text_message = sprintf(
-                        __('Your job in %s has a document that needs to be signed and completed before %s. You can click the link below to view the document.', 'textdomain'),
-                        $todo_title,
-                        $due_date
-                    );            
-                    $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
-                    $request_data['user_id'] = $user_id;
-                    $request_data['text_message'] = $text_message;
-                    $request_data['link_uri'] = $link_uri;
-                    $request_data['new_todo_id'] = $new_todo_id;
+                    $profiles_class = new display_profiles();
+                    $action_query = $profiles_class->retrieve_doc_action_data($next_job);
+                    if ($action_query->have_posts()) {
+                        $text_message = sprintf(
+                            __('Your document in %s has a job that needs to be signed off and completed before %s. You can click the link below to view the document.', 'textdomain'),
+                            get_the_title($doc_id),
+                            $due_date
+                        );            
+                        $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
+                        $request_data['user_id'] = $user_id;
+                        $request_data['text_message'] = $text_message;
+                        $request_data['link_uri'] = $link_uri;
+                        $request_data['new_todo_id'] = $new_todo_id;
+    
+                    } else {
+
+                    }
 
                     if ($api_endpoint) {
                         // Make the API request
@@ -1605,7 +1611,6 @@ if (!class_exists('to_do_list')) {
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
-                //$args['paged'] = 1;
                 $args['s'] = $search_query;
             }
 

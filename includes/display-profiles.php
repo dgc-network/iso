@@ -1300,11 +1300,9 @@ if (!class_exists('display_profiles')) {
                 );
             }
 
+            $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (isset($_GET['_search'])) {
-                // Set the search query parameter
                 $args['s'] = $search_query;            
-                // Reset pagination to page 1
-                //$args['paged'] = 1;
             }
 
             $query = new WP_Query($args);
