@@ -1068,9 +1068,9 @@ if (!class_exists('to_do_list')) {
                             $data = json_decode($response_body, true);
                             update_option('jwt_token', $data['token']);
                             error_log('JWT Token:'.' '.$data['token']);
-                            return $data['token'] ?? 'Error: Token not found';
+                            //return $data['token'] ?? 'Error: Token not found';
                         } else {
-                            return 'Error: ' . $response_body;
+                            //return 'Error: ' . $response_body;
                         }
                     }
 
