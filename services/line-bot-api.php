@@ -146,6 +146,11 @@ if (!class_exists('line_bot_api')) {
                     'messages' => array($bubble_message),
                 );
                 $this->pushMessage($message);
+            } else {
+                $message = array(
+                    'messages' => array($bubble_message),
+                );
+                $this->broadcastMessage($message);
             }
         }
 
