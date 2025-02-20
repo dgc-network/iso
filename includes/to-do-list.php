@@ -1007,9 +1007,6 @@ if (!class_exists('to_do_list')) {
         function proceed_to_next_job($params=array()) {
             // 1. From set_todo_dialog_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             // 2. From set_start_job_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
-            
-            // 3. From set_system_log(), create a next_todo based on the $args['next_job'] and $args['prev_report_id']
-
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
@@ -1026,11 +1023,6 @@ if (!class_exists('to_do_list')) {
             if ($action_id > 0) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-            } else {
-                // set_system_log()
-                $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
-                // recurrence doc_report
-                //if ($next_job==0) $next_job = $doc_id; 
             }
             if (empty($next_leadtime)) $next_leadtime=86400;
         
@@ -1043,6 +1035,7 @@ if (!class_exists('to_do_list')) {
                     $user = get_user_by('login', $username);
                     if ($user) {
                         $user_id = $user->ID;
+                        update_user_meta( $user_id, 'api-password', '#RnZq7CWfLlRyjfjjMQdEN0*');
                         $password = get_user_meta($user_id, 'api-password', true);
                     } else {
                         $password = false; // Handle case where user is not found
@@ -1054,7 +1047,9 @@ if (!class_exists('to_do_list')) {
 
                         $response = wp_remote_post($api_endpoint, [
                             'method'    => 'POST',
-                            'headers'   => ['Content-Type' => 'application/json'],
+                            'headers'   => [
+                                'Content-Type' => 'application/json'
+                            ],
                             'body'      => wp_json_encode([
                                 'username' => $username,
                                 'password' => $password
@@ -1072,6 +1067,7 @@ if (!class_exists('to_do_list')) {
                         if ($response_code === 200) {
                             $data = json_decode($response_body, true);
                             update_option('jwt_token', $data['token']);
+                            error_log('JWT Token:'.' '.$data['token']);
                             return $data['token'] ?? 'Error: Token not found';
                         } else {
                             return 'Error: ' . $response_body;
