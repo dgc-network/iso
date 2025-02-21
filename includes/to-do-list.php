@@ -774,7 +774,8 @@ if (!class_exists('to_do_list')) {
                 <div>
                 <?php
                     $profiles_class = new display_profiles();
-                    $query = $profiles_class->retrieve_doc_action_data($doc_id);
+                    //$query = $profiles_class->retrieve_doc_action_data($doc_id);
+                    $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $action_id = get_the_ID();
@@ -1082,7 +1083,8 @@ if (!class_exists('to_do_list')) {
                     // Define data sources
                     $request_data = $params;
                     $profiles_class = new display_profiles();
-                    $action_query = $profiles_class->retrieve_doc_action_data($next_job);
+                    //$action_query = $profiles_class->retrieve_doc_action_data($next_job);
+                    $action_query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                     if ($action_query->have_posts()) {
                         $text_message = sprintf(
                             __('Your document in %s has a job that needs to be signed off and completed before %s. You can click the link below to view the document.', 'textdomain'),
@@ -1232,7 +1234,8 @@ if (!class_exists('to_do_list')) {
 
                 // Create the new Action List for next_job 
                 $profiles_class = new display_profiles();
-                $query = $profiles_class->retrieve_doc_action_data($next_job);
+                //$query = $profiles_class->retrieve_doc_action_data($next_job);
+                $query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $action_id = get_the_ID();
@@ -1752,8 +1755,9 @@ if (!class_exists('to_do_list')) {
                 $submit_time = get_post_meta($log_id, 'submit_time', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
                 if (!$submit_action) {
-                    $post = get_post($log_id);
-                    echo $post->post_content;;
+                    //$post = get_post($log_id);
+                    //echo $post->post_content;;
+                    echo get_post_field('post_content', $log_id);
                     $user_id = get_post_meta($log_id, 'user_id', true);
                     if ($user_id) {
                         $nda_content = get_user_meta($user_id, 'nda_content', true);

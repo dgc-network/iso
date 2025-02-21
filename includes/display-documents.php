@@ -413,9 +413,9 @@ if (!class_exists('display_documents')) {
             $prev_doc_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
             $next_doc_id = $this->get_next_doc_id($doc_id);     // Fetch the next ID
 
-            $job_title = get_the_title($doc_id);
-            $job_number = get_post_meta($doc_id, 'job_number', true);
-            $department = get_post_meta($doc_id, 'department', true);
+            //$job_title = get_the_title($doc_id);
+            //$job_number = get_post_meta($doc_id, 'job_number', true);
+            //$department = get_post_meta($doc_id, 'department', true);
             $department_id = get_post_meta($doc_id, 'department_id', true);
 
             $doc_content = get_post_field('post_content', $doc_id);
@@ -479,7 +479,8 @@ if (!class_exists('display_documents')) {
                         <pre class="mermaid">
                             graph TD 
                             <?php                        
-                            $query = $profiles_class->retrieve_doc_action_data($doc_id, true);
+                            //$query = $profiles_class->retrieve_doc_action_data($doc_id, true);
+                            $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id, true);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
                                     $action_id = get_the_ID();
@@ -1136,7 +1137,8 @@ if (!class_exists('display_documents')) {
                     <div>
                     <?php
                     $profiles_class = new display_profiles();
-                    $query = $profiles_class->retrieve_doc_action_data($doc_id);
+                    //$query = $profiles_class->retrieve_doc_action_data($doc_id);
+                    $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             if ($profiles_class->is_user_doc($doc_id)) {
@@ -2558,7 +2560,8 @@ if (!class_exists('display_documents')) {
 
             // Create the Action List for $post_id
             $profiles_class = new display_profiles();
-            $query = $profiles_class->retrieve_doc_action_data($doc_id);
+            //$query = $profiles_class->retrieve_doc_action_data($doc_id);
+            $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $action_id = get_the_ID();

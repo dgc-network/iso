@@ -776,7 +776,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-*/
+
         function is_doc_authorized($doc_id=false) {
             $query = $this->retrieve_doc_action_data($doc_id);
             if ($query->have_posts()) :
@@ -788,7 +788,7 @@ if (!class_exists('display_profiles')) {
             endif;
             return false;
         }
-
+*/
         function is_action_authorized($action_id=false, $user_id=false) {
             if (!$action_id) return false;
             if (!$user_id) $user_id = get_current_user_id();
@@ -1263,7 +1263,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_site_action_list_data($paged=1, $doc_id=false) {
+        function retrieve_site_action_list_data($paged=1, $doc_id=false, $is_nest=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
@@ -1324,6 +1324,7 @@ if (!class_exists('display_profiles')) {
                 $args['meta_query'][] = $meta_query_all_keys;
                 $query = new WP_Query($args);
             }
+            if ($is_nest) $query = $this->find_more_query_posts($query);
             return $query;
         }
 
@@ -1608,7 +1609,6 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-/*
         function retrieve_users_by_site_id() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -1626,9 +1626,6 @@ if (!class_exists('display_profiles')) {
             $users = $user_query->get_results();
             return $users;
         }
-*/
-
-
 /*
         // Site job
         function display_site_job_list() {
@@ -1871,6 +1868,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 */
+/*
         // doc-action
         function display_doc_action_list($doc_id=false) {
             ob_start();
@@ -1927,7 +1925,7 @@ if (!class_exists('display_profiles')) {
             <?php
             return ob_get_clean();
         }
-
+*/
         function find_more_query_posts($query=false) {
             if (!$query) return false;
         
@@ -1988,7 +1986,7 @@ if (!class_exists('display_profiles')) {
             // Return the final query
             return $query;
         }
-
+/*
         function retrieve_doc_action_data($doc_id = false, $is_nest = false) {
             // Initial query arguments
             $args = array(
@@ -2084,7 +2082,7 @@ if (!class_exists('display_profiles')) {
             $response['html_contain'] = $this->display_doc_action_list($doc_id);
             wp_send_json($response);
         }
-
+*/
         function select_site_job_options($selected_option=false, $action_connector=false) {
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $current_user_id = get_current_user_id();
@@ -2128,23 +2126,10 @@ if (!class_exists('display_profiles')) {
                 $options .= '<option value="' . esc_attr($doc_id) . '" '.$selected.' />' . esc_html($doc_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-/*
-            if (!$action_connector) {
-                if ($selected_option==-1){
-                    $options .= '<option value="-1" selected>'.__( 'Released', 'textdomain' ).'</option>';
-                } else {
-                    $options .= '<option value="-1">'.__( 'Released', 'textdomain' ).'</option>';
-                }
-                if ($selected_option==-2){
-                    $options .= '<option value="-2" selected>'.__( 'Removed', 'textdomain' ).'</option>';
-                } else {
-                    $options .= '<option value="-2">'.__( 'Removed', 'textdomain' ).'</option>';
-                }
-            }
-*/
+
             return $options;
         }
-
+/*
         // doc-user
         function display_doc_user_list($doc_id=false) {
             ob_start();
@@ -2339,7 +2324,7 @@ if (!class_exists('display_profiles')) {
             $response['html_contain'] = $this->display_doc_user_list($doc_id);
             wp_send_json($response);
         }
-
+*/
         // site-profile list
         function get_site_list_data() {
             $search_query = sanitize_text_field($_POST['_site_title']);
