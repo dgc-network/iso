@@ -273,13 +273,13 @@ if (!class_exists('to_do_list')) {
                         'compare' => 'IN',
                     );
                 }
-*/
+
                 // If $meta_query has more than just the relation, add it to $args
                 if (count($meta_query) > 1) {
                     $args['meta_query'][] = $meta_query;
                 }
             }
-
+*/
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
