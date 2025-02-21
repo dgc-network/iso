@@ -513,7 +513,7 @@ if (!class_exists('display_documents')) {
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '動作設定', 'textdomain' );?></label>
                         <div id="site-action-list">
-                            <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
+                            <?php echo $profiles_class->display_site_action_list(0, $doc_id);?>
                         </div>
                         <label for="department"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
