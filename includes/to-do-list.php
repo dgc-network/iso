@@ -170,14 +170,9 @@ if (!class_exists('to_do_list')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
-<?php /*                            
-                            <th><?php echo __( 'Todo', 'textdomain' );?></th>
-*/?>
                             <th><?php echo __( 'Document', 'textdomain' );?></th>
                             <th><?php echo __( 'Due date', 'textdomain' );?></th>
-<?php /*                            
-                            <th><?php echo __( 'Authorized', 'textdomain' );?></th>
-*/?>
+                            <th><?php echo __( 'Action', 'textdomain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -195,11 +190,11 @@ if (!class_exists('to_do_list')) {
                             if ($todo_due < time()) $todo_due_color='color:red;';
                             $todo_due = wp_date(get_option('date_format'), $todo_due);
                             $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_title = get_the_title($doc_id);
                             $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                             $doc_title .= '(#'.$report_id.')';
                             $is_todo_authorized = $this->is_todo_authorized($todo_id) ? 'checked' : '';
+                            $action_titles = $this->get_action_titles_by_doc_id($doc_id);
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
 <?php /*                                
@@ -207,6 +202,7 @@ if (!class_exists('to_do_list')) {
 */?>
                                 <td><?php echo esc_html($doc_title);?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($action_titles);?></td>
                             </tr>
                             <?php
                         endwhile;
@@ -231,8 +227,10 @@ if (!class_exists('to_do_list')) {
         function retrieve_todo_list_data($paged = 1){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+            //$user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
+            if (!is_array($user_action_ids)) $user_action_ids = array();
+            //if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             // Define the WP_Query arguments
             $args = array(
@@ -253,20 +251,29 @@ if (!class_exists('to_do_list')) {
                 'orderby' => 'date',
                 'order' => 'DESC',
             );
-
+/*
             if (!is_site_admin()||current_user_can('administrator')) {
                 // Initialize the meta_query array
                 $meta_query = array('relation' => 'OR');
 
                 // Check if $user_doc_ids is not an empty array and add it to the meta_query
-                if (!empty($user_doc_ids)) {
+                //if (!empty($user_doc_ids)) {
+                //    $meta_query[] = array(
+                //        'key'     => 'doc_id',
+                //        'value'   => $user_doc_ids,
+                //        'compare' => 'IN',
+                //    );
+                //}
+
+                // Check if $user_action_ids is not an empty array and add it to the meta_query
+                if (!empty($user_action_ids)) {
                     $meta_query[] = array(
-                        'key'     => 'doc_id',
-                        'value'   => $user_doc_ids,
+                        'key'     => 'action_id',
+                        'value'   => $user_action_ids,
                         'compare' => 'IN',
                     );
                 }
-
+*/
                 // If $meta_query has more than just the relation, add it to $args
                 if (count($meta_query) > 1) {
                     $args['meta_query'][] = $meta_query;
@@ -285,7 +292,7 @@ if (!class_exists('to_do_list')) {
                 // Remove the initial search query
                 unset($args['s']);
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('document');
+                $meta_keys = get_post_type_meta_keys('todo');
                 $meta_query_all_keys = array('relation' => 'OR');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
