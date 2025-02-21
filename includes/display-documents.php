@@ -416,18 +416,18 @@ if (!class_exists('display_documents')) {
             //$job_title = get_the_title($doc_id);
             //$job_number = get_post_meta($doc_id, 'job_number', true);
             //$department = get_post_meta($doc_id, 'department', true);
-            $department_id = get_post_meta($doc_id, 'department_id', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
 
+            $doc_title = get_the_title($doc_id);
             $doc_content = get_post_field('post_content', $doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
-            $doc_title = get_the_title($doc_id);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
+            $department_id = get_post_meta($doc_id, 'department_id', true);
             $api_endpoint = get_post_meta($doc_id, 'api_endpoint', true);
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
             $multiple_select = get_post_meta($doc_id, 'multiple_select', true);
@@ -485,20 +485,19 @@ if (!class_exists('display_documents')) {
                                 while ($query->have_posts()) : $query->the_post();
                                     $action_id = get_the_ID();
                                     $action_title = get_the_title();
-                                    $action_content = get_post_field('post_content', $action_id);
+                                    //$action_content = get_post_field('post_content', $action_id);
+
                                     $current_job = get_post_meta($action_id, 'doc_id', true);
                                     $current_job_title = get_the_title($current_job);
-                                    //$current_job_title = get_post_meta($current_job, 'doc_title', true);
                                     $current_job_title = str_replace(' ', '-', $current_job_title);
                                     $next_job = get_post_meta($action_id, 'next_job', true);
                                     $next_job_title = get_the_title($next_job);
-                                    //$next_job_title = get_post_meta($next_job, 'doc_title', true);
                                     $next_job_title = str_replace(' ', '-', $next_job_title);
                                     //if (empty($next_job_title)) $next_job_title = __( 'ISO 50001訓練記錄表', 'textdomain' );
                                     //if (empty($next_job_title)) $next_job_title = get_post_meta($next_job, 'doc_title', true);
-                                    $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                                    if ($next_job==-1) $next_job_title = __( 'Released', 'textdomain' );
-                                    if ($next_job==-2) $next_job_title = __( 'Removed', 'textdomain' );
+                                    //$is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
+                                    //if ($next_job==-1) $next_job_title = __( 'Released', 'textdomain' );
+                                    //if ($next_job==-2) $next_job_title = __( 'Removed', 'textdomain' );
                                     ?>
                                     <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
                                     <?php
