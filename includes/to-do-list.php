@@ -1709,8 +1709,6 @@ if (!class_exists('to_do_list')) {
                                 if ($report_id) {
                                     $log_title .= '(#'.$report_id.')';
                                 }
-                            } else {
-                                $log_title = get_the_title();
                             }
                             $submit_action = get_post_meta($log_id, 'submit_action', true);
                             if ($submit_action) {
@@ -1719,6 +1717,7 @@ if (!class_exists('to_do_list')) {
                                 $next_job_title = get_the_title($next_job);
                             } else {
                                 $action_title = __( 'System log', 'textdomain' );
+                                $log_title = get_the_title();
                             }
                             $next_job_title = isset($next_job_title) ? $next_job_title : '';
                             $submit_time = get_post_meta($log_id, 'submit_time', true);
