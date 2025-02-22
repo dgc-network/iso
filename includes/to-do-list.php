@@ -228,9 +228,9 @@ if (!class_exists('to_do_list')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             //$user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            //if (!is_array($user_doc_ids)) $user_doc_ids = array();
             $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
             if (!is_array($user_action_ids)) $user_action_ids = array();
-            //if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             // Define the WP_Query arguments
             $args = array(
@@ -251,7 +251,7 @@ if (!class_exists('to_do_list')) {
                 'orderby' => 'date',
                 'order' => 'DESC',
             );
-/*
+
             if (!is_site_admin()||current_user_can('administrator')) {
                 // Initialize the meta_query array
                 $meta_query = array('relation' => 'OR');
@@ -279,7 +279,7 @@ if (!class_exists('to_do_list')) {
                     $args['meta_query'][] = $meta_query;
                 }
             }
-*/
+
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
