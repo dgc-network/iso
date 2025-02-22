@@ -1266,8 +1266,8 @@ if (!class_exists('display_profiles')) {
         function retrieve_site_action_list_data($paged=1, $doc_id=false, $is_nest=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            if (empty($user_doc_ids)) $user_doc_ids=array();
+            //$user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            //if (empty($user_doc_ids)) $user_doc_ids=array();
 
             $args = array(
                 'post_type'      => 'action',
@@ -1289,7 +1289,7 @@ if (!class_exists('display_profiles')) {
             //    $args['post__in'] = $user_doc_ids; // Value is the array of job post IDs
             }
 
-            if ($paged==0) $args['posts_per_page'] = -1;
+            if ($paged==0 || $paged==false) $args['posts_per_page'] = -1;
 
             if ($doc_id) {
                 $args['posts_per_page'] = -1;

@@ -1,4 +1,5 @@
 jQuery(document).ready(function($) {
+/*    
     // Hide the Custom Fields metabox
     $("#postcustom").hide();
 
@@ -132,4 +133,5 @@ jQuery(document).ready(function($) {
             }
         });
     }
+*/        
 });

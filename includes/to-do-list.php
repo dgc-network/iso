@@ -929,6 +929,11 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_report_id, 'doc_id', $doc_id);
             update_post_meta($new_report_id, 'todo_status', $next_job);
 
+            // Update the doc-field meta for new doc-report
+            $documents_class->update_doc_field_contains(
+                array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
+            );
+
             // update system_doc
             $documents_class = new display_documents();
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
@@ -947,11 +952,6 @@ if (!class_exists('to_do_list')) {
                     $documents_class->upsert_site_profile($new_report_id);
                 }
             }
-
-            // Update the doc-field meta for new doc-report
-            $documents_class->update_doc_field_contains(
-                array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
-            );
 
             // Create a new todo for current action
             $new_post = array(
@@ -1172,10 +1172,9 @@ if (!class_exists('to_do_list')) {
             $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
             $site_id = get_user_meta($user_id, 'site_id', true);
 
-            // Create a new To-do for next_job
+            // Create a new next To-do for next_job
             $new_post = array(
                 'post_type'     => 'todo',
-                //'post_title'    => $todo_title,
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
             );    
@@ -1189,13 +1188,14 @@ if (!class_exists('to_do_list')) {
             if ($next_job>0) {
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
                 //update_post_meta($new_todo_id, 'doc_id', $next_job );
-                $doc_number = get_post_meta($next_job, 'doc_number', true);
+                //$doc_number = get_post_meta($next_job, 'doc_number', true);
                 // if the meta "doc_number" of $next_job from set_todo_dialog_data() is not presented
-                if (empty($doc_number)) {
-                    update_post_meta($new_todo_id, 'doc_id', $doc_id );
-                }
+                //if (empty($doc_number)) {
+                    //update_post_meta($new_todo_id, 'doc_id', $doc_id );
+                //}
                 // Figure out the summary-job Step 2
-                if ($next_job>0) $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
+                //if ($next_job>0) 
+                $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
                 if ($is_summary_job) {
                     $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
                     update_post_meta($new_todo_id, 'todo_in_summary', array($prev_todo_id));
@@ -1235,6 +1235,7 @@ if (!class_exists('to_do_list')) {
                 }
                 // Notice the persons in charge the job
                 //$this->notice_the_responsible_persons($new_todo_id);
+                return $new_todo_id;
             }
         }
 

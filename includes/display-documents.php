@@ -413,11 +413,6 @@ if (!class_exists('display_documents')) {
             $prev_doc_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
             $next_doc_id = $this->get_next_doc_id($doc_id);     // Fetch the next ID
 
-            //$job_title = get_the_title($doc_id);
-            //$job_number = get_post_meta($doc_id, 'job_number', true);
-            //$department = get_post_meta($doc_id, 'department', true);
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
-
             $doc_title = get_the_title($doc_id);
             $doc_content = get_post_field('post_content', $doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
@@ -436,7 +431,6 @@ if (!class_exists('display_documents')) {
             if (current_user_can('administrator')) {
                 $is_action_connector=true;
             }
-
             ?>
             <div class="ui-widget" id="result-container">
             <div>
@@ -479,25 +473,17 @@ if (!class_exists('display_documents')) {
                         <pre class="mermaid">
                             graph TD 
                             <?php                        
-                            //$query = $profiles_class->retrieve_doc_action_data($doc_id, true);
                             $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id, true);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
                                     $action_id = get_the_ID();
                                     $action_title = get_the_title();
-                                    //$action_content = get_post_field('post_content', $action_id);
-
                                     $current_job = get_post_meta($action_id, 'doc_id', true);
                                     $current_job_title = get_the_title($current_job);
                                     $current_job_title = str_replace(' ', '-', $current_job_title);
                                     $next_job = get_post_meta($action_id, 'next_job', true);
                                     $next_job_title = get_the_title($next_job);
                                     $next_job_title = str_replace(' ', '-', $next_job_title);
-                                    //if (empty($next_job_title)) $next_job_title = __( 'ISO 50001訓練記錄表', 'textdomain' );
-                                    //if (empty($next_job_title)) $next_job_title = get_post_meta($next_job, 'doc_title', true);
-                                    //$is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                                    //if ($next_job==-1) $next_job_title = __( 'Released', 'textdomain' );
-                                    //if ($next_job==-2) $next_job_title = __( 'Removed', 'textdomain' );
                                     ?>
                                     <?php echo $current_job_title;?>-->|<?php echo $action_title;?>|<?php echo $next_job_title;?>;
                                     <?php
@@ -513,9 +499,9 @@ if (!class_exists('display_documents')) {
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
                         <label for="action-list"><?php echo __( '動作設定', 'textdomain' );?></label>
                         <div id="site-action-list">
-                            <?php echo $profiles_class->display_site_action_list(0, $doc_id);?>
+                            <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
                         </div>
-                        <label for="department"><?php echo __( '部門', 'textdomain' );?></label>
+                        <label for="department-id"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
                         <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
                         <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
@@ -565,32 +551,29 @@ if (!class_exists('display_documents')) {
             if( isset($_POST['_doc_id']) ) {
                 // Update the Document data
                 $doc_id = (isset($_POST['_doc_id'])) ? sanitize_text_field($_POST['_doc_id']) : 0;
-                $doc_number = (isset($_POST['_doc_number'])) ? sanitize_text_field($_POST['_doc_number']) : '';
                 $doc_title = (isset($_POST['_doc_title'])) ? sanitize_text_field($_POST['_doc_title']) : '';
+                $doc_number = (isset($_POST['_doc_number'])) ? sanitize_text_field($_POST['_doc_number']) : '';
                 $doc_revision = (isset($_POST['_doc_revision'])) ? sanitize_text_field($_POST['_doc_revision']) : '';
                 $doc_category = (isset($_POST['_doc_category'])) ? sanitize_text_field($_POST['_doc_category']) : 0;
-                $job_number = (isset($_POST['_job_number'])) ? sanitize_text_field($_POST['_job_number']) : '';
-                $job_title = (isset($_POST['_job_title'])) ? sanitize_text_field($_POST['_job_title']) : '';
+                //$job_number = (isset($_POST['_job_number'])) ? sanitize_text_field($_POST['_job_number']) : '';
+                //$job_title = (isset($_POST['_job_title'])) ? sanitize_text_field($_POST['_job_title']) : '';
                 $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
+                $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
                 $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
                 $system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
                 $multiple_select = (isset($_POST['_multiple_select'])) ? sanitize_text_field($_POST['_multiple_select']) : 0;
-                $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
                 $doc_post_args = array(
                     'ID'           => $doc_id,
                     'post_title'   => $doc_title,
                     'post_content' => $doc_content,
                 );
                 wp_update_post($doc_post_args);
-                //if ($job_number) update_post_meta($doc_id, 'job_number', $job_number);
-                //else update_post_meta($doc_id, 'job_number', $doc_number);
-                update_post_meta($doc_id, 'department_id', $department_id);
                 update_post_meta($doc_id, 'doc_number', $doc_number);
-                //update_post_meta($doc_id, 'doc_title', $doc_title);
                 update_post_meta($doc_id, 'doc_revision', $doc_revision);
                 update_post_meta($doc_id, 'doc_category', $doc_category);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
+                update_post_meta($doc_id, 'department_id', $department_id);
                 update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
                 update_post_meta($doc_id, 'multiple_select', $multiple_select);
