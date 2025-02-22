@@ -880,6 +880,7 @@ if (!class_exists('to_do_list')) {
         
         function set_start_job_and_go_next($action_id=false, $user_id=false, $is_default=false) {
             // Run a set_start_job_and_go_next() from schedule_event_callback($params).
+            $documents_class = new display_documents();
             // Action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
@@ -904,7 +905,6 @@ if (!class_exists('to_do_list')) {
             );
 
             // update system_doc
-            $documents_class = new display_documents();
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
             if ($system_doc) {
                 // Update the post
@@ -944,7 +944,7 @@ if (!class_exists('to_do_list')) {
                 'prev_todo_id' => $new_todo_id,
             );
 
-            //if ($next_job>0) $this->proceed_to_next_job($params);
+            if ($next_job>0) $this->proceed_to_next_job($params);
         }
         
         // proceed-to-next-job
