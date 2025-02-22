@@ -911,7 +911,7 @@ jQuery(document).ready(function($) {
     }
 
 
-        
+/*        
     // site-job
     activate_site_job_list_data();
     function activate_site_job_list_data(){
@@ -1210,7 +1210,7 @@ jQuery(document).ready(function($) {
             autoOpen: false,
         });
     }
-
+*/
     // NDA assignment
     $("#nda-submit").on("click", function () {
         const dataURL = canvas.toDataURL('image/png');

@@ -754,7 +754,7 @@ jQuery(document).ready(function($) {
             buttons: {}
         });    
     }
-
+/*
     // doc-action
     function activate_doc_action_list_data(doc_id) {
         $("#new-doc-action").on("click", function() {
@@ -936,7 +936,7 @@ jQuery(document).ready(function($) {
             autoOpen: false,
         });
     }
-    
+*/    
     // doc-report
     activate_doc_report_list_data($("#doc-id").val());
     function activate_doc_report_list_data(doc_id){
