@@ -942,6 +942,7 @@ if (!class_exists('to_do_list')) {
                 'user_id' => $user_id,
                 'action_id' => $action_id,
                 'prev_todo_id' => $new_todo_id,
+                'prev_report_id' => $new_report_id,
             );
 
             if ($next_job>0) $this->proceed_to_next_job($params);
