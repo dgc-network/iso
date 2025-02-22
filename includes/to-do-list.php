@@ -441,15 +441,20 @@ if (!class_exists('to_do_list')) {
             <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
             <fieldset>
             <?php
-                $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                 $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
                 $doc_category = get_post_meta($report_doc_id, 'doc_category', true);
                 $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                error_log('is_action_connector: '.$is_action_connector);
+                error_log('doc_category: '.$doc_category);
+                error_log('report_doc_id: '.get_the_title($report_doc_id));
+                error_log('prev_report_id: '.$prev_report_id);
+                error_log('doc_id: '.get_the_title($doc_id));
 
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Figure out the summary-job Step 3
                 if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
+                    //$doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $params = array(
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
@@ -1050,21 +1055,21 @@ if (!class_exists('to_do_list')) {
                         $params['doc_id'] = $doc_id;
                         $params['next_job'] = $next_job;
                         $params['next_leadtime'] = $next_leadtime;
-                        $new_todo_id = $this->create_new_todo_and_actions($params);
+                        $next_todo_id = $this->create_next_todo_and_actions($params);
                         
                         $due_date = time() + $next_leadtime;
                         $text_message = sprintf(
-                            __('Your document in %s has a job that needs to be signed off and completed before %s. You can click the link below to view the document.', 'textdomain'),
+                            __('Your document %s has a job that needs to be signed off and completed before %s. You can click the link below to view the document.', 'textdomain'),
                             get_the_title($doc_id),
                             wp_date('Y-m-d', $due_date)
                         );            
-                        $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$new_todo_id;        
+                        $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$next_todo_id;        
                         $request_data['user_id'] = $user_id;
                         $request_data['text_message'] = $text_message;
                         $request_data['link_uri'] = $link_uri;
                     } else {
                         $text_message = sprintf(
-                            __('Your document in %s is completed. You can click the link below to view the document.', 'textdomain'),
+                            __('Your document %s is completed. You can click the link below to view the document.', 'textdomain'),
                             get_the_title($doc_id),
                         );            
                         $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
@@ -1104,7 +1109,7 @@ if (!class_exists('to_do_list')) {
 
         }
 
-        function create_new_todo_and_actions($params=array()) {
+        function create_next_todo_and_actions($params=array()) {
 
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
