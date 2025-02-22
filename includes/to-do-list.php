@@ -224,13 +224,10 @@ if (!class_exists('to_do_list')) {
         function retrieve_todo_list_data($paged = 1){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            //if (!is_array($user_doc_ids)) $user_doc_ids = array();
+
             $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
             if (!is_array($user_action_ids)) $user_action_ids = array();
-
             $user_doc_ids = []; // Array to store collected doc_id values
-
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
@@ -239,7 +236,6 @@ if (!class_exists('to_do_list')) {
                     }
                 }
             }
-            
 
             // Define the WP_Query arguments
             $args = array(
@@ -310,13 +306,19 @@ if (!class_exists('to_do_list')) {
         function get_previous_todo_id($current_todo_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-        
-            // Ensure $user_doc_ids is an array
-            if (!is_array($user_doc_ids)) {
-                $user_doc_ids = array();
+
+            $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
+            if (!is_array($user_action_ids)) $user_action_ids = array();
+            $user_doc_ids = []; // Array to store collected doc_id values
+            if (!empty($user_action_ids) && is_array($user_action_ids)) {
+                foreach ($user_action_ids as $action_id) {
+                    $doc_id = get_post_meta($action_id, 'doc_id', true);
+                    if (!empty($doc_id)) {
+                        $user_doc_ids[] = $doc_id;
+                    }
+                }
             }
-        
+
             // Initialize the meta_query
             $meta_query = array(
                 'relation' => 'AND',
@@ -363,11 +365,17 @@ if (!class_exists('to_do_list')) {
         function get_next_todo_id($current_todo_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-        
-            // Ensure $user_doc_ids is an array
-            if (!is_array($user_doc_ids)) {
-                $user_doc_ids = array();
+
+            $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
+            if (!is_array($user_action_ids)) $user_action_ids = array();
+            $user_doc_ids = []; // Array to store collected doc_id values
+            if (!empty($user_action_ids) && is_array($user_action_ids)) {
+                foreach ($user_action_ids as $action_id) {
+                    $doc_id = get_post_meta($action_id, 'doc_id', true);
+                    if (!empty($doc_id)) {
+                        $user_doc_ids[] = $doc_id;
+                    }
+                }
             }
         
             // Initialize the meta_query
@@ -428,6 +436,12 @@ if (!class_exists('to_do_list')) {
             <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
             <fieldset>
             <?php
+                $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                $prev_report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
+                $category_id = get_post_meta($prev_report_doc_id, 'category_id', true);
+                $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
+                if ($is_action_connector) $doc_id = $prev_report_doc_id;
+                
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Figure out the summary-job Step 3
                 if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
