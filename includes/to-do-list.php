@@ -944,7 +944,7 @@ if (!class_exists('to_do_list')) {
                 'prev_todo_id' => $new_todo_id,
             );
 
-            if ($next_job>0) $this->proceed_to_next_job($params);
+            //if ($next_job>0) $this->proceed_to_next_job($params);
         }
         
         // proceed-to-next-job
@@ -1033,7 +1033,7 @@ if (!class_exists('to_do_list')) {
                         $params['doc_id'] = $doc_id;
                         $params['next_job'] = $next_job;
                         $params['next_leadtime'] = $next_leadtime;
-                        //$new_todo_id = $this->create_new_todo_and_actions($params);
+                        $new_todo_id = $this->create_new_todo_and_actions($params);
                         
                         $due_date = time() + $next_leadtime;
                         $text_message = sprintf(
