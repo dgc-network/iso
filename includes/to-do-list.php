@@ -667,7 +667,7 @@ if (!class_exists('to_do_list')) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
                     $category_id = get_post_meta($doc_id, 'category_id', true);
                     $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
-                    if (!empty($doc_id) && (!$is_action_connector)) {
+                    if (!empty($doc_id) && ($is_action_connector!=1)) {
                         $user_doc_ids[] = $doc_id;
                     }
                 }
