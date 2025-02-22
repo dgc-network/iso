@@ -1033,7 +1033,7 @@ if (!class_exists('to_do_list')) {
                         $params['doc_id'] = $doc_id;
                         $params['next_job'] = $next_job;
                         $params['next_leadtime'] = $next_leadtime;
-                        $new_todo_id = $this->create_new_todo_and_actions($params);
+                        //$new_todo_id = $this->create_new_todo_and_actions($params);
                         
                         $due_date = time() + $next_leadtime;
                         $text_message = sprintf(
@@ -1088,6 +1088,7 @@ if (!class_exists('to_do_list')) {
         }
 
         function create_new_todo_and_actions($params=array()) {
+
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
