@@ -438,7 +438,7 @@ if (!class_exists('to_do_list')) {
             <?php
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                 $prev_report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-                $category_id = get_post_meta($prev_report_doc_id, 'category_id', true);
+                $category_id = get_post_meta($prev_report_doc_id, 'doc_category', true);
                 $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
                 if ($is_action_connector) $doc_id = $prev_report_doc_id;
 
@@ -665,9 +665,9 @@ if (!class_exists('to_do_list')) {
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    $category_id = get_post_meta($doc_id, 'category_id', true);
+                    $category_id = get_post_meta($doc_id, 'doc_category', true);
                     $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
-                    if (!empty($doc_id) && ($is_action_connector!=1)) {
+                    if (!empty($doc_id) && !$is_action_connector) {
                         $user_doc_ids[] = $doc_id;
                     }
                 }
@@ -743,14 +743,14 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
 
             //$user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+            //if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             // Get the current document's `job_number`
             //$current_job_number = get_post_meta($current_job_id, 'job_number', true);
         
-            if (!$current_job_number) {
-                return null; // Return null if the current job_number is not set
-            }
+            //if (!$current_job_number) {
+            //    return null; // Return null if the current job_number is not set
+            //}
         
             $args = array(
                 'post_type'      => 'document',
@@ -792,14 +792,14 @@ if (!class_exists('to_do_list')) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             //$user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-            if (!is_array($user_doc_ids)) $user_doc_ids = array();
+            //if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             // Get the current document's `job_number`
             //$current_job_number = get_post_meta($current_job_id, 'job_number', true);
         
-            if (!$current_job_number) {
-                return null; // Return null if the current job_number is not set
-            }
+            //if (!$current_job_number) {
+            //    return null; // Return null if the current job_number is not set
+            //}
         
             $args = array(
                 'post_type'      => 'document',
