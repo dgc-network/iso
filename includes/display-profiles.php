@@ -206,11 +206,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email', 'textdomain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-<?php /*                
-                <label for="my-job-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
-                <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
-*/?>
-                <label for="my-action-list"><?php echo __( 'Authorizations', 'textdomain' );?></label>
+                <label for="my-action-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
                 <div id="my-action-list"><?php echo $this->display_my_action_list();?></div>
                 <label for="phone-number"><?php echo __( 'Phone', 'textdomain' );?></label>
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />

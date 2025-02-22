@@ -112,7 +112,6 @@ function get_site_admin_ids_for_site($site_id=false) {
             array(
                 'key'     => 'site_id',    // User meta key where site_id is stored
                 'value'   => $site_id,    // Match the provided site ID
-                //'compare' => '=',         // Comparison operator
             ),
         ),
     );
@@ -349,20 +348,9 @@ function convert_content_to_styled_html($content) {
     $content = preg_replace('/^\#\#\s*(.+?)\s*$/um', '<h2>$1</h2>', $content);
     $content = preg_replace('/\*\*([^\*]+)\*\*/', '<strong>$1</strong>', $content); // Bold
     $content = preg_replace('/\*([^\*]+)\*/', '<em>$1</em>', $content);           // Italic
-/*
-    $content = preg_replace('/^\s*\*\s(.+)$/m', '<li>$1</li>', $content);         // List items
-    $content = preg_replace_callback(
-        '/(<li>.*?<\/li>)+/s',
-        function ($matches) {
-            return '<ul>' . $matches[0] . '</ul>';
-        },
-        $content
-    );
-*/    
     $content = preg_replace('/\n{2,}/', '</p><p>', $content); // Paragraphs
     $content = '<p>' . $content . '</p>'; // Wrap in paragraph tags
     $content = str_replace("\n", '<br>', $content); // Line breaks
-    //$content = preg_replace('/<\/ul>\s*<ul>/', '', $content); // Clean nested lists
     return $content;
 }
 
@@ -466,69 +454,12 @@ function enqueue_export_scripts() {
 }
 add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
 
-// Add the custom REST API endpoint
-function custom_api_get_data( WP_REST_Request $request ) {
-    $param = $request->get_param('param');
-
-    // Custom logic (modify based on your needs)
-    $response_data = [
-        'status'  => 'success',
-        'message' => 'API works!',
-        'param'   => $param
-    ];
-
-    return new WP_REST_Response($response_data, 200);
-}
-
-// Register API endpoint
-function custom_register_api_routes() {
-    register_rest_route('api/v1', '/data/', [
-        'methods'  => 'GET', // Or 'POST'
-        'callback' => 'custom_api_get_data',
-        'permission_callback' => '__return_true' // Public API (Restrict if needed)
-    ]);
-}
-add_action('rest_api_init', 'custom_register_api_routes');
-
-// Add the custom REST API endpoint
-function custom_api_post_data( WP_REST_Request $request ) {
-    $data = $request->get_json_params(); // Get JSON payload
-
-    if (empty($data['name'])) {
-        return new WP_REST_Response(['error' => 'Missing name'], 400);
-    }
-
-    return new WP_REST_Response([
-        'message' => 'Received!',
-        'name'    => sanitize_text_field($data['name'])
-    ], 200);
-}
-
-function custom_register_post_api() {
-    register_rest_route('api/v1', '/submit/', [
-        'methods'  => 'POST',
-        'callback' => 'custom_api_post_data',
-        'permission_callback' => '__return_true'
-    ]);
-}
-add_action('rest_api_init', 'custom_register_post_api');
-/*
-function general_api_permission_callback() {
-    return is_user_logged_in(); // Allow only logged-in users
-}
-*/
-function general_api_permission_callback($request) {
-    return is_user_logged_in() || jwt_auth_check_token($request);
-}
-
-// API endpoint
+// API endpoints
 // Register the send-message API endpoint
 function send_message_register_post_api() {
     register_rest_route('api/v1', '/send-message/', [
         'methods'  => 'POST',
         'callback' => 'send_message_api_post_data',
-        //'permission_callback' => '__return_true', // Allow external authentication
-        //'permission_callback' => 'general_api_permission_callback'
         'permission_callback' => function ($request) {
             return is_user_logged_in() || jwt_auth_check_token($request);
         }

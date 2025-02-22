@@ -193,7 +193,7 @@ if (!class_exists('to_do_list')) {
                             $doc_title = get_the_title($doc_id);
                             $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                             $doc_title .= '(#'.$report_id.')';
-                            $is_todo_authorized = $this->is_todo_authorized($todo_id) ? 'checked' : '';
+                            //$is_todo_authorized = $this->is_todo_authorized($todo_id) ? 'checked' : '';
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
@@ -440,7 +440,6 @@ if (!class_exists('to_do_list')) {
                 $prev_report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
                 $category_id = get_post_meta($prev_report_doc_id, 'doc_category', true);
                 $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
-                if ($is_action_connector) $doc_id = $prev_report_doc_id;
 
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Figure out the summary-job Step 3
@@ -450,6 +449,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
+                    if ($is_action_connector) $params['doc_id'] = $prev_report_doc_id;
                     $documents_class->get_doc_report_native_list($params);
                 } else {
                     $doc_id = get_post_meta($todo_id, 'doc_id', true);
@@ -460,6 +460,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'          => $doc_id,
                         'prev_report_id'  => $prev_report_id,
                     );
+                    if ($is_action_connector) $params['doc_id'] = $prev_report_doc_id;
                     $documents_class->get_doc_field_contains($params);
                 }
             ?>
@@ -672,36 +673,7 @@ if (!class_exists('to_do_list')) {
                     }
                 }
             }
-/*
-            // Retrieve all "doc_id" values from "action" posts that match $user_action_ids
-            $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
-            if (!is_array($user_action_ids)) $user_action_ids = array();
-            $user_doc_ids = [];
-            if (!empty($user_action_ids)) {
-                $action_query = new WP_Query([
-                    'post_type'      => 'action',
-                    'posts_per_page' => -1,
-                    'post__in'       => $user_action_ids,
-                    'meta_query'     => [
-                        [
-                            'key'     => 'doc_id',
-                            'compare' => 'EXISTS',
-                        ],
-                    ],
-                    'fields'         => 'ids', // Get only post IDs for efficiency
-                ]);
-        
-                if ($action_query->have_posts()) {
-                    foreach ($action_query->posts as $action_post_id) {
-                        $doc_id = get_post_meta($action_post_id, 'doc_id', true);
-                        if (!empty($doc_id)) {
-                            $user_doc_ids[] = $doc_id;
-                        }
-                    }
-                }
-                wp_reset_postdata();
-            }
-*/        
+
             // Prepare WP_Query args for "document" post type
             $args = [
                 'post_type'      => 'document',
@@ -812,12 +784,10 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '=',    
                     ),
                     array(
                         'key'     => 'is_doc_report',
                         'value'   => 1,
-                        //'compare' => '=',
                     ),
                     array(
                         'key'     => 'job_number',
@@ -866,7 +836,6 @@ if (!class_exists('to_do_list')) {
                 <div>
                 <?php
                     $profiles_class = new display_profiles();
-                    //$query = $profiles_class->retrieve_doc_action_data($doc_id);
                     $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
@@ -974,13 +943,7 @@ if (!class_exists('to_do_list')) {
                 'action_id' => $action_id,
                 'prev_todo_id' => $new_todo_id,
             );
-/*            
-            if ($is_summary_job) {
-                $params['doc_id'] = $doc_id;
-            } else {
-                $params['prev_report_id'] = $new_report_id;
-            }
-*/
+
             if ($next_job>0) $this->proceed_to_next_job($params);
         }
         
@@ -1064,7 +1027,6 @@ if (!class_exists('to_do_list')) {
                     // Define data sources
                     $request_data = $params;
                     $profiles_class = new display_profiles();
-                    //$action_query = $profiles_class->retrieve_doc_action_data($next_job);
                     $action_query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                     if ($action_query->have_posts()) {
                         $params['user_id'] = $user_id;
@@ -1083,20 +1045,15 @@ if (!class_exists('to_do_list')) {
                         $request_data['user_id'] = $user_id;
                         $request_data['text_message'] = $text_message;
                         $request_data['link_uri'] = $link_uri;
-                        //$request_data['todo_id'] = $todo_id;
-    
                     } else {
                         $text_message = sprintf(
                             __('Your document in %s is completed. You can click the link below to view the document.', 'textdomain'),
                             get_the_title($doc_id),
-                            //wp_date('Y-m-d', $due_date)
                         );            
                         $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
                         $request_data['user_id'] = $user_id;
                         $request_data['text_message'] = $text_message;
                         $request_data['link_uri'] = $link_uri;
-                        //$request_data['todo_id'] = $todo_id;
-
                     }
 
                     if ($api_endpoint) {
@@ -1131,7 +1088,6 @@ if (!class_exists('to_do_list')) {
         }
 
         function create_new_todo_and_actions($params=array()) {
-
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
@@ -1162,11 +1118,8 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($next_job, 'summary_todos', array($new_todo_id));
                 }    
 
-
-
                 // Create the new Action List for next_job 
                 $profiles_class = new display_profiles();
-                //$query = $profiles_class->retrieve_doc_action_data($next_job);
                 $query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
@@ -1198,7 +1151,7 @@ if (!class_exists('to_do_list')) {
                 return $new_todo_id;
             }
         }
-
+/*
         // Notice the persons in charge the job
         function notice_the_responsible_persons($todo_id=0) {
             $line_bot_api = new line_bot_api();
@@ -1437,7 +1390,7 @@ if (!class_exists('to_do_list')) {
                 ]);
             }    
         }
-
+/*
         function is_todo_authorized($todo_id=false) {
             $query = $this->retrieve_todo_action_list_data($todo_id);
             if ($query->have_posts()) :
@@ -1450,7 +1403,7 @@ if (!class_exists('to_do_list')) {
             endif;
             return false;
         }
-
+*/
         // Register action post type
         function register_action_post_type() {
             $labels = array(
@@ -1520,7 +1473,6 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '=',
                     ),
                 ),
                 'orderby'        => 'meta_value',
@@ -1538,7 +1490,6 @@ if (!class_exists('to_do_list')) {
                 $args['meta_query'][] = array(
                     'key'   => 'prev_report_id',
                     'value' => $report_id,
-                    //'compare' => '='
                 );
             }
 
@@ -1598,7 +1549,6 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '=',            // Match the site ID
                     ),
                     array(
                         'key'     => 'submit_time',
@@ -1642,7 +1592,6 @@ if (!class_exists('to_do_list')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '=',            // Match the site ID
                     ),
                     array(
                         'key'     => 'submit_time',
@@ -1685,8 +1634,6 @@ if (!class_exists('to_do_list')) {
                 $submit_time = get_post_meta($log_id, 'submit_time', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
                 if (!$submit_action) {
-                    //$post = get_post($log_id);
-                    //echo $post->post_content;;
                     echo get_post_field('post_content', $log_id);
                     $user_id = get_post_meta($log_id, 'user_id', true);
                     if ($user_id) {
