@@ -443,7 +443,7 @@ if (!class_exists('to_do_list')) {
             <?php
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                 $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-                $doc_category = get_post_meta($report_doc_id, 'doc_category', true);
+                $doc_category = get_post_meta($doc_id, 'doc_category', true);
                 $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                 error_log('is_action_connector: '.$is_action_connector);
                 error_log('doc_category: '.$doc_category);
@@ -680,8 +680,8 @@ if (!class_exists('to_do_list')) {
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    $category_id = get_post_meta($doc_id, 'doc_category', true);
-                    $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
+                    $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                    $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                     if (!empty($doc_id) && !$is_action_connector) {
                         $user_doc_ids[] = $doc_id;
                     }
@@ -736,8 +736,8 @@ if (!class_exists('to_do_list')) {
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    $category_id = get_post_meta($doc_id, 'doc_category', true);
-                    $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
+                    $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                    $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                     if (!empty($doc_id) && !$is_action_connector) {
                         $user_doc_ids[] = $doc_id;
                     }
@@ -788,8 +788,8 @@ if (!class_exists('to_do_list')) {
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    $category_id = get_post_meta($doc_id, 'doc_category', true);
-                    $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
+                    $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                    $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                     if (!empty($doc_id) && !$is_action_connector) {
                         $user_doc_ids[] = $doc_id;
                     }
@@ -1059,7 +1059,7 @@ if (!class_exists('to_do_list')) {
                         
                         $due_date = time() + $next_leadtime;
                         $text_message = sprintf(
-                            __('Your document %s has a job that needs to be signed off and completed before %s. You can click the link below to view the document.', 'textdomain'),
+                            __('The document %s has a job that needs to be signed-off before %s. You can click the link below to view the document.', 'textdomain'),
                             get_the_title($doc_id),
                             wp_date('Y-m-d', $due_date)
                         );            
@@ -1069,7 +1069,7 @@ if (!class_exists('to_do_list')) {
                         $request_data['link_uri'] = $link_uri;
                     } else {
                         $text_message = sprintf(
-                            __('Your document %s is completed. You can click the link below to view the document.', 'textdomain'),
+                            __('The document %s is completed. You can click the link below to view the document.', 'textdomain'),
                             get_the_title($doc_id),
                         );            
                         $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
