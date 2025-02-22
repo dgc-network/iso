@@ -1609,6 +1609,50 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
+        function set_system_log($params=array()) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+
+            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+            $category_id = isset($params['category_id']) ? $params['category_id'] : 0;
+            $department_id = isset($params['department_id']) ? $params['department_id'] : 0;
+            $device_id = isset($params['device_id']) ? $params['device_id'] : 0;
+
+            if ($report_id) {
+                $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $log_title = get_the_title($doc_id);
+            } else {
+                $log_title = __( 'System log!', 'textdomain' ); 
+                $log_content = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
+            }
+
+            // Create a new To-do for the current action
+            $new_post = array(
+                'post_type'     => 'todo',
+                'post_title'    => $log_title,
+                'post_content'  => $log_content,
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+            );    
+            $new_todo_id = wp_insert_post($new_post);    
+
+            update_post_meta($new_todo_id, 'site_id', $site_id );
+            update_post_meta($new_todo_id, 'doc_id', $doc_id);
+            update_post_meta($new_todo_id, 'prev_report_id', $report_id);
+            update_post_meta($new_todo_id, 'submit_user', $current_user_id);
+            update_post_meta($new_todo_id, 'submit_action', $action_id);
+            update_post_meta($new_todo_id, 'submit_time', time());
+            update_post_meta($new_todo_id, 'next_job', $next_job);
+            if ($user_id) update_post_meta($new_todo_id, 'user_id', $user_id);
+            if ($category_id) update_post_meta($new_todo_id, 'category_id', $category_id);
+            if ($department_id) update_post_meta($new_todo_id, 'department_id', $department_id);
+            if ($device_id) update_post_meta($new_todo_id, 'device_id', $device_id);
+
+            update_post_meta($report_id, 'todo_status', $next_job);
+        }
+
         function retrieve_users_by_site_id() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
