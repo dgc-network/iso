@@ -675,13 +675,13 @@ jQuery(document).ready(function($) {
     // site-actions
     activate_site_action_list_data();
     function activate_site_action_list_data(){
-        $("#search-site-action").on( "change", function() {
+        $("#site-action-search").on( "change", function() {
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             var selectValue = $("#select-profile").val();
             // Remove or Update the parameters
             if (selectValue) urlParams.set("_select_profile", selectValue);
-            urlParams.set("_search", $(this).val());
+            urlParams.set("_action_search", $(this).val());
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
