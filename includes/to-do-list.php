@@ -191,9 +191,14 @@ if (!class_exists('to_do_list')) {
                             $todo_due = wp_date(get_option('date_format'), $todo_due);
                             $doc_id = get_post_meta($todo_id, 'doc_id', true);
                             $doc_title = get_the_title($doc_id);
+                            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                            $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                             $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                            $doc_title .= '(#'.$report_id.')';
-                            //$is_todo_authorized = $this->is_todo_authorized($todo_id) ? 'checked' : '';
+                            if ($is_action_connector) {
+                                $report_doc_id = get_post_meta($report_id, 'doc_id', true);
+                                $doc_title .= '('.get_the_title($report_doc_id).')';
+                            }
+                            if ($report_id) $doc_title .= '(#'.$report_id.')';
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
@@ -436,31 +441,31 @@ if (!class_exists('to_do_list')) {
             <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
             <fieldset>
             <?php
+                $doc_id = get_post_meta($todo_id, 'doc_id', true);
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                $prev_report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-                $category_id = get_post_meta($prev_report_doc_id, 'doc_category', true);
-                $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
+                $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
+                $doc_category = get_post_meta($report_doc_id, 'doc_category', true);
+                $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
 
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Figure out the summary-job Step 3
                 if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
-                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $params = array(
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    if ($is_action_connector) $params['doc_id'] = $prev_report_doc_id;
+                    if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_report_native_list($params);
                 } else {
-                    $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                    $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                    //$doc_id = get_post_meta($todo_id, 'doc_id', true);
+                    //$prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                     $params = array(
                         'is_todo'         => true,
                         'todo_id'         => $todo_id,
                         'doc_id'          => $doc_id,
                         'prev_report_id'  => $prev_report_id,
                     );
-                    if ($is_action_connector) $params['doc_id'] = $prev_report_doc_id;
+                    if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_field_contains($params);
                 }
             ?>
