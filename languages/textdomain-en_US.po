@@ -251,7 +251,7 @@ msgstr "The document %s has been removed on %s, you can click the link below to 
 msgid "提交總數："
 msgstr "Total Submissions: "
 msgid "系統記錄！"
-msgstr "System log!"
+msgstr "System log"
 msgid "記錄時間："
 msgstr "Log time: "
 msgid "使用者"

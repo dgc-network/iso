@@ -1620,7 +1620,7 @@ if (!class_exists('to_do_list')) {
             if ($department_id) $log_title = get_the_title($department_id);
             $device_id = get_post_meta($log_id, 'device_id', true);
             if ($device_id) $log_title = get_the_title($device_id);
-            $log_title = isset($log_title) ? $log_title : __( 'System log!', 'textdomain' );
+            $log_title = isset($log_title) ? $log_title : __( 'System log', 'textdomain' );
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
@@ -1716,7 +1716,7 @@ if (!class_exists('to_do_list')) {
                                 $next_job = get_post_meta($submit_action, 'next_job', true);
                                 $next_job_title = get_the_title($next_job);
                             } else {
-                                $action_title = __( 'System log!', 'textdomain' );
+                                $action_title = __( 'System log', 'textdomain' );
                                 $log_title = get_the_content();
                             }
                             $next_job_title = isset($next_job_title) ? $next_job_title : '';
@@ -1777,7 +1777,7 @@ if (!class_exists('to_do_list')) {
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
                 $log_title = get_the_title($doc_id);
             } else {
-                $log_title = __( 'System log!', 'textdomain' ); 
+                $log_title = __( 'System log', 'textdomain' ); 
                 $log_content = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
             }
 
