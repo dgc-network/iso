@@ -1035,7 +1035,7 @@ if (!class_exists('to_do_list')) {
                         $params['next_leadtime'] = $next_leadtime;
                         $new_todo_id = $this->create_new_todo_and_actions($params);
                         
-                        $due_date += $next_leadtime;
+                        $due_date = time() + $next_leadtime;
                         $text_message = sprintf(
                             __('Your document in %s has a job that needs to be signed off and completed before %s. You can click the link below to view the document.', 'textdomain'),
                             get_the_title($doc_id),
