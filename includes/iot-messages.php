@@ -657,17 +657,15 @@ if (!class_exists('iot_messages')) {
             if (!empty($search_query)) {
                 $args['s'] = $search_query;
             }
-        
             $query = new WP_Query($args);
         
             // Check if query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
                 // Remove the initial search query
                 unset($args['s']);
-
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('iot-device');
                 $meta_query_all_keys = array('relation' => 'OR');
+                $meta_keys = get_post_type_meta_keys('iot-device');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
                         'key'     => $meta_key,

@@ -228,7 +228,6 @@ if (!class_exists('embedded_items')) {
             if (!empty($search_query)) {
                 $args['s'] = $search_query;
             }
-
             $query = new WP_Query($args);
 
             // Check if query is empty and search query is not empty
@@ -236,8 +235,8 @@ if (!class_exists('embedded_items')) {
                 // Remove the initial search query
                 unset($args['s']);
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('embedded');
                 $meta_query_all_keys = array('relation' => 'OR');
+                $meta_keys = get_post_type_meta_keys('embedded');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
                         'key'     => $meta_key,
@@ -1626,17 +1625,15 @@ if (!class_exists('embedded_items')) {
             if (!empty($search_query)) {
                 $args['s'] = $search_query;
             }
-        
             $query = new WP_Query($args);
         
             // Check if query is empty and search query is not empty
             if (!$query->have_posts() && !empty($search_query)) {
                 // Remove the initial search query
                 unset($args['s']);
-
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('department-card');
                 $meta_query_all_keys = array('relation' => 'OR');
+                $meta_keys = get_post_type_meta_keys('department-card');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
                         'key'     => $meta_key,

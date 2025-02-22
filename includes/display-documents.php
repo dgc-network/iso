@@ -303,7 +303,6 @@ if (!class_exists('display_documents')) {
             if (!empty($search_query)) {
                 $args['s'] = $search_query;
             }
-
             $query = new WP_Query($args);
 
             // Check if query is empty and search query is not empty
@@ -311,8 +310,8 @@ if (!class_exists('display_documents')) {
                 // Remove the initial search query
                 unset($args['s']);
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('document');
                 $meta_query_all_keys = array('relation' => 'OR');
+                $meta_keys = get_post_type_meta_keys('document');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
                         'key'     => $meta_key,
@@ -418,7 +417,7 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+            //$doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
@@ -2509,11 +2508,11 @@ if (!class_exists('display_documents')) {
         function generate_draft_document_data($doc_id=false){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $job_number = get_post_meta($doc_id, 'job_number', true);
+            //$job_number = get_post_meta($doc_id, 'job_number', true);
             //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_frame = get_post_meta($doc_id, 'doc_frame', true);
+            //$doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             // Create the post
             $new_post = array(
@@ -2530,7 +2529,7 @@ if (!class_exists('display_documents')) {
             //update_post_meta($post_id, 'doc_title', $doc_title);
             update_post_meta($post_id, 'doc_number', $doc_number);
             update_post_meta($post_id, 'doc_revision', 'draft');
-            update_post_meta($post_id, 'doc_frame', $doc_frame);
+            //update_post_meta($post_id, 'doc_frame', $doc_frame);
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(

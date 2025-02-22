@@ -1304,7 +1304,6 @@ if (!class_exists('display_profiles')) {
             if (isset($_GET['_search'])) {
                 $args['s'] = $search_query;            
             }
-
             $query = new WP_Query($args);
 
             // Check if $query is empty and search query is not empty
@@ -1312,8 +1311,8 @@ if (!class_exists('display_profiles')) {
                 // Remove the initial search query
                 unset($args['s']);
                 // Add meta query for searching across all meta keys
-                $meta_keys = get_post_type_meta_keys('action');
                 $meta_query_all_keys = array('relation' => 'OR');
+                $meta_keys = get_post_type_meta_keys('action');
                 foreach ($meta_keys as $meta_key) {
                     $meta_query_all_keys[] = array(
                         'key'     => $meta_key,
