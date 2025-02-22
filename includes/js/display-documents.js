@@ -435,8 +435,8 @@ jQuery(document).ready(function($) {
     activate_document_dialog_data();
     function activate_document_dialog_data(){
         doc_id = $('#doc-id').val();
-        activate_doc_action_list_data(doc_id);
-        activate_doc_user_list_data(doc_id);
+        //activate_doc_action_list_data(doc_id);
+        //activate_doc_user_list_data(doc_id);
         activate_doc_field_list_data(doc_id);
 
         $("#system-doc-label").on("click", function () {
@@ -460,14 +460,12 @@ jQuery(document).ready(function($) {
         });
 
         $("#doc-report-preview").on("click", function () {
-            //get_doc_report_list_data(doc_id);
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or update the parameters
             urlParams.set("_is_doc_report", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-
         });
 
         $("#doc-report-job-setting").on("click", function () {
@@ -550,7 +548,6 @@ jQuery(document).ready(function($) {
             // Remove or Update the parameters
             urlParams.delete("_doc_id");
             urlParams.delete("_prompt");
-            //urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
@@ -568,15 +565,6 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 $('#result-container').html(response.html_contain);
                 activate_doc_content_data(doc_id)
-/*                
-                // Get existing URL parameters
-                const urlParams = new URLSearchParams(window.location.search);
-                // Remove or update the parameters
-                urlParams.delete("_doc_id");
-                urlParams.delete("_prompt");
-                // Redirect to the updated URL
-                window.location.href = "?" + urlParams.toString();
-*/
             },
             error: function(error){
                 console.error(error);
@@ -754,189 +742,7 @@ jQuery(document).ready(function($) {
             buttons: {}
         });    
     }
-/*
-    // doc-action
-    function activate_doc_action_list_data(doc_id) {
-        $("#new-doc-action").on("click", function() {
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_doc_action_dialog_data',
-                    '_doc_id': doc_id,
-                },
-                success: function (response) {
-                    $("#doc-action-list").html(response.html_contain);
-                    activate_doc_action_list_data(doc_id);
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });    
-        });
 
-        $('[id^="edit-doc-action-"]').on("click", function () {
-            const action_id = this.id.substring(16);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_doc_action_dialog_data',
-                    '_action_id': action_id,
-                },
-                success: function (response) {
-                    $("#doc-action-dialog").html(response.html_contain);
-                    if ($("#is-site-admin").val() === "1") {
-                        $("#doc-action-dialog").dialog("option", "buttons", {
-                            "Save": function() {
-                                jQuery.ajax({
-                                    type: 'POST',
-                                    url: ajax_object.ajax_url,
-                                    dataType: "json",
-                                    data: {
-                                        'action': 'set_doc_action_dialog_data',
-                                        '_doc_id': doc_id,
-                                        '_action_id': $("#action-id").val(),
-                                        '_action_title': $("#action-title").val(),
-                                        '_action_content': $("#action-content").val(),
-                                        '_next_job': $("#next-job").val(),
-                                        '_next_leadtime': $("#next-leadtime").val(),
-                                    },
-                                    success: function (response) {
-                                        $("#doc-action-dialog").dialog('close');
-                                        $("#doc-action-list").html(response.html_contain);
-                                        activate_doc_action_list_data(doc_id);
-                                    },
-                                    error: function (error) {
-                                        console.error(error);                    
-                                        alert(error);
-                                    }
-                                });            
-                            },
-                            "Delete": function() {
-                                if (window.confirm("Are you sure you want to delete this doc action?")) {
-                                    jQuery.ajax({
-                                        type: 'POST',
-                                        url: ajax_object.ajax_url,
-                                        dataType: "json",
-                                        data: {
-                                            'action': 'del_doc_action_dialog_data',
-                                            '_doc_id': doc_id,
-                                            '_action_id': $("#action-id").val(),
-                                        },
-                                        success: function (response) {
-                                            $("#doc-action-dialog").dialog('close');
-                                            $("#doc-action-list").html(response.html_contain);
-                                            activate_doc_action_list_data(doc_id);
-                                        },
-                                        error: function(error){
-                                            console.error(error);
-                                            alert(error);
-                                        }
-                                    });
-                                }
-                            },
-                        });
-                    }
-
-                    $("#doc-action-dialog").dialog('open');
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-
-        $("#doc-action-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-            buttons: {}
-        });
-    }
-
-    // doc-user
-    function activate_doc_user_list_data(doc_id=false) {
-        $("#new-doc-user").on("click", function() {
-            jQuery.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_new_user_list',
-                },
-                success: function (response) {
-                    $("#new-user-list-dialog").html(response.html_contain);
-                    $("#new-user-list-dialog").dialog('open');
-                    $('[id^="add-doc-user-"]').on("click", function () {
-                        if (window.confirm("Are you sure you want to add this new user for doc?")) {
-                            const user_id = this.id.substring(13);
-                            $.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'add_doc_user_data',
-                                    '_doc_id': doc_id,
-                                    '_user_id': user_id,
-                                },
-                                success: function (response) {
-                                    console.log(response)
-                                    $("#new-user-list-dialog").dialog('close');
-                                    $("#doc-user-list").html(response.html_contain);
-                                    activate_doc_user_list_data(doc_id);
-                    
-                                },
-                                error: function (error) {
-                                    console.error(error);
-                                    alert(error);
-                                }
-                            });
-                        }
-                    });                        
-                },
-                error: function(error){
-                    console.error(error);
-                    alert(error);
-                }
-            });    
-        });
-
-        $('[id^="del-doc-user-"]').on("click", function () {
-            if (window.confirm("Are you sure you want to delete this doc user?")) {
-                const user_id = this.id.substring(13);
-                $.ajax({
-                    type: 'POST',
-                    url: ajax_object.ajax_url,
-                    dataType: "json",
-                    data: {
-                        'action': 'del_doc_user_data',
-                        '_doc_id': doc_id,
-                        '_user_id': user_id,
-                    },
-                    success: function (response) {
-                        $("#doc-user-list").html(response.html_contain);
-                        activate_doc_user_list_data(doc_id);
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        alert(error);
-                    }
-                });
-            }
-        });
-
-        $("#new-user-list-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-        });
-    }
-*/    
     // doc-report
     activate_doc_report_list_data($("#doc-id").val());
     function activate_doc_report_list_data(doc_id){
@@ -951,38 +757,15 @@ jQuery(document).ready(function($) {
         });
     
         $("#search-doc-report").on( "change", function() {
-            //get_doc_report_list_data(doc_id, $(this).val())
-            //$(this).val('');
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            //var selectValue = $("#select-todo").val();
             // Remove or Update the parameters
-            //if (selectValue) urlParams.set("_select_todo", selectValue);
             urlParams.set("_search", $(this).val());
             urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
+        });
 
-        });
-/*
-        $("#new-doc-report").on("click", function() {
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'set_doc_report_dialog_data',
-                    '_doc_id': doc_id,
-                },
-                success: function (response) {
-                    get_doc_report_list_data(doc_id)
-                },
-                error: function(error){
-                    console.error(error);
-                }
-            });
-        });
-*/
         $('[id^="edit-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(16);
             // Get existing URL parameters
@@ -1016,31 +799,7 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + urlParams.toString();
         });
     }
-/*
-    function get_doc_report_list_data(doc_id=false, search_doc_report=false) {
-        const ajaxData = {
-            'action': 'get_doc_report_list_data',
-        };
 
-        if (doc_id) ajaxData['_doc_id'] = doc_id;
-        if (search_doc_report) ajaxData['_search_doc_report'] = search_doc_report;
-
-        $.ajax({
-            type: 'POST',
-            url: ajax_object.ajax_url,
-            dataType: 'json',
-            data: ajaxData,
-            success: function (response) {
-                $('#result-container').html(response.html_contain);
-                activate_doc_report_list_data(doc_id);
-            },
-            error: function (error) {
-                console.error(error);
-                alert(error);
-            }
-        });
-    }
-*/
     function get_doc_report_dialog_data(report_id, callback) {
         $.ajax({
             url: ajax_object.ajax_url,
@@ -1188,12 +947,10 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function(response) {
-                        //get_doc_report_list_data($("#doc-id").val());
                         // Get existing URL parameters
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or Update the parameters
                         urlParams.delete("_report_id");
-                        //urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
 
@@ -1219,11 +976,10 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function (response) {
-                        //get_doc_report_list_data($("#doc-id").val());
+                        // Get existing URL parameters
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or Update the parameters
                         urlParams.delete("_report_id");
-                        //urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
 
@@ -1270,12 +1026,10 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function (response) {
-                        //get_doc_report_list_data($("#doc-id").val());
                         // Get existing URL parameters
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or Update the parameters
                         urlParams.delete("_report_id");
-                        //urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
             
@@ -1300,12 +1054,10 @@ jQuery(document).ready(function($) {
                         '_report_id': report_id,
                     },
                     success: function (response) {
-                        //get_doc_report_list_data($("#doc-id").val());
                         // Get existing URL parameters
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or Update the parameters
                         urlParams.delete("_report_id");
-                        //urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
 
@@ -1323,15 +1075,12 @@ jQuery(document).ready(function($) {
         });
 
         $("#exit-doc-report-dialog").on("click", function () {
-            //get_doc_report_list_data($("#doc-id").val());
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Update the parameters
             urlParams.delete("_report_id");
-            //urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
-
         });
 
         $(".video-button").on("click", function () {
