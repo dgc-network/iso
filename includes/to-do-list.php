@@ -197,9 +197,6 @@ if (!class_exists('to_do_list')) {
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
-<?php /*                                
-                                <td style="text-align:center;"><?php echo esc_html($todo_title);?></td>
-*/?>
                                 <td><?php echo esc_html($doc_title);?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($action_titles);?></td>
@@ -268,7 +265,7 @@ if (!class_exists('to_do_list')) {
                 // Check if $user_action_ids is not an empty array and add it to the meta_query
                 if (!empty($user_action_ids)) {
                     $meta_query[] = array(
-                        'key'     => 'action_id',
+                        'key'     => 'submit_action',
                         'value'   => $user_action_ids,
                         'compare' => 'IN',
                     );
@@ -766,7 +763,6 @@ if (!class_exists('to_do_list')) {
                 <?php
                 $documents_class = new display_documents();
                 $documents_class->get_doc_field_contains(array('doc_id' => $doc_id));
-                //$doc_title = get_post_meta($doc_id, 'doc_title', true);
                 $doc_title = get_the_title($doc_id);
                 $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
@@ -929,7 +925,6 @@ if (!class_exists('to_do_list')) {
             // Add a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
-                //'post_title'    => get_the_title($doc_id),
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
             );    
