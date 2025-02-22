@@ -470,10 +470,10 @@ add_action('rest_api_init', 'send_message_register_post_api');
 // Securely handle API request
 function send_message_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
-    $user_id = sanitize_text_field($params['user_id']);
+    $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+    $text_message = isset($params['text_message']) ? $params['text_message'] : '';
+    $link_uri = isset($params['link_uri']) ? $params['link_uri'] : '';
     $user = get_userdata($user_id);
-    $text_message = sanitize_text_field($params['text_message']);
-    $link_uri = sanitize_text_field($params['link_uri']);
 
     if (empty($user_id) || empty($text_message) || empty($link_uri)) {
         return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);

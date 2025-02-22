@@ -977,17 +977,16 @@ if (!class_exists('to_do_list')) {
                 if ($is_action_connector) {
                     
                     $jwt_token = get_option('jwt_token', '');
-                    $username = 'iot-manager';
-                    $user = get_user_by('login', $username);
-                    if ($user) {
-                        $user_id = $user->ID;
-                        update_user_meta( $user_id, 'api-password', '#RnZq7CWfLlRyjfjjMQdEN0*');
-                        $password = get_user_meta($user_id, 'api-password', true);
-                    } else {
-                        $password = false; // Handle case where user is not found
-                    }
-
                     if (empty($jwt_token)) {
+                        $username = 'iot-manager';
+                        $user = get_user_by('login', $username);
+                        if ($user) {
+                            update_user_meta( $user->ID, 'api-password', '#RnZq7CWfLlRyjfjjMQdEN0*');
+                            $password = get_user_meta($user->ID, 'api-password', true);
+                        } else {
+                            $password = false; // Handle case where user is not found
+                        }
+        
                         error_log('JWT Token is empty. Please set the token in the settings.');
                         $api_endpoint = home_url('/wp-json/jwt-auth/v1/token'); // Dynamic site URL
 
