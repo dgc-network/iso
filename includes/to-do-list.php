@@ -441,7 +441,7 @@ if (!class_exists('to_do_list')) {
                 $category_id = get_post_meta($prev_report_doc_id, 'category_id', true);
                 $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
                 if ($is_action_connector) $doc_id = $prev_report_doc_id;
-                
+
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Figure out the summary-job Step 3
                 if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
@@ -658,15 +658,25 @@ if (!class_exists('to_do_list')) {
         function retrieve_start_job_data($paged = 1, $current_user_id = false, $search_query = false) {
             if (!$current_user_id) $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
+        
             $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
             if (!is_array($user_action_ids)) $user_action_ids = array();
-        
-            if (!$search_query && isset($_GET['_search'])) {
-                $search_query = sanitize_text_field($_GET['_search']);
+            $user_doc_ids = []; // Array to store collected doc_id values
+            if (!empty($user_action_ids) && is_array($user_action_ids)) {
+                foreach ($user_action_ids as $action_id) {
+                    $doc_id = get_post_meta($action_id, 'doc_id', true);
+                    $category_id = get_post_meta($doc_id, 'category_id', true);
+                    $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
+                    if (!empty($doc_id) && (!$is_action_connector)) {
+                        $user_doc_ids[] = $doc_id;
+                    }
+                }
             }
-        
+/*
             // Retrieve all "doc_id" values from "action" posts that match $user_action_ids
-            $doc_ids = [];
+            $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
+            if (!is_array($user_action_ids)) $user_action_ids = array();
+            $user_doc_ids = [];
             if (!empty($user_action_ids)) {
                 $action_query = new WP_Query([
                     'post_type'      => 'action',
@@ -685,13 +695,13 @@ if (!class_exists('to_do_list')) {
                     foreach ($action_query->posts as $action_post_id) {
                         $doc_id = get_post_meta($action_post_id, 'doc_id', true);
                         if (!empty($doc_id)) {
-                            $doc_ids[] = $doc_id;
+                            $user_doc_ids[] = $doc_id;
                         }
                     }
                 }
                 wp_reset_postdata();
             }
-        
+*/        
             // Prepare WP_Query args for "document" post type
             $args = [
                 'post_type'      => 'document',
@@ -715,8 +725,12 @@ if (!class_exists('to_do_list')) {
             }
         
             // Filter only documents that match doc_id from actions
-            if (!empty($doc_ids)) {
-                $args['post__in'] = $doc_ids;
+            if (!empty($user_doc_ids)) {
+                $args['post__in'] = $user_doc_ids;
+            }
+        
+            if (!$search_query && isset($_GET['_search'])) {
+                $search_query = sanitize_text_field($_GET['_search']);
             }
         
             $query = new WP_Query($args);
@@ -727,11 +741,12 @@ if (!class_exists('to_do_list')) {
         function get_previous_job_id($current_job_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+
+            //$user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             // Get the current document's `job_number`
-            $current_job_number = get_post_meta($current_job_id, 'job_number', true);
+            //$current_job_number = get_post_meta($current_job_id, 'job_number', true);
         
             if (!$current_job_number) {
                 return null; // Return null if the current job_number is not set
@@ -740,9 +755,9 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
-                'meta_key'       => 'job_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value as a string
-                'order'          => 'DESC', // Descending order to get the previous document
+                //'meta_key'       => 'job_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value as a string
+                //'order'          => 'DESC', // Descending order to get the previous document
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -776,11 +791,11 @@ if (!class_exists('to_do_list')) {
         function get_next_job_id($current_job_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
+            //$user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
             if (!is_array($user_doc_ids)) $user_doc_ids = array();
 
             // Get the current document's `job_number`
-            $current_job_number = get_post_meta($current_job_id, 'job_number', true);
+            //$current_job_number = get_post_meta($current_job_id, 'job_number', true);
         
             if (!$current_job_number) {
                 return null; // Return null if the current job_number is not set
@@ -789,9 +804,9 @@ if (!class_exists('to_do_list')) {
             $args = array(
                 'post_type'      => 'document',
                 'posts_per_page' => 1,
-                'meta_key'       => 'job_number', // Meta key for sorting
-                'orderby'        => 'meta_value', // Sort by meta value as a string
-                'order'          => 'ASC', // Ascending order to get the next document
+                //'meta_key'       => 'job_number', // Meta key for sorting
+                //'orderby'        => 'meta_value', // Sort by meta value as a string
+                //'order'          => 'ASC', // Ascending order to get the next document
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -895,15 +910,15 @@ if (!class_exists('to_do_list')) {
         }
         
         function set_start_job_and_go_next($action_id=false, $user_id=false, $is_default=false) {
-            // Create a set_start_job_and_go_next() from schedule_event_callback($params).
-            // action button is clicked
+            // Run a set_start_job_and_go_next() from schedule_event_callback($params).
+            // Action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
 
-            // Add a new doc-report for current action
+            // Create a new doc-report for current action
             $new_post = array(
                 'post_type'     => 'doc-report',
                 'post_title'    => get_the_title($doc_id),
@@ -938,7 +953,7 @@ if (!class_exists('to_do_list')) {
                 array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
             );
 
-            // Add a new todo for current action
+            // Create a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
                 'post_status'   => 'publish',
