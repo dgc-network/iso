@@ -445,11 +445,11 @@ if (!class_exists('to_do_list')) {
                 $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
                 $doc_category = get_post_meta($doc_id, 'doc_category', true);
                 $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                error_log('is_action_connector: '.$is_action_connector);
-                error_log('doc_category: '.$doc_category);
-                error_log('report_doc_id: '.get_the_title($report_doc_id));
-                error_log('prev_report_id: '.$prev_report_id);
-                error_log('doc_id: '.get_the_title($doc_id));
+                //error_log('is_action_connector: '.$is_action_connector);
+                //error_log('doc_category: '.$doc_category);
+                //error_log('report_doc_id: '.get_the_title($report_doc_id));
+                //error_log('prev_report_id: '.$prev_report_id);
+                //error_log('doc_id: '.get_the_title($doc_id));
 
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Figure out the summary-job Step 3
@@ -1654,6 +1654,12 @@ if (!class_exists('to_do_list')) {
             <fieldset>
             <?php
                 $todo_in_summary = get_post_meta($log_id, 'todo_in_summary', true);
+
+                $prev_report_id = get_post_meta($log_id, 'prev_report_id', true);
+                $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
+                $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+
                 $submit_time = get_post_meta($log_id, 'submit_time', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
                 if (!$submit_action) {
@@ -1671,6 +1677,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
+                    if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_report_native_list($params);
                 } else {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
@@ -1681,6 +1688,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'          => $doc_id,
                         'prev_report_id'  => $prev_report_id,
                     );
+                    if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_field_contains($params);
                 }
             ?>
@@ -1726,12 +1734,16 @@ if (!class_exists('to_do_list')) {
                         while ($query->have_posts()) : $query->the_post();
                             $log_id = get_the_ID();
                             $doc_id = get_post_meta($log_id, 'doc_id', true);
+                            $log_title = get_the_title($doc_id);
+                            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                            $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                             $report_id = get_post_meta($log_id, 'prev_report_id', true);
-                            if ($doc_id) {
-                                $log_title = get_the_title($doc_id);
-                                if ($report_id) {
-                                    $log_title .= '(#'.$report_id.')';
-                                }
+                            if ($is_action_connector) {
+                                $report_doc_id = get_post_meta($report_id, 'doc_id', true);
+                                $log_title .= '('.get_the_title($report_doc_id).')';
+                            }
+                            if ($report_id) {
+                                $log_title .= '(#'.$report_id.')';
                             }
                             $submit_action = get_post_meta($log_id, 'submit_action', true);
                             if ($submit_action) {
