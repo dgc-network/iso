@@ -548,6 +548,7 @@ if (!class_exists('to_do_list')) {
                 );
             }
 
+            $next_job = get_post_meta($action_id, 'next_job', true);
             $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
             // Update todo status
             if (!empty($summary_todos) && is_array($summary_todos)) {
@@ -560,7 +561,6 @@ if (!class_exists('to_do_list')) {
                 update_post_meta($prev_report_id, 'todo_status', $next_job);    
             }
 
-            $next_job = get_post_meta($action_id, 'next_job', true);
             // Update current todo
             update_post_meta($todo_id, 'prev_report_id', $prev_report_id);
             update_post_meta($todo_id, 'submit_user', $user_id );
