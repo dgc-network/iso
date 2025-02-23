@@ -516,24 +516,22 @@ if (!class_exists('to_do_list')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                $this->set_todo_dialog_and_go_next($action_id);
+                $this->set_todo_data_and_go_next($action_id);
             }
             wp_send_json($response);
         }
         
-        function set_todo_dialog_and_go_next($action_id=false, $user_id=false, $is_default=false) {
+        function set_todo_data_and_go_next($action_id=false, $user_id=false, $is_default=false) {
             // action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
-            $next_job = get_post_meta($action_id, 'next_job', true);
-            $is_doc_report = get_post_meta($next_job, 'is_doc_report', true);
-
-            // 如果是審核、核准、彙整之類的工作，就不需要新增一個doc-report了
-            if ($is_doc_report==1) {
-                $todo_id = get_post_meta($action_id, 'todo_id', true);
-                $doc_id = get_post_meta($todo_id, 'doc_id', true);
+            $todo_id = get_post_meta($action_id, 'todo_id', true);
+            $doc_id = get_post_meta($todo_id, 'doc_id', true);
+            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+            $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+            // 如果是is_action_connector==1審核、核准、彙整之類的工作，就不需要新增一個doc-report了
+            if ($is_action_connector) {
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
-
+            } else {
                 // Add a new doc-report
                 $new_post = array(
                     'post_type'     => 'doc-report',
@@ -548,38 +546,40 @@ if (!class_exists('to_do_list')) {
                 $documents_class->update_doc_field_contains(
                     array('report_id' => $prev_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
                 );
-
-                // Update todo status
-                if (!empty($summary_todos) && is_array($summary_todos)) {
-                    foreach ($summary_todos as $todo_id) {
-                        $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                        update_post_meta($report_id, 'todo_status', $next_job);
-                    }
-                } else {
-                    update_post_meta($prev_report_id, 'doc_id', $doc_id);
-                    update_post_meta($prev_report_id, 'todo_status', $next_job);    
-                }
-    
-                // Update current todo
-                update_post_meta($todo_id, 'prev_report_id', $prev_report_id);
-                update_post_meta($todo_id, 'submit_user', $user_id );
-                update_post_meta($todo_id, 'submit_action', $action_id );
-                update_post_meta($todo_id, 'submit_time', time() );
-                update_post_meta($todo_id, 'next_job', $next_job );
-    
-                // set next todo and actions
-                $params = array(
-                    'user_id' => $user_id,
-                    'action_id' => $action_id,
-                    'prev_todo_id' => $todo_id,
-                );
-                if (!empty($summary_todos) && is_array($summary_todos)) {
-                    $params['doc_id'] = $doc_id;
-                } else {
-                    $params['prev_report_id'] = $prev_report_id;
-                }
-                if ($next_job>0) $this->proceed_to_next_job($params);
             }
+
+            $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
+            // Update todo status
+            if (!empty($summary_todos) && is_array($summary_todos)) {
+                foreach ($summary_todos as $todo_id) {
+                    $report_id = get_post_meta($todo_id, 'prev_report_id', true);
+                    update_post_meta($report_id, 'todo_status', $next_job);
+                }
+            } else {
+                update_post_meta($prev_report_id, 'doc_id', $doc_id);
+                update_post_meta($prev_report_id, 'todo_status', $next_job);    
+            }
+
+            $next_job = get_post_meta($action_id, 'next_job', true);
+            // Update current todo
+            update_post_meta($todo_id, 'prev_report_id', $prev_report_id);
+            update_post_meta($todo_id, 'submit_user', $user_id );
+            update_post_meta($todo_id, 'submit_action', $action_id );
+            update_post_meta($todo_id, 'submit_time', time() );
+            update_post_meta($todo_id, 'next_job', $next_job );
+
+            // set next todo and actions
+            $params = array(
+                'user_id' => $user_id,
+                'action_id' => $action_id,
+                'prev_todo_id' => $todo_id,
+            );
+            if (!empty($summary_todos) && is_array($summary_todos)) {
+                $params['doc_id'] = $doc_id;
+            } else {
+                $params['prev_report_id'] = $prev_report_id;
+            }
+            if ($next_job>0) $this->proceed_to_next_job($params);
         }
         
         // start-job
@@ -972,7 +972,7 @@ if (!class_exists('to_do_list')) {
         
         // proceed-to-next-job
         function proceed_to_next_job($params=array()) {
-            // 1. From set_todo_dialog_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
+            // 1. From set_todo_data_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             // 2. From set_start_job_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
@@ -1110,7 +1110,7 @@ if (!class_exists('to_do_list')) {
         }
 
         function create_next_todo_and_actions($params=array()) {
-
+            
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
@@ -1547,13 +1547,7 @@ if (!class_exists('to_do_list')) {
         function get_previous_log_id($current_log_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-        
-            // Ensure $user_doc_ids is an array
-            if (!is_array($user_doc_ids)) {
-                $user_doc_ids = array();
-            }
-        
+
             // Get the submit time of the current log
             $current_submit_time = get_post_meta($current_log_id, 'submit_time', true);
         
@@ -1590,13 +1584,7 @@ if (!class_exists('to_do_list')) {
         function get_next_log_id($current_log_id) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $user_doc_ids = get_user_meta($current_user_id, 'user_doc_ids', true);
-        
-            // Ensure $user_doc_ids is an array
-            if (!is_array($user_doc_ids)) {
-                $user_doc_ids = array();
-            }
-        
+
             // Get the submit time of the current log
             $current_submit_time = get_post_meta($current_log_id, 'submit_time', true);
         
@@ -1903,7 +1891,7 @@ if (!class_exists('to_do_list')) {
                             $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
                             if ($action_authorized_ids) {
                                 foreach ($action_authorized_ids as $user_id) {
-                                    $this->set_todo_dialog_and_go_next($action_id, $user_id, true);
+                                    $this->set_todo_data_and_go_next($action_id, $user_id, true);
                                 }
                             }
                         endwhile;
