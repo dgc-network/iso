@@ -860,9 +860,9 @@ if (!class_exists('display_documents')) {
                             $field_title = get_the_title();
                             echo '<th>'.esc_html($field_title).'</th>';
                         endwhile;
-                        if (current_user_can('administrator')) {
+                        //if (current_user_can('administrator')) {
                             echo '<th>'. __( 'Todo', 'textdomain' ).'</th>';
-                        }
+                        //}
                         echo '</tr>';
                         wp_reset_postdata();
                     }
@@ -879,13 +879,13 @@ if (!class_exists('display_documents')) {
                             $params['report_id'] = $report_id;
                             $this->get_field_contain_list_display($params);
 
-                            if (current_user_can('administrator')) {
+                            //if (current_user_can('administrator')) {
                                 $next_job = get_post_meta($report_id, 'todo_status', true);
                                 $todo_status = ($next_job) ? get_the_title($next_job) : 'Draft';
-                                $todo_status = ($next_job==-1) ? __( 'Released', 'textdomain' ) : $todo_status;
-                                $todo_status = ($next_job==-2) ? __( 'Removed', 'textdomain' ) : $todo_status;
+                                //$todo_status = ($next_job==-1) ? __( 'Released', 'textdomain' ) : $todo_status;
+                                //$todo_status = ($next_job==-2) ? __( 'Removed', 'textdomain' ) : $todo_status;
                                 echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
-                            }
+                            //}
                             echo '</tr>';
                         endwhile;                
                         wp_reset_postdata();
@@ -924,11 +924,26 @@ if (!class_exists('display_documents')) {
 
             if (!empty($params['key_value_pair'])) {
                 $meta_query[] = array(
+                    'relation' => 'OR', // Either condition can be true
+                    array(
+                        'key'     => 'todo_status',
+                        'compare' => 'NOT EXISTS', // Condition for when the meta doesn't exist
+                    ),
+                    array(
+                        'key'     => 'todo_status',
+                        'value'   => '0',
+                        'compare' => '!=', // Condition for when todo_status is not equal to 0
+                    ),
+                );
+            }
+/*            
+            if (!empty($params['key_value_pair'])) {
+                $meta_query[] = array(
                     'key'   => 'todo_status',
                     'value' => -1,
                 );
             }
-
+*/
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => get_option('operation_row_counts'),
