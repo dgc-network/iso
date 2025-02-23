@@ -1393,7 +1393,7 @@ if (!class_exists('display_documents')) {
             if (!empty($params['is_listing'])) {
                 $args['meta_query'][] = array(
                     'key'     => 'listing_style',
-                    'value'   => '',
+                    'value'   => '.',
                     'compare' => '!=',
                 );
             }
