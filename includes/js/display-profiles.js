@@ -201,85 +201,7 @@ jQuery(document).ready(function($) {
                 $("#recurrence-start-time-div").hide();
             }
         });
-/*
-        $('[id^="edit-my-job-"]').on("click", function () {
-            const doc_id = this.id.substring(12);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_my_job_action_list_data',
-                    '_doc_id': doc_id,
-                },
-                success: function (response) {
-                    $("#my-job-action-list").html(response.html_contain);
-                    $("#my-job-action-list").dialog("option", "buttons", {
-                        "Update": function () {
-                            $.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'set_my_job_action_dialog_data',
-                                    _action_id: $("#action-id").val(),
-                                    _is_action_authorized: $("#is-action-authorized").val(),
-                                    _recurrence_setting: $("#recurrence-setting").val(),
-                                    _recurrence_start_date: $("#recurrence-start-date").val(),
-                                    _recurrence_start_time: $("#recurrence-start-time").val(),
-                                    _prev_start_time: $("#prev-start-time").val(),
-                                },
-                                success: function (response) {
-                                    console.log(response);
-                                    window.location.replace(window.location.href);
-                                },
-                                error: function (error) {
-                                    console.error(error);
-                                    alert(error);
-                                }
-                            });
-                        },
-                        "Cancel": function () {
-                            $("#my-job-action-list").dialog('close');
-                        },
-                    });
-                    $("#my-job-action-list").dialog('open');
 
-                    $('[id^="edit-my-job-action-"]').on("click", function () {
-                        $("#my-job-action-list").dialog('close');
-                        const action_id = this.id.substring(19);
-                        $.ajax({
-                            type: 'POST',
-                            url: ajax_object.ajax_url,
-                            dataType: "json",
-                            data: {
-                                'action': 'get_my_job_action_dialog_data',
-                                '_action_id': action_id,
-                            },
-                            success: function (response) {
-                                $("#my-job-action-dialog").dialog({
-                                    width: 390,
-                                    modal: true,
-                                    autoOpen: false,
-                                    buttons: {}
-                                });
-                                $("#my-job-action-dialog").html(response.html_contain);
-                                $("#my-job-action-dialog").dialog('open');
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert(error);
-                            }
-                        });
-                    });
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-*/
         // exception notifiction
         $("#my-exception-notification-setting-label").on("click", function () {
             $("#my-exception-notification-setting").toggle();
@@ -624,7 +546,7 @@ jQuery(document).ready(function($) {
                                     'action': 'set_site_user_action_data',
                                     _action_id : action_id,
                                     _user_id : user_id,
-                                    _is_user_action : $("#is-user-action-"+doc_id).is(":checked") ? 1 : 0,
+                                    _is_user_action : $("#is-user-action-"+action_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     console.log(response);

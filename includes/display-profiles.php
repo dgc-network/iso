@@ -61,29 +61,6 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_del_action_user_data', array( $this, 'del_action_user_data' ) );
             add_action( 'wp_ajax_nopriv_del_action_user_data', array( $this, 'del_action_user_data' ) );                                                                    
 
-
-/*
-            add_action( 'wp_ajax_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_site_job_dialog_data', array( $this, 'get_site_job_dialog_data' ) );
-            add_action( 'wp_ajax_set_site_job_dialog_data', array( $this, 'set_site_job_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_site_job_dialog_data', array( $this, 'set_site_job_dialog_data' ) );
-            add_action( 'wp_ajax_del_site_job_dialog_data', array( $this, 'del_site_job_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_site_job_dialog_data', array( $this, 'del_site_job_dialog_data' ) );
-
-            add_action( 'wp_ajax_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_doc_action_dialog_data', array( $this, 'get_doc_action_dialog_data' ) );                                                                    
-            add_action( 'wp_ajax_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_doc_action_dialog_data', array( $this, 'set_doc_action_dialog_data' ) );                                                                    
-            add_action( 'wp_ajax_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_doc_action_dialog_data', array( $this, 'del_doc_action_dialog_data' ) );                                                                    
-
-            add_action( 'wp_ajax_get_new_user_list', array( $this, 'get_new_user_list' ) );
-            add_action( 'wp_ajax_nopriv_get_new_user_list', array( $this, 'get_new_user_list' ) );                                                                    
-            add_action( 'wp_ajax_add_doc_user_data', array( $this, 'add_doc_user_data' ) );
-            add_action( 'wp_ajax_nopriv_add_doc_user_data', array( $this, 'add_doc_user_data' ) );                                                                    
-            add_action( 'wp_ajax_del_doc_user_data', array( $this, 'del_doc_user_data' ) );
-            add_action( 'wp_ajax_nopriv_del_doc_user_data', array( $this, 'del_doc_user_data' ) );                                                                    
-*/
             add_action( 'wp_ajax_get_site_list_data', array( $this, 'get_site_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_list_data', array( $this, 'get_site_list_data' ) );
             add_action( 'wp_ajax_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
@@ -107,6 +84,9 @@ if (!class_exists('display_profiles')) {
             <select id="select-profile">
                 <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( 'My Account', 'textdomain' );?></option>
                 <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( 'Site Configuration', 'textdomain' );?></option>
+                <?php if (current_user_can('administrator')) {?>                
+                    <option value="site-user" <?php echo ($select_option=="site-user") ? 'selected' : ''?>><?php echo __( 'User Configuration', 'textdomain' );?></option>
+                <?php }?>                
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( 'Departments', 'textdomain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
             </select>
@@ -668,8 +648,8 @@ if (!class_exists('display_profiles')) {
                     <table class="ui-widget" style="width:100%;">
                         <thead>
                             <th></th>
-                            <th><?php echo __( 'Job', 'textdomain' );?></th>
-                            <th><?php echo __( 'Title', 'textdomain' );?></th>
+                            <th><?php echo __( 'Action', 'textdomain' );?></th>
+                            <th><?php echo __( 'Document', 'textdomain' );?></th>
                         </thead>
                         <tbody>
                             <?php
@@ -678,7 +658,7 @@ if (!class_exists('display_profiles')) {
                                 while ($query->have_posts()) : $query->the_post();
                                     $action_id = get_the_ID();
                                     $action_title = get_the_title();
-                                    $doc_id = get_post_meta($action_id, 'action', true);
+                                    $doc_id = get_post_meta($action_id, 'doc_id', true);
                                     $user_action_checked = $this->is_user_action($action_id, $user_id) ? 'checked' : '';
                                     echo '<tr id="check-user-action-' . $action_id . '">';
                                     echo '<td style="text-align:center;"><input type="checkbox" id="is-user-action-'.$action_id.'" ' . $user_action_checked . ' /></td>';
