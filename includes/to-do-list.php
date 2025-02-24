@@ -528,6 +528,9 @@ if (!class_exists('to_do_list')) {
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
             $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+            //error_log('doc_id: '.get_the_title($doc_id));
+            //error_log('doc_category: '.$doc_category);
+            //error_log('is_action_connector: '.$is_action_connector);
             // 如果是is_action_connector==1審核、核准、彙整之類的工作，就不需要新增一個doc-report了
             if ($is_action_connector) {
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
@@ -540,6 +543,7 @@ if (!class_exists('to_do_list')) {
                     'post_author'   => $user_id,
                 );    
                 $prev_report_id = wp_insert_post($new_post);
+                update_post_meta($prev_report_id, 'doc_id', $doc_id);
 
                 // Update the post meta
                 $documents_class = new display_documents();
@@ -547,6 +551,8 @@ if (!class_exists('to_do_list')) {
                     array('report_id' => $prev_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
                 );
             }
+            //error_log('report_doc_id: '.get_the_title($report_doc_id));
+            //error_log('prev_report_id: '.$prev_report_id);
 
             $next_job = get_post_meta($action_id, 'next_job', true);
             $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
@@ -557,7 +563,6 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($report_id, 'todo_status', $next_job);
                 }
             } else {
-                update_post_meta($prev_report_id, 'doc_id', $doc_id);
                 update_post_meta($prev_report_id, 'todo_status', $next_job);    
             }
 
@@ -1720,18 +1725,18 @@ if (!class_exists('to_do_list')) {
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
-                            $log_id = get_the_ID();
-                            $doc_id = get_post_meta($log_id, 'doc_id', true);
+                            $todo_id = get_the_ID();
+                            $doc_id = get_post_meta($todo_id, 'doc_id', true);
                             $log_title = get_the_title($doc_id);
                             $doc_category = get_post_meta($doc_id, 'doc_category', true);
                             $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                            $report_id = get_post_meta($log_id, 'prev_report_id', true);
+                            $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                             if ($is_action_connector) {
-                                $report_doc_id = get_post_meta($report_id, 'doc_id', true);
+                                $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
                                 $log_title .= '('.get_the_title($report_doc_id).')';
                             }
-                            if ($report_id) {
-                                $log_title .= '(#'.$report_id.')';
+                            if ($prev_report_id) {
+                                $log_title .= '(#'.$prev_report_id.')';
                             }
                             $submit_action = get_post_meta($log_id, 'submit_action', true);
                             if ($submit_action) {
