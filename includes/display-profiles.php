@@ -686,7 +686,7 @@ if (!class_exists('display_profiles')) {
                     <label for="is-site-admin-setting"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
                     </div>
                     <?php
-                    echo $nda_approval = home_url('/display-profiles/?_nda_user_id='.$user_id);
+                    echo home_url('/display-profiles/?_nda_user_id='.$user_id);
 
                 } else {
                     $site_ids = get_user_meta($user_id, 'site_admin_ids', true);
