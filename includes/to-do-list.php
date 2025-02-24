@@ -713,13 +713,15 @@ if (!class_exists('to_do_list')) {
                 'order' => 'DESC',
             ];
         
-            if ($paged == 0) {
-                $args['posts_per_page'] = -1;
+            // Filter only documents that match doc_id from actions
+            if (empty($user_doc_ids)) {
+                return [];
+            } else {
+                $args['post__in'] = $user_doc_ids;
             }
         
-            // Filter only documents that match doc_id from actions
-            if (!empty($user_doc_ids)) {
-                $args['post__in'] = $user_doc_ids;
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1;
             }
         
             if (!$search_query && isset($_GET['_search'])) {
