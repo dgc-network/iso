@@ -686,9 +686,8 @@ if (!class_exists('display_profiles')) {
                     <input type="checkbox" id="is-site-admin-setting" <?php echo $is_admin_checked;?> />
                     <label for="is-site-admin-setting"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
                     </div>
+                    <a href="<?php echo home_url('/display-profiles/?_nda_user_id=' . $user_id);?>">NDA approval</a>
                     <?php
-                    echo home_url('/display-profiles/?_nda_user_id='.$user_id);
-
                 } else {
                     $site_ids = get_user_meta($user_id, 'site_admin_ids', true);
                     if (!empty($site_ids)) {
