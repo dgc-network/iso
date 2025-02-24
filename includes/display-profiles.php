@@ -1266,9 +1266,9 @@ if (!class_exists('display_profiles')) {
         function set_site_user_action_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_action_id'])) {
-                $action_id = isset($_POST['_action_id']) ?? sanitize_text_field($_POST['_action_id']) : 0;
-                $user_id = isset($_POST['_user_id']) ?? sanitize_text_field($_POST['_user_id']) : get_current_user_id();
-                $is_user_action = isset($_POST['_is_user_action']) ?? sanitize_text_field($_POST['_is_user_action']) : 0;
+                $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
+                $user_id = isset($_POST['_user_id']) ? sanitize_text_field($_POST['_user_id']) : get_current_user_id();
+                $is_user_action = isset($_POST['_is_user_action']) ? sanitize_text_field($_POST['_is_user_action']) : 0;
 
                 $user_action_ids = get_user_meta($user_id, 'user_action_ids', true);
                 if (!is_array($user_action_ids)) $user_action_ids = array();
