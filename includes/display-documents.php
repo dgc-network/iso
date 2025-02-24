@@ -748,9 +748,9 @@ if (!class_exists('display_documents')) {
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <?php if ($profiles_class->is_user_doc($doc_id)) {?>
+                    <?php //if ($profiles_class->is_user_doc($doc_id)) {?>
                         <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'textdomain' );?>" style="margin:3px;" />
-                    <?php }?>
+                    <?php //}?>
                     <style>
                     /* Hide button on mobile devices */
                     @media screen and (max-width: 768px) {
@@ -1147,10 +1147,10 @@ if (!class_exists('display_documents')) {
                     ?>
                     </div>
                     <div style="text-align:right; display:flex;">
-                    <?php if ($profiles_class->is_user_doc($doc_id)) {?>
+                    <?php //if ($profiles_class->is_user_doc($doc_id)) {?>
                         <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'textdomain' );?>" style="margin:3px;" />
                         <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'textdomain' );?>" style="margin:3px;" />
-                    <?php }?>                    
+                    <?php //}?>                    
                         <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:3px;" />
                     </div>
                     </div>

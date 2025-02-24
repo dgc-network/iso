@@ -790,7 +790,7 @@ if (!class_exists('display_profiles')) {
             // Update 'site_admin_ids' meta value
             update_user_meta( $user_id, 'site_admin_ids', $site_admin_ids);
         }
-
+/*
         function set_site_user_doc_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
             if (isset($_POST['_doc_id'])) {
@@ -829,7 +829,7 @@ if (!class_exists('display_profiles')) {
             // Check if the current user has the specified doc ID in their metadata
             return in_array($doc_id, $user_doc_ids);
         }
-
+*/
         function select_site_profile_options($selected_option=0) {
             $args = array(
                 'post_type'      => 'site-profile',
