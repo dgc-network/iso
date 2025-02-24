@@ -715,7 +715,7 @@ if (!class_exists('to_do_list')) {
         
             // Filter only documents that match doc_id from actions
             if (empty($user_doc_ids)) {
-                return [];
+                return new WP_Query(['post__in' => [0]]); // Ensures an empty query
             } else {
                 $args['post__in'] = $user_doc_ids;
             }
