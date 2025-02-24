@@ -630,8 +630,8 @@ if (!class_exists('display_profiles')) {
 
         function display_site_user_dialog($user_id=false) {
             ob_start();
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            //$current_user_id = get_current_user_id();
+            //$site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_data = get_userdata($user_id);
             $user_site = get_user_meta($user_id, 'site_id', true);
             $is_admin_checked = (is_site_admin($user_id)) ? 'checked' : '';
@@ -675,8 +675,9 @@ if (!class_exists('display_profiles')) {
                 </fieldset>
                 <?php }?>
                 <?php
-                $current_user_id = get_current_user_id();
-                $current_site_id = get_user_meta($current_user_id, 'site_id', true);
+                //$current_user_id = get_current_user_id();
+                //$current_site_id = get_user_meta($current_user_id, 'site_id', true);
+                $current_site_id = get_user_meta($user_id, 'site_id', true);
                 if (current_user_can('administrator')) {
                     ?>
                     <label for="select-site"><?php echo __( 'Site', 'textdomain' );?></label>
