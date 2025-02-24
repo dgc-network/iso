@@ -899,9 +899,8 @@ if (!class_exists('iot_messages')) {
                 update_post_meta($device_id, 'records_removed', $records_removed);
 
                 $params = array(
-                    //'log_message' => 'IoT device(#'.$device_number.') has been updated successfully',
                     'log_message' => sprintf(
-                        __( 'IoT device (#%s) has been updated successfully.', 'textdomain' ),
+                        __( 'IoT device "#%s" has been updated successfully.', 'textdomain' ),
                         $device_number
                     ),                    
                     'device_id' => $device_id,
@@ -934,9 +933,8 @@ if (!class_exists('iot_messages')) {
             $device_id = isset($_POST['_device_id']) ? sanitize_text_field($_POST['_device_id']) : 0;
             $device_number = get_post_meta($device_id, 'device_number', true);
             $params = array(
-                //'log_message' => 'IoT device(#'.$device_number.') has been deleted',
                 'log_message' => sprintf(
-                    __( 'IoT device (#%s) has been deleted', 'textdomain' ),
+                    __( 'IoT device "#%s" has been deleted', 'textdomain' ),
                     $device_number
                 ),                
                 'device_id' => $device_id,

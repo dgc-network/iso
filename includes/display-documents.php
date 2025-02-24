@@ -579,7 +579,7 @@ if (!class_exists('display_documents')) {
 
                 $params = array(
                     'log_message' => sprintf(
-                        __( '%s has been updated successfully.', 'textdomain' ),
+                        __( 'Document %s has been updated successfully.', 'textdomain' ),
                         $doc_title
                     ),                    
                     'doc_id' => $doc_id,
@@ -612,7 +612,7 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $params = array(
                 'log_message' => sprintf(
-                    __( '%s has been deleted.', 'textdomain' ),
+                    __( 'Document %s has been deleted.', 'textdomain' ),
                     get_the_title($doc_id)
                 ),                
                 'doc_id' => $doc_id,
@@ -2469,13 +2469,12 @@ if (!class_exists('display_documents')) {
                 );
                 $draft_id = wp_insert_post($draft_post);
                 update_post_meta($draft_id, 'site_id', $site_id);
-                //update_post_meta($draft_id, 'doc_title', $draft_title);
                 update_post_meta($draft_id, 'doc_number', '-');
                 update_post_meta($draft_id, 'doc_revision', __( 'draft', 'textdomain' ));
                 update_post_meta($draft_id, 'doc_category', $draft_category);
 
                 $params = array(
-                    'log_message' => sprintf( __( 'Draft "%s" has been created.', 'textdomain' ), esc_html( $draft_title ) ),
+                    'log_message' => sprintf( __( 'Draft %s has been created.', 'textdomain' ), esc_html( $draft_title ) ),
                     'doc_id' => $draft_id,
                 );
                 $todo_class = new to_do_list();

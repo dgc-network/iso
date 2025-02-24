@@ -1208,7 +1208,7 @@ if (!class_exists('embedded_items')) {
 
                 $params = array(
                     'log_message' => sprintf(
-                        __( 'Category (%s) has been updated successfully.', 'textdomain' ),
+                        __( 'Category %s has been updated successfully.', 'textdomain' ),
                         $category_title
                     ),                    
                     'category_id' => $category_id,
@@ -1237,7 +1237,7 @@ if (!class_exists('embedded_items')) {
             $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
             $params = array(
                 'log_message' => sprintf(
-                    __( 'Category (%s) has been deleted.', 'textdomain' ),
+                    __( 'Category %s has been deleted.', 'textdomain' ),
                     get_the_title($category_id)
                 ),                
                 'category_id' => $category_id,
@@ -1697,9 +1697,8 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($department_id, 'department_number', $department_number);
 
                 $params = array(
-                    //'log_message' => 'Department('.$department_title.') has been updated successfully',
                     'log_message' => sprintf(
-                        __( 'Department (%s) has been updated successfully.', 'textdomain' ),
+                        __( 'Department %s has been updated successfully.', 'textdomain' ),
                         $department_title
                     ),                    
                     'department_id' => $department_id,
@@ -1729,7 +1728,7 @@ if (!class_exists('embedded_items')) {
             $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
             $params = array(
                 'log_message' => sprintf(
-                    __( 'Department (%s) has been deleted.', 'textdomain' ),
+                    __( 'Department %s has been deleted.', 'textdomain' ),
                     get_the_title($department_id)
                 ),                
                 'department_id' => $department_id,
