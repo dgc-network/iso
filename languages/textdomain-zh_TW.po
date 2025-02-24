@@ -253,7 +253,7 @@ msgstr "文件「%s」已經在%s廢止，你可以點擊下方連結查看該�
 msgid "Total Submissions: "
 msgstr "提交總數："
 msgid "System log"
-msgstr "系統記錄！"
+msgstr "系統記錄"
 msgid "Log time: "
 msgstr "記錄時間："
 msgid "User"
