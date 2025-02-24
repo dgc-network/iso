@@ -85,7 +85,7 @@ if (!class_exists('display_profiles')) {
                 <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( 'My Account', 'textdomain' );?></option>
                 <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( 'Site Configuration', 'textdomain' );?></option>
                 <?php if (current_user_can('administrator')) {?>                
-                    <option value="site-user" <?php echo ($select_option=="site-user") ? 'selected' : ''?>><?php echo __( 'User Configuration', 'textdomain' );?></option>
+                    <option value="user-list" <?php echo ($select_option=="user-list") ? 'selected' : ''?>><?php echo __( 'User Configuration', 'textdomain' );?></option>
                 <?php }?>                
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( 'Departments', 'textdomain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
