@@ -196,7 +196,7 @@ if (!class_exists('to_do_list')) {
                             $report_id = get_post_meta($todo_id, 'prev_report_id', true);
                             if ($is_action_connector) {
                                 $report_doc_id = get_post_meta($report_id, 'doc_id', true);
-                                $doc_title .= '('.get_the_title($report_doc_id).')';
+                                $doc_title = get_the_title($report_doc_id).':'.get_the_title();
                             }
                             if ($report_id) $doc_title .= '(#'.$report_id.')';
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
@@ -1733,7 +1733,7 @@ if (!class_exists('to_do_list')) {
                             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                             if ($is_action_connector) {
                                 $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-                                $log_title .= '('.get_the_title($report_doc_id).')';
+                                $log_title = get_the_title($report_doc_id).':'.get_the_title($doc_id);
                             }
                             if ($prev_report_id) {
                                 $log_title .= '(#'.$prev_report_id.')';
