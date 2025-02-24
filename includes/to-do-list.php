@@ -1738,7 +1738,7 @@ if (!class_exists('to_do_list')) {
                             if ($prev_report_id) {
                                 $log_title .= '(#'.$prev_report_id.')';
                             }
-                            $submit_action = get_post_meta($log_id, 'submit_action', true);
+                            $submit_action = get_post_meta($todo_id, 'submit_action', true);
                             if ($submit_action) {
                                 $action_title = get_the_title($submit_action);
                                 $next_job = get_post_meta($submit_action, 'next_job', true);
@@ -1748,8 +1748,8 @@ if (!class_exists('to_do_list')) {
                                 $log_title = get_the_content();
                             }
                             $next_job_title = isset($next_job_title) ? $next_job_title : '';
-                            $submit_time = get_post_meta($log_id, 'submit_time', true);
-                            $submit_user = get_post_meta($log_id, 'submit_user', true);
+                            $submit_time = get_post_meta($todo_id, 'submit_time', true);
+                            $submit_user = get_post_meta($todo_id, 'submit_user', true);
                             $user_data = get_userdata( $submit_user );
                             ?>
                             <tr id="edit-action-log<?php esc_attr(the_ID()); ?>">
