@@ -609,10 +609,10 @@ jQuery(document).ready(function($) {
 
                     $("#site-user-dialog").dialog('open');
 
-                    $('[id^="check-user-job-"]').on("click", function () {
+                    $('[id^="check-user-action-"]').on("click", function () {
                         if (window.confirm("Are you sure you want to change this setting?")) {
-                            const doc_id = this.id.substring(15);
-                            $("#is-user-doc-"+doc_id).prop("checked", function(i, value) {
+                            const action_id = this.id.substring(18);
+                            $("#is-user-action-"+action_id).prop("checked", function(i, value) {
                                 return !value; // Toggle the checkbox state
                             });
 
@@ -621,10 +621,10 @@ jQuery(document).ready(function($) {
                                 url: ajax_object.ajax_url,
                                 dataType: "json",
                                 data: {
-                                    'action': 'set_site_user_doc_data',
-                                    _doc_id : doc_id,
+                                    'action': 'set_site_user_action_data',
+                                    _action_id : action_id,
                                     _user_id : user_id,
-                                    _is_user_doc : $("#is-user-doc-"+doc_id).is(":checked") ? 1 : 0,
+                                    _is_user_action : $("#is-user-action-"+doc_id).is(":checked") ? 1 : 0,
                                 },
                                 success: function (response) {
                                     console.log(response);

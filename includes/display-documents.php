@@ -1133,12 +1133,11 @@ if (!class_exists('display_documents')) {
                     <div>
                     <?php
                     $profiles_class = new display_profiles();
-                    //$query = $profiles_class->retrieve_doc_action_data($doc_id);
                     $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
-                            if ($profiles_class->is_user_doc($doc_id)) {
-                                $action_id = get_the_ID();
+                            $action_id = get_the_ID();
+                            if ($profiles_class->is_user_action($action_id)) {
                                 $action_title = get_the_title();
                                 echo '<input type="button" id="doc-report-dialog-button-'.$action_id.'" value="'.$action_title.'" style="margin:5px;" />';
                             }

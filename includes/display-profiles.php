@@ -31,8 +31,9 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_site_profile_data', array( $this, 'set_site_profile_data' ) );
-            add_action( 'wp_ajax_set_site_user_doc_data', array( $this, 'set_site_user_doc_data' ) );
-            add_action( 'wp_ajax_nopriv_set_site_user_doc_data', array( $this, 'set_site_user_doc_data' ) );
+
+            add_action( 'wp_ajax_set_site_user_action_data', array( $this, 'set_site_user_action_data' ) );
+            add_action( 'wp_ajax_nopriv_set_site_user_action_data', array( $this, 'set_site_user_action_data' ) );
 
             add_action( 'wp_ajax_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
@@ -672,17 +673,17 @@ if (!class_exists('display_profiles')) {
                         </thead>
                         <tbody>
                             <?php
-                            $query = $this->retrieve_site_job_list_data(0);
+                            $query = $this->retrieve_site_action_list_data(0);
                             if ($query->have_posts()) {
                                 while ($query->have_posts()) : $query->the_post();
-                                    $job_id = get_the_ID();
-                                    $job_title = get_the_title();
-                                    $job_number = get_post_meta($job_id, 'job_number', true);
-                                    $user_job_checked = $this->is_user_doc($job_id, $user_id) ? 'checked' : '';
-                                    echo '<tr id="check-user-job-' . $job_id . '">';
-                                    echo '<td style="text-align:center;"><input type="checkbox" id="is-user-doc-'.$job_id.'" ' . $user_job_checked . ' /></td>';
-                                    echo '<td style="text-align:center;">' . esc_html($job_number) . '</td>';
-                                    echo '<td style="text-align:center;">' . $job_title . '</td>';
+                                    $action_id = get_the_ID();
+                                    $action_title = get_the_title();
+                                    $doc_id = get_post_meta($action_id, 'action', true);
+                                    $user_action_checked = $this->is_user_action($action_id, $user_id) ? 'checked' : '';
+                                    echo '<tr id="check-user-action-' . $action_id . '">';
+                                    echo '<td style="text-align:center;"><input type="checkbox" id="is-user-action-'.$action_id.'" ' . $user_action_checked . ' /></td>';
+                                    echo '<td style="text-align:center;">' . get_the_title() . '</td>';
+                                    echo '<td style="text-align:center;">' . get_the_title($doc_id) . '</td>';
                                     echo '</tr>';
                                 endwhile;
                                 wp_reset_postdata();                                    
@@ -1260,6 +1261,44 @@ if (!class_exists('display_profiles')) {
             $action_id = sanitize_text_field($_POST['_action_id']);
             $response['html_contain'] = $this->display_action_user_list($action_id);
             wp_send_json($response);
+        }
+
+        function set_site_user_action_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+            if (isset($_POST['_action_id'])) {
+                $action_id = isset($_POST['_action_id']) ?? sanitize_text_field($_POST['_action_id']) : 0;
+                $user_id = isset($_POST['_user_id']) ?? sanitize_text_field($_POST['_user_id']) : get_current_user_id();
+                $is_user_action = isset($_POST['_is_user_action']) ?? sanitize_text_field($_POST['_is_user_action']) : 0;
+
+                $user_action_ids = get_user_meta($user_id, 'user_action_ids', true);
+                if (!is_array($user_action_ids)) $user_action_ids = array();
+                $action_exists = in_array($action_id, $user_action_ids);
+
+                // Check the condition and update 'user_action_ids' accordingly
+                if ($is_user_action == 1 && !$action_exists) {
+                    // Add $action_id to 'user_action_ids'
+                    $user_action_ids[] = $action_id;
+                } elseif ($is_user_action != 1 && $action_exists) {
+                    // Remove $action_id from 'user_action_ids'
+                    $user_action_ids = array_diff($user_action_ids, array($action_id));
+                }        
+                // Update 'user_action_ids' meta value
+                update_user_meta( $user_id, 'user_action_ids', $user_action_ids);
+                $response = array('success' => true);
+            }
+            wp_send_json($response);
+        }
+
+        function is_user_action($action_id=false, $user_id=false) {
+            // Get the current user ID
+            if (!$user_id) $user_id = get_current_user_id();    
+            if (is_site_admin($user_id)) return true;
+            // Get the user's action IDs as an array
+            $user_action_ids = get_user_meta($user_id, 'user_action_ids', true);
+            // If $user_action_ids is not an array, convert it to an array
+            if (!is_array($user_action_ids)) $user_action_ids = array();
+            // Check if the current user has the specified doc ID in their metadata
+            return in_array($action_id, $user_action_ids);
         }
 
         function retrieve_users_by_site_id() {
