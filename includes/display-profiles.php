@@ -197,7 +197,7 @@ if (!class_exists('display_profiles')) {
                     '_employee' => get_current_user_id(),
                 );
                 $documents_class = new display_documents();
-                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
+                //$documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 // exception notification setting
                 $iot_messages = new iot_messages();
                 $is_display = ($iot_messages->is_site_with_iot_device()) ? '' : 'display:none;';
@@ -284,7 +284,6 @@ if (!class_exists('display_profiles')) {
             ob_start();
             $todo_class = new to_do_list();
             $doc_id = get_post_meta($action_id, 'doc_id', true);
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
             $authorized_status = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
             $recurrence_setting = get_post_meta($action_id, 'recurrence_setting', true);
@@ -458,7 +457,6 @@ if (!class_exists('display_profiles')) {
             register_post_type( 'site-profile', $args );
         }
 
-        //function display_site_profile($_user_id=false) {
         function display_site_profile() {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -630,8 +628,6 @@ if (!class_exists('display_profiles')) {
 
         function display_site_user_dialog($user_id=false) {
             ob_start();
-            //$current_user_id = get_current_user_id();
-            //$site_id = get_user_meta($current_user_id, 'site_id', true);
             $user_data = get_userdata($user_id);
             $user_site = get_user_meta($user_id, 'site_id', true);
             $is_admin_checked = (is_site_admin($user_id)) ? 'checked' : '';
@@ -675,8 +671,6 @@ if (!class_exists('display_profiles')) {
                 </fieldset>
                 <?php }?>
                 <?php
-                //$current_user_id = get_current_user_id();
-                //$current_site_id = get_user_meta($current_user_id, 'site_id', true);
                 $current_site_id = get_user_meta($user_id, 'site_id', true);
                 if (current_user_can('administrator')) {
                     ?>
@@ -790,46 +784,7 @@ if (!class_exists('display_profiles')) {
             // Update 'site_admin_ids' meta value
             update_user_meta( $user_id, 'site_admin_ids', $site_admin_ids);
         }
-/*
-        function set_site_user_doc_data() {
-            $response = array('success' => false, 'error' => 'Invalid data format');
-            if (isset($_POST['_doc_id'])) {
-                $doc_id = sanitize_text_field($_POST['_doc_id']);
-                $user_id = sanitize_text_field($_POST['_user_id']);
-                $is_user_doc = sanitize_text_field($_POST['_is_user_doc']);
 
-                if (!isset($user_id)) $user_id = get_current_user_id();
-                $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
-                if (!is_array($user_doc_ids)) $user_doc_ids = array();
-                $doc_exists = in_array($doc_id, $user_doc_ids);
-
-                // Check the condition and update 'user_doc_ids' accordingly
-                if ($is_user_doc == 1 && !$doc_exists) {
-                    // Add $doc_id to 'user_doc_ids'
-                    $user_doc_ids[] = $doc_id;
-                } elseif ($is_user_doc != 1 && $doc_exists) {
-                    // Remove $doc_id from 'user_doc_ids'
-                    $user_doc_ids = array_diff($user_doc_ids, array($doc_id));
-                }        
-                // Update 'user_doc_ids' meta value
-                update_user_meta( $user_id, 'user_doc_ids', $user_doc_ids);
-                $response = array('success' => true);
-            }
-            wp_send_json($response);
-        }
-
-        function is_user_doc($doc_id=false, $user_id=false) {
-            // Get the current user ID
-            if (!$user_id) $user_id = get_current_user_id();    
-            if (is_site_admin($user_id)) return true;
-            // Get the user's doc IDs as an array
-            $user_doc_ids = get_user_meta($user_id, 'user_doc_ids', true);
-            // If $user_doc_ids is not an array, convert it to an array
-            if (!is_array($user_doc_ids)) $user_doc_ids = array();
-            // Check if the current user has the specified doc ID in their metadata
-            return in_array($doc_id, $user_doc_ids);
-        }
-*/
         function select_site_profile_options($selected_option=0) {
             $args = array(
                 'post_type'      => 'site-profile',

@@ -1714,7 +1714,7 @@ if (!class_exists('to_do_list')) {
                         <tr>
                             <th><?php echo __( 'Time', 'textdomain' );?></th>
                             <th><?php echo __( 'Action', 'textdomain' );?></th>
-                            <th><?php echo __( 'Log', 'textdomain' );?></th>
+                            <th><?php echo __( 'Description', 'textdomain' );?></th>
                             <th><?php echo __( 'Next', 'textdomain' );?></th>
                             <th><?php echo __( 'User', 'textdomain' );?></th>
                         </tr>

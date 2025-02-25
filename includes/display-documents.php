@@ -441,7 +441,7 @@ if (!class_exists('display_documents')) {
             </div>
 
             <fieldset>
-                <label for="doc-number"><?php echo __( 'Document No.', 'textdomain' );?></label>
+                <label for="doc-number"><?php echo __( 'Document Number', 'textdomain' );?></label>
                 <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="doc-title"><?php echo __( 'Document Title', 'textdomain' );?></label>
                 <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
