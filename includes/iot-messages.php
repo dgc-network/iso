@@ -30,7 +30,7 @@ if (!class_exists('iot_messages')) {
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
                 wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
-            add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
+            //add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
         }
 
         function enqueue_iot_message_scripts() {
