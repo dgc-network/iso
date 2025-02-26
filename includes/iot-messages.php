@@ -1126,6 +1126,8 @@ if (!class_exists('iot_messages')) {
         function iot_receive_data() {
             // Get the incoming JSON data
             $request_body = file_get_contents('php://input');
+            error_log("Raw Request Body: " . $request_body); // Log the raw request
+            
             $data = json_decode($request_body, true);
             error_log("Raw IoT Data: " . print_r($data, true));
 
