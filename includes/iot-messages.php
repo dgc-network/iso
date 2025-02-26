@@ -1127,7 +1127,8 @@ if (!class_exists('iot_messages')) {
             // Get the incoming JSON data
             $request_body = file_get_contents('php://input');
             $data = json_decode($request_body, true);
-        
+            error_log("Raw IoT Data: " . print_r($data, true));
+
             if (!$data) {
                 return new WP_REST_Response(['error' => 'Invalid data format'], 400);
             }

@@ -159,4 +159,4 @@ function log_rest_api_routes() {
     error_log(print_r(array_slice($routes, 0, 5, true), true));
 }
 // Run the function during the 'init' action to test
-add_action('init', 'log_rest_api_routes');
+//add_action('init', 'log_rest_api_routes');
