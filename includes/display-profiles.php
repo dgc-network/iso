@@ -866,6 +866,87 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
+        function retrieve_site_action_list_data($paged = 1, $doc_id = false, $is_nest = false) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+        
+            $args = array(
+                'post_type'      => 'action',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => array(
+                    'relation' => 'AND',
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+            );
+        
+            if ($paged == 0) {
+                $args['posts_per_page'] = -1;
+            }
+        
+            if ($doc_id) {
+                $args['posts_per_page'] = -1;
+                $args['meta_query'][] = array(
+                    'key'     => 'doc_id',
+                    'value'   => $doc_id,
+                );
+            }
+        
+            // 🔹 Full-text search
+            $search_query = isset($_GET['_action_search']) ? sanitize_text_field($_GET['_action_search']) : '';
+            if (!empty($search_query)) {
+                $args['s'] = $search_query;
+            }
+        
+            $query = new WP_Query($args);
+        
+            // 🔹 If no results found, search by metadata
+            if (!$query->have_posts() && !empty($search_query)) {
+                unset($args['s']); // Remove full-text search to avoid conflicts
+        
+                // 🔹 Search within meta keys of "action"
+                $meta_query_all_keys = array('relation' => 'OR');
+                $meta_keys = get_post_type_meta_keys('action');
+                foreach ($meta_keys as $meta_key) {
+                    $meta_query_all_keys[] = array(
+                        'key'     => $meta_key,
+                        'value'   => $search_query,
+                        'compare' => 'LIKE',
+                    );
+                }
+                $args['meta_query'][] = $meta_query_all_keys;
+                $query = new WP_Query($args);
+        
+                // 🔹 If still no results, search for documents and get actions linking to them
+                if (!$query->have_posts()) {
+                    $document_query = new WP_Query([
+                        'post_type'  => 'document',
+                        'fields'     => 'ids',
+                        's'          => $search_query,
+                    ]);
+                    $document_ids = $document_query->posts;
+        
+                    if (!empty($document_ids)) {
+                        $args['meta_query'][] = array(
+                            'key'     => 'doc_id',
+                            'value'   => $document_ids,
+                            'compare' => 'IN',
+                        );
+                        $query = new WP_Query($args);
+                    }
+                }
+            }
+        
+            if ($is_nest) {
+                $query = $this->find_more_query_posts($query);
+            }
+        
+            return $query;
+        }
+/*        
         function retrieve_site_action_list_data($paged=1, $doc_id=false, $is_nest=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -895,7 +976,7 @@ if (!class_exists('display_profiles')) {
 
             $search_query = isset($_GET['_action_search']) ? sanitize_text_field($_GET['_action_search']) : '';
             //if (isset($_GET['_action_search'])) {
-                $args['s'] = $search_query;            
+                $args['s'] = $search_query;
             //}
             $query = new WP_Query($args);
 
@@ -939,7 +1020,7 @@ if (!class_exists('display_profiles')) {
             if ($is_nest) $query = $this->find_more_query_posts($query);
             return $query;
         }
-
+*/
         function display_site_action_dialog($action_id=false) {
             ob_start();
             $items_class = new embedded_items();
