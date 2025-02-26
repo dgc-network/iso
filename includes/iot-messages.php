@@ -1009,7 +1009,7 @@ if (!class_exists('iot_messages')) {
                     ?>
                     </tbody>
                 </table>
-                <div id="new-exception-notification-setting" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                <div id="new-exception-notification-setting-<?php echo $device_id;?>" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <div id="exception-notification-setting-dialog" title="exception-notification-setting"></div>
             </fieldset>
             <?php
@@ -1057,8 +1057,11 @@ if (!class_exists('iot_messages')) {
             <fieldset>
                 <input type="hidden" id="setting-id" value="<?php echo esc_attr($setting_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
+                <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
+<?php /*                
                 <label for="device-id"><?php echo __( 'Device', 'textdomain' );?></label>
                 <select id="device-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iot_device_options($device_id);?></select>                
+*/?>
                 <label for="max-value"><?php echo __( 'Max.', 'textdomain' );?></label>
                 <input type="text" id="max-value" value="<?php echo esc_attr($max_value);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="min-value"><?php echo __( 'Min', 'textdomain' );?></label>

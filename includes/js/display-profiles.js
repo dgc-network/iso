@@ -207,13 +207,17 @@ jQuery(document).ready(function($) {
             $("#my-exception-notification-setting").toggle();
         });
         
-        $("#new-exception-notification-setting").on("click", function() {
+        $('[id^="new-exception-notification-setting-"]').on("click", function () {
+            const device_id = this.id.substring(35);
+
+        //$("#new-exception-notification-setting").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
                     'action': 'get_exception_notification_setting_dialog_data',
+                    _device_id: device_id,
                 },
                 success: function (response) {
                     $("#exception-notification-setting-dialog").html(response.html_contain);
@@ -225,7 +229,7 @@ jQuery(document).ready(function($) {
                                 dataType: "json",
                                 data: {
                                     'action': 'set_exception_notification_setting_dialog_data',
-                                    '_device_id': $("#device-id").val(),
+                                    '_device_id': device_id,
                                     '_max_value': $("#max-value").val(),
                                     '_min_value': $("#min-value").val(),
                                     _is_once_daily : $("#is-once-daily").is(":checked") ? 1 : 0,
