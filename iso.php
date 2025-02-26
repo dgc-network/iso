@@ -119,6 +119,23 @@ function remove_system_doc_meta_once() {
 add_action('init', 'remove_system_doc_meta_once');
 
 function set_language_based_on_browser() {
+    // Check if not in the admin area
+    if (!is_admin()) {
+        // Check if 'HTTP_ACCEPT_LANGUAGE' is set before accessing it
+        $browser_language = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en'; // Default to English if missing
+
+        // Supported language list
+        $supported_languages = ['en', 'fr', 'de', 'es', 'zh'];
+
+        // If detected language is supported, switch to it
+        if (in_array($browser_language, $supported_languages)) {
+            switch_to_locale($browser_language);
+        }
+    }
+}
+add_action('init', 'set_language_based_on_browser');
+/*
+function set_language_based_on_browser() {
     // Check if the user is logged in or not
     if (!is_admin()) {
         // Get the browser's language setting from the HTTP_ACCEPT_LANGUAGE header
@@ -135,3 +152,4 @@ function set_language_based_on_browser() {
     }
 }
 add_action('init', 'set_language_based_on_browser');
+*/
