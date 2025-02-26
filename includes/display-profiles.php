@@ -197,15 +197,8 @@ if (!class_exists('display_profiles')) {
                     '_employee' => get_current_user_id(),
                 );
                 $documents_class = new display_documents();
-                //$documents_class->get_transactions_by_key_value_pair($key_value_pair);
-                // exception notification setting
-                $iot_messages = new iot_messages();
-                $is_display = ($iot_messages->is_site_with_iot_device()) ? '' : 'display:none;';
+                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 ?>
-                <div style=<?php echo $is_display;?>>
-                    <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception Notification Settings', 'textdomain' );?></label>
-                    <div id="my-exception-notification-setting"><?php echo $iot_messages->display_exception_notification_setting_list();?></div>
-                </div>
             </fieldset>
             <button type="submit" id="my-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'textdomain' );?></button>
             <?php
@@ -957,81 +950,7 @@ if (!class_exists('display_profiles')) {
         
             return $query;
         }
-/*        
-        function retrieve_site_action_list_data($paged=1, $doc_id=false, $is_nest=false) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
 
-            $args = array(
-                'post_type'      => 'action',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                ),
-            );
-
-            if ($paged==0) $args['posts_per_page'] = -1;
-
-            if ($doc_id) {
-                $args['posts_per_page'] = -1;
-                $args['meta_query'][] = array(
-                    'key'     => 'doc_id',
-                    'value'   => $doc_id,
-                );
-            }
-
-            $search_query = isset($_GET['_action_search']) ? sanitize_text_field($_GET['_action_search']) : '';
-            //if (isset($_GET['_action_search'])) {
-                $args['s'] = $search_query;
-            //}
-            $query = new WP_Query($args);
-
-            // Check if $query is empty and search query is not empty
-            if (!$query->have_posts() && !empty($search_query)) {
-                // Remove the initial search query
-                unset($args['s']);
-                // Add meta query for searching across all meta keys
-                $meta_query_all_keys = array('relation' => 'OR');
-                $meta_keys = get_post_type_meta_keys('action');
-                foreach ($meta_keys as $meta_key) {
-                    $meta_query_all_keys[] = array(
-                        'key'     => $meta_key,
-                        'value'   => $search_query,
-                        'compare' => 'LIKE',
-                    );
-                }
-                $args['meta_query'][] = $meta_query_all_keys;
-                $query = new WP_Query($args);
-
-                if (!$query->have_posts() && !empty($search_query)) {
-                    // Retrieve document post IDs matching the search term
-                    $document_query = new WP_Query([
-                        'post_type'  => 'document',
-                        'fields'     => 'ids', // Get only IDs
-                        's'          => $search_query,
-                    ]);
-                    $document_ids = $document_query->posts; // Get IDs of matching documents
-                
-                    if (!empty($document_ids)) {
-                        $args['meta_query'][] = array(
-                            'key'     => 'doc_id',
-                            'value'   => $document_ids, // Find actions linking to these docs
-                            'compare' => 'IN',
-                        );
-                        $query = new WP_Query($args);
-                    }
-                }
-            }
-
-            if ($is_nest) $query = $this->find_more_query_posts($query);
-            return $query;
-        }
-*/
         function display_site_action_dialog($action_id=false) {
             ob_start();
             $items_class = new embedded_items();

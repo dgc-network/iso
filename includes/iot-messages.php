@@ -849,7 +849,16 @@ if (!class_exists('iot_messages')) {
                 );
                 $documents_class = new display_documents();
                 $documents_class->get_transactions_by_key_value_pair($key_value_pair);
+                
+                // exception notification setting
+                //$iot_messages = new iot_messages();
+                //$is_display = ($iot_messages->is_site_with_iot_device()) ? '' : 'display:none;';
                 ?>
+                <div style=<?php echo $is_display;?>>
+                    <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception Notification Settings', 'textdomain' );?></label>
+                    <div id="my-exception-notification-setting"><?php echo $this->display_exception_notification_setting_list();?></div>
+                </div>
+
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
