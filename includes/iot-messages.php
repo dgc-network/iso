@@ -28,7 +28,7 @@ if (!class_exists('iot_messages')) {
             add_action( 'wp_ajax_nopriv_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
 
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
-                wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
+                //wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
             //add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
             
@@ -1158,7 +1158,7 @@ if (!class_exists('iot_messages')) {
         
         // Register the REST API endpoint
         function register_iot_endpoint() {
-            register_rest_route('iot/v1', '/receive', [
+            register_rest_route('wp/v2', '/iot-message', [
                 'methods'  => 'POST',
                 'callback' => 'iot_receive_data',
                 'permission_callback' => '__return_true', // Adjust security as needed
