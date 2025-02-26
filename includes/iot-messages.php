@@ -1122,7 +1122,16 @@ if (!class_exists('iot_messages')) {
         }
 
         // iot-message
-        function iot_receive_data() {
+        function iot_receive_data(WP_REST_Request $request) {
+            $params = $request->get_json_params(); // Get JSON payload
+            $device_id = isset($params['deviceID']) ? $params['deviceID'] : 0;
+            $temperature = isset($params['temperature']) ? $params['temperature'] : 0;
+            $humidity = isset($params['humidity']) ? $params['humidity'] : '';
+        
+            if (empty($device_id) || empty($temperature) || empty($humidity)) {
+                return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);
+            }
+/*        
             // Get the incoming JSON data
             $request_body = file_get_contents('php://input');
             error_log("Raw Request Body: " . $request_body); // Log the raw request
@@ -1140,7 +1149,7 @@ if (!class_exists('iot_messages')) {
             $device_id = sanitize_text_field($data['deviceID']);
             $temperature = sanitize_text_field($data['temperature']);
             $humidity = sanitize_text_field($data['humidity']);
-        
+*/        
             // Store data in the WordPress database (without WP-Cron)
             //update_option("iot_device_{$device_id}_last_update", $sensor_value);
             update_option("iot_device_{$device_id}_temperature_last_update", $temperature);
@@ -1157,7 +1166,7 @@ if (!class_exists('iot_messages')) {
         
         // Register the REST API endpoint
         function register_iot_endpoint() {
-            register_rest_route('wp/v2', '/iot-message', [
+            register_rest_route('wp/v2', '/iot-message/', [
                 'methods'  => 'POST',
                 'callback' => 'iot_receive_data',
                 'permission_callback' => '__return_true', // Adjust security as needed
