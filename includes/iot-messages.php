@@ -1126,9 +1126,9 @@ if (!class_exists('iot_messages')) {
             $params = $request->get_json_params(); // Get JSON payload
             $device_id = isset($params['deviceID']) ? $params['deviceID'] : 0;
             $temperature = isset($params['temperature']) ? $params['temperature'] : 0;
-            $humidity = isset($params['humidity']) ? $params['humidity'] : '';
+            $humidity = isset($params['humidity']) ? $params['humidity'] : 0;
         
-            if (empty($device_id) || empty($temperature) || empty($humidity)) {
+            if (empty($device_id) || empty($temperature)) {
                 return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);
             }
 /*        
