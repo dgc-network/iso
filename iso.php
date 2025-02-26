@@ -134,22 +134,29 @@ function set_language_based_on_browser() {
     }
 }
 add_action('init', 'set_language_based_on_browser');
-/*
-function set_language_based_on_browser() {
-    // Check if the user is logged in or not
-    if (!is_admin()) {
-        // Get the browser's language setting from the HTTP_ACCEPT_LANGUAGE header
-        $browser_language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2); // Get the first two letters (language code)
 
-        // Check if the detected language is supported by WordPress
-        $supported_languages = ['en', 'fr', 'de', 'es', 'zh']; // Add the languages you support
-
-        // If the detected language is supported, set it as the site language
-        if (in_array($browser_language, $supported_languages)) {
-            // Set the language based on the browser setting
-            switch_to_locale($browser_language);
-        }
+function log_rest_api_routes() {
+    if (!function_exists('rest_get_server')) {
+        error_log('REST API server function does not exist.');
+        return;
     }
+
+    $server = rest_get_server();
+
+    if (!$server) {
+        error_log('REST API server is unavailable.');
+        return;
+    }
+
+    $routes = $server->get_routes();
+
+    if (empty($routes)) {
+        error_log('No REST API routes found.');
+        return;
+    }
+
+    // Log only the first 5 routes to prevent overload
+    error_log(print_r(array_slice($routes, 0, 5, true), true));
 }
-add_action('init', 'set_language_based_on_browser');
-*/
+// Run the function during the 'init' action to test
+add_action('init', 'log_rest_api_routes');

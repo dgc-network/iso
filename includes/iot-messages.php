@@ -774,11 +774,6 @@ if (!class_exists('iot_messages')) {
             $records_removed = get_post_meta($device_id, 'records_removed', true);
 
             //$device_id = 'sensor_1';
-            $routes = rest_get_server()->get_routes();
-            error_log(print_r(array_slice($routes, 0, 10), true));  // Only log 10 routes
-
-            //error_log('Registered API Endpoint: '.print_r(rest_get_server()->get_routes(), true));
-
             $sensor_value = get_option("iot_device_{$device_id}_temperature_last_update", 'No Data');
             echo "Latest Temperature Sensor Value: " . esc_html($sensor_value);
             
