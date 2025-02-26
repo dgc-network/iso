@@ -993,7 +993,7 @@ if (!class_exists('iot_messages')) {
                     </thead>
                     <tbody>
                     <?php
-                        $query = $this->retrieve_exception_notification_setting_data($device_id);
+                        $query = $this->retrieve_exception_notification_setting_data($device_id, $current_user_id);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 $setting_id = get_the_ID();
