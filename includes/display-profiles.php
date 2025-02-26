@@ -924,6 +924,7 @@ if (!class_exists('display_profiles')) {
                 if (!$query->have_posts()) {
                     $document_query = new WP_Query([
                         'post_type'  => 'document',
+                        'posts_per_page' => -1,
                         'fields'     => 'ids',
                         's'          => $search_query,
                     ]);
