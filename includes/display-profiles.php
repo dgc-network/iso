@@ -298,7 +298,7 @@ if (!class_exists('display_profiles')) {
                         get_the_title($doc_id),
                     );
                     ?>
-                    → <span class="authorized-status"><?php echo esc_html($authorized_status); ?></span>
+                    → <span class="authorized-status" style="color:blue;"><?php echo esc_html($authorized_status); ?></span>
                 </h4>                
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
@@ -890,14 +890,13 @@ if (!class_exists('display_profiles')) {
                 $args['meta_query'][] = array(
                     'key'     => 'doc_id',
                     'value'   => $doc_id,
-                    'compare' => '=',
                 );
             }
 
             $search_query = isset($_GET['_action_search']) ? sanitize_text_field($_GET['_action_search']) : '';
-            if (isset($_GET['_action_search'])) {
+            //if (isset($_GET['_action_search'])) {
                 $args['s'] = $search_query;            
-            }
+            //}
             $query = new WP_Query($args);
 
             // Check if $query is empty and search query is not empty
@@ -916,7 +915,27 @@ if (!class_exists('display_profiles')) {
                 }
                 $args['meta_query'][] = $meta_query_all_keys;
                 $query = new WP_Query($args);
+
+                if (!$query->have_posts() && !empty($search_query)) {
+                    // Retrieve document post IDs matching the search term
+                    $document_query = new WP_Query([
+                        'post_type'  => 'document',
+                        'fields'     => 'ids', // Get only IDs
+                        's'          => $search_query,
+                    ]);
+                    $document_ids = $document_query->posts; // Get IDs of matching documents
+                
+                    if (!empty($document_ids)) {
+                        $args['meta_query'][] = array(
+                            'key'     => 'doc_id',
+                            'value'   => $document_ids, // Find actions linking to these docs
+                            'compare' => 'IN',
+                        );
+                        $query = new WP_Query($args);
+                    }
+                }
             }
+
             if ($is_nest) $query = $this->find_more_query_posts($query);
             return $query;
         }
