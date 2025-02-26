@@ -30,7 +30,10 @@ if (!class_exists('iot_messages')) {
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
                 wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
-            add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
+            //add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
+            
+            add_action('rest_api_init', array( $this, 'register_iot_endpoint' ));
+
         }
 
         function enqueue_iot_message_scripts() {
@@ -769,6 +772,11 @@ if (!class_exists('iot_messages')) {
             $temperature_offset = get_post_meta($device_id, 'temperature_offset', true);
             $record_frequency = get_post_meta($device_id, 'record_frequency', true);
             $records_removed = get_post_meta($device_id, 'records_removed', true);
+
+            //$device_id = 'sensor_1';
+            $sensor_value = get_option("iot_device_{$device_id}_temperature_last_update", 'No Data');
+            echo "Latest Temperature Sensor Value: " . esc_html($sensor_value);
+            
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
@@ -1114,7 +1122,45 @@ if (!class_exists('iot_messages')) {
             wp_send_json($response);
         }
 
+        // iot-message
+        function iot_receive_data() {
+            // Get the incoming JSON data
+            $request_body = file_get_contents('php://input');
+            $data = json_decode($request_body, true);
         
+            if (!$data) {
+                return new WP_REST_Response(['error' => 'Invalid data format'], 400);
+            }
+        
+            // Sanitize and extract data
+            //$device_id = sanitize_text_field($data['device_id']);
+            //$sensor_value = sanitize_text_field($data['sensor_value']);
+            $device_id = sanitize_text_field($data['deviceID']);
+            $temperature = sanitize_text_field($data['temperature']);
+            $humidity = sanitize_text_field($data['humidity']);
+        
+            // Store data in the WordPress database (without WP-Cron)
+            //update_option("iot_device_{$device_id}_last_update", $sensor_value);
+            update_option("iot_device_{$device_id}_temperature_last_update", $temperature);
+            update_option("iot_device_{$device_id}_humidity_last_update", $humidity);
+
+            // ✅ Process Data Immediately (Example: Save to Log)
+            //error_log("IoT Update - Device: {$device_id}, Value: {$sensor_value}");
+            error_log("IoT Update - Device: {$device_id}, Value: {$temperature}");
+            error_log("IoT Update - Device: {$device_id}, Value: {$humidity}");
+        
+            // ✅ Send Response to IoT Device
+            return new WP_REST_Response(['status' => 'success', 'data' => $data], 200);
+        }
+        
+        // Register the REST API endpoint
+        function register_iot_endpoint() {
+            register_rest_route('iot/v1', '/receive', [
+                'methods'  => 'POST',
+                'callback' => 'iot_receive_data',
+                'permission_callback' => '__return_true', // Adjust security as needed
+            ]);
+        }
     }
     $iot_messages = new iot_messages();
 }
