@@ -420,7 +420,7 @@ add_filter('cron_schedules', function($schedules) {
     );
     return $schedules;
 });
-
+/*
 register_activation_hook(__FILE__, function() {
     if (!wp_next_scheduled('five_minutes_action_process_event')) {
         wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
@@ -430,7 +430,7 @@ register_activation_hook(__FILE__, function() {
 register_deactivation_hook(__FILE__, function() {
     wp_clear_scheduled_hook('five_minutes_action_process_event');
 });
-
+*/
 function remove_weekday_event() {
     $timestamp = wp_next_scheduled('my_weekday_event');
     if ($timestamp) {

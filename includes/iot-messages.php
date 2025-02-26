@@ -26,12 +26,12 @@ if (!class_exists('iot_messages')) {
             add_action( 'wp_ajax_nopriv_set_exception_notification_setting_dialog_data', array( $this, 'set_exception_notification_setting_dialog_data' ) );
             add_action( 'wp_ajax_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
-
+/*
             if (!wp_next_scheduled('five_minutes_action_process_event')) {
-                //wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
+                wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
             }
-            //add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
-            
+            add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
+*/            
             add_action('rest_api_init', array( $this, 'register_iot_endpoint' ));
 
         }
