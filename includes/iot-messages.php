@@ -312,7 +312,7 @@ if (!class_exists('iot_messages')) {
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
-            $query = $this->retrieve_exception_notification_setting_data($device_id, -1);
+            $query = $this->retrieve_exception_notification_setting_data($device_id);
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $setting_id = get_the_id();
@@ -854,9 +854,9 @@ if (!class_exists('iot_messages')) {
                 //$iot_messages = new iot_messages();
                 //$is_display = ($iot_messages->is_site_with_iot_device()) ? '' : 'display:none;';
                 ?>
-                <div style=<?php echo $is_display;?>>
+                <div>
                     <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception Notification Settings', 'textdomain' );?></label>
-                    <div id="my-exception-notification-setting"><?php echo $this->display_exception_notification_setting_list();?></div>
+                    <div id="my-exception-notification-setting"><?php echo $this->display_exception_notification_setting_list($device_id);?></div>
                 </div>
 
                 <hr>
@@ -980,7 +980,7 @@ if (!class_exists('iot_messages')) {
             register_post_type( 'notification', $args );
         }
 
-        function display_exception_notification_setting_list() {
+        function display_exception_notification_setting_list($device_id) {
             ob_start();
             $current_user_id = get_current_user_id();
             ?>
@@ -993,7 +993,7 @@ if (!class_exists('iot_messages')) {
                     </thead>
                     <tbody>
                     <?php
-                        $query = $this->retrieve_exception_notification_setting_data();
+                        $query = $this->retrieve_exception_notification_setting_data($device_id);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 $setting_id = get_the_ID();
@@ -1018,7 +1018,7 @@ if (!class_exists('iot_messages')) {
 
         function retrieve_exception_notification_setting_data($device_id = false, $employee_id = false) {
             
-            if (!$employee_id) $employee_id = get_current_user_id();
+            //if (!$employee_id) $employee_id = get_current_user_id();
             $args = array(
                 'post_type'      => 'notification',
                 'posts_per_page' => -1, // Retrieve all posts
@@ -1034,14 +1034,12 @@ if (!class_exists('iot_messages')) {
                 $args['meta_query'][] = array(
                     'key'     => '_device_id',
                     'value'   => $device_id,
-                    //'compare' => '='
                 );
             }
-            if ($employee_id!=-1) {
+            if ($employee_id) {
                 $args['meta_query'][] = array(
                     'key'     => '_employee_id',
                     'value'   => $employee_id,
-                    //'compare' => '='
                 );
             }
             $query = new WP_Query($args);
@@ -1100,14 +1098,16 @@ if (!class_exists('iot_messages')) {
             update_post_meta($setting_id, '_max_value', $max_value);
             update_post_meta($setting_id, '_min_value', $min_value);
             update_post_meta($setting_id, '_is_once_daily', $is_once_daily);
-            $response['html_contain'] = $this->display_exception_notification_setting_list();
+            $response['html_contain'] = $this->display_exception_notification_setting_list($device_id);
             wp_send_json($response);
         }
 
         function del_exception_notification_setting_dialog_data() {
             $response = array();
-            wp_delete_post($_POST['_setting_id'], true);
-            $response['html_contain'] = $this->display_exception_notification_setting_list();
+            $setting_id = isset($_POST['_setting_id']) ? sanitize_text_field($_POST['_setting_id']) : 0;
+            $device_id = isset($_POST['_device_id']) ? sanitize_text_field($_POST['_device_id']) : 0;
+            wp_delete_post($setting_id);
+            $response['html_contain'] = $this->display_exception_notification_setting_list($device_id);
             wp_send_json($response);
         }
 
