@@ -931,10 +931,18 @@ if (!class_exists('display_profiles')) {
                     error_log('Document IDs: ' . print_r($document_ids, true));
 
                     if (!empty($document_ids)) {
-                        $args['meta_query'][] = array(
-                            'key'     => 'doc_id',
-                            'value'   => $document_ids,
-                            'compare' => 'IN',
+                        // 🔹 REDEFINE META QUERY ONLY FOR DOCUMENT SEARCH
+                        $args['meta_query'] = array(
+                            'relation' => 'AND',
+                            array(
+                                'key'   => 'site_id',
+                                'value' => $site_id,
+                            ),
+                            array(
+                                'key'     => 'doc_id',
+                                'value'   => $document_ids,
+                                'compare' => 'IN',
+                            ),
                         );
                         error_log('Args: ' . print_r($args, true));
                         $query = new WP_Query($args);
