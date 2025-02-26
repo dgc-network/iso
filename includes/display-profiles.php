@@ -928,13 +928,15 @@ if (!class_exists('display_profiles')) {
                         's'          => $search_query,
                     ]);
                     $document_ids = $document_query->posts;
-        
+                    error_log('Document IDs: ' . print_r($document_ids, true));
+
                     if (!empty($document_ids)) {
                         $args['meta_query'][] = array(
                             'key'     => 'doc_id',
                             'value'   => $document_ids,
                             'compare' => 'IN',
                         );
+                        error_log('Args: ' . print_r($args, true));
                         $query = new WP_Query($args);
                     }
                 }
