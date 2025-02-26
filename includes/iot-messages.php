@@ -9,9 +9,9 @@ if (!class_exists('iot_messages')) {
         public function __construct() {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_iot_message_scripts' ) );
             add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
-            add_action( 'init', array( $this, 'register_iot_message_meta' ) );
-            add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
-            add_action('wp_head', array($this, 'add_mermaid_custom_styles'));
+            add_action( 'wp_head', array($this, 'add_mermaid_custom_styles'));
+            //add_action( 'init', array( $this, 'register_iot_message_meta' ) );
+            //add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
 
             add_action( 'wp_ajax_get_iot_device_dialog_data', array( $this, 'get_iot_device_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iot_device_dialog_data', array( $this, 'get_iot_device_dialog_data' ) );
@@ -105,7 +105,6 @@ if (!class_exists('iot_messages')) {
                     array(
                         'key'   => 'device_number', // Meta key
                         'value' => $device_number,  // Meta value to match
-                        //'compare' => '=',           // Comparison operator
                     ),
                 ),
                 'posts_per_page' => 1, // Limit to one result
