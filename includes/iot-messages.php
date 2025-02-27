@@ -477,7 +477,6 @@ if (!class_exists('iot_messages')) {
                     array(
                         'key'     => 'deviceID',
                         'value'   => $device_number,
-                        //'compare' => '=',
                     ),
                 ),
             );
