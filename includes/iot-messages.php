@@ -10,8 +10,8 @@ if (!class_exists('iot_messages')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_iot_message_scripts' ) );
             add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
             add_action( 'wp_head', array($this, 'add_mermaid_custom_styles'));
-            //add_action( 'init', array( $this, 'register_iot_message_meta' ) );
-            //add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
+            add_action( 'init', array( $this, 'register_iot_message_meta' ) );
+            add_action( 'init', array( $this, 'register_iot_message_post_type' ) );
 
             add_action( 'wp_ajax_get_iot_device_dialog_data', array( $this, 'get_iot_device_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_iot_device_dialog_data', array( $this, 'get_iot_device_dialog_data' ) );
@@ -1148,9 +1148,9 @@ if (!class_exists('iot_messages')) {
         
         // ✅ Register the REST API endpoint
         function register_iot_endpoint() {
-            register_rest_route('wp/v2', '/iot-message/', [
+            //register_rest_route('wp/v2', '/iot-message/', [
 
-            //register_rest_route('iot/v1', '/message/', [
+            register_rest_route('iot/v1', '/message/', [
                 'methods'  => 'POST',
                 'callback' => 'iot_receive_data',
                 'permission_callback' => '__return_true', // Adjust security as needed
