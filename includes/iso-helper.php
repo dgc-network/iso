@@ -690,7 +690,7 @@ function iot_receive_data(WP_REST_Request $request) {
     $post_id = wp_insert_post($new_post);
     update_post_meta($post_id, 'deviceID', $device_number);
     update_post_meta($post_id, 'temperature', $temperature);
-    update_post_meta($post_id, 'humidit', $humidit);
+    update_post_meta($post_id, 'humidity', $humidity);
 
     $iot_messages = new iot_messages();
     $device_id = $iot_messages->get_iot_device_id_by_device_number($device_number);

@@ -773,7 +773,7 @@ if (!class_exists('iot_messages')) {
 
             //$device_id = 'sensor_1';
             $sensor_value = get_option("iot_device_{$device_number}_temperature_last_update", 'No Data');
-            echo "Latest Temperature Sensor Value: " . esc_html($sensor_value);
+            //echo "Latest Temperature Sensor Value: " . esc_html($sensor_value);
             
             ?>
             <div class="ui-widget" id="result-container">
