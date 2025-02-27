@@ -758,6 +758,19 @@ function iot_receive_data(WP_REST_Request $request) {
         ]
     ]);
 
+    $iot_messages = new iot_messages();
+    $device_id = $iot_messages->get_iot_device_id_by_device_number($device_number);
+    if ($device_id) {
+        if ($temperature) {
+            $iot_messages->process_exception_notification($device_id, 'temperature', $temperature);
+        }
+        if ($humidity) {
+            $iot_messages->process_exception_notification($device_id, 'humidity', $humidity);
+        }
+    } else {
+        error_log("Device ID not found for Device Number: $device_number");
+    }
+
     if (is_wp_error($post_id)) {
         return new WP_REST_Response(['error' => 'Failed to save IoT message'], 500);
     }
