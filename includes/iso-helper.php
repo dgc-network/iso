@@ -671,7 +671,8 @@ function report_summary_api_post_data(WP_REST_Request $request) {
 function iot_receive_data(WP_REST_Request $request) {
     // Get JSON payload
     $params = $request->get_json_params(); 
-    
+    error_log("Raw IoT Data: " . print_r($params, true));
+
     $device_id   = isset($params['deviceID']) ? sanitize_text_field($params['deviceID']) : '';
     $temperature = isset($params['temperature']) ? floatval($params['temperature']) : 0;
     $humidity    = isset($params['humidity']) ? floatval($params['humidity']) : 0;
