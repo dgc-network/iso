@@ -695,9 +695,9 @@ function iot_receive_data(WP_REST_Request $request) {
 
 // ✅ Register the REST API endpoint
 function register_iot_endpoint() {
-    //register_rest_route('wp/v2', '/iot-message/', [
+    register_rest_route('wp/v2', '/iot-message/', [
 
-    register_rest_route('iot/v1', '/message/', [
+    //register_rest_route('iot/v1', '/message/', [
         'methods'  => 'POST',
         'callback' => 'iot_receive_data',
         'permission_callback' => '__return_true', // Adjust security as needed
