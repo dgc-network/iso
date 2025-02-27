@@ -772,7 +772,7 @@ if (!class_exists('iot_messages')) {
             $records_removed = get_post_meta($device_id, 'records_removed', true);
 
             //$device_id = 'sensor_1';
-            $sensor_value = get_option("iot_device_{$device_id}_temperature_last_update", 'No Data');
+            $sensor_value = get_option("iot_device_{$device_number}_temperature_last_update", 'No Data');
             echo "Latest Temperature Sensor Value: " . esc_html($sensor_value);
             
             ?>
