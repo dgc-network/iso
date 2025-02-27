@@ -673,7 +673,7 @@ function iot_receive_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); 
     error_log("Raw IoT Data: " . print_r($params, true));
 
-    $device_id   = isset($params['deviceID']) ? sanitize_text_field($params['deviceID']) : '';
+    $device_number = isset($params['deviceID']) ? sanitize_text_field($params['deviceID']) : '';
     $temperature = isset($params['temperature']) ? floatval($params['temperature']) : 0;
     $humidity    = isset($params['humidity']) ? floatval($params['humidity']) : 0;
 
@@ -682,12 +682,25 @@ function iot_receive_data(WP_REST_Request $request) {
         return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);
     }
 
+    $iot_messages = new iot_messages();
+    $device_id = $iot_messages->get_iot_device_id_by_device_number($device_number);
+    if ($device_id) {
+        if ($temperature) {
+            $iot_messages->process_exception_notification($device_id, 'temperature', $temperature);
+        }
+        if ($humidity) {
+            $iot_messages->process_exception_notification($device_id, 'humidity', $humidity);
+        }
+    } else {
+        error_log("Device ID not found for Device Number: $device_number");
+    }
+
     // Store data in WordPress database
-    update_option("iot_device_{$device_id}_temperature_last_update", $temperature);
-    update_option("iot_device_{$device_id}_humidity_last_update", $humidity);
+    update_option("iot_device_{$device_number}_temperature_last_update", $temperature);
+    update_option("iot_device_{$device_number}_humidity_last_update", $humidity);
 
     // ✅ Log Received Data
-    error_log("IoT Update - Device: {$device_id}, Temperature: {$temperature}, Humidity: {$humidity}");
+    error_log("IoT Update - Device: {$device_number}, Temperature: {$temperature}, Humidity: {$humidity}");
 
     // ✅ Send Response to IoT Device
     return new WP_REST_Response(['status' => 'success', 'data' => $params], 200);
