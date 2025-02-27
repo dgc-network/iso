@@ -668,6 +668,7 @@ function report_summary_api_post_data(WP_REST_Request $request) {
 }
 
 // iot-message
+/*
 function iot_receive_data(WP_REST_Request $request) {
     // Get JSON payload
     $params = $request->get_json_params(); 
@@ -715,7 +716,7 @@ function iot_receive_data(WP_REST_Request $request) {
     // ✅ Send Response to IoT Device
     return new WP_REST_Response(['status' => 'success', 'data' => $params], 200);
 }
-
+*/
 // ✅ Register the REST API endpoint
 function register_iot_endpoint() {
     register_rest_route('wp/v2', '/iot-message/', [
@@ -728,3 +729,40 @@ function register_iot_endpoint() {
 }
 add_action('rest_api_init', 'register_iot_endpoint');
 
+function iot_receive_data(WP_REST_Request $request) {
+    $params = $request->get_json_params(); // Get JSON payload
+
+    // Extract main fields
+    $title = isset($params['title']) ? sanitize_text_field($params['title']) : '';
+    $status = isset($params['status']) ? sanitize_text_field($params['status']) : 'publish';
+    
+    // Extract meta fields
+    $meta = isset($params['meta']) ? $params['meta'] : [];
+    $device_number = isset($meta['deviceID']) ? sanitize_text_field($meta['deviceID']) : '';
+    $temperature = isset($meta['temperature']) ? floatval($meta['temperature']) : null;
+    $humidity = isset($meta['humidity']) ? floatval($meta['humidity']) : null;
+
+    if (empty($device_number)) {
+        return new WP_REST_Response(['error' => 'Invalid or missing deviceID'], 400);
+    }
+
+    // ✅ Insert a new IoT Message post
+    $post_id = wp_insert_post([
+        'post_title'   => $title,
+        'post_status'  => $status,
+        'post_type'    => 'iot-message',
+        'meta_input'   => [
+            'deviceID'   => $device_number,
+            'temperature' => $temperature,
+            'humidity'    => $humidity
+        ]
+    ]);
+
+    if (is_wp_error($post_id)) {
+        return new WP_REST_Response(['error' => 'Failed to save IoT message'], 500);
+    }
+
+    error_log("IoT Message Received - Device: $device_number, Temp: $temperature, Humidity: $humidity");
+
+    return new WP_REST_Response(['status' => 'success', 'post_id' => $post_id], 200);
+}
