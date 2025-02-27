@@ -678,7 +678,7 @@ function iot_receive_data(WP_REST_Request $request) {
     $humidity    = isset($params['humidity']) ? floatval($params['humidity']) : 0;
 
     // Validate required fields
-    if (empty($device_id) || $temperature === 0) {
+    if (empty($device_number) || $temperature === 0) {
         return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);
     }
 
