@@ -1338,7 +1338,6 @@ if (!class_exists('display_documents')) {
                             array(
                                 'key'   => 'field_type',
                                 'value' => $key,
-                                //'compare' => '='
                             )
                         ),
                         'fields' => 'ids' // Only return post IDs
@@ -1350,9 +1349,8 @@ if (!class_exists('display_documents')) {
                     if ($query->have_posts()) {
                         foreach ($query->posts as $field_id) {
                             $doc_id = get_post_meta($field_id, 'doc_id', true);
-                            $doc_site = get_post_meta($doc_id, 'site_id', true);
-                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_title = get_the_title($doc_id);
+                            $doc_site = get_post_meta($doc_id, 'site_id', true);
                             // Ensure the doc ID is unique
                             if (!isset($doc_ids[$doc_id]) && $doc_site == $site_id) {                                
                                 $doc_ids[$doc_id] = $doc_title; // Use doc_id as key to ensure uniqueness
@@ -1362,7 +1360,7 @@ if (!class_exists('display_documents')) {
                                 );
                                 $doc_report = $this->retrieve_doc_report_data($params);
                                 if ($doc_report->have_posts()) {
-                                    echo $doc_title. ':';
+                                    echo $doc_title;
                                     echo '<fieldset>';
                                     $this->get_doc_report_native_list($params);
                                     echo '</fieldset>';    

@@ -532,19 +532,19 @@ function send_message_api_post_data(WP_REST_Request $request) {
     ], 200);
 }
 
-// Register the release-document API endpoint
-function release_document_register_post_api() {
-    register_rest_route('api/v1', '/release-document/', [
+// Register the document-released API endpoint
+function document_released_register_post_api() {
+    register_rest_route('api/v1', '/document-released/', [
         'methods'  => 'POST',
-        'callback' => 'release_document_api_post_data',
+        'callback' => 'document_released_api_post_data',
         'permission_callback' => function ($request) {
             return is_user_logged_in() || jwt_auth_check_token($request);
         }
     ]);
 }
-add_action('rest_api_init', 'release_document_register_post_api');
+add_action('rest_api_init', 'document_released_register_post_api');
 
-function release_document_api_post_data(WP_REST_Request $request) {
+function document_released_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
     $todo_id = sanitize_text_field($params['new_todo_id']);
     $user_id = sanitize_text_field($params['user_id']);
@@ -569,19 +569,19 @@ function release_document_api_post_data(WP_REST_Request $request) {
     ], 200);
 }
 
-// Register the remove-document API endpoint
-function remove_document_register_post_api() {
-    register_rest_route('api/v1', '/remove-document/', [
+// Register the document-removed API endpoint
+function document_removed_register_post_api() {
+    register_rest_route('api/v1', '/document-removed/', [
         'methods'  => 'POST',
-        'callback' => 'remove_document_api_post_data',
+        'callback' => 'document_removed_api_post_data',
         'permission_callback' => function ($request) {
             return is_user_logged_in() || jwt_auth_check_token($request);
         }
     ]);
 }
-add_action('rest_api_init', 'remove_document_register_post_api');
+add_action('rest_api_init', 'document_removed_register_post_api');
 
-function remove_document_api_post_data(WP_REST_Request $request) {
+function document_removed_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
     $todo_id = sanitize_text_field($params['new_todo_id']);
     $user_id = sanitize_text_field($params['user_id']);
@@ -667,61 +667,14 @@ function report_summary_api_post_data(WP_REST_Request $request) {
     ], 200);
 }
 
-// iot-message
-/*
-function iot_receive_data(WP_REST_Request $request) {
-    // Get JSON payload
-    $params = $request->get_json_params(); 
-    error_log("Raw IoT Data: " . print_r($params, true));
-
-    $device_number = isset($params['deviceID']) ? sanitize_text_field($params['deviceID']) : '';
-    $temperature = isset($params['temperature']) ? floatval($params['temperature']) : 0;
-    $humidity    = isset($params['humidity']) ? floatval($params['humidity']) : 0;
-
-    // Validate required fields
-    if (empty($device_number) || $temperature === 0) {
-        return new WP_REST_Response(['error' => 'Invalid or missing body contents'], 400);
-    }
-
-    $new_post = array(
-        'post_type'     => 'iot-message',
-        'post_status'   => 'publish',
-        'post_author'   => 1,
-    );    
-    $post_id = wp_insert_post($new_post);
-    update_post_meta($post_id, 'deviceID', $device_number);
-    update_post_meta($post_id, 'temperature', $temperature);
-    update_post_meta($post_id, 'humidity', $humidity);
-
-    $iot_messages = new iot_messages();
-    $device_id = $iot_messages->get_iot_device_id_by_device_number($device_number);
-    if ($device_id) {
-        if ($temperature) {
-            $iot_messages->process_exception_notification($device_id, 'temperature', $temperature);
-        }
-        if ($humidity) {
-            $iot_messages->process_exception_notification($device_id, 'humidity', $humidity);
-        }
-    } else {
-        error_log("Device ID not found for Device Number: $device_number");
-    }
-
-    // Store data in WordPress database
-    update_option("iot_device_{$device_number}_temperature_last_update", $temperature);
-    update_option("iot_device_{$device_number}_humidity_last_update", $humidity);
-
-    // ✅ Log Received Data
-    error_log("IoT Update - Device: {$device_number}, Temperature: {$temperature}, Humidity: {$humidity}");
-
-    // ✅ Send Response to IoT Device
-    return new WP_REST_Response(['status' => 'success', 'data' => $params], 200);
-}
-*/
 // ✅ Register the REST API endpoint
 function register_iot_endpoint() {
+    register_rest_route('api/v1', '/iot-message/', [
+        'methods'  => 'POST',
+        'callback' => 'iot_receive_data',
+        'permission_callback' => '__return_true', // Adjust security as needed
+    ]);
     register_rest_route('wp/v2', '/iot-message/', [
-
-    //register_rest_route('iot/v1', '/message/', [
         'methods'  => 'POST',
         'callback' => 'iot_receive_data',
         'permission_callback' => '__return_true', // Adjust security as needed

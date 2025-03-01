@@ -226,8 +226,8 @@ if (!class_exists('display_profiles')) {
             <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
+                        <th><?php echo __( 'Document', 'textdomain' );?></th>
                         <th><?php echo __( 'Action', 'textdomain' );?></th>
-                        <th><?php echo __( 'Description', 'textdomain' );?></th>
                         <th><?php echo __( 'Next', 'textdomain' );?></th>
                         <th><?php echo __( 'Authorized', 'textdomain' );?></th>
                     </thead>
@@ -247,8 +247,8 @@ if (!class_exists('display_profiles')) {
                             if ($action_site == $site_id) {
                                 ?>
                                 <tr id="edit-my-action-<?php echo $action_id; ?>">
-                                    <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
                                     <td><?php echo $doc_title;?></td>
+                                    <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
                                     <td><?php echo get_the_title($next_job);?></td>
                                     <td style="text-align:center;"><input type="radio" <?php echo $is_action_authorized;?> /></td>
                                 </tr>
@@ -802,8 +802,8 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
+                        <th><?php echo __( 'Document', 'textdomain' );?></th>
                         <th><?php echo __( 'Action', 'textdomain' );?></th>
-                        <th><?php echo __( 'Description', 'textdomain' );?></th>
                         <th><?php echo __( 'Connector', 'textdomain' );?></th>
                         <th><?php echo __( 'Next', 'textdomain' );?></th>
                     </thead>
@@ -828,8 +828,8 @@ if (!class_exists('display_profiles')) {
                             if ($doc_number) $doc_title .= '('.$doc_number.')';
                             ?>
                             <tr id="edit-site-action-<?php echo $action_id;?>">
-                                <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
                                 <td><?php echo $doc_title;?></td>
+                                <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
                                 <td><?php echo get_the_title($next_job);?></td>
                             </tr>

@@ -606,7 +606,7 @@ if (!class_exists('to_do_list')) {
                     <thead>
                         <tr>
                             <th><?php echo __( 'No.', 'textdomain' );?></th>
-                            <th><?php echo __( 'Title', 'textdomain' );?></th>
+                            <th><?php echo __( 'Document', 'textdomain' );?></th>
                             <th><?php echo __( 'Action', 'textdomain' );?></th>
                         </tr>
                     </thead>
@@ -1713,8 +1713,8 @@ if (!class_exists('to_do_list')) {
                     <thead>
                         <tr>
                             <th><?php echo __( 'Time', 'textdomain' );?></th>
+                            <th><?php echo __( 'Document', 'textdomain' );?></th>
                             <th><?php echo __( 'Action', 'textdomain' );?></th>
-                            <th><?php echo __( 'Description', 'textdomain' );?></th>
                             <th><?php echo __( 'Next', 'textdomain' );?></th>
                             <th><?php echo __( 'User', 'textdomain' );?></th>
                         </tr>
@@ -1756,8 +1756,8 @@ if (!class_exists('to_do_list')) {
                             ?>
                             <tr id="edit-action-log<?php esc_attr(the_ID()); ?>">
                                 <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                                 <td><?php echo esc_html($log_title);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
                             </tr>
