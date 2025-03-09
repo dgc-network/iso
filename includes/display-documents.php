@@ -2608,6 +2608,48 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
+
+        function update_document_revision($post_id) {
+            if (get_post_type($post_id) !== 'document') {
+                return;
+            }
+        
+            // Get the current revision
+            $current_revision = get_post_meta($post_id, 'doc_revision', true);
+        
+            // Define revision update rules
+            $revision_rules = [
+                'draft' => '1.0',
+                '1.0'   => '1.1',
+                '1.1'   => '1.2',
+                '2.0'   => '2.1',
+                'A'     => 'B'
+            ];
+        
+            // Update revision based on rules
+            if (isset($revision_rules[$current_revision])) {
+                $new_revision = $revision_rules[$current_revision];
+            } elseif (is_numeric($current_revision)) {
+                // Handle other numerical versions (e.g., 3.0 → 3.1)
+                $new_revision = number_format((float) $current_revision + 0.1, 1);
+            } elseif (ctype_alpha($current_revision) && strlen($current_revision) === 1) {
+                // Handle letter versions (e.g., C → D)
+                $new_revision = chr(ord($current_revision) + 1);
+            } else {
+                // Default case: do not update
+                return;
+            }
+        
+            // Update the post meta with the new revision
+            update_post_meta($post_id, 'doc_revision', $new_revision);
+        
+            // Log the update
+            error_log("Updated doc_revision for post {$post_id}: {$current_revision} → {$new_revision}");
+        }
+        
+        // Hook to trigger when a document post is updated
+        //add_action('save_post_document', 'update_document_revision');
+        
     }
     $documents_class = new display_documents();
 }

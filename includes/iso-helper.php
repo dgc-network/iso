@@ -656,6 +656,9 @@ function document_released_api_post_data(WP_REST_Request $request) {
     update_post_meta($todo_id, 'submit_action', $action_id);
     update_post_meta($todo_id, 'submit_time', time());
     if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
+    if ($report_id) $doc_id = get_post_meta($report_id, '_document', true);
+    $documents_class = new display_documents();
+    $documents_class->update_document_revision($doc_id);
 
     // Notice the persons in site
     //$this->notice_the_persons_in_site($new_todo_id, $next_job);
@@ -693,6 +696,8 @@ function document_removed_api_post_data(WP_REST_Request $request) {
     update_post_meta($todo_id, 'submit_action', $action_id);
     update_post_meta($todo_id, 'submit_time', time());
     if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
+    if ($report_id) $doc_id = get_post_meta($report_id, '_document', true);
+    update_post_meta($doc_id, 'doc_revision', 'draft');
 
     // Notice the persons in site
     //$this->notice_the_persons_in_site($new_todo_id, $next_job);
