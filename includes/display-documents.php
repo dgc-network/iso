@@ -1181,7 +1181,6 @@ if (!class_exists('display_documents')) {
             $prev_report_id = $this->get_previous_report_id($report_id); // Fetch the previous ID
             $next_report_id = $this->get_next_report_id($report_id);     // Fetch the next ID
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $todo_status = get_post_meta($report_id, 'todo_status', true);
@@ -1239,12 +1238,10 @@ if (!class_exists('display_documents')) {
                         wp_reset_postdata();
                     }
                     ?>
-                    </div>
-                    <div style="text-align:right; display:flex;">
-                    <?php //if ($profiles_class->is_user_doc($doc_id)) {?>
                         <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'textdomain' );?>" style="margin:3px;" />
                         <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'textdomain' );?>" style="margin:3px;" />
-                    <?php //}?>                    
+                    </div>
+                    <div style="text-align:right; display:flex;">
                         <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:3px;" />
                     </div>
                     </div>
