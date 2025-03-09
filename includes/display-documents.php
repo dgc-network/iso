@@ -882,8 +882,6 @@ if (!class_exists('display_documents')) {
                             //if (current_user_can('administrator')) {
                                 $next_job = get_post_meta($report_id, 'todo_status', true);
                                 $todo_status = ($next_job) ? get_the_title($next_job) : 'Draft';
-                                //$todo_status = ($next_job==-1) ? __( 'Released', 'textdomain' ) : $todo_status;
-                                //$todo_status = ($next_job==-2) ? __( 'Removed', 'textdomain' ) : $todo_status;
                                 echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                             //}
                             echo '</tr>';
