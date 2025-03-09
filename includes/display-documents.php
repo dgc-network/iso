@@ -894,6 +894,112 @@ if (!class_exists('display_documents')) {
         }
 
         function retrieve_doc_report_data($params) {
+            $meta_query = array('relation' => 'AND');
+        
+            $doc_id = !empty($params['doc_id']) ? $params['doc_id'] : null;
+            $paged = !empty($params['paged']) ? $params['paged'] : 1;
+        
+            // Filter by `doc_id` if provided
+            if ($doc_id) {
+                $meta_query[] = array(
+                    'key'   => 'doc_id',
+                    'value' => $doc_id,
+                );
+            }
+        
+            // Handle key-value pair conditions
+            if (!empty($params['key_value_pair'])) {
+                $meta_query[] = array(
+                    'relation' => 'OR',
+                    array(
+                        'key'     => 'todo_status',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                    array(
+                        'key'     => 'todo_status',
+                        'value'   => '0',
+                        'compare' => '!=',
+                    ),
+                );
+            }
+        
+            $args = array(
+                'post_type'      => 'doc-report',
+                'posts_per_page' => get_option('operation_row_counts'),
+                'paged'          => $paged,
+                'meta_query'     => $meta_query,
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+            );
+        
+            // Handle `todo_in_summary`
+            if (!empty($params['todo_in_summary'])) {
+                $report_ids = array_filter(array_map(function ($todo_id) {
+                    return get_post_meta($todo_id, 'prev_report_id', true);
+                }, $params['todo_in_summary']));
+        
+                if (!empty($report_ids)) {
+                    $args['post__in'] = $report_ids;
+                }
+            }
+        
+            // Process additional conditions dynamically from doc fields
+            if ($doc_id) {
+                $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
+        
+                if ($inner_query->have_posts()) {
+                    $meta_filter = array('relation' => 'AND');
+                    $search_filter = array('relation' => 'OR');
+        
+                    while ($inner_query->have_posts()) {
+                        $inner_query->the_post();
+                        $field_id = get_the_ID();
+                        $field_type = get_post_meta($field_id, 'field_type', true);
+        
+                        if (!empty($params['key_value_pair']) && isset($params['key_value_pair'][$field_type])) {
+                            $value = $params['key_value_pair'][$field_type];
+        
+                            if ($field_type == '_employees' && is_array($value)) {
+                                foreach ($value as $val) {
+                                    $meta_filter[] = array(
+                                        'key'     => $field_id,
+                                        'value'   => sprintf(':"%s";', (string)$val),
+                                        'compare' => 'LIKE',
+                                    );
+                                }
+                            } else {
+                                $meta_filter[] = array(
+                                    'key'   => $field_id,
+                                    'value' => (string)$value,
+                                );
+                            }
+                        }
+        
+                        if (isset($_GET['_search'])) {
+                            $search_doc_report = sanitize_text_field($_GET['_search']);
+                            $search_filter[] = array(
+                                'key'     => $field_id,
+                                'value'   => $search_doc_report,
+                                'compare' => 'LIKE',
+                            );
+                        }
+                    }
+        
+                    if (!empty($meta_filter)) {
+                        $args['meta_query'][] = $meta_filter;
+                    }
+                    if (!empty($search_filter)) {
+                        $args['meta_query'][] = $search_filter;
+                    }
+        
+                    wp_reset_postdata();
+                }
+            }
+        
+            return new WP_Query($args);
+        }
+/*        
+        function retrieve_doc_report_data($params) {
             // Construct the meta query array
             $meta_query = array(
                 'relation' => 'AND',
@@ -1005,7 +1111,7 @@ if (!class_exists('display_documents')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         function get_previous_report_id($current_report_id) {
             $doc_id = get_post_meta($current_report_id, 'doc_id', true);
         
