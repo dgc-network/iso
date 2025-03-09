@@ -117,7 +117,7 @@ if (!class_exists('iot_messages')) {
             // Return the ID if a matching post is found, otherwise return null
             return !empty($query->posts) ? $query->posts[0] : null;
         }
-
+/*
         function update_iot_message_meta_data() {
             error_log("update_iot_message_meta_data: Start execution");
 
@@ -172,7 +172,11 @@ if (!class_exists('iot_messages')) {
             } else {
                 error_log("No unprocessed IoT messages found.");
             }
-        
+        }
+*/
+        function remove_iot_message_meta_data() {
+            error_log("remove_iot_message_meta_data: Start execution");
+
             // Step 2: Retention logic for IoT messages
             $record_intervals = array(
                 'daily'       => DAY_IN_SECONDS,
@@ -312,6 +316,8 @@ if (!class_exists('iot_messages')) {
         }        
 
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
+            $this->remove_iot_message_meta_data();
+            
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
             $query = $this->retrieve_exception_notification_setting_data($device_id);
