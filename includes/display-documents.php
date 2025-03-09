@@ -689,7 +689,6 @@ if (!class_exists('display_documents')) {
             ob_start();
             $profiles_class = new display_profiles();
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
@@ -725,9 +724,9 @@ if (!class_exists('display_documents')) {
 
             <fieldset>
                 <?php
-                $params = array(
-                    'doc_id'     => $doc_id,
-                );
+                //$params = array(
+                //    'doc_id'     => $doc_id,
+                //);
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $params['paged'] = $paged;
                 $query = $this->retrieve_doc_report_data($params);
@@ -934,14 +933,7 @@ if (!class_exists('display_documents')) {
                     ),
                 );
             }
-/*            
-            if (!empty($params['key_value_pair'])) {
-                $meta_query[] = array(
-                    'key'   => 'todo_status',
-                    'value' => -1,
-                );
-            }
-*/
+
             $args = array(
                 'post_type'      => 'doc-report',
                 'posts_per_page' => get_option('operation_row_counts'),
