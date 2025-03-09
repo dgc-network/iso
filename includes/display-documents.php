@@ -892,7 +892,7 @@ if (!class_exists('display_documents')) {
             </table>
             <?php
         }
-
+/*
         function retrieve_doc_report_data($params) {
             $meta_query = array('relation' => 'AND');
         
@@ -998,7 +998,7 @@ if (!class_exists('display_documents')) {
         
             return new WP_Query($args);
         }
-/*        
+*/
         function retrieve_doc_report_data($params) {
             // Construct the meta query array
             $meta_query = array(
@@ -1013,20 +1013,14 @@ if (!class_exists('display_documents')) {
     
             if (!empty($params['doc_id'])) {
                 $doc_id = $params['doc_id'];
-                $meta_query[] = array(
+                $meta_query[1][] = array(
                     'key'   => 'doc_id',
                     'value' => $doc_id,
                 );
             }
 
-            if (!empty($params['paged'])) {
-                $paged = $params['paged'];
-            } else {
-                $paged = 1;
-            }
-
             if (!empty($params['key_value_pair'])) {
-                $meta_query[] = array(
+                $meta_query[1][] = array(
                     'relation' => 'OR', // Either condition can be true
                     array(
                         'key'     => 'todo_status',
@@ -1038,6 +1032,12 @@ if (!class_exists('display_documents')) {
                         'compare' => '!=', // Condition for when todo_status is not equal to 0
                     ),
                 );
+            }
+
+            if (!empty($params['paged'])) {
+                $paged = $params['paged'];
+            } else {
+                $paged = 1;
             }
 
             $args = array(
@@ -1111,7 +1111,7 @@ if (!class_exists('display_documents')) {
             $query = new WP_Query($args);
             return $query;
         }
-*/
+
         function get_previous_report_id($current_report_id) {
             $doc_id = get_post_meta($current_report_id, 'doc_id', true);
         
@@ -1128,7 +1128,6 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'   => 'doc_id',
                         'value' => $doc_id,
-                        //'compare' => '=', // Ensure only reports matching the same 'doc_id'
                     ),
                 ),
                 'date_query'     => array(
@@ -1161,7 +1160,6 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'   => 'doc_id',
                         'value' => $doc_id,
-                        //'compare' => '=', // Ensure only reports matching the same 'doc_id'
                     ),
                 ),
                 'date_query'     => array(
