@@ -95,14 +95,14 @@ if (!class_exists('display_profiles')) {
 
         // Shortcode to display
         function display_profiles() {
+            $documents_class = new display_documents();
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();                
             elseif (is_site_not_configured()) display_NDA_assignment();
             elseif (isset($_GET['_nda_user_id'])) echo $this->approve_NDA_assignment($_GET['_nda_user_id']);
+            elseif (isset($_GET['_report_id'])) echo $documents_class->display_doc_report_dialog($_GET['_report_id']);
             else {
-
                 echo '<div class="ui-widget" id="result-container">';
-
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
@@ -112,7 +112,6 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
-
                 echo '</div>';
 
                 if ($_GET['_select_profile']=='update_action_site_id_by_document') echo $this->update_action_site_id_by_document();
