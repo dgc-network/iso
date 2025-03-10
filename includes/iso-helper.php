@@ -39,6 +39,22 @@ function wp_enqueue_scripts_and_styles() {
 }
 add_action('wp_enqueue_scripts', 'wp_enqueue_scripts_and_styles');
 
+// Enqueue jQuery
+function enqueue_export_scripts() {
+    // Enqueue jQuery if not already loaded
+    wp_enqueue_script('jquery');
+
+    // Enqueue the TableToExcel library from the CDN
+    wp_enqueue_script(
+        'table-to-excel',
+        'https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js',
+        array(),
+        null,
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
+
 function display_iso_helper_logo() {
     ob_start();
     $current_user_id = get_current_user_id();
@@ -48,21 +64,6 @@ function display_iso_helper_logo() {
     <img src="<?php echo esc_attr($image_url)?>" style="object-fit:cover; width:30px; height:30px; margin-left:5px;" />
     <?php
     return ob_get_clean();
-}
-
-function is_site_admin($user_id=false, $site_id=false) {
-    // Get the current user ID
-    if (!$user_id) {
-        $user_id = get_current_user_id();
-        if (current_user_can('administrator')) return true;
-    }
-    if (!$site_id) $site_id = get_user_meta($user_id, 'site_id', true);
-    // Get the user's site_admin_ids as an array
-    $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
-    // If $site_admin_ids is not an array, convert it to an array
-    if (!is_array($site_admin_ids)) $site_admin_ids = array();
-    // Check if the current user has the specified site_id in their metadata
-    return in_array($site_id, $site_admin_ids);
 }
 
 // User is not logged in yet
@@ -93,6 +94,21 @@ function display_NDA_assignment($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
     $profiles_class = new display_profiles();
     $profiles_class->get_NDA_assignment($user_id);
+}
+
+function is_site_admin($user_id=false, $site_id=false) {
+    // Get the current user ID
+    if (!$user_id) {
+        $user_id = get_current_user_id();
+        if (current_user_can('administrator')) return true;
+    }
+    if (!$site_id) $site_id = get_user_meta($user_id, 'site_id', true);
+    // Get the user's site_admin_ids as an array
+    $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
+    // If $site_admin_ids is not an array, convert it to an array
+    if (!is_array($site_admin_ids)) $site_admin_ids = array();
+    // Check if the current user has the specified site_id in their metadata
+    return in_array($site_id, $site_admin_ids);
 }
 
 function get_site_admin_ids_for_site($site_id=false) {
@@ -378,7 +394,7 @@ function select_cron_schedules_option($selected_option = false) {
 
     return $options;
 }
-
+/*
 function add_weekday_only_cron_schedule($schedules) {
     $schedules['weekday_daily'] = array(
         'interval' => 86400, // 24 hours in seconds
@@ -387,8 +403,12 @@ function add_weekday_only_cron_schedule($schedules) {
     return $schedules;
 }
 add_filter('cron_schedules', 'add_weekday_only_cron_schedule');
-
+*/
 function iso_helper_cron_schedules($schedules) {
+    $schedules['weekday_daily'] = array(
+        'interval' => 86400, // 24 hours in seconds
+        'display'  => __('Once Daily on Weekdays Only', 'textdomain'),
+    );
     $schedules['biweekly'] = array(
         'interval' => 2 * WEEK_IN_SECONDS, // 2 weeks in seconds
         'display'  => __('Every Two Weeks', 'textdomain'),
@@ -409,26 +429,20 @@ function iso_helper_cron_schedules($schedules) {
         'interval' => 365 * DAY_IN_SECONDS, // Approximate yearly interval
         'display'  => __('Yearly', 'textdomain'),
     );
+    $schedules['every_five_minutes'] = array(
+        'interval' => 300, // 5 minutes in seconds
+        'display'  => __('Every 5 Minutes'),
+    );
     return $schedules;
 }
 add_filter( 'cron_schedules', 'iso_helper_cron_schedules' );
-
+/*
 add_filter('cron_schedules', function($schedules) {
     $schedules['every_five_minutes'] = array(
         'interval' => 300, // 5 minutes in seconds
         'display'  => __('Every 5 Minutes'),
     );
     return $schedules;
-});
-/*
-register_activation_hook(__FILE__, function() {
-    if (!wp_next_scheduled('five_minutes_action_process_event')) {
-        wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
-    }
-});
-
-register_deactivation_hook(__FILE__, function() {
-    wp_clear_scheduled_hook('five_minutes_action_process_event');
 });
 */
 function remove_weekday_event() {
@@ -437,22 +451,6 @@ function remove_weekday_event() {
         wp_unschedule_event($timestamp, 'my_weekday_event');
     }
 }
-
-// Enqueue jQuery
-function enqueue_export_scripts() {
-    // Enqueue jQuery if not already loaded
-    wp_enqueue_script('jquery');
-
-    // Enqueue the TableToExcel library from the CDN
-    wp_enqueue_script(
-        'table-to-excel',
-        'https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js',
-        array(),
-        null,
-        true
-    );
-}
-add_action('wp_enqueue_scripts', 'enqueue_export_scripts');
 
 // API endpoints
 // Register the send-message API endpoint
