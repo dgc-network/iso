@@ -502,12 +502,12 @@ if (!class_exists('display_documents')) {
                         </div>
                         <label for="department-id"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
-                        <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
-                        <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
                     </div>
 
                     <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'textdomain' );?></label>
                     <fieldset id="system-doc-div" style="display:none;">
+                        <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
+                        <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
                         <label for="system-doc"><?php echo __( 'Field Type Name', 'textdomain' );?></label>
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
                         <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
@@ -1238,10 +1238,14 @@ if (!class_exists('display_documents')) {
                         wp_reset_postdata();
                     }
                     ?>
-                        <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'textdomain' );?>" style="margin:3px;" />
-                        <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'textdomain' );?>" style="margin:3px;" />
                     </div>
                     <div style="text-align:right; display:flex;">
+                    <?php if (is_site_admin()) {?>
+<?php /*                        
+                        <input type="button" id="save-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Save', 'textdomain' );?>" style="margin:3px;" />
+*/?>                        
+                        <input type="button" id="del-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Delete', 'textdomain' );?>" style="margin:3px;" />
+                    <?php }?>
                         <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:3px;" />
                     </div>
                     </div>
