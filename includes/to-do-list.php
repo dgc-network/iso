@@ -1092,7 +1092,6 @@ if (!class_exists('to_do_list')) {
                         $params['text_message'] = $text_message;
                         $params['link_uri'] = $link_uri;
                     }
-
                 }
 */                    
             }
@@ -1130,7 +1129,7 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($next_job, 'summary_todos', array($new_todo_id));
                 }    
 
-                // Create the new Action List for new Todo
+                // Create the new Actions for new Todo
                 $profiles_class = new display_profiles();
                 $query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                 if ($query->have_posts()) {
@@ -1155,29 +1154,99 @@ if (!class_exists('to_do_list')) {
                         if ($action_authorized_ids){
                             update_post_meta($new_action_id, 'action_authorized_ids', $action_authorized_ids);
                         }
+
+                        // Notice the persons in charge the action
+                        $this->notice_the_responsible_persons($action_id);
+
                     endwhile;
                     wp_reset_postdata();
                 }
                 // Notice the persons in charge the job
-                $this->notice_the_responsible_persons($new_todo_id);
+                //$this->notice_the_responsible_persons($new_todo_id);
                 return $new_todo_id;
             }
         }
 
         // Notice the persons in charge the job
+        function notice_the_responsible_persons($action_id=0) {
+            $todo_id = get_post_meta($action_id, 'todo_id', true);
+            $doc_id = get_post_meta($todo_id, 'doc_id', true);
+            $next_leadtime = get_post_meta($todo_id, 'next_leadtime', true);
+            $due_date = time() + $next_leadtime;
+            $text_message = sprintf(
+                __('The document %s has a job that needs to be signed-off before %s. You can click the link below to view the document.', 'textdomain'),
+                get_the_title($doc_id),
+                wp_date('Y-m-d', $due_date)
+            );            
+            $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;
+
+            $args = array(
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'user_action_ids',
+                        'value'   => $action_id,
+                        'compare' => 'LIKE',
+                    ),
+                ),
+            );
+            $query = new WP_User_Query($args);
+            $users = $query->get_results();
+            foreach ($users as $user) {
+                $header_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => 'Hello, ' . $user->display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ),
+                );
+
+                $body_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ),
+                );
+
+                $footer_contents = array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => get_the_title($doc_id),
+                            'uri' => $link_uri, // Use the desired URI
+                        ),
+                        'style' => 'primary',
+                        'margin' => 'sm',
+                    ),
+                );
+
+                $line_bot_api->send_flex_message([
+                    'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+                    'header_contents' => $header_contents,
+                    'body_contents' => $body_contents,
+                    'footer_contents' => $footer_contents,
+                ]);
+            }
+        }
+/*
         function notice_the_responsible_persons($todo_id=0) {
+
             $line_bot_api = new line_bot_api();
             $todo_title = get_the_title($todo_id);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
-            $doc_title = get_post_meta($doc_id, 'doc_title', true);
-            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
+            //$doc_number = get_post_meta($doc_id, 'doc_number', true);
             $todo_due = get_post_meta($todo_id, 'todo_due', true);
             $due_date = wp_date( get_option('date_format'), $todo_due );
+
             $text_message = sprintf(
                 __('Your job in %s has a document that needs to be signed and completed before %s. You can click the link below to view the document.', 'textdomain'),
                 $todo_title,
                 $due_date
             );            
+
             $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;
         
             $args = array(
