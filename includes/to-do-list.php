@@ -1172,6 +1172,7 @@ if (!class_exists('to_do_list')) {
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $next_leadtime = get_post_meta($todo_id, 'next_leadtime', true);
+            if (empty($next_leadtime)) $next_leadtime=86400;
             $due_date = time() + $next_leadtime;
             $text_message = sprintf(
                 __('The document %s has a job that needs to be signed-off before %s. You can click the link below to view the document.', 'textdomain'),
