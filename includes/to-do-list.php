@@ -983,6 +983,7 @@ if (!class_exists('to_do_list')) {
             // 2. From set_start_job_and_go_next(), create a next_todo based on the $args['action_id'], $args['user_id'] and $args['prev_report_id']
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $user_id = ($user_id) ? $user_id : 1;
+            $params['user_id'] = $user_id;
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
             $report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
@@ -993,13 +994,16 @@ if (!class_exists('to_do_list')) {
             } else {
                 $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
             }
+            $params['doc_id'] = $doc_id;
 
             // Find the next_job, next_leadtime
             if ($action_id > 0) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
                 $next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
+                if (empty($next_leadtime)) $next_leadtime=86400;
+                $params['next_job'] = $next_job;
+                $params['next_leadtime'] = $next_leadtime;
             }
-            if (empty($next_leadtime)) $next_leadtime=86400;
         
             if ($next_job>0) {
                 $doc_category = get_post_meta($next_job, 'doc_category', true);
@@ -1012,47 +1016,7 @@ if (!class_exists('to_do_list')) {
                         error_log('No valid JWT token available.');
                         return;
                     }
-/*
-                    $jwt_token = get_option('jwt_token', '');
-                    if (empty($jwt_token)) {
-                        $username = 'iot-manager';
-                        $user = get_user_by('login', $username);
-                        if ($user) {
-                            update_user_meta( $user->ID, 'api-password', '#RnZq7CWfLlRyjfjjMQdEN0*');
-                            $password = get_user_meta($user->ID, 'api-password', true);
-                        } else {
-                            $password = false; // Handle case where user is not found
-                        }
-        
-                        error_log('JWT Token is empty. Please set the token in the settings.');
-                        $api_endpoint = home_url('/wp-json/jwt-auth/v1/token'); // Dynamic site URL
 
-                        $response = wp_remote_post($api_endpoint, [
-                            'method'    => 'POST',
-                            'headers'   => [
-                                'Content-Type' => 'application/json'
-                            ],
-                            'body'      => wp_json_encode([
-                                'username' => $username,
-                                'password' => $password
-                            ]),
-                        ]);
-                    
-                        // Handle response
-                        if (is_wp_error($response)) {
-                            return 'Error: ' . $response->get_error_message();
-                        }
-                    
-                        $response_code = wp_remote_retrieve_response_code($response);
-                        $response_body = wp_remote_retrieve_body($response);
-                    
-                        if ($response_code === 200) {
-                            $data = json_decode($response_body, true);
-                            update_option('jwt_token', $data['token']);
-                            error_log('JWT Token:'.' '.$data['token']);
-                        }
-                    }
-*/
                     // Get the API endpoint
                     $api_endpoint = get_post_meta($next_job, 'api_endpoint', true);
                     if (!preg_match('/^https?:\/\//', $api_endpoint)) {
@@ -1065,10 +1029,6 @@ if (!class_exists('to_do_list')) {
                     $profiles_class = new display_profiles();
                     $action_query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                     if ($action_query->have_posts()) {
-                        $params['user_id'] = $user_id;
-                        $params['doc_id'] = $doc_id;
-                        $params['next_job'] = $next_job;
-                        $params['next_leadtime'] = $next_leadtime;
                         $next_todo_id = $this->create_next_todo_and_actions($params);
                         $params['new_todo_id'] = $next_todo_id;
                         

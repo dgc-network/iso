@@ -507,6 +507,196 @@ function get_valid_jwt_token() {
     return false;
 }
 
+// Register the report-completed API endpoint
+function report_completed_register_post_api() {
+    register_rest_route('api/v1', '/report-completed/', [
+        'methods'  => 'POST',
+        'callback' => 'report_completed_api_post_data',
+        'permission_callback' => function ($request) {
+            return is_user_logged_in() || jwt_auth_check_token($request);
+        }
+    ]);
+}
+add_action('rest_api_init', 'report_completed_register_post_api');
+
+function report_completed_api_post_data(WP_REST_Request $request) {
+    $params = $request->get_json_params(); // Get JSON payload
+    $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
+    $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+    $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+    $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
+    $report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
+    //$todo_id = sanitize_text_field($params['new_todo_id']);
+    //$user_id = sanitize_text_field($params['user_id']);
+    //$action_id = sanitize_text_field($params['action_id']);
+    //$next_job = sanitize_text_field($params['next_job']);
+    //$report_id = sanitize_text_field($params['prev_report_id']);
+
+    if (empty($todo_id) || empty($user_id) || empty($action_id)) {
+        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
+    }
+
+    update_post_meta($todo_id, 'submit_user', $user_id);
+    update_post_meta($todo_id, 'submit_action', $action_id);
+    update_post_meta($todo_id, 'submit_time', time());
+    if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
+
+    // Notice the persons in site
+    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
+
+    return new WP_REST_Response([
+        'message' => 'Report Completed!',
+    ], 200);
+}
+
+// Register the report-summary API endpoint
+function report_summary_register_post_api() {
+    register_rest_route('api/v1', '/report-summary/', [
+        'methods'  => 'POST',
+        'callback' => 'report_summary_api_post_data',
+        'permission_callback' => function ($request) {
+            return is_user_logged_in() || jwt_auth_check_token($request);
+        }
+    ]);
+}
+add_action('rest_api_init', 'report_summary_register_post_api');
+
+function report_summary_api_post_data(WP_REST_Request $request) {
+    $params = $request->get_json_params(); // Get JSON payload
+    $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+    $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
+    if (empty($prev_todo_id) || empty($doc_id)) {
+        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
+    }
+
+    $summary_todos = get_post_meta($doc_id, 'summary_todos', true);
+    if (!empty($summary_todos) && is_array($summary_todos)) {
+        // Query for all 'todo' posts in $summary_todos with meta query conditions
+        $meta_query = array(
+            'relation' => 'AND',
+            array(
+                'key'     => 'todo_due',
+                'compare' => 'EXISTS',
+            ),
+            array(
+                'key'     => 'submit_user',
+                'compare' => 'NOT EXISTS',
+            ),
+        );
+    
+        $query_args = array(
+            'post_type'  => 'todo',
+            'post__in'   => $summary_todos, // Use the array of IDs directly
+            'meta_query' => $meta_query,
+        );
+        $query = new WP_Query($query_args);
+    
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                $todo_id = get_the_ID();
+                $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
+                $todo_in_summary[] = $prev_todo_id;
+                update_post_meta($todo_id, 'todo_in_summary', $todo_in_summary);
+            }
+        }
+        wp_reset_postdata(); // Reset query
+    }
+
+    return new WP_REST_Response([
+        'message' => 'Report Summary Updated!',
+    ], 200);
+}
+
+// Register the document-released API endpoint
+function document_released_register_post_api() {
+    register_rest_route('api/v1', '/document-released/', [
+        'methods'  => 'POST',
+        'callback' => 'document_released_api_post_data',
+        'permission_callback' => function ($request) {
+            return is_user_logged_in() || jwt_auth_check_token($request);
+        }
+    ]);
+}
+add_action('rest_api_init', 'document_released_register_post_api');
+
+function document_released_api_post_data(WP_REST_Request $request) {
+    $params = $request->get_json_params(); // Get JSON payload
+    $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
+    $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+    $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+    $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
+    $report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
+    //$todo_id = sanitize_text_field($params['todo_id']);
+    //$user_id = sanitize_text_field($params['user_id']);
+    //$action_id = sanitize_text_field($params['action_id']);
+    //$next_job = sanitize_text_field($params['next_job']);
+    //$report_id = sanitize_text_field($params['prev_report_id']);
+
+    if (empty($todo_id) || empty($user_id) || empty($action_id)) {
+        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
+    }
+
+    update_post_meta($todo_id, 'submit_user', $user_id);
+    update_post_meta($todo_id, 'submit_action', $action_id);
+    update_post_meta($todo_id, 'submit_time', time());
+    if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
+    if ($report_id) $doc_id = get_post_meta($report_id, '_document', true);
+    $documents_class = new display_documents();
+    $documents_class->update_document_revision($doc_id);
+
+    // Notice the persons in site
+    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
+
+    return new WP_REST_Response([
+        'message' => 'Document Released!',
+    ], 200);
+}
+
+// Register the document-removed API endpoint
+function document_removed_register_post_api() {
+    register_rest_route('api/v1', '/document-removed/', [
+        'methods'  => 'POST',
+        'callback' => 'document_removed_api_post_data',
+        'permission_callback' => function ($request) {
+            return is_user_logged_in() || jwt_auth_check_token($request);
+        }
+    ]);
+}
+add_action('rest_api_init', 'document_removed_register_post_api');
+
+function document_removed_api_post_data(WP_REST_Request $request) {
+    $params = $request->get_json_params(); // Get JSON payload
+    $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
+    $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+    $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+    $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
+    $report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
+    //$todo_id = sanitize_text_field($params['todo_id']);
+    //$user_id = sanitize_text_field($params['user_id']);
+    //$action_id = sanitize_text_field($params['action_id']);
+    //$next_job = sanitize_text_field($params['next_job']);
+    //$report_id = sanitize_text_field($params['prev_report_id']);
+
+    if (empty($todo_id) || empty($user_id) || empty($action_id)) {
+        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
+    }
+
+    update_post_meta($todo_id, 'submit_user', $user_id);
+    update_post_meta($todo_id, 'submit_action', $action_id);
+    update_post_meta($todo_id, 'submit_time', time());
+    if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
+    if ($report_id) $doc_id = get_post_meta($report_id, '_document', true);
+    update_post_meta($doc_id, 'doc_revision', 'draft');
+
+    // Notice the persons in site
+    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
+
+    return new WP_REST_Response([
+        'message' => 'Document Removed!',
+    ], 200);
+}
+
 // Register the send-message API endpoint
 function send_message_register_post_api() {
     register_rest_route('api/v1', '/send-message/', [
@@ -580,182 +770,6 @@ function send_message_api_post_data(WP_REST_Request $request) {
     return new WP_REST_Response([
         'message' => 'Message Sent!',
         'alt_text' => $text_message,
-    ], 200);
-}
-
-// Register the report-completed API endpoint
-function report_completed_register_post_api() {
-    register_rest_route('api/v1', '/report-completed/', [
-        'methods'  => 'POST',
-        'callback' => 'report_completed_api_post_data',
-        'permission_callback' => function ($request) {
-            return is_user_logged_in() || jwt_auth_check_token($request);
-        }
-    ]);
-}
-add_action('rest_api_init', 'report_completed_register_post_api');
-
-function report_completed_api_post_data(WP_REST_Request $request) {
-    $params = $request->get_json_params(); // Get JSON payload
-    $todo_id = sanitize_text_field($params['new_todo_id']);
-    $user_id = sanitize_text_field($params['user_id']);
-    $action_id = sanitize_text_field($params['action_id']);
-    $next_job = sanitize_text_field($params['next_job']);
-    $report_id = sanitize_text_field($params['prev_report_id']);
-
-    if (empty($todo_id) || empty($user_id) || empty($action_id)) {
-        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
-    }
-
-    update_post_meta($todo_id, 'submit_user', $user_id);
-    update_post_meta($todo_id, 'submit_action', $action_id);
-    update_post_meta($todo_id, 'submit_time', time());
-    if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
-
-    // Notice the persons in site
-    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
-
-    return new WP_REST_Response([
-        'message' => 'Report Completed!',
-    ], 200);
-}
-
-// Register the report-summary API endpoint
-function report_summary_register_post_api() {
-    register_rest_route('api/v1', '/report-summary/', [
-        'methods'  => 'POST',
-        'callback' => 'report_summary_api_post_data',
-        'permission_callback' => function ($request) {
-            return is_user_logged_in() || jwt_auth_check_token($request);
-        }
-    ]);
-}
-add_action('rest_api_init', 'report_summary_register_post_api');
-
-function report_summary_api_post_data(WP_REST_Request $request) {
-    $params = $request->get_json_params(); // Get JSON payload
-    $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-    $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
-    if (empty($prev_todo_id) || empty($doc_id)) {
-        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
-    }
-
-    //$summary_todos = get_post_meta($next_job, 'summary_todos', true);
-    $summary_todos = get_post_meta($doc_id, 'summary_todos', true);
-    if (!empty($summary_todos) && is_array($summary_todos)) {
-        // Query for all 'todo' posts in $summary_todos with meta query conditions
-        $meta_query = array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'todo_due',
-                'compare' => 'EXISTS',
-            ),
-            array(
-                'key'     => 'submit_user',
-                'compare' => 'NOT EXISTS',
-            ),
-        );
-    
-        $query_args = array(
-            'post_type'  => 'todo',
-            'post__in'   => $summary_todos, // Use the array of IDs directly
-            'meta_query' => $meta_query,
-        );
-        $query = new WP_Query($query_args);
-    
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $todo_id = get_the_ID();
-                $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
-                $todo_in_summary[] = $prev_todo_id;
-                update_post_meta($todo_id, 'todo_in_summary', $todo_in_summary);
-            }
-        }
-        wp_reset_postdata(); // Reset query
-    }
-
-    return new WP_REST_Response([
-        'message' => 'Report Summary Updated!',
-    ], 200);
-}
-
-// Register the document-released API endpoint
-function document_released_register_post_api() {
-    register_rest_route('api/v1', '/document-released/', [
-        'methods'  => 'POST',
-        'callback' => 'document_released_api_post_data',
-        'permission_callback' => function ($request) {
-            return is_user_logged_in() || jwt_auth_check_token($request);
-        }
-    ]);
-}
-add_action('rest_api_init', 'document_released_register_post_api');
-
-function document_released_api_post_data(WP_REST_Request $request) {
-    $params = $request->get_json_params(); // Get JSON payload
-    $todo_id = sanitize_text_field($params['new_todo_id']);
-    $user_id = sanitize_text_field($params['user_id']);
-    $action_id = sanitize_text_field($params['action_id']);
-    $next_job = sanitize_text_field($params['next_job']);
-    $report_id = sanitize_text_field($params['prev_report_id']);
-
-    if (empty($todo_id) || empty($user_id) || empty($action_id)) {
-        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
-    }
-
-    update_post_meta($todo_id, 'submit_user', $user_id);
-    update_post_meta($todo_id, 'submit_action', $action_id);
-    update_post_meta($todo_id, 'submit_time', time());
-    if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
-    if ($report_id) $doc_id = get_post_meta($report_id, '_document', true);
-    $documents_class = new display_documents();
-    $documents_class->update_document_revision($doc_id);
-
-    // Notice the persons in site
-    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
-
-    return new WP_REST_Response([
-        'message' => 'Document Released!',
-    ], 200);
-}
-
-// Register the document-removed API endpoint
-function document_removed_register_post_api() {
-    register_rest_route('api/v1', '/document-removed/', [
-        'methods'  => 'POST',
-        'callback' => 'document_removed_api_post_data',
-        'permission_callback' => function ($request) {
-            return is_user_logged_in() || jwt_auth_check_token($request);
-        }
-    ]);
-}
-add_action('rest_api_init', 'document_removed_register_post_api');
-
-function document_removed_api_post_data(WP_REST_Request $request) {
-    $params = $request->get_json_params(); // Get JSON payload
-    $todo_id = sanitize_text_field($params['new_todo_id']);
-    $user_id = sanitize_text_field($params['user_id']);
-    $action_id = sanitize_text_field($params['action_id']);
-    $next_job = sanitize_text_field($params['next_job']);
-    $report_id = sanitize_text_field($params['prev_report_id']);
-
-    if (empty($todo_id) || empty($user_id) || empty($action_id)) {
-        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
-    }
-
-    update_post_meta($todo_id, 'submit_user', $user_id);
-    update_post_meta($todo_id, 'submit_action', $action_id);
-    update_post_meta($todo_id, 'submit_time', time());
-    if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
-    if ($report_id) $doc_id = get_post_meta($report_id, '_document', true);
-    update_post_meta($doc_id, 'doc_revision', 'draft');
-
-    // Notice the persons in site
-    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
-
-    return new WP_REST_Response([
-        'message' => 'Document Removed!',
     ], 200);
 }
 
