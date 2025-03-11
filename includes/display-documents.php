@@ -554,8 +554,6 @@ if (!class_exists('display_documents')) {
                 $doc_number = (isset($_POST['_doc_number'])) ? sanitize_text_field($_POST['_doc_number']) : '';
                 $doc_revision = (isset($_POST['_doc_revision'])) ? sanitize_text_field($_POST['_doc_revision']) : '';
                 $doc_category = (isset($_POST['_doc_category'])) ? sanitize_text_field($_POST['_doc_category']) : 0;
-                //$job_number = (isset($_POST['_job_number'])) ? sanitize_text_field($_POST['_job_number']) : '';
-                //$job_title = (isset($_POST['_job_title'])) ? sanitize_text_field($_POST['_job_title']) : '';
                 $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
                 $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
@@ -627,7 +625,6 @@ if (!class_exists('display_documents')) {
         // doc-content
         function display_doc_content($doc_id=false) {
             ob_start();
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
@@ -724,9 +721,6 @@ if (!class_exists('display_documents')) {
 
             <fieldset>
                 <?php
-                //$params = array(
-                //    'doc_id'     => $doc_id,
-                //);
                 $paged = max(1, get_query_var('paged')); // Get the current page number
                 $params['paged'] = $paged;
                 $query = $this->retrieve_doc_report_data($params);
@@ -747,9 +741,7 @@ if (!class_exists('display_documents')) {
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <?php //if ($profiles_class->is_user_doc($doc_id)) {?>
-                        <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'textdomain' );?>" style="margin:3px;" />
-                    <?php //}?>
+                    <input type="button" id="export-to-excel" value="<?php echo __( 'Export to Excel', 'textdomain' );?>" style="margin:3px;" />
                     <style>
                     /* Hide button on mobile devices */
                     @media screen and (max-width: 768px) {
@@ -822,7 +814,6 @@ if (!class_exists('display_documents')) {
                     } elseif ($field_type=='_select') {
                         echo esc_html(get_the_title($field_value));
                     } elseif ($field_type=='_document') {
-                        //$doc_title = get_post_meta($field_value, 'doc_title', true);
                         $doc_title = get_the_title($field_value);
                         $doc_number = get_post_meta($field_value, 'doc_number', true);
                         $doc_revision = get_post_meta($field_value, 'doc_revision', true);
@@ -892,113 +883,7 @@ if (!class_exists('display_documents')) {
             </table>
             <?php
         }
-/*
-        function retrieve_doc_report_data($params) {
-            $meta_query = array('relation' => 'AND');
-        
-            $doc_id = !empty($params['doc_id']) ? $params['doc_id'] : null;
-            $paged = !empty($params['paged']) ? $params['paged'] : 1;
-        
-            // Filter by `doc_id` if provided
-            if ($doc_id) {
-                $meta_query[] = array(
-                    'key'   => 'doc_id',
-                    'value' => $doc_id,
-                );
-            }
-        
-            // Handle key-value pair conditions
-            if (!empty($params['key_value_pair'])) {
-                $meta_query[] = array(
-                    'relation' => 'OR',
-                    array(
-                        'key'     => 'todo_status',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                    array(
-                        'key'     => 'todo_status',
-                        'value'   => '0',
-                        'compare' => '!=',
-                    ),
-                );
-            }
-        
-            $args = array(
-                'post_type'      => 'doc-report',
-                'posts_per_page' => get_option('operation_row_counts'),
-                'paged'          => $paged,
-                'meta_query'     => $meta_query,
-                'orderby'        => 'date',
-                'order'          => 'DESC',
-            );
-        
-            // Handle `todo_in_summary`
-            if (!empty($params['todo_in_summary'])) {
-                $report_ids = array_filter(array_map(function ($todo_id) {
-                    return get_post_meta($todo_id, 'prev_report_id', true);
-                }, $params['todo_in_summary']));
-        
-                if (!empty($report_ids)) {
-                    $args['post__in'] = $report_ids;
-                }
-            }
-        
-            // Process additional conditions dynamically from doc fields
-            if ($doc_id) {
-                $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
-        
-                if ($inner_query->have_posts()) {
-                    $meta_filter = array('relation' => 'AND');
-                    $search_filter = array('relation' => 'OR');
-        
-                    while ($inner_query->have_posts()) {
-                        $inner_query->the_post();
-                        $field_id = get_the_ID();
-                        $field_type = get_post_meta($field_id, 'field_type', true);
-        
-                        if (!empty($params['key_value_pair']) && isset($params['key_value_pair'][$field_type])) {
-                            $value = $params['key_value_pair'][$field_type];
-        
-                            if ($field_type == '_employees' && is_array($value)) {
-                                foreach ($value as $val) {
-                                    $meta_filter[] = array(
-                                        'key'     => $field_id,
-                                        'value'   => sprintf(':"%s";', (string)$val),
-                                        'compare' => 'LIKE',
-                                    );
-                                }
-                            } else {
-                                $meta_filter[] = array(
-                                    'key'   => $field_id,
-                                    'value' => (string)$value,
-                                );
-                            }
-                        }
-        
-                        if (isset($_GET['_search'])) {
-                            $search_doc_report = sanitize_text_field($_GET['_search']);
-                            $search_filter[] = array(
-                                'key'     => $field_id,
-                                'value'   => $search_doc_report,
-                                'compare' => 'LIKE',
-                            );
-                        }
-                    }
-        
-                    if (!empty($meta_filter)) {
-                        $args['meta_query'][] = $meta_filter;
-                    }
-                    if (!empty($search_filter)) {
-                        $args['meta_query'][] = $search_filter;
-                    }
-        
-                    wp_reset_postdata();
-                }
-            }
-        
-            return new WP_Query($args);
-        }
-*/
+
         function retrieve_doc_report_data($params) {
             // Construct the meta query array
             $meta_query = array(
@@ -2030,7 +1915,6 @@ if (!class_exists('display_documents')) {
                 array(
                     'key'     => 'site_id',
                     'value'   => $site_id,
-                    //'compare' => '=',
                 ),
             );
             $users = get_users(array('meta_query' => $meta_query_args));
@@ -2172,7 +2056,6 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id, // Match the site ID
-                        //'compare' => '=', // Exact match
                     ),
                 ),
                 'fields' => 'ids', // Only retrieve post IDs for efficiency
@@ -2226,7 +2109,6 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id', // Check site_id meta key
                         'value'   => $site_id, // Match the 'site_id' meta value
-                        //'compare' => '=', // Exact match
                     ),
                 ),
             );
@@ -2279,7 +2161,6 @@ if (!class_exists('display_documents')) {
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $doc_id = get_the_ID();
-                //$doc_title = get_post_meta($doc_id, 'doc_title', true);
                 $doc_title = get_the_title($doc_id);
                 $doc_number = get_post_meta($doc_id, 'doc_number', true);
                 $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
@@ -2372,7 +2253,6 @@ if (!class_exists('display_documents')) {
                     <?php
                     if ($paged==1) {
                         $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( 'The file list conforms to the High-Level Structure (HLS)', 'textdomain' );
-                        //$content_lines = generate_content($iso_category_title.' '.$prompt, true);
                         $content = generate_content($iso_category_title.' '.$prompt);
 
                         // Suppress warnings for invalid HTML
@@ -2455,11 +2335,7 @@ if (!class_exists('display_documents')) {
                                 if ($query->have_posts()) :
                                     while ($query->have_posts()) : $query->the_post();
                                         $doc_id = get_the_ID();
-                                        //$doc_title = get_post_meta($doc_id, 'doc_title', true);
                                         $doc_title = get_the_title();
-                                        //$doc_number = get_post_meta($doc_id, 'doc_number', true);
-                                        //$doc_category = get_post_meta($doc_id, 'doc_category', true);
-                                        //$site_id = get_post_meta($doc_id, 'site_id', true);
                                         ?>
                                         <div>
                                             <input type="checkbox" class="copy-document-class" id="<?php echo $doc_id;?>" checked />
@@ -2614,11 +2490,8 @@ if (!class_exists('display_documents')) {
         function generate_draft_document_data($doc_id=false){
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            //$job_number = get_post_meta($doc_id, 'job_number', true);
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            //$doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             // Create the post
             $new_post = array(
@@ -2631,11 +2504,8 @@ if (!class_exists('display_documents')) {
             $post_id = wp_insert_post($new_post);
 
             update_post_meta($post_id, 'site_id', $site_id);
-            //update_post_meta($post_id, 'job_number', $job_number);
-            //update_post_meta($post_id, 'doc_title', $doc_title);
             update_post_meta($post_id, 'doc_number', $doc_number);
             update_post_meta($post_id, 'doc_revision', 'draft');
-            //update_post_meta($post_id, 'doc_frame', $doc_frame);
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(
@@ -2647,7 +2517,6 @@ if (!class_exists('display_documents')) {
 
             // Create the Action List for $post_id
             $profiles_class = new display_profiles();
-            //$query = $profiles_class->retrieve_doc_action_data($doc_id);
             $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
@@ -2743,10 +2612,6 @@ if (!class_exists('display_documents')) {
             // Log the update
             error_log("Updated doc_revision for post {$post_id}: {$current_revision} → {$new_revision}");
         }
-        
-        // Hook to trigger when a document post is updated
-        //add_action('save_post_document', 'update_document_revision');
-        
     }
     $documents_class = new display_documents();
 }
