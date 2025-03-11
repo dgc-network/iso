@@ -1070,6 +1070,7 @@ if (!class_exists('to_do_list')) {
                         $params['next_job'] = $next_job;
                         $params['next_leadtime'] = $next_leadtime;
                         $next_todo_id = $this->create_next_todo_and_actions($params);
+                        $params['next_todo_id'] = $next_todo_id;
                         
                         $due_date = time() + $next_leadtime;
                         $text_message = sprintf(
@@ -1078,18 +1079,24 @@ if (!class_exists('to_do_list')) {
                             wp_date('Y-m-d', $due_date)
                         );            
                         $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$next_todo_id;        
-                        $request_data['user_id'] = $user_id;
-                        $request_data['text_message'] = $text_message;
-                        $request_data['link_uri'] = $link_uri;
+                        //$request_data['user_id'] = $user_id;
+                        //$request_data['text_message'] = $text_message;
+                        //$request_data['link_uri'] = $link_uri;
+                        $params['user_id'] = $user_id;
+                        $params['text_message'] = $text_message;
+                        $params['link_uri'] = $link_uri;
                     } else {
                         $text_message = sprintf(
                             __('The document %s is completed. You can click the link below to view the document.', 'textdomain'),
                             get_the_title($doc_id),
                         );            
                         $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
-                        $request_data['user_id'] = $user_id;
-                        $request_data['text_message'] = $text_message;
-                        $request_data['link_uri'] = $link_uri;
+                        //$request_data['user_id'] = $user_id;
+                        //$request_data['text_message'] = $text_message;
+                        //$request_data['link_uri'] = $link_uri;
+                        $params['user_id'] = $user_id;
+                        $params['text_message'] = $text_message;
+                        $params['link_uri'] = $link_uri;
                     }
 
                     if ($api_endpoint) {
@@ -1100,7 +1107,8 @@ if (!class_exists('to_do_list')) {
                                 'Content-Type'  => 'application/json',
                                 'Authorization' => 'Bearer ' . get_option('jwt_token', ''),
                             ],
-                            'body'      => wp_json_encode($request_data),
+                            //'body'      => wp_json_encode($request_data),
+                            'body'      => wp_json_encode($params),
                             'data_format' => 'body',
                         ]);
 
