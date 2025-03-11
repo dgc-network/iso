@@ -917,7 +917,7 @@ if (!class_exists('to_do_list')) {
             $next_job = get_post_meta($action_id, 'next_job', true);
             $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
 
-            // Create a doc-report for current action
+            // Create a new doc-report for current action
             $new_post = array(
                 'post_type'     => 'doc-report',
                 'post_title'    => get_the_title($doc_id),
@@ -951,7 +951,7 @@ if (!class_exists('to_do_list')) {
                 }
             }
 
-            // Create a todo for current action
+            // Create a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
                 'post_status'   => 'publish',
@@ -1006,6 +1006,54 @@ if (!class_exists('to_do_list')) {
             }
         
             if ($next_job>0) {
+                // Get the API endpoint
+                $api_endpoint = get_post_meta($next_job, 'api_endpoint', true);
+                if ($api_endpoint) {
+                    if (!preg_match('/^https?:\/\//', $api_endpoint)) {
+                        $api_endpoint = home_url($api_endpoint);
+                    }
+                    error_log('API endpoint: ' . $api_endpoint);
+    
+                    $doc_category = get_post_meta($next_job, 'doc_category', true);
+                    $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                    if ($is_action_connector) {                        
+                        // Get a valid JWT token
+                        $jwt_token = get_valid_jwt_token();
+                        if (!$jwt_token) {
+                            error_log('No valid JWT token available.');
+                            return;
+                        }
+
+                        // Make the API request
+                        $response = wp_remote_post($api_endpoint, [
+                            'method'    => 'POST',
+                            'headers'   => [
+                                'Content-Type'  => 'application/json',
+                                'Authorization' => 'Bearer ' . get_option('jwt_token', ''),
+                            ],
+                            'body'      => wp_json_encode($params),
+                            'data_format' => 'body',
+                        ]);
+    
+                        // Handle response
+                        if (is_wp_error($response)) {
+                            error_log('API Error: ' . $response->get_error_message());
+                        } else {
+                            $response_code = wp_remote_retrieve_response_code($response);
+                            $response_body = wp_remote_retrieve_body($response);
+                            
+                            if ($response_code === 200) {
+                                error_log('Message Sent Successfully: ' . $response_body);
+                            } else {
+                                error_log('API Response Error: ' . $response_body);
+                            }
+                        }
+                    }
+
+                } else {
+                    $next_todo_id = $this->create_next_todo_and_actions($params);
+                }
+/*
                 $doc_category = get_post_meta($next_job, 'doc_category', true);
                 $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                 if ($is_action_connector) {
@@ -1017,15 +1065,7 @@ if (!class_exists('to_do_list')) {
                         return;
                     }
 
-                    // Get the API endpoint
-                    $api_endpoint = get_post_meta($next_job, 'api_endpoint', true);
-                    if (!preg_match('/^https?:\/\//', $api_endpoint)) {
-                        $api_endpoint = home_url($api_endpoint);
-                    }
-                    error_log('API endpoint: ' . $api_endpoint);
-
                     // Define data sources
-                    //$request_data = $params;
                     $profiles_class = new display_profiles();
                     $action_query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                     if ($action_query->have_posts()) {
@@ -1039,9 +1079,6 @@ if (!class_exists('to_do_list')) {
                             wp_date('Y-m-d', $due_date)
                         );            
                         $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$next_todo_id;        
-                        //$request_data['user_id'] = $user_id;
-                        //$request_data['text_message'] = $text_message;
-                        //$request_data['link_uri'] = $link_uri;
                         $params['user_id'] = $user_id;
                         $params['text_message'] = $text_message;
                         $params['link_uri'] = $link_uri;
@@ -1051,42 +1088,13 @@ if (!class_exists('to_do_list')) {
                             get_the_title($doc_id),
                         );            
                         $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
-                        //$request_data['user_id'] = $user_id;
-                        //$request_data['text_message'] = $text_message;
-                        //$request_data['link_uri'] = $link_uri;
                         $params['user_id'] = $user_id;
                         $params['text_message'] = $text_message;
                         $params['link_uri'] = $link_uri;
                     }
 
-                    if ($api_endpoint) {
-                        // Make the API request
-                        $response = wp_remote_post($api_endpoint, [
-                            'method'    => 'POST',
-                            'headers'   => [
-                                'Content-Type'  => 'application/json',
-                                'Authorization' => 'Bearer ' . get_option('jwt_token', ''),
-                            ],
-                            //'body'      => wp_json_encode($request_data),
-                            'body'      => wp_json_encode($params),
-                            'data_format' => 'body',
-                        ]);
-
-                        // Handle response
-                        if (is_wp_error($response)) {
-                            error_log('API Error: ' . $response->get_error_message());
-                        } else {
-                            $response_code = wp_remote_retrieve_response_code($response);
-                            $response_body = wp_remote_retrieve_body($response);
-                            
-                            if ($response_code === 200) {
-                                error_log('Message Sent Successfully: ' . $response_body);
-                            } else {
-                                error_log('API Response Error: ' . $response_body);
-                            }
-                        }                    
-                    }
                 }
+*/                    
             }
         }
 
@@ -1100,7 +1108,7 @@ if (!class_exists('to_do_list')) {
             $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
             $site_id = get_user_meta($user_id, 'site_id', true);
 
-            // Create a new next To-do for next_job
+            // Create a new Todo for next_job
             $new_post = array(
                 'post_type'     => 'todo',
                 'post_status'   => 'publish',
@@ -1122,7 +1130,7 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($next_job, 'summary_todos', array($new_todo_id));
                 }    
 
-                // Create the new Action List for next_job 
+                // Create the new Action List for new Todo
                 $profiles_class = new display_profiles();
                 $query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                 if ($query->have_posts()) {
@@ -1151,11 +1159,11 @@ if (!class_exists('to_do_list')) {
                     wp_reset_postdata();
                 }
                 // Notice the persons in charge the job
-                //$this->notice_the_responsible_persons($new_todo_id);
+                $this->notice_the_responsible_persons($new_todo_id);
                 return $new_todo_id;
             }
         }
-/*
+
         // Notice the persons in charge the job
         function notice_the_responsible_persons($todo_id=0) {
             $line_bot_api = new line_bot_api();
@@ -1320,7 +1328,6 @@ if (!class_exists('to_do_list')) {
             $report_id = get_post_meta($todo_id, 'report_id', true);
             if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
             $site_id = get_post_meta($doc_id, 'site_id', true);
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
