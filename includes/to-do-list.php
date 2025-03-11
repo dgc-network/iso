@@ -1061,7 +1061,7 @@ if (!class_exists('to_do_list')) {
                     error_log('API endpoint: ' . $api_endpoint);
 
                     // Define data sources
-                    $request_data = $params;
+                    //$request_data = $params;
                     $profiles_class = new display_profiles();
                     $action_query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
                     if ($action_query->have_posts()) {
@@ -1070,7 +1070,7 @@ if (!class_exists('to_do_list')) {
                         $params['next_job'] = $next_job;
                         $params['next_leadtime'] = $next_leadtime;
                         $next_todo_id = $this->create_next_todo_and_actions($params);
-                        $params['next_todo_id'] = $next_todo_id;
+                        $params['new_todo_id'] = $next_todo_id;
                         
                         $due_date = time() + $next_leadtime;
                         $text_message = sprintf(
