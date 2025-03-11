@@ -1156,7 +1156,7 @@ if (!class_exists('to_do_list')) {
                         }
 
                         // Notice the persons in charge the action
-                        $this->notice_the_responsible_persons($action_id);
+                        //$this->notice_the_responsible_persons($action_id);
 
                     endwhile;
                     wp_reset_postdata();
