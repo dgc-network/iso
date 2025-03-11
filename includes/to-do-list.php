@@ -1156,7 +1156,7 @@ if (!class_exists('to_do_list')) {
                         }
 
                         // Notice the persons in charge the action
-                        //$this->notice_the_responsible_persons($action_id);
+                        $this->notice_the_responsible_persons($action_id);
 
                     endwhile;
                     wp_reset_postdata();
@@ -1223,6 +1223,7 @@ if (!class_exists('to_do_list')) {
                     ),
                 );
 
+                $line_bot_api = new line_bot_api();
                 $line_bot_api->send_flex_message([
                     'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
                     'header_contents' => $header_contents,
