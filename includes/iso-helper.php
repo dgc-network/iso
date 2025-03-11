@@ -454,6 +454,59 @@ function remove_weekday_event() {
 }
 
 // API endpoints
+function get_valid_jwt_token() {
+    $jwt_token = get_option('jwt_token', '');
+    if (!empty($jwt_token)) {
+        // Decode the JWT token and check expiration
+        $token_parts = explode('.', $jwt_token);
+        if (count($token_parts) === 3) {
+            $payload = json_decode(base64_decode($token_parts[1]), true);
+            if (!empty($payload['exp']) && time() < $payload['exp']) {
+                return $jwt_token; // Token is still valid
+            }
+        }
+    }
+
+    // If no token or expired, refresh it
+    $username = 'iot-manager';
+    $user = get_user_by('login', $username);
+    if (!$user) {
+        error_log('User not found: ' . $username);
+        return false;
+    }
+
+    $password = get_user_meta($user->ID, 'api-password', true);
+    if (empty($password)) {
+        error_log('API password missing for user: ' . $username);
+        return false;
+    }
+
+    $api_endpoint = home_url('/wp-json/jwt-auth/v1/token');
+    $response = wp_remote_post($api_endpoint, [
+        'method'  => 'POST',
+        'headers' => ['Content-Type' => 'application/json'],
+        'body'    => wp_json_encode(['username' => $username, 'password' => $password]),
+    ]);
+
+    if (is_wp_error($response)) {
+        error_log('JWT API Error: ' . $response->get_error_message());
+        return false;
+    }
+
+    $response_code = wp_remote_retrieve_response_code($response);
+    $response_body = wp_remote_retrieve_body($response);
+    $data = json_decode($response_body, true);
+
+    if ($response_code === 200 && !empty($data['token'])) {
+        update_option('jwt_token', $data['token']);
+        error_log('New JWT Token: ' . $data['token']);
+        return $data['token'];
+    }
+
+    error_log('Failed to retrieve JWT token: ' . $response_body);
+    return false;
+}
+
 // Register the send-message API endpoint
 function send_message_register_post_api() {
     register_rest_route('api/v1', '/send-message/', [

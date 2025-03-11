@@ -1006,6 +1006,13 @@ if (!class_exists('to_do_list')) {
                 $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                 if ($is_action_connector) {
                     
+                    // Get a valid JWT token
+                    $jwt_token = get_valid_jwt_token();
+                    if (!$jwt_token) {
+                        error_log('No valid JWT token available.');
+                        return;
+                    }
+/*
                     $jwt_token = get_option('jwt_token', '');
                     if (empty($jwt_token)) {
                         $username = 'iot-manager';
@@ -1045,7 +1052,7 @@ if (!class_exists('to_do_list')) {
                             error_log('JWT Token:'.' '.$data['token']);
                         }
                     }
-
+*/
                     // Get the API endpoint
                     $api_endpoint = get_post_meta($next_job, 'api_endpoint', true);
                     if (!preg_match('/^https?:\/\//', $api_endpoint)) {
@@ -1113,7 +1120,6 @@ if (!class_exists('to_do_list')) {
                     }
                 }
             }
-
         }
 
         function create_next_todo_and_actions($params=array()) {
