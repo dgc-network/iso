@@ -633,13 +633,15 @@ function document_released_api_post_data(WP_REST_Request $request) {
 
     $site_id = get_user_meta($user_id, 'site_id', true);
     $doc_id = get_post_meta($report_id, '_document', true);
+    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+    $doc_title = get_the_title($doc_id).'('.$doc_revision.')';
     $documents_class = new display_documents();
     $documents_class->update_document_revision($doc_id);
     error_log('Document Released: ' . get_the_title($doc_id));
 
     $text_message = sprintf(
         __( 'The document %s has been released on %s, you can click the link below to view the document.', 'textdomain' ),
-        get_the_title($doc_id),
+        $doc_title,
         wp_date( get_option('date_format'), time() )
     );
     $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
@@ -676,12 +678,14 @@ function document_removed_api_post_data(WP_REST_Request $request) {
 
     $site_id = get_user_meta($user_id, 'site_id', true);
     $doc_id = get_post_meta($report_id, '_document', true);
+    $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+    $doc_title = get_the_title($doc_id).'('.$doc_revision.')';
     update_post_meta($doc_id, 'doc_revision', 'draft');
     error_log('Document Removed: ' . get_the_title($doc_id));
 
     $text_message = sprintf(
         __( 'The document %s has been removed on %s, you can click the link below to view the document.', 'textdomain' ),
-        get_the_title($doc_id),
+        $doc_title,
         wp_date( get_option('date_format'), time() )
     );
     $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id;
