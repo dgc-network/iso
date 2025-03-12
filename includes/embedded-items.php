@@ -1163,6 +1163,8 @@ if (!class_exists('embedded_items')) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $iso_category = get_post_meta($category_id, 'iso_category', true);
+            $api_username = get_post_meta($category_id, 'api_username', true);
+            $api_password = get_post_meta($category_id, 'api_password', true);
             $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
             $is_checked = ($is_action_connector==1) ? 'checked' : '';
             ?>
@@ -1176,8 +1178,15 @@ if (!class_exists('embedded_items')) {
                 <label for="iso-category"><?php echo __( 'ISO', 'textdomain' );?></label>
                 <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
                 <?php if (current_user_can('administrator')) {?>
+<?php /*                    
                     <input type="checkbox" id="is-action-connector" <?php echo $is_checked?> />
                     <label for="is-action-connector"><?php echo __( 'Is Connector', 'textdomain' );?></label>
+*/?>
+                    <label for="api-username"><?php echo __( 'API username', 'textdomain' );?></label>
+                    <input type="text" id="api-username" value="<?php echo esc_attr($api_username);?>" class="text ui-widget-content ui-corner-all" />
+                    <label for="api-password"><?php echo __( 'API password', 'textdomain' );?></label>
+                    <input type="password" id="api-password" value="<?php echo esc_attr($api_password);?>" class="text ui-widget-content ui-corner-all" />
+
                 <?php }?>
             </fieldset>
             <?php
@@ -1195,6 +1204,8 @@ if (!class_exists('embedded_items')) {
             if( isset($_POST['_category_id']) ) {
                 $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
                 $category_title = (isset($_POST['_category_title'])) ? sanitize_text_field($_POST['_category_title']) : '';
+                $api_username = (isset($_POST['_api_username'])) ? sanitize_text_field($_POST['_api_username']) : '';
+                $api_password = (isset($_POST['_api_password'])) ? sanitize_text_field($_POST['_api_password']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
                 $is_action_connector = (isset($_POST['_is_action_connector'])) ? sanitize_text_field($_POST['_is_action_connector']) : 0;
                 $data = array(
@@ -1204,6 +1215,8 @@ if (!class_exists('embedded_items')) {
                 );
                 wp_update_post( $data );
                 update_post_meta($category_id, 'iso_category', $iso_category);
+                update_post_meta($category_id, 'api_username', $api_username);
+                update_post_meta($category_id, 'api_password', $api_password);
                 update_post_meta($category_id, 'is_action_connector', $is_action_connector);
 
                 $params = array(

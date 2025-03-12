@@ -959,7 +959,6 @@ if (!class_exists('display_profiles')) {
             $action_connector = get_post_meta($action_id, 'action_connector', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
             $doc_title = get_the_title($doc_id);
             ?>
             <fieldset>

@@ -89,6 +89,8 @@ jQuery(document).ready(function($) {
                                         '_category_id': $("#category-id").val(),
                                         '_category_title': $("#category-title").val(),
                                         '_category_content': $("#category-content").val(),
+                                        '_api_username': $("#api-username").val(),
+                                        '_api_password': $("#api-password").val(),
                                         '_iso_category': $("#iso-category").val(),
                                         '_is_action_connector': $("#is-action-connector").is(":checked") ? 1 : 0,
                                     },
