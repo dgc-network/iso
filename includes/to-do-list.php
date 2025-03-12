@@ -1016,9 +1016,9 @@ if (!class_exists('to_do_list')) {
     
                     $doc_category = get_post_meta($next_job, 'doc_category', true);
                     $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                    if ($is_action_connector) {                        
+                    //if ($is_action_connector) {                        
                         // Get a valid JWT token
-                        $jwt_token = get_valid_jwt_token();
+                        $jwt_token = get_valid_jwt_token($doc_category);
                         if (!$jwt_token) {
                             error_log('No valid JWT token available.');
                             return;
@@ -1048,7 +1048,7 @@ if (!class_exists('to_do_list')) {
                                 error_log('API Response Error: ' . $response_body);
                             }
                         }
-                    }
+                    //}
 
                 } else {
                     $next_todo_id = $this->create_next_todo_and_actions($params);

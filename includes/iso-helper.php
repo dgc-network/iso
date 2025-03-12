@@ -454,7 +454,7 @@ function remove_weekday_event() {
 }
 
 // API endpoints
-function get_valid_jwt_token() {
+function get_valid_jwt_token($doc_category=false) {
     $jwt_token = get_option('jwt_token', '');
     if (!empty($jwt_token)) {
         // Decode the JWT token and check expiration
@@ -630,10 +630,11 @@ function document_released_api_post_data(WP_REST_Request $request) {
         return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
     }
 
-    $site_id = get_post_meta($user_id, 'site_id', true);
+    $site_id = get_user_meta($user_id, 'site_id', true);
     $doc_id = get_post_meta($report_id, '_document', true);
     $documents_class = new display_documents();
     $documents_class->update_document_revision($doc_id);
+    error_log('Document Released: ' . get_the_title($doc_id));
 
     $text_message = sprintf(
         __( 'The document %s has been released on %s, you can click the link below to view the document.', 'textdomain' ),
@@ -672,9 +673,10 @@ function document_removed_api_post_data(WP_REST_Request $request) {
         return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
     }
 
-    $site_id = get_post_meta($user_id, 'site_id', true);
+    $site_id = get_user_meta($user_id, 'site_id', true);
     $doc_id = get_post_meta($report_id, '_document', true);
     update_post_meta($doc_id, 'doc_revision', 'draft');
+    error_log('Document Removed: ' . get_the_title($doc_id));
 
     $text_message = sprintf(
         __( 'The document %s has been removed on %s, you can click the link below to view the document.', 'textdomain' ),
