@@ -468,14 +468,15 @@ function get_valid_jwt_token($doc_category=false) {
     }
 
     // If no token or expired, refresh it
-    $username = 'iot-manager';
+    $username = get_post_meta($doc_category, 'api_username', true);
+    $password = get_post_meta($doc_category, 'api_password', true);
     $user = get_user_by('login', $username);
     if (!$user) {
         error_log('User not found: ' . $username);
         return false;
     }
 
-    $password = get_user_meta($user->ID, 'api-password', true);
+    //$password = get_user_meta($user->ID, 'api-password', true);
     if (empty($password)) {
         error_log('API password missing for user: ' . $username);
         return false;
