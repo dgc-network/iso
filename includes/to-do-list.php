@@ -1392,8 +1392,61 @@ if (!class_exists('to_do_list')) {
                 }
             }
         }
-
+*/
         // Notice the persons in site
+        function notice_the_persons_in_site($site_id=0, $text_message='', $link_uri='') {
+            $args = array(
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+            );
+            $query = new WP_User_Query($args);
+            $users = $query->get_results();
+            foreach ($users as $user) {
+
+                $header_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => 'Hello, ' . $user->display_name,
+                        'size' => 'lg',
+                        'weight' => 'bold',
+                    ),
+                );
+
+                $body_contents = array(
+                    array(
+                        'type' => 'text',
+                        'text' => $text_message,
+                        'wrap' => true,
+                    ),
+                );
+
+                $footer_contents = array(
+                    array(
+                        'type' => 'button',
+                        'action' => array(
+                            'type' => 'uri',
+                            'label' => __( 'Click me!', 'textdomain' ),
+                            'uri' => $link_uri, // Use the desired URI
+                        ),
+                        'style' => 'primary',
+                        'margin' => 'sm',
+                    ),
+                );
+
+                $line_bot_api = new line_bot_api();
+                $line_bot_api->send_flex_message([
+                    'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
+                    'header_contents' => $header_contents,
+                    'body_contents' => $body_contents,
+                    'footer_contents' => $footer_contents,
+                ]);
+            }
+        }
+/*
         function notice_the_persons_in_site($todo_id=0, $next_job=0) {
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $report_id = get_post_meta($todo_id, 'report_id', true);

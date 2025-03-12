@@ -521,9 +521,9 @@ add_action('rest_api_init', 'report_completed_register_post_api');
 
 function report_completed_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
-    $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
-    $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
-    $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+    //$todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
+    //$user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+    //$action_id = isset($params['action_id']) ? $params['action_id'] : 0;
     $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
     $report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
     //$todo_id = sanitize_text_field($params['new_todo_id']);
@@ -532,14 +532,15 @@ function report_completed_api_post_data(WP_REST_Request $request) {
     //$next_job = sanitize_text_field($params['next_job']);
     //$report_id = sanitize_text_field($params['prev_report_id']);
 
-    if (empty($todo_id) || empty($user_id) || empty($action_id)) {
+    //if (empty($todo_id) || empty($user_id) || empty($action_id)) {
+    if (empty($report_id)) {
         return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
     }
 
-    update_post_meta($todo_id, 'submit_user', $user_id);
-    update_post_meta($todo_id, 'submit_action', $action_id);
-    update_post_meta($todo_id, 'submit_time', time());
-    if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
+    //update_post_meta($todo_id, 'submit_user', $user_id);
+    //update_post_meta($todo_id, 'submit_action', $action_id);
+    //update_post_meta($todo_id, 'submit_time', time());
+    //if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
 
     // Notice the persons in site
     //$this->notice_the_persons_in_site($new_todo_id, $next_job);
@@ -622,32 +623,28 @@ add_action('rest_api_init', 'document_released_register_post_api');
 
 function document_released_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
-    $todo_id = isset($params['new_todo_id']) ? $params['new_todo_id'] : 0;
     $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
-    $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
-    $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
     $report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
-    //$todo_id = sanitize_text_field($params['todo_id']);
-    //$user_id = sanitize_text_field($params['user_id']);
-    //$action_id = sanitize_text_field($params['action_id']);
-    //$next_job = sanitize_text_field($params['next_job']);
-    //$report_id = sanitize_text_field($params['prev_report_id']);
 
-    //if (empty($todo_id) || empty($user_id) || empty($action_id)) {
-    if (empty($report_id)) {    
+    if (empty($report_id)) {
         return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
     }
 
-    //update_post_meta($todo_id, 'submit_user', $user_id);
-    //update_post_meta($todo_id, 'submit_action', $action_id);
-    //update_post_meta($todo_id, 'submit_time', time());
-    //if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
-    if ($report_id) $doc_id = get_post_meta($report_id, '_document', true);
+    $site_id = get_post_meta($user_id, 'site_id', true);
+    $doc_id = get_post_meta($report_id, '_document', true);
     $documents_class = new display_documents();
     $documents_class->update_document_revision($doc_id);
 
+    $text_message = sprintf(
+        __( 'The document %s has been released on %s, you can click the link below to view the document.', 'textdomain' ),
+        get_the_title($doc_id),
+        wp_date( get_option('date_format'), time() )
+    );
+    $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
+
     // Notice the persons in site
-    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
+    $todo_class = new to_do_list();
+    $todo_class->notice_the_persons_in_site($site_id, $text_message, $link_uri);
 
     return new WP_REST_Response([
         'message' => 'Document Released!',
@@ -668,31 +665,27 @@ add_action('rest_api_init', 'document_removed_register_post_api');
 
 function document_removed_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
-    $todo_id = isset($params['new_todo_id']) ? $params['new_todo_id'] : 0;
     $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
-    $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
-    $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
     $report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
-    //$todo_id = sanitize_text_field($params['todo_id']);
-    //$user_id = sanitize_text_field($params['user_id']);
-    //$action_id = sanitize_text_field($params['action_id']);
-    //$next_job = sanitize_text_field($params['next_job']);
-    //$report_id = sanitize_text_field($params['prev_report_id']);
 
-    //if (empty($todo_id) || empty($user_id) || empty($action_id)) {
     if (empty($report_id)) {
         return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
     }
 
-    //update_post_meta($todo_id, 'submit_user', $user_id);
-    //update_post_meta($todo_id, 'submit_action', $action_id);
-    //update_post_meta($todo_id, 'submit_time', time());
-    //if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
-    if ($report_id) $doc_id = get_post_meta($report_id, '_document', true);
+    $site_id = get_post_meta($user_id, 'site_id', true);
+    $doc_id = get_post_meta($report_id, '_document', true);
     update_post_meta($doc_id, 'doc_revision', 'draft');
 
+    $text_message = sprintf(
+        __( 'The document %s has been removed on %s, you can click the link below to view the document.', 'textdomain' ),
+        get_the_title($doc_id),
+        wp_date( get_option('date_format'), time() )
+    );
+    $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id;
+
     // Notice the persons in site
-    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
+    $todo_class = new to_do_list();
+    $todo_class->notice_the_persons_in_site($site_id, $text_message, $link_uri);
 
     return new WP_REST_Response([
         'message' => 'Document Removed!',
