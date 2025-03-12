@@ -1122,9 +1122,23 @@ if (!class_exists('embedded_items')) {
 
             );
 
+            if (current_user_can('administrator')) {
+/*
+                $is_action_connector=true;
+            }
+
             if ($is_action_connector) {
+*/
                 $args['meta_query'][] = array(
                     'relation' => 'OR',
+                    array(
+                        'key'   => 'api_username',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'   => 'api_password',
+                        'compare' => 'EXISTS',
+                    ),
                     array(
                         'key'   => 'is_action_connector',
                         'value' => 1,
