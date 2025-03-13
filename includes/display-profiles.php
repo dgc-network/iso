@@ -758,6 +758,25 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
+        function select_site_user_options($selected_option=false) {
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
+            $args = array(
+                'meta_query'     => array(
+                    array(
+                        'key'   => 'site_id',
+                        'value' => $site_id,
+                    ),
+                ),
+            );
+            $query = new WP_User_Query($args);
+            $users = $query->get_results();
+            foreach ($users as $user) {
+                $selected = ($selected_option == $user->ID) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($user->ID) . '" '.$selected.' />' . esc_html($user->display_name) . '</option>';
+            }
+            return $options;
+        }
+
         function set_site_admin_data($user_id=false, $is_site_admin=false) {
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);

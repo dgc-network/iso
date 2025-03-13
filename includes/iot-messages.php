@@ -1065,7 +1065,9 @@ if (!class_exists('iot_messages')) {
 
         function display_exception_notification_setting_dialog($setting_id=false) {
             ob_start();
+            $profiles_class = new display_profiles();
             $device_id = get_post_meta($setting_id, '_device_id', true);
+            $employee_id = get_post_meta($setting_id, '_employee_id', true);
             $max_value = get_post_meta($setting_id, '_max_value', true);
             $min_value = get_post_meta($setting_id, '_min_value', true);
             $is_once_daily = get_post_meta($setting_id, '_is_once_daily', true);
@@ -1075,10 +1077,10 @@ if (!class_exists('iot_messages')) {
                 <input type="hidden" id="setting-id" value="<?php echo esc_attr($setting_id);?>" />
                 <input type="hidden" id="is-site-admin" value="<?php echo esc_attr(is_site_admin());?>" />
                 <input type="hidden" id="device-id" value="<?php echo esc_attr($device_id);?>" />
-<?php /*                
-                <label for="device-id"><?php echo __( 'Device', 'textdomain' );?></label>
-                <select id="device-id" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iot_device_options($device_id);?></select>                
-*/?>
+                <?php if (current_user_can('administrator')) { ?>
+                    <label for="employee-id"><?php echo __( 'User', 'textdomain' );?></label>
+                    <select id="employee-id" class="text ui-widget-content ui-corner-all"><?php echo $profiles_class->select_site_user_options($employee_id);?></select>                
+                <?php }?>
                 <label for="max-value"><?php echo __( 'Max.', 'textdomain' );?></label>
                 <input type="text" id="max-value" value="<?php echo esc_attr($max_value);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="min-value"><?php echo __( 'Min', 'textdomain' );?></label>
