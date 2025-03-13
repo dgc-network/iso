@@ -230,6 +230,7 @@ jQuery(document).ready(function($) {
                                 data: {
                                     'action': 'set_exception_notification_setting_dialog_data',
                                     '_device_id': device_id,
+                                    '_employee_id': $("#employee-id").val(),
                                     '_max_value': $("#max-value").val(),
                                     '_min_value': $("#min-value").val(),
                                     _is_once_daily : $("#is-once-daily").is(":checked") ? 1 : 0,
@@ -288,6 +289,7 @@ jQuery(document).ready(function($) {
                                     'action': 'set_exception_notification_setting_dialog_data',
                                     '_setting_id': setting_id,
                                     '_device_id': $("#device-id").val(),
+                                    '_employee_id': $("#employee-id").val(),
                                     '_max_value': $("#max-value").val(),
                                     '_min_value': $("#min-value").val(),
                                     _is_once_daily : $("#is-once-daily").is(":checked") ? 1 : 0,

@@ -1103,6 +1103,7 @@ if (!class_exists('iot_messages')) {
             $response = array();
             $setting_id = isset($_POST['_setting_id']) ? sanitize_text_field($_POST['_setting_id']) : 0;
             $device_id = isset($_POST['_device_id']) ? sanitize_text_field($_POST['_device_id']) : 0;
+            $employee_id = isset($_POST['_employee_id']) ? sanitize_text_field($_POST['_employee_id']) : get_current_user_id();
             $max_value = isset($_POST['_max_value']) ? sanitize_text_field($_POST['_max_value']) : 0;
             $min_value = isset($_POST['_min_value']) ? sanitize_text_field($_POST['_min_value']) : 0;
             $is_once_daily = isset($_POST['_is_once_daily']) ? sanitize_text_field($_POST['_is_once_daily']) : 0;
@@ -1114,9 +1115,9 @@ if (!class_exists('iot_messages')) {
                     'post_author'   => get_current_user_id(),
                 );    
                 $setting_id = wp_insert_post($new_post);
-                update_post_meta($setting_id, '_employee_id', get_current_user_id());
             }
             update_post_meta($setting_id, '_device_id', $device_id);
+            update_post_meta($setting_id, '_employee_id', $employee_id);
             update_post_meta($setting_id, '_max_value', $max_value);
             update_post_meta($setting_id, '_min_value', $min_value);
             update_post_meta($setting_id, '_is_once_daily', $is_once_daily);
