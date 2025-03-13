@@ -759,6 +759,7 @@ if (!class_exists('display_profiles')) {
         }
 
         function select_site_user_options($selected_option=false) {
+            if (!$selected_option) $selected_option = get_current_user_id();
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             $args = array(
                 'meta_query'     => array(
