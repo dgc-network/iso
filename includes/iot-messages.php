@@ -992,23 +992,28 @@ if (!class_exists('iot_messages')) {
 
         function display_exception_notification_setting_list($device_id) {
             ob_start();
-            $current_user_id = get_current_user_id();
+            //$current_user_id = get_current_user_id();
             ?>
             <fieldset style="margin-top:5px;">
                 <table class="ui-widget" style="width:100%;">
                     <thead>
+                        <th><?php echo __( 'Name', 'textdomain' );?></th>
                         <th><?php echo __( 'Device', 'textdomain' );?></th>
                         <th><?php echo __( 'Max.', 'textdomain' );?></th>
                         <th><?php echo __( 'Min.', 'textdomain' );?></th>
                     </thead>
                     <tbody>
                     <?php
-                        $query = $this->retrieve_exception_notification_setting_data($device_id, $current_user_id);
+                        //$query = $this->retrieve_exception_notification_setting_data($device_id, $current_user_id);
+                        $query = $this->retrieve_exception_notification_setting_data($device_id);
                         if ($query->have_posts()) {
                             while ($query->have_posts()) : $query->the_post();
                                 $setting_id = get_the_ID();
                                 $device_id = get_post_meta($setting_id, '_device_id', true);
+                                $employee_id = get_post_meta($setting_id, '_employee_id', true);
+                                $user = get_user_by('id', $employee_id);
                                 echo '<tr id="edit-exception-notification-setting-'.esc_attr($setting_id).'">';
+                                echo '<td style="text-align:center;">'.$user->display_name.'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_the_title($device_id)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta($setting_id, '_max_value', true)).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html(get_post_meta($setting_id, '_min_value', true)).'</td>';
@@ -1028,7 +1033,7 @@ if (!class_exists('iot_messages')) {
 
         function retrieve_exception_notification_setting_data($device_id = false, $employee_id = false) {
             
-            //if (!$employee_id) $employee_id = get_current_user_id();
+            if (!$employee_id) $employee_id = get_current_user_id();
             $args = array(
                 'post_type'      => 'notification',
                 'posts_per_page' => -1, // Retrieve all posts
@@ -1046,11 +1051,13 @@ if (!class_exists('iot_messages')) {
                     'value'   => $device_id,
                 );
             }
-            if ($employee_id) {
-                $args['meta_query'][] = array(
-                    'key'     => '_employee_id',
-                    'value'   => $employee_id,
-                );
+            if (!current_user_can('administrator')) {
+                if ($employee_id) {
+                    $args['meta_query'][] = array(
+                        'key'     => '_employee_id',
+                        'value'   => $employee_id,
+                    );
+                }
             }
             $query = new WP_Query($args);
             return $query;
