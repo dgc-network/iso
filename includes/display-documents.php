@@ -508,10 +508,10 @@ if (!class_exists('display_documents')) {
                     <fieldset id="system-doc-div" style="display:none;">
                         <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
                         <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
-                        <label for="system-doc"><?php echo __( 'Field Type Name', 'textdomain' );?></label>
-                        <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
+                        <label for="system-doc"><?php echo __( 'Field Type Name', 'textdomain' );?></label>(
                         <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
-                        <label for="multiple-select"><?php echo __( '是否多選', 'textdomain' );?></label>
+                        <label for="multiple-select"><?php echo __( '是否多選', 'textdomain' );?></label>)
+                        <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
                     </fieldset>
                 </div>
 

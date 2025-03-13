@@ -1015,7 +1015,7 @@ if (!class_exists('to_do_list')) {
                     error_log('API endpoint: ' . $api_endpoint);
     
                     $doc_category = get_post_meta($next_job, 'doc_category', true);
-                    $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                    //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                     //if ($is_action_connector) {                        
                         // Get a valid JWT token
                         $jwt_token = get_valid_jwt_token($doc_category);
@@ -1053,47 +1053,6 @@ if (!class_exists('to_do_list')) {
                 } else {
                     $next_todo_id = $this->create_next_todo_and_actions($params);
                 }
-/*
-                $doc_category = get_post_meta($next_job, 'doc_category', true);
-                $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                if ($is_action_connector) {
-                    
-                    // Get a valid JWT token
-                    $jwt_token = get_valid_jwt_token();
-                    if (!$jwt_token) {
-                        error_log('No valid JWT token available.');
-                        return;
-                    }
-
-                    // Define data sources
-                    $profiles_class = new display_profiles();
-                    $action_query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
-                    if ($action_query->have_posts()) {
-                        $next_todo_id = $this->create_next_todo_and_actions($params);
-                        $params['new_todo_id'] = $next_todo_id;
-                        
-                        $due_date = time() + $next_leadtime;
-                        $text_message = sprintf(
-                            __('The document %s has a job that needs to be signed-off before %s. You can click the link below to view the document.', 'textdomain'),
-                            get_the_title($doc_id),
-                            wp_date('Y-m-d', $due_date)
-                        );            
-                        $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$next_todo_id;        
-                        $params['user_id'] = $user_id;
-                        $params['text_message'] = $text_message;
-                        $params['link_uri'] = $link_uri;
-                    } else {
-                        $text_message = sprintf(
-                            __('The document %s is completed. You can click the link below to view the document.', 'textdomain'),
-                            get_the_title($doc_id),
-                        );            
-                        $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;        
-                        $params['user_id'] = $user_id;
-                        $params['text_message'] = $text_message;
-                        $params['link_uri'] = $link_uri;
-                    }
-                }
-*/                    
             }
         }
 
@@ -1161,8 +1120,6 @@ if (!class_exists('to_do_list')) {
                     endwhile;
                     wp_reset_postdata();
                 }
-                // Notice the persons in charge the job
-                //$this->notice_the_responsible_persons($new_todo_id);
                 return $new_todo_id;
             }
         }
@@ -1446,99 +1403,7 @@ if (!class_exists('to_do_list')) {
                 ]);
             }
         }
-/*
-        function notice_the_persons_in_site($todo_id=0, $next_job=0) {
-            $doc_id = get_post_meta($todo_id, 'doc_id', true);
-            $report_id = get_post_meta($todo_id, 'report_id', true);
-            if ($report_id) $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $site_id = get_post_meta($doc_id, 'site_id', true);
-            $doc_title = get_the_title($doc_id);
-            $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-            $doc_title .= '('.$doc_number.')';
-            $submit_time = get_post_meta($todo_id, 'submit_time', true);
 
-            if ($next_job==-1) $text_message = sprintf(
-                __( 'The document %s has been released on %s, you can click the link below to view the document.', 'textdomain' ),
-                $doc_title,
-                wp_date( get_option('date_format'), $submit_time )
-            );
-            if ($next_job==-2) $text_message = sprintf(
-                __( 'The document %s has been removed on %s, you can click the link below to view the document.', 'textdomain' ),
-                $doc_title,
-                wp_date( get_option('date_format'), $submit_time )
-            );
-            if ($report_id) {
-                $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
-            } else {
-                $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id;
-            }
-        
-            $args = array(
-                'meta_query'     => array(
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                ),
-            );
-            $query = new WP_User_Query($args);
-            $users = $query->get_results();
-            foreach ($users as $user) {
-
-                $header_contents = array(
-                    array(
-                        'type' => 'text',
-                        'text' => 'Hello, ' . $user->display_name,
-                        'size' => 'lg',
-                        'weight' => 'bold',
-                    ),
-                );
-
-                $body_contents = array(
-                    array(
-                        'type' => 'text',
-                        'text' => $text_message,
-                        'wrap' => true,
-                    ),
-                );
-
-                $footer_contents = array(
-                    array(
-                        'type' => 'button',
-                        'action' => array(
-                            'type' => 'uri',
-                            'label' => __( 'Click me!', 'textdomain' ),
-                            'uri' => $link_uri, // Use the desired URI
-                        ),
-                        'style' => 'primary',
-                        'margin' => 'sm',
-                    ),
-                );
-
-                $line_bot_api = new line_bot_api();
-                $line_bot_api->send_flex_message([
-                    'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
-                    'header_contents' => $header_contents,
-                    'body_contents' => $body_contents,
-                    'footer_contents' => $footer_contents,
-                ]);
-            }    
-        }
-/*
-        function is_todo_authorized($todo_id=false) {
-            $query = $this->retrieve_todo_action_list_data($todo_id);
-            if ($query->have_posts()) :
-                while ($query->have_posts()) : $query->the_post();
-                    $action_id = get_the_ID();
-                    $profiles_class = new display_profiles();
-                    if ($profiles_class->is_action_authorized($action_id)) return true;
-                endwhile;
-                wp_reset_postdata();
-            endif;
-            return false;
-        }
-*/
         // Register action post type
         function register_action_post_type() {
             $labels = array(
