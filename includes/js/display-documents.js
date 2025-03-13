@@ -479,8 +479,6 @@ jQuery(document).ready(function($) {
                 'action': 'set_document_dialog_data',
             };
             ajaxData['_doc_id'] = doc_id;
-            //ajaxData['_job_number'] = $("#job-number").val();
-            //ajaxData['_job_title'] = $("#job-title").val();
             ajaxData['_job_content'] = $("#job-content").val();
             ajaxData['_department_id'] = $("#department-id").val();
             ajaxData['_doc_number'] = $("#doc-number").val();
@@ -488,11 +486,11 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_revision'] = $("#doc-revision").val();
             ajaxData['_doc_category'] = $("#doc-category").val();
             ajaxData['_doc_content'] = $("#doc-content").val();
-            //ajaxData['_doc_frame'] = $("#doc-frame").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
             ajaxData['_api_endpoint'] = $("#api-endpoint").val();
             ajaxData['_system_doc'] = $("#system-doc").val();
             ajaxData['_multiple_select'] = $("#multiple-select").is(":checked") ? 1 : 0;
+            ajaxData['_todo_list_only'] = $("#todo-list-only").is(":checked") ? 1 : 0;
 
             $.ajax({
                 type: 'POST',

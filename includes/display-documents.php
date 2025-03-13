@@ -273,7 +273,7 @@ if (!class_exists('display_documents')) {
                 $args['meta_query'][] = array(
                     'relation' => 'OR',
                     array(
-                        'key'   => 'is_doc_report',
+                        'key'     => 'is_doc_report',
                         'compare' => 'NOT EXISTS',
                     ),
                     array(
@@ -426,7 +426,10 @@ if (!class_exists('display_documents')) {
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
             $multiple_select = get_post_meta($doc_id, 'multiple_select', true);
             $is_multiple_select = ($multiple_select==1) ? 'checked' : '';
+            $todo_list_only = get_post_meta($doc_id, 'todo_list_only', true);
+            $is_todo_list_only = ($todo_list_only==1) ? 'checked' : '';
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
+
             if (current_user_can('administrator')) {
                 $is_action_connector=true;
             }
@@ -512,6 +515,8 @@ if (!class_exists('display_documents')) {
                         <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
                         <label for="multiple-select"><?php echo __( '是否為多選', 'textdomain' );?></label>)
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
+                        <input type="checkbox" id="todo-list-only" <?php echo esc_html($is_todo_list_only);?> />
+                        <label for="todo-list-only"><?php echo __( 'Todo-list only', 'textdomain' );?></label>
                     </fieldset>
                 </div>
 
@@ -560,6 +565,7 @@ if (!class_exists('display_documents')) {
                 $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
                 $system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
                 $multiple_select = (isset($_POST['_multiple_select'])) ? sanitize_text_field($_POST['_multiple_select']) : 0;
+                $todo_list_only = (isset($_POST['_todo_list_only'])) ? sanitize_text_field($_POST['_todo_list_only']) : 0;
                 $doc_post_args = array(
                     'ID'           => $doc_id,
                     'post_title'   => $doc_title,
@@ -574,6 +580,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
                 update_post_meta($doc_id, 'multiple_select', $multiple_select);
+                update_post_meta($doc_id, 'todo_list_only', $todo_list_only);
 
                 $params = array(
                     'log_message' => sprintf(

@@ -180,7 +180,6 @@ if (!class_exists('embedded_items')) {
                     array(
                         'key'     => 'is_public',
                         'value'   => '1',
-                        //'compare' => '=', // Condition to check if the meta value is 0
                     ),
                     array(
                         'relation' => 'AND',
@@ -191,7 +190,6 @@ if (!class_exists('embedded_items')) {
                         array(
                             'key'     => 'site_id',
                             'value'   => $site_id,
-                            //'compare' => '=',
                         ),
                     ),
                     array(
@@ -199,12 +197,10 @@ if (!class_exists('embedded_items')) {
                         array(
                             'key'     => 'is_public',
                             'value'   => '0',
-                            //'compare' => '=',
                         ),
                         array(
                             'key'     => 'site_id',
                             'value'   => $site_id,
-                            //'compare' => '=',
                         ),
                     ),
                 );
@@ -215,7 +211,6 @@ if (!class_exists('embedded_items')) {
                 $args['meta_query'][] = array(
                     'key'     => 'embedded_number',
                     'value'   => $embedded_number,
-                    //'compare' => '=', // Exact match for embedded_number
                 );
             }
 
@@ -281,19 +276,16 @@ if (!class_exists('embedded_items')) {
                         array(
                             'key'     => 'is_public',
                             'value'   => '0',
-                            //'compare' => '=', // Condition to check if the meta value is 0
                         ),
                         array(
                             'relation' => 'AND',
                             array(
                                 'key'     => 'is_public',
                                 'value'   => '1',
-                                //'compare' => '=',
                             ),
                             array(
                                 'key'     => 'site_id',
                                 'value'   => $site_id,
-                                //'compare' => '=',
                             ),
                         ),
                     ),
@@ -341,19 +333,16 @@ if (!class_exists('embedded_items')) {
                         array(
                             'key'     => 'is_public',
                             'value'   => '0',
-                            //'compare' => '=', // Condition to check if the meta value is 0
                         ),
                         array(
                             'relation' => 'AND',
                             array(
                                 'key'     => 'is_public',
                                 'value'   => '1',
-                                //'compare' => '=',
                             ),
                             array(
                                 'key'     => 'site_id',
                                 'value'   => $site_id,
-                                //'compare' => '=',
                             ),
                         ),
                     ),
@@ -581,7 +570,6 @@ if (!class_exists('embedded_items')) {
                     array(
                         'key'   => 'embedded_id',
                         'value' => $embedded_id,
-                        //'compare' => '=' // Ensure exact match (optional)
                     ),
                 );
             }
@@ -833,7 +821,6 @@ if (!class_exists('embedded_items')) {
                     array(
                         'key'   => 'embedded_id',
                         'value' => $embedded_id,
-                        //'compare' => '='
                     ),
                     array(
                         'key'   => 'field_type',
@@ -1526,7 +1513,6 @@ if (!class_exists('embedded_items')) {
                     array(
                         'key'   => 'category_code',  // Meta key
                         'value' => $code,            // Meta value to match
-                        //'compare' => '=',            // Comparison operator
                     ),
                 ),
                 'fields' => 'ids', // Return only post IDs
@@ -1791,7 +1777,6 @@ if (!class_exists('embedded_items')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '=',
                     ),
                 );
                 $users = get_users(array('meta_query' => $meta_query_args));

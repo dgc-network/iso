@@ -279,7 +279,6 @@ if (!class_exists('iot_messages')) {
                             array(
                                 'key'     => 'deviceID',
                                 'value'   => $device_number,
-                                //'compare' => '=',
                             ),
                         ),
                         'date_query'     => array(
@@ -317,7 +316,7 @@ if (!class_exists('iot_messages')) {
 
         function process_exception_notification($device_id, $sensor_type, $sensor_value) {
             $this->remove_iot_message_meta_data();
-            
+
             error_log("process_exception_notification: Device ID: ".print_r($device_id, true).", Sensor Type: ".print_r($sensor_type, true).", Sensor Value: ".print_r($sensor_value, true));
         
             $query = $this->retrieve_exception_notification_setting_data($device_id);
@@ -605,7 +604,6 @@ if (!class_exists('iot_messages')) {
                                 array(
                                     'key'   => 'deviceID',
                                     'value' => $device_number,
-                                    //'compare' => '=',
                                 ),
                             ),
                             'date_query'     => array(

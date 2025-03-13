@@ -708,6 +708,17 @@ if (!class_exists('to_do_list')) {
                         'key'     => 'is_doc_report',
                         'value'   => 1,
                     ],
+                    array(
+                        'relation' => 'OR',
+                        array(
+                            'key'     => 'todo_list_only',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key'     => 'todo_list_only',
+                            'value'   => 0,
+                        )
+                    ),
                 ],
                 'orderby' => 'date',
                 'order' => 'DESC',
