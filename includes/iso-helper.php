@@ -316,7 +316,6 @@ function init_webhook_events() {
 add_action( 'parse_request', 'init_webhook_events' );
 
 // Google Gemini AI
-//function generate_content($prompt=false, $each_line_link=false) {
 function generate_content($prompt=false) {
     $gemini_api_key = get_user_meta(get_current_user_id(), 'gemini_api_key', true);
     $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $gemini_api_key;
@@ -395,16 +394,7 @@ function select_cron_schedules_option($selected_option = false) {
 
     return $options;
 }
-/*
-function add_weekday_only_cron_schedule($schedules) {
-    $schedules['weekday_daily'] = array(
-        'interval' => 86400, // 24 hours in seconds
-        'display'  => __('Once Daily on Weekdays Only', 'textdomain'),
-    );
-    return $schedules;
-}
-add_filter('cron_schedules', 'add_weekday_only_cron_schedule');
-*/
+
 function iso_helper_cron_schedules($schedules) {
     $schedules['weekday_daily'] = array(
         'interval' => 86400, // 24 hours in seconds
@@ -437,15 +427,7 @@ function iso_helper_cron_schedules($schedules) {
     return $schedules;
 }
 add_filter( 'cron_schedules', 'iso_helper_cron_schedules' );
-/*
-add_filter('cron_schedules', function($schedules) {
-    $schedules['every_five_minutes'] = array(
-        'interval' => 300, // 5 minutes in seconds
-        'display'  => __('Every 5 Minutes'),
-    );
-    return $schedules;
-});
-*/
+
 function remove_weekday_event() {
     $timestamp = wp_next_scheduled('my_weekday_event');
     if ($timestamp) {
