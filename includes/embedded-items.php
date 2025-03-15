@@ -518,7 +518,7 @@ if (!class_exists('embedded_items')) {
                 $embedded_title = get_the_title();
                 $embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
                 $selected = ($selected_option == $embedded_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($embedded_id) . '" '.$selected.' />' . esc_html($embedded_title.'('.$embedded_number.')') . '</option>';
+                $options .= '<option value="' . esc_attr($embedded_id) . '" '.$selected.' >' . esc_html($embedded_title.'('.$embedded_number.')') . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -761,7 +761,7 @@ if (!class_exists('embedded_items')) {
                 } else {
                     $embedded_item_title = get_the_title();
                 }
-                $options .= '<option value="' . esc_attr($embedded_item_id) . '" '.$selected.' />' . $embedded_item_title . '</option>';
+                $options .= '<option value="' . esc_attr($embedded_item_id) . '" '.$selected.' >' . $embedded_item_title . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -1271,7 +1271,7 @@ if (!class_exists('embedded_items')) {
                 $category_id = get_the_ID();
                 $category_title = get_the_title();
                 $selected = ($selected_option == $category_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' />' . esc_html($category_title) . '</option>';
+                $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' >' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             if (!$is_action_connector) {
@@ -1482,7 +1482,7 @@ if (!class_exists('embedded_items')) {
                 $category_id = get_the_ID();
                 $category_title = get_the_title();
                 $selected = ($selected_option == $category_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' />' . esc_html($category_title) . '</option>';
+                $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' >' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -1761,7 +1761,7 @@ if (!class_exists('embedded_items')) {
                 $department_id = get_the_ID();
                 $department_title = get_the_title();
                 $selected = ($selected_option == $department_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($department_id) . '" '.$selected.' />' . esc_html($department_title) . '</option>';
+                $options .= '<option value="' . esc_attr($department_id) . '" '.$selected.' >' . esc_html($department_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;

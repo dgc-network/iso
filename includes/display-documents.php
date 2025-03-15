@@ -2121,7 +2121,7 @@ if (!class_exists('display_documents')) {
                 $report_id = get_the_ID();
                 $report_title = get_the_title();
                 $selected = ($selected_option == $report_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' />' . esc_html($report_title) . '</option>';
+                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' >' . esc_html($report_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -2137,7 +2137,7 @@ if (!class_exists('display_documents')) {
                 $report_id = get_the_ID();
                 $report_title = get_the_title();
                 $selected = in_array($report_id, $selected_options) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' />' . esc_html($report_title) . '</option>';
+                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' >' . esc_html($report_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -2153,7 +2153,7 @@ if (!class_exists('display_documents')) {
                 $doc_number = get_post_meta($doc_id, 'doc_number', true);
                 $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                 $selected = ($selected_option == $doc_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($doc_id) . '" '.$selected.' />' . esc_html($doc_number.'-'.$doc_title) . '</option>';
+                $options .= '<option value="' . esc_attr($doc_id) . '" '.$selected.' >' . esc_html($doc_number.'-'.$doc_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;

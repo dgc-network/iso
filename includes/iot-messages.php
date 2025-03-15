@@ -972,7 +972,7 @@ if (!class_exists('iot_messages')) {
                 $device_id = get_the_ID();
                 $device_title = get_the_title();
                 $selected = ($selected_option == $device_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($device_id) . '" '.$selected.' />' . esc_html($device_title) . '</option>';
+                $options .= '<option value="' . esc_attr($device_id) . '" '.$selected.' >' . esc_html($device_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;

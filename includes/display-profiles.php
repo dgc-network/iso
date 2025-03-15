@@ -773,7 +773,7 @@ if (!class_exists('display_profiles')) {
             $users = $query->get_results();
             foreach ($users as $user) {
                 $selected = ($selected_option == $user->ID) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($user->ID) . '" '.$selected.' />' . esc_html($user->display_name) . '</option>';
+                $options .= '<option value="' . esc_attr($user->ID) . '" '.$selected.' >' . esc_html($user->display_name) . '</option>';
             }
             return $options;
         }
@@ -808,7 +808,7 @@ if (!class_exists('display_profiles')) {
                 $site_id = get_the_ID();
                 $site_title = get_the_title();
                 $selected = ($selected_option == $site_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($site_id) . '" '.$selected.' />' . esc_html($site_title) . '</option>';
+                $options .= '<option value="' . esc_attr($site_id) . '" '.$selected.' >' . esc_html($site_title) . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
@@ -1403,7 +1403,7 @@ if (!class_exists('display_profiles')) {
                 if ($doc_number) $doc_title .= '('.$doc_number.')';
 
                 $selected = ($selected_option == $doc_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($doc_id) . '" '.$selected.' />' . esc_html($doc_title) . '</option>';
+                $options .= '<option value="' . esc_attr($doc_id) . '" '.$selected.' >' . esc_html($doc_title) . '</option>';
             endwhile;
             wp_reset_postdata();
 
