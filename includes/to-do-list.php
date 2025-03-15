@@ -1729,8 +1729,8 @@ if (!class_exists('to_do_list')) {
                             } else {
                                 $action_title = __( 'System log', 'textdomain' );
                                 $log_title = get_the_content();
+                                $next_job_title = '';
                             }
-                            $next_job_title = isset($next_job_title) ? $next_job_title : '';
                             $submit_time = get_post_meta($todo_id, 'submit_time', true);
                             $submit_user = get_post_meta($todo_id, 'submit_user', true);
                             $user_data = get_userdata( $submit_user );

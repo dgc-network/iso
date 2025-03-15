@@ -137,26 +137,7 @@ if (!class_exists('display_documents')) {
             );
             register_post_type( 'document', $args );
         }
-/*
-        function add_document_settings_metabox() {
-            add_meta_box(
-                'document_settings_id',
-                'Document Settings',
-                array($this, 'document_settings_content'),
-                'document',
-                'normal',
-                'high'
-            );
-        }
-        
-        function document_settings_content($post) {
-            $doc_title = esc_attr(get_post_meta($post->ID, 'doc_title', true));
-            ?>
-            <label for="doc_title"><?php echo __( 'Document Title', 'textdomain' );?></label>
-            <input type="text" id="doc_title" name="doc_title" value="<?php echo $doc_title;?>" style="width:100%" >
-            <?php
-        }
-*/
+
         function display_document_list() {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
