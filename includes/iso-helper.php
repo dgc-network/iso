@@ -640,8 +640,8 @@ function document_released_api_post_data(WP_REST_Request $request) {
     error_log('Document Released: ' . get_the_title($doc_id));
 
     $text_message = sprintf(
-        __( 'The document %s has been released on %s, you can click the link below to view the document.', 'textdomain' ),
-        $doc_title,
+        __( 'The new revision %s has been released on %s, you can click the link below to view the document.', 'textdomain' ),
+        get_the_title($doc_id),
         wp_date( get_option('date_format'), time() )
     );
     $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
