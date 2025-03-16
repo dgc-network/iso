@@ -432,7 +432,7 @@ if (!class_exists('display_documents')) {
                 <label for="doc-revision"><?php echo __( 'Document Rev.', 'textdomain' );?></label>
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="doc-category"><?php echo __( 'Categories', 'textdomain' );?></label><br>
-                <select id="doc-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category, $is_action_connector);?></select>
+                <select id="doc-category" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category, $is_action_connector);?></select>
 
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 
@@ -485,7 +485,7 @@ if (!class_exists('display_documents')) {
                             <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
                         </div>
                         <label for="department-id"><?php echo __( '部門', 'textdomain' );?></label>
-                        <select id="department-id" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
+                        <select id="department-id" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
                     </div>
 
                     <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'textdomain' );?></label>
@@ -1506,7 +1506,7 @@ if (!class_exists('display_documents')) {
                 <input type="text" id="field-title" value="<?php echo esc_attr($field_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="field-type"><?php echo __( 'Field Type', 'textdomain' );?></label>
                 <?php $types = $this->get_field_type_data();?>
-                <select id="field-type" class="text ui-widget-content ui-corner-all">
+                <select id="field-type" class="select ui-widget-content ui-corner-all">
                 <?php foreach ($types as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($field_type == $value) ? 'selected' : ''; ?>>
                         <?php echo esc_html($label); ?>
@@ -1517,7 +1517,7 @@ if (!class_exists('display_documents')) {
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
                 <?php $styles = $this->get_listing_style_data();?>
                 <label for="listing-style"><?php echo __( 'Align', 'textdomain' ); ?></label>
-                <select id="listing-style" class="text ui-widget-content ui-corner-all">
+                <select id="listing-style" class="select ui-widget-content ui-corner-all">
                 <?php foreach ($styles as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($listing_style === $value) ? 'selected' : ''; ?>>
                         <?php echo esc_html($label); ?>
@@ -1676,14 +1676,14 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_employee'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options(array($field_value));?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options(array($field_value));?></select>
                             <?php 
                             break;
 
                         case ($field_type=='_employees'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
+                            <select multiple id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_multiple_employees_options($field_value);?></select>
                             <?php 
                             break;
 
@@ -1732,7 +1732,7 @@ if (!class_exists('display_documents')) {
                             if ($embedded_id && $default_value) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
+                                <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
                                 <?php
                             }
                             break;
@@ -1755,7 +1755,7 @@ if (!class_exists('display_documents')) {
                             $items_class = new embedded_items();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($field_value);?></select>
                             <?php
                             break;
     
@@ -1763,7 +1763,7 @@ if (!class_exists('display_documents')) {
                             $iot_messages = new iot_messages();
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $iot_messages->select_iot_device_options($field_value);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $iot_messages->select_iot_device_options($field_value);?></select>
                             <?php
                             break;
                         case ($field_type=='video'):
@@ -1868,12 +1868,12 @@ if (!class_exists('display_documents')) {
                                     error_log('Multiple select: '.print_r($field_value, true));
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select multiple id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_multiple_system_doc_options($field_value, $params);?></select>
+                                    <select multiple id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_multiple_system_doc_options($field_value, $params);?></select>
                                     <?php
                                 } else {
                                     ?>
                                     <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
+                                    <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
                                     <?php
                                 }
                             } else {
@@ -2353,7 +2353,7 @@ if (!class_exists('display_documents')) {
                                 <label for="draft-title"><?php echo __( 'Title', 'textdomain' );?></label><br>
                                 <input type="text" id="draft-title" value="<?php echo $iso_category_title.' '.$prompt;?>" class="text ui-widget-content ui-corner-all" />
                                 <label for="draft-category"><?php echo __( 'Category', 'textdomain' );?></label><br>
-                                <select id="draft-category" class="text ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
+                                <select id="draft-category" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
                                 <label for="draft-content"><?php echo __( 'Content', 'textdomain' );?></label><br>
                                 <textarea id="draft-content" class="visual-editor"><?php echo $content;?></textarea>
                                 <?php if (is_site_admin()) {?>

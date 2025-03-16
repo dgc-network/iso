@@ -295,7 +295,7 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
                 <label for="recurrence-setting"><?php echo __( 'Recurrence Settings', 'textdomain' );?></label>
-                <select id="recurrence-setting" class="text ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
+                <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
                 <div id="recurrence-start-time-div">
                     <label for="recurrence-start-time"><?php echo __( 'Recurrence Start Time', 'textdomain' );?></label><br>
                     <input type="date" id="recurrence-start-date" value="<?php echo wp_date('Y-m-d', $recurrence_start_time);?>" />
@@ -667,7 +667,7 @@ if (!class_exists('display_profiles')) {
                 if (current_user_can('administrator')) {
                     ?>
                     <label for="select-site"><?php echo __( 'Site', 'textdomain' );?></label>
-                    <select id="select-site" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id);?></select>
+                    <select id="select-site" class="select ui-widget-content ui-corner-all" ><?php echo $this->select_site_profile_options($current_site_id);?></select>
                     <div>
                     <input type="checkbox" id="is-site-admin-setting" <?php echo $is_admin_checked;?> />
                     <label for="is-site-admin-setting"><?php echo __( 'Is site admin?', 'textdomain' );?></label>
@@ -677,7 +677,7 @@ if (!class_exists('display_profiles')) {
                 } else {
                     $site_ids = get_user_meta($user_id, 'site_admin_ids', true);
                     if (!empty($site_ids)) {
-                        echo '<select id="select-site" class="text ui-widget-content ui-corner-all" >';
+                        echo '<select id="select-site" class="select ui-widget-content ui-corner-all" >';
                         foreach ($site_ids as $site_id) {
                             $selected = ($site_id == $current_site_id) ? 'selected' : '';
                             echo '<option value="' . esc_attr($site_id) . '" ' . $selected . '>' . esc_html(get_the_title($site_id)) . '</option>';
@@ -990,9 +990,9 @@ if (!class_exists('display_profiles')) {
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-connector"><?php echo __( 'Connector', 'textdomain' );?></label>
-                <select id="action-connector" class="text ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($action_connector, true);?></select>
+                <select id="action-connector" class="select ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($action_connector, true);?></select>
                 <label for="next-job"><?php echo __( 'Action', 'textdomain' );?></label>
-                <select id="next-job" class="text ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $action_connector);?></select>
+                <select id="next-job" class="select ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $action_connector);?></select>
                 <label for="user-list"><?php echo __( 'User List', 'textdomain' );?></label>
                 <?php echo $this->display_action_user_list($action_id);?>
             </fieldset>
@@ -1526,7 +1526,7 @@ if (!class_exists('display_profiles')) {
                 <h2 style="display:inline; text-align:center;"><?php echo __( 'Non-Disclosure Agreement', 'textdomain' );?></h2>
                 <div>
                     <label for="select-nda-site"><b><?php echo __( 'Party A', 'textdomain' );?></b></label>
-                    <select id="select-nda-site" class="text ui-widget-content ui-corner-all" >
+                    <select id="select-nda-site" class="select ui-widget-content ui-corner-all" >
                         <option value=""><?php echo __( 'Select Option', 'textdomain' );?></option>
                         <?php
                             $site_args = array(

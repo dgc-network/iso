@@ -660,7 +660,7 @@ if (!class_exists('embedded_items')) {
                 <label for="embedded-item-title"><?php echo __( 'Item', 'textdomain' );?></label>
                 <textarea id="embedded-item-title" rows="2" style="width:100%;"><?php echo $embedded_item_title;?></textarea>
                 <label for="field-type"><?php echo __( 'Field Type', 'textdomain' );?></label>
-                <select id="field-type" class="text ui-widget-content ui-corner-all">
+                <select id="field-type" class="select ui-widget-content ui-corner-all">
                 <?php $types = $documents_class->get_field_type_data();?>
                 <?php foreach ($types as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($field_type === $value) ? 'selected' : ''; ?>>
@@ -671,7 +671,7 @@ if (!class_exists('embedded_items')) {
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
                 <textarea id="default-value" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
                 <label for="listing-style"><?php echo __( 'Align', 'textdomain' );?></label>
-                <select id="listing-style" class="text ui-widget-content ui-corner-all">
+                <select id="listing-style" class="select ui-widget-content ui-corner-all">
                 <?php $styles = $documents_class->get_listing_style_data();?>
                 <?php foreach ($styles as $value => $label): ?>
                     <option value="<?php echo esc_attr($value); ?>" <?php echo ($listing_style === $value) ? 'selected' : ''; ?>>
@@ -1177,12 +1177,8 @@ if (!class_exists('embedded_items')) {
                 <label for="category-content"><?php echo __( 'Description', 'textdomain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
                 <label for="iso-category"><?php echo __( 'ISO', 'textdomain' );?></label>
-                <select id="iso-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
+                <select id="iso-category" class="select ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
                 <?php if (current_user_can('administrator')) {?>
-<?php /*                    
-                    <input type="checkbox" id="is-action-connector" <?php echo $is_checked?> />
-                    <label for="is-action-connector"><?php echo __( 'Is Connector', 'textdomain' );?></label>
-*/?>
                     <label for="api-username"><?php echo __( 'API username', 'textdomain' );?></label>
                     <input type="text" id="api-username" value="<?php echo esc_attr($api_username);?>" class="text ui-widget-content ui-corner-all" />
                     <label for="api-password"><?php echo __( 'API password', 'textdomain' );?></label>
@@ -1427,7 +1423,7 @@ if (!class_exists('embedded_items')) {
                 <label for="category-url"><?php echo __( 'URL', 'textdomain' );?></label>
                 <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="parent-category"><?php echo __( 'Parent', 'textdomain' );?></label>
-                <select id="parent-category" class="text ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
+                <select id="parent-category" class="select ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
             </fieldset>
             <?php
             return ob_get_clean();
