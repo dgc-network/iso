@@ -2301,7 +2301,7 @@ if (!class_exists('display_documents')) {
                                 $starts_with_number_or_roman = preg_match('/^(I{1,3}|IV|V|VI|\d+)/i', $line); // Check for numbers or Roman numerals
                                 $ends_with_colon = preg_match('/[:：]$/', $line); // Check if the string ends with ':' or '：'
                             
-                                if (strlen($line) < 100) {
+                                //if (strlen($line) < 100) {
                                     if ($starts_with_number_or_roman || $ends_with_colon) {
                                         // Display the string without a link
                                         echo "<p>" . htmlspecialchars($line) . "</p>";
@@ -2312,7 +2312,7 @@ if (!class_exists('display_documents')) {
                                         $link = home_url($link);
                                         echo "<li><a href=\"$link\" target=\"_blank\">" . htmlspecialchars($line) . "</a></li>";
                                     }
-                                }
+                                //}
                             }
                             ?>
                             <fieldset>
