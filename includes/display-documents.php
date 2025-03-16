@@ -1740,14 +1740,14 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_doc_report'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value, 1);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value, 1);?></select>
                             <?php
                             break;
 
                         case ($field_type=='_document'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="text ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value, 0);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value, 0);?></select>
                             <?php
                             break;
 
