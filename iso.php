@@ -16,32 +16,15 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-/*
-if ( headers_sent( $file, $line ) ) {
-    error_log( "Headers already sent in $file on line $line" );
-}
-*/
-/*
-function is_rest_request() {
-    return defined( 'REST_REQUEST' ) && REST_REQUEST;
-}
 
-function register_session() {
-    if ( ! session_id() && ! is_rest_request() ) {
-        //session_start();
-    }
-}
-add_action( 'init', 'register_session', 1 );
-/*
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-*/
+require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
+
 function plugin_load_textdomain() {
     load_plugin_textdomain( 'textdomain', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 add_action( 'plugins_loaded', 'plugin_load_textdomain' );
-
+/*
 function admin_enqueue_scripts_and_styles() {
     wp_enqueue_style('jquery-ui-style', 'https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css', '', '1.13.2');
     wp_enqueue_script('jquery-ui-js', 'https://code.jquery.com/ui/1.13.2/jquery-ui.js', array('jquery'), '1.13.2', true);
@@ -54,7 +37,7 @@ function admin_enqueue_scripts_and_styles() {
     ));
 }
 //add_action('admin_enqueue_scripts', 'admin_enqueue_scripts_and_styles');
-
+*/
 function remove_admin_bar() {
     if (!current_user_can('administrator') && !is_admin()) {
       show_admin_bar(false);
@@ -76,6 +59,23 @@ function allow_subscribers_to_view_users($allcaps, $caps, $args) {
 }
 add_filter('user_has_cap', 'allow_subscribers_to_view_users', 10, 3);
 
+function set_language_based_on_browser() {
+    // Check if not in the admin area
+    if (!is_admin()) {
+        // Check if 'HTTP_ACCEPT_LANGUAGE' is set before accessing it
+        $browser_language = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en'; // Default to English if missing
+
+        // Supported language list
+        $supported_languages = ['en', 'fr', 'de', 'es', 'zh'];
+
+        // If detected language is supported, switch to it
+        if (in_array($browser_language, $supported_languages)) {
+            switch_to_locale($browser_language);
+        }
+    }
+}
+add_action('init', 'set_language_based_on_browser');
+
 function get_post_type_meta_keys($post_type) {
     global $wpdb;
     $query = $wpdb->prepare("
@@ -91,10 +91,7 @@ function isURL($str) {
     $pattern = '/^(http|https):\/\/[^ "]+$/';
     return preg_match($pattern, $str) === 1;
 }
-
-require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
-
+/*
 function remove_system_doc_meta_once() {
     if (!get_option('removed_system_doc_meta')) {
         $args = array(
@@ -117,46 +114,4 @@ function remove_system_doc_meta_once() {
     }
 }
 add_action('init', 'remove_system_doc_meta_once');
-
-function set_language_based_on_browser() {
-    // Check if not in the admin area
-    if (!is_admin()) {
-        // Check if 'HTTP_ACCEPT_LANGUAGE' is set before accessing it
-        $browser_language = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : 'en'; // Default to English if missing
-
-        // Supported language list
-        $supported_languages = ['en', 'fr', 'de', 'es', 'zh'];
-
-        // If detected language is supported, switch to it
-        if (in_array($browser_language, $supported_languages)) {
-            switch_to_locale($browser_language);
-        }
-    }
-}
-add_action('init', 'set_language_based_on_browser');
-
-function log_rest_api_routes() {
-    if (!function_exists('rest_get_server')) {
-        error_log('REST API server function does not exist.');
-        return;
-    }
-
-    $server = rest_get_server();
-
-    if (!$server) {
-        error_log('REST API server is unavailable.');
-        return;
-    }
-
-    $routes = $server->get_routes();
-
-    if (empty($routes)) {
-        error_log('No REST API routes found.');
-        return;
-    }
-
-    // Log only the first 5 routes to prevent overload
-    error_log(print_r(array_slice($routes, 0, 5, true), true));
-}
-// Run the function during the 'init' action to test
-//add_action('init', 'log_rest_api_routes');
+*/

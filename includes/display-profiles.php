@@ -1056,8 +1056,6 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($new_action_id, 'site_id', $site_id);
                 update_post_meta($new_action_id, 'action_number', '-');
                 update_post_meta($new_action_id, 'doc_id', $doc_id);
-                //update_post_meta($new_action_id, 'next_job', -1);
-                //update_post_meta($new_action_id, 'next_leadtime', 86400);
             }
             $response['html_contain'] = $this->display_site_action_list($paged, $doc_id);
             wp_send_json($response);

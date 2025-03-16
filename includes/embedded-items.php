@@ -479,7 +479,6 @@ if (!class_exists('embedded_items')) {
                 $post_id = wp_insert_post($new_post);
                 update_post_meta($post_id, 'site_id', $site_id);
                 update_post_meta($post_id, 'embedded_number', time());
-                //update_post_meta($post_id, 'is_public', 1);
 
                 $query = $this->retrieve_embedded_item_data($embedded_id, 0);
                 if ($query->have_posts()) {
@@ -1110,12 +1109,6 @@ if (!class_exists('embedded_items')) {
             );
 
             if (current_user_can('administrator')) {
-/*
-                $is_action_connector=true;
-            }
-
-            if ($is_action_connector) {
-*/
                 $args['meta_query'][] = array(
                     'relation' => 'OR',
                     array(
@@ -1183,7 +1176,6 @@ if (!class_exists('embedded_items')) {
                     <input type="text" id="api-username" value="<?php echo esc_attr($api_username);?>" class="text ui-widget-content ui-corner-all" />
                     <label for="api-password"><?php echo __( 'API password', 'textdomain' );?></label>
                     <input type="password" id="api-password" value="<?php echo esc_attr($api_password);?>" class="text ui-widget-content ui-corner-all" />
-
                 <?php }?>
             </fieldset>
             <?php
@@ -1813,7 +1805,6 @@ if (!class_exists('embedded_items')) {
         }
 
         function get_department_user_list_data() {
-            //$response = array();
             $response = array('html_contain' => $this->display_department_user_list());
             wp_send_json($response);
         }

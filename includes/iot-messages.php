@@ -26,14 +26,6 @@ if (!class_exists('iot_messages')) {
             add_action( 'wp_ajax_nopriv_set_exception_notification_setting_dialog_data', array( $this, 'set_exception_notification_setting_dialog_data' ) );
             add_action( 'wp_ajax_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_exception_notification_setting_dialog_data', array( $this, 'del_exception_notification_setting_dialog_data' ) );
-/*
-            if (!wp_next_scheduled('five_minutes_action_process_event')) {
-                wp_schedule_event(time(), 'every_five_minutes', 'five_minutes_action_process_event');
-            }
-            add_action('five_minutes_action_process_event', array( $this, 'update_iot_message_meta_data'));
-*/            
-            //add_action('rest_api_init', array( $this, 'register_iot_endpoint' ));
-
         }
 
         function enqueue_iot_message_scripts() {
@@ -117,63 +109,7 @@ if (!class_exists('iot_messages')) {
             // Return the ID if a matching post is found, otherwise return null
             return !empty($query->posts) ? $query->posts[0] : null;
         }
-/*
-        function update_iot_message_meta_data() {
-            error_log("update_iot_message_meta_data: Start execution");
 
-            // Step 1: Process unprocessed IoT messages
-            $unprocessed_args = array(
-                'post_type'      => 'iot-message',
-                'posts_per_page' => -1,
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'processed',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                ),
-                'date_query'     => array(
-                    array(
-                        'after'     => '5 minutes ago',
-                        'inclusive' => true,
-                    ),
-                ),
-            );
-        
-            $unprocessed_query = new WP_Query($unprocessed_args);
-        
-            if ($unprocessed_query->have_posts()) {
-                error_log("Found unprocessed IoT messages.");
-                while ($unprocessed_query->have_posts()) {
-                    $unprocessed_query->the_post();
-                    $post_id = get_the_ID();
-                    $device_number = get_post_meta($post_id, 'deviceID', true);
-                    $temperature = get_post_meta($post_id, 'temperature', true);
-                    $humidity = get_post_meta($post_id, 'humidity', true);
-        
-                    error_log("Processing post ID: $post_id, Device: $device_number, Temp: $temperature, Humidity: $humidity");
-        
-                    $device_id = $this->get_iot_device_id_by_device_number($device_number);
-        
-                    if ($device_id) {
-                        if ($temperature) {
-                            $this->process_exception_notification($device_id, 'temperature', $temperature);
-                        }
-                        if ($humidity) {
-                            $this->process_exception_notification($device_id, 'humidity', $humidity);
-                        }
-                    } else {
-                        error_log("Device ID not found for Device Number: $device_number");
-                    }
-        
-                    // Mark post as processed
-                    update_post_meta($post_id, 'processed', 1);
-                }
-                wp_reset_postdata();
-            } else {
-                error_log("No unprocessed IoT messages found.");
-            }
-        }
-*/
         function remove_iot_message_meta_data() {
             error_log("remove_iot_message_meta_data: Start execution");
 
@@ -861,8 +797,6 @@ if (!class_exists('iot_messages')) {
                 $documents_class->get_transactions_by_key_value_pair($key_value_pair);
                 
                 // exception notification setting
-                //$iot_messages = new iot_messages();
-                //$is_display = ($iot_messages->is_site_with_iot_device()) ? '' : 'display:none;';
                 ?>
                 <div>
                     <label id="my-exception-notification-setting-label" class="button"><?php echo __( 'Exception Notification Settings', 'textdomain' );?></label>

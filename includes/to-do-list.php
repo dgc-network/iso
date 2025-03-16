@@ -172,7 +172,7 @@ if (!class_exists('to_do_list')) {
                         <tr>
                             <th><?php echo __( 'Document', 'textdomain' );?></th>
                             <th><?php echo __( 'Due date', 'textdomain' );?></th>
-                            <th><?php echo __( 'Action', 'textdomain' );?></th>
+                            <th><?php echo __( 'Actions', 'textdomain' );?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1025,42 +1025,38 @@ if (!class_exists('to_do_list')) {
                     }
                     error_log('API endpoint: ' . $api_endpoint);
     
+                    // Get a valid JWT token
                     $doc_category = get_post_meta($next_job, 'doc_category', true);
-                    //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                    //if ($is_action_connector) {                        
-                        // Get a valid JWT token
-                        $jwt_token = get_valid_jwt_token($doc_category);
-                        if (!$jwt_token) {
-                            error_log('No valid JWT token available.');
-                            return;
-                        }
+                    $jwt_token = get_valid_jwt_token($doc_category);
+                    if (!$jwt_token) {
+                        error_log('No valid JWT token available.');
+                        return;
+                    }
 
-                        // Make the API request
-                        $response = wp_remote_post($api_endpoint, [
-                            'method'    => 'POST',
-                            'headers'   => [
-                                'Content-Type'  => 'application/json',
-                                'Authorization' => 'Bearer ' . get_option('jwt_token', ''),
-                            ],
-                            'body'      => wp_json_encode($params),
-                            'data_format' => 'body',
-                        ]);
-    
-                        // Handle response
-                        if (is_wp_error($response)) {
-                            error_log('API Error: ' . $response->get_error_message());
+                    // Make the API request
+                    $response = wp_remote_post($api_endpoint, [
+                        'method'    => 'POST',
+                        'headers'   => [
+                            'Content-Type'  => 'application/json',
+                            'Authorization' => 'Bearer ' . get_option('jwt_token', ''),
+                        ],
+                        'body'      => wp_json_encode($params),
+                        'data_format' => 'body',
+                    ]);
+
+                    // Handle response
+                    if (is_wp_error($response)) {
+                        error_log('API Error: ' . $response->get_error_message());
+                    } else {
+                        $response_code = wp_remote_retrieve_response_code($response);
+                        $response_body = wp_remote_retrieve_body($response);
+                        
+                        if ($response_code === 200) {
+                            error_log('Message Sent Successfully: ' . $response_body);
                         } else {
-                            $response_code = wp_remote_retrieve_response_code($response);
-                            $response_body = wp_remote_retrieve_body($response);
-                            
-                            if ($response_code === 200) {
-                                error_log('Message Sent Successfully: ' . $response_body);
-                            } else {
-                                error_log('API Response Error: ' . $response_body);
-                            }
+                            error_log('API Response Error: ' . $response_body);
                         }
-                    //}
-
+                    }
                 } else {
                     $next_todo_id = $this->create_next_todo_and_actions($params);
                 }

@@ -85,7 +85,6 @@ jQuery(document).ready(function($) {
         });
     }
 
-
     // document
     const prevDocId = $("#prev-doc-id").val();
     const nextDocId = $("#next-doc-id").val();
@@ -876,15 +875,12 @@ jQuery(document).ready(function($) {
                     dataType: "json",
                     data: ajaxData,
                     success: function(response) {
-                        //get_doc_report_list_data($("#doc-id").val());
                         // Get existing URL parameters
                         const urlParams = new URLSearchParams(window.location.search);
                         // Remove or Update the parameters
                         urlParams.delete("_report_id");
-                        //urlParams.set("paged", 1);
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
-
                     },
                     error: function(error){
                         console.error(error);
@@ -1030,7 +1026,6 @@ jQuery(document).ready(function($) {
                         urlParams.delete("_report_id");
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
-            
                     },
                     error: function(error){
                         console.error(error);
@@ -1058,7 +1053,6 @@ jQuery(document).ready(function($) {
                         urlParams.delete("_report_id");
                         // Redirect to the updated URL
                         window.location.href = "?" + urlParams.toString();
-
                     },
                     error: function(error){
                         console.error(error);

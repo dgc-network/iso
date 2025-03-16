@@ -11,7 +11,6 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
             //add_action( 'init', array( $this, 'register_document_post_type' ) );
-            //add_action( 'add_meta_boxes', array( $this, 'add_document_settings_metabox' ) );
             //add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
 
@@ -159,7 +158,7 @@ if (!class_exists('display_documents')) {
                     </div>
                 </div>
 
-            <fieldset>
+                <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
@@ -222,7 +221,7 @@ if (!class_exists('display_documents')) {
                     if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
                     ?>
                 </div>
-            </fieldset>
+                </fieldset>
             </div>
             <?php
         }
@@ -398,7 +397,6 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
             $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            //$doc_frame = get_post_meta($doc_id, 'doc_frame', true);
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
