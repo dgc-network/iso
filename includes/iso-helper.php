@@ -90,10 +90,10 @@ function is_site_not_configured($user_id=false) {
     return true;
 }
         
-function display_NDA_assignment($user_id=false) {
+function get_NDA_assignment($user_id=false) {
     if (empty($user_id)) $user_id=get_current_user_id();
     $profiles_class = new display_profiles();
-    $profiles_class->get_NDA_assignment($user_id);
+    $profiles_class->display_NDA_assignment($user_id);
 }
 
 function is_site_admin($user_id=false, $site_id=false) {

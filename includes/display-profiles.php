@@ -98,7 +98,7 @@ if (!class_exists('display_profiles')) {
             $documents_class = new display_documents();
             // Check if the user is logged in
             if (!is_user_logged_in()) user_is_not_logged_in();                
-            elseif (is_site_not_configured()) display_NDA_assignment();
+            elseif (is_site_not_configured()) get_NDA_assignment();
             elseif (isset($_GET['_nda_user_id'])) echo $this->approve_NDA_assignment($_GET['_nda_user_id']);
             elseif (isset($_GET['_report_id'])) echo $documents_class->display_doc_report_dialog($_GET['_report_id']);
             else {
@@ -1517,7 +1517,7 @@ if (!class_exists('display_profiles')) {
             <?php
         }
         
-        function get_NDA_assignment($user_id=false) {
+        function display_NDA_assignment($user_id=false) {
             $user = get_userdata($user_id);
             ?>
             <div class="ui-widget" id="result-container">
