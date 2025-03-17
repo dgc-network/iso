@@ -137,7 +137,7 @@ if (!class_exists('display_documents')) {
             register_post_type( 'document', $args );
         }
 
-        function display_document_list() {
+        function display_document_list($embedded=false) {
             if (isset($_GET['_is_admin'])) {
                 echo '<input type="hidden" id="is-admin" value="1" />';
             }
@@ -266,6 +266,13 @@ if (!class_exists('display_documents')) {
             if ($is_doc_report == 1) {
                 $args['meta_query'][] = array(
                     'key'     => 'is_doc_report',
+                    'value'   => 1,
+                );
+            }
+
+            if ($is_doc_report == 'embedded') {
+                $args['meta_query'][] = array(
+                    'key'     => 'is_embedded_item',
                     'value'   => 1,
                 );
             }

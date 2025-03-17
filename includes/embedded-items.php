@@ -95,6 +95,7 @@ if (!class_exists('embedded_items')) {
         function display_embedded_list() {
             ob_start();
             $profiles_class = new display_profiles();
+            $documents_class = new display_documents();
             ?>
             <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
@@ -119,7 +120,8 @@ if (!class_exists('embedded_items')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_embedded_data($paged);
+                    //$query = $this->retrieve_embedded_data($paged);
+                    $query = $documents_class->retrieve_document_data($paged, 'embedded');
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
