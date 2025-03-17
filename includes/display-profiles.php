@@ -149,6 +149,10 @@ if (!class_exists('display_profiles')) {
                             update_post_meta($new_doc_id, $key, $value);
                         }
                     }
+                    update_post_meta($new_doc_id, 'doc_number', '-');
+                    update_post_meta($new_doc_id, 'doc_revision', 'draft');
+                    update_post_meta($new_doc_id, 'is_doc_report', 1);
+                    update_post_meta($new_doc_id, 'embedded_item', 1);
                 }
             }
         
