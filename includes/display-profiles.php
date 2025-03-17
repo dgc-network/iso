@@ -114,56 +114,83 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 echo '</div>';
 
-                if ($_GET['_select_profile']=='update_action_site_id_by_document') echo $this->update_action_site_id_by_document();
-                if ($_GET['_select_profile']=='update_document_titles_and_remove_meta') echo $this->update_document_titles_and_remove_meta();
+                if ($_GET['_select_profile']=='migrate_embedded_to_document') echo $this->migrate_embedded_to_document();
             }
         }
 
-        function update_action_site_id_by_document() {
-            $action_query = new WP_Query([
-                'post_type'  => 'action',
-                'posts_per_page' => -1
+        function migrate_embedded_to_document() {
+            global $wpdb;
+        
+            // Step 1: Migrate "embedded" posts to "document"
+            $embedded_posts = get_posts([
+                'post_type'      => 'embedded',
+                'posts_per_page' => -1,
             ]);
-
-            if ($action_query->have_posts()) {
-                foreach ($action_query->posts as $action_post) {
-                    $doc_id = get_post_meta($action_post->ID, 'doc_id', true);
-                    $site_id = get_post_meta($doc_id, 'site_id', true);
-                    update_post_meta($action_post->ID, 'site_id', $site_id);
+        
+            $embedded_map = []; // Store old ID -> new ID mapping
+        
+            foreach ($embedded_posts as $embedded) {
+                $new_doc_id = wp_insert_post([
+                    'post_title'   => $embedded->post_title,
+                    'post_content' => $embedded->post_content,
+                    'post_status'  => $embedded->post_status,
+                    'post_date'    => $embedded->post_date,
+                    'post_author'  => $embedded->post_author,
+                    'post_type'    => 'document',
+                ]);
+        
+                if ($new_doc_id) {
+                    $embedded_map[$embedded->ID] = $new_doc_id;
+        
+                    // Migrate all meta fields
+                    $meta_fields = get_post_meta($embedded->ID);
+                    foreach ($meta_fields as $key => $values) {
+                        foreach ($values as $value) {
+                            update_post_meta($new_doc_id, $key, $value);
+                        }
+                    }
                 }
             }
-            wp_reset_postdata();
-        }
         
-        function update_document_titles_and_remove_meta() {
-            // Query all posts of type 'document'
-            $query = new WP_Query([
-                'post_type'      => 'document',
-                'posts_per_page' => -1, // Retrieve all posts
-                'fields'         => 'ids', // Retrieve only post IDs for efficiency
+            // Step 2: Migrate "embedded-item" posts to "doc-field"
+            $embedded_items = get_posts([
+                'post_type'      => 'embedded-item',
+                'posts_per_page' => -1,
             ]);
         
-            if ($query->have_posts()) {
-                foreach ($query->posts as $post_id) {
-                    // Get the 'doc_title' meta value
-                    $doc_title = get_post_meta($post_id, 'doc_title', true);
+            foreach ($embedded_items as $item) {
+                // Retrieve the old embedded_id (which needs to map to a new doc_id)
+                $old_embedded_id = get_post_meta($item->ID, 'embedded_id', true);
+                $new_doc_id = $embedded_map[$old_embedded_id] ?? null;
         
-                    // Update the post title with 'doc_title' if available
-                    if (!empty($doc_title)) {
-                        wp_update_post([
-                            'ID'         => $post_id,
-                            'post_title' => sanitize_text_field($doc_title),
-                        ]);
+                $new_field_id = wp_insert_post([
+                    'post_title'   => $item->post_title,
+                    'post_content' => $item->post_content,
+                    'post_status'  => $item->post_status,
+                    'post_date'    => $item->post_date,
+                    'post_author'  => $item->post_author,
+                    'post_type'    => 'doc-field',
+                ]);
+        
+                if ($new_field_id) {
+                    // Transfer metadata
+                    $meta_fields = get_post_meta($item->ID);
+                    foreach ($meta_fields as $key => $values) {
+                        foreach ($values as $value) {
+                            update_post_meta($new_field_id, $key, $value);
+                        }
                     }
         
-                    // Delete the 'job_number' meta key
-                    delete_post_meta($post_id, 'job_number');
-                    delete_post_meta($post_id, 'doc_title');
+                    // Set the new "doc_id" referencing the migrated "document"
+                    if ($new_doc_id) {
+                        update_post_meta($new_field_id, 'doc_id', $new_doc_id);
+                    }
                 }
             }
-            wp_reset_postdata();
-        }
         
+            echo "Migration Completed!";
+        }
+
         // my-profile
         function display_my_profile() {
             ob_start();
