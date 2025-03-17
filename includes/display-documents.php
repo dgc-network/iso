@@ -226,7 +226,7 @@ if (!class_exists('display_documents')) {
             <?php
         }
         
-        function retrieve_document_data($paged=1, $is_doc_report=false) {
+        function retrieve_document_data($paged=1, $is_doc_report=2) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
