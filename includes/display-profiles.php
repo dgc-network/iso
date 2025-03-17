@@ -115,9 +115,38 @@ if (!class_exists('display_profiles')) {
                 echo '</div>';
 
                 if ($_GET['_select_profile']=='migrate_embedded_to_document') echo $this->migrate_embedded_to_document();
+                if ($_GET['_select_profile']=='rename_embedded_item_meta') echo $this->rename_embedded_item_meta();
             }
         }
 
+        function rename_embedded_item_meta() {
+            global $wpdb;
+        
+            // Fetch all "document" posts that have the meta key "embedded_item"
+            $documents = get_posts([
+                'post_type'      => 'document',
+                'posts_per_page' => -1,
+                'meta_key'       => 'embedded_item',
+            ]);
+        
+            foreach ($documents as $document) {
+                $post_id = $document->ID;
+        
+                // Get the existing meta value
+                $embedded_item_value = get_post_meta($post_id, 'embedded_item', true);
+        
+                if (!empty($embedded_item_value)) {
+                    // Update with new meta key
+                    update_post_meta($post_id, 'is_embedded_item', $embedded_item_value);
+        
+                    // Delete the old meta key
+                    delete_post_meta($post_id, 'embedded_item');
+                }
+            }
+        
+            echo "Meta key renamed successfully!";
+        }
+        
         function migrate_embedded_to_document() {
             global $wpdb;
         
@@ -152,7 +181,7 @@ if (!class_exists('display_profiles')) {
                     update_post_meta($new_doc_id, 'doc_number', '-');
                     update_post_meta($new_doc_id, 'doc_revision', 'draft');
                     update_post_meta($new_doc_id, 'is_doc_report', 1);
-                    update_post_meta($new_doc_id, 'embedded_item', 1);
+                    update_post_meta($new_doc_id, 'is_embedded_item', 1);
                 }
             }
         
