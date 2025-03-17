@@ -128,7 +128,8 @@ if (!class_exists('embedded_items')) {
                         while ($query->have_posts()) : $query->the_post();
                             $embedded_id = get_the_ID();
                             $embedded_title = get_the_title();
-                            $embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
+                            //$embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
+                            $embedded_number = get_post_meta($embedded_id, 'doc_number', true);
                             $is_public = get_post_meta($embedded_id, 'is_public', true);
                             ?>
                             <tr id="edit-embedded-<?php echo $embedded_id;?>">

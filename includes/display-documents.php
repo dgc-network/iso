@@ -235,10 +235,6 @@ if (!class_exists('display_documents')) {
                 'paged'          => $paged,
                 'meta_query'     => array(
                     'relation' => 'AND',
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                    ),
                 ),
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'doc_number',
@@ -275,7 +271,44 @@ if (!class_exists('display_documents')) {
                     'key'     => 'is_embedded_item',
                     'value'   => 1,
                 );
+                if (!current_user_can('administrator')) {
+                    $args['meta_query'][] = array(
+                        'relation' => 'OR', // Sub-condition for is_public
+                        array(
+                            'key'     => 'is_public',
+                            'value'   => '1',
+                        ),
+                        array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'is_public',
+                                'compare' => 'NOT EXISTS', // Condition to check if the meta key does not exist
+                            ),
+                            array(
+                                'key'     => 'site_id',
+                                'value'   => $site_id,
+                            ),
+                        ),
+                        array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => 'is_public',
+                                'value'   => '0',
+                            ),
+                            array(
+                                'key'     => 'site_id',
+                                'value'   => $site_id,
+                            ),
+                        ),
+                    );
+                }
+    
             } else {
+                $args['meta_query'][] = array(
+                    'key'     => 'site_id',
+                    'value'   => $site_id,
+                ),
+
                 $select_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
                 if ($select_category) {
                     $args['meta_query'][] = array(
