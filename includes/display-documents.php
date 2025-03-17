@@ -1283,8 +1283,10 @@ if (!class_exists('display_documents')) {
             $query = $this->retrieve_doc_report_data(array('doc_id' => $embedded_id));
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
-                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' >' . get_the_title() . '</option>';
+                $report_id = get_the_ID();
+                $report_title = get_the_title();
+                $selected = ($selected_option == $report_id) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' >' . $report_title . '</option>';
             endwhile;
             wp_reset_postdata();
             return $options;
