@@ -1530,6 +1530,8 @@ if (!class_exists('display_documents')) {
                                 $field_type = get_post_meta($field_id, 'field_type', true);
                                 $type_name = $this->get_field_type_data($field_type);
                                 $default_value = get_post_meta($field_id, 'default_value', true);
+                                $embedded_item = get_post_meta($field_id, 'embedded_item', true);
+                                if ($embedded_item) $default_value = get_the_title($embedded_item);
                                 $listing_style = get_post_meta($field_id, 'listing_style', true);
                                 $style = $this->get_listing_style_data($listing_style);
                                 echo '<tr id="edit-doc-field-'.esc_attr($field_id).'" data-field-id="'.esc_attr($field_id).'">';
