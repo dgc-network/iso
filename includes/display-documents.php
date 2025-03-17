@@ -804,11 +804,13 @@ if (!class_exists('display_documents')) {
         function get_field_contain_list_display($params=array()) {
             $doc_embedded_id = isset($params['doc_embedded_id']) ? $params['doc_embedded_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
-            $inner_query = $this->retrieve_doc_field_data($params);
+            //$inner_query = $this->retrieve_doc_field_data($params);
             if ($doc_embedded_id) {
-                $items_class = new embedded_items();
-                $inner_query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
+                //$items_class = new embedded_items();
+                //$inner_query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
+                $params['doc_id'] = $doc_embedded_id;
             }
+            $inner_query = $this->retrieve_doc_field_data($params);
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
                     $field_id = get_the_ID();
@@ -1277,6 +1279,17 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
+        function select_doc_report_options($selected_option=false, $embedded_id=false) {
+            $query = $this->retrieve_doc_report_data(array('doc_id' => $embedded_id));
+            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
+            while ($query->have_posts()) : $query->the_post();
+                $selected = ($selected_option == get_the_ID()) ? 'selected' : '';
+                $options .= '<option value="' . esc_attr(get_the_ID()) . '" '.$selected.' >' . get_the_title() . '</option>';
+            endwhile;
+            wp_reset_postdata();
+            return $options;
+        }
+
         function duplicate_doc_report_data() {
             $response = array();
             if( isset($_POST['_report_id']) ) {
@@ -1710,17 +1723,20 @@ if (!class_exists('display_documents')) {
             $embedded_item_id = isset($params['embedded_item_id']) ? $params['embedded_item_id'] : 0;
             $line_report_id = isset($params['line_report_id']) ? $params['line_report_id'] : 0;
 
-            $query = $this->retrieve_doc_field_data($params);
+            //$query = $this->retrieve_doc_field_data($params);
             if ($doc_embedded_id) {
-                $items_class = new embedded_items();
-                $query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
+                //$items_class = new embedded_items();
+                //$query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
+                $params['doc_id'] = $doc_embedded_id;
             }
+            $query = $this->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $field_id = get_the_ID();
                     $field_title = get_the_title($field_id);
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
+                    $embedded_item = get_post_meta($field_id, 'embedded_item', true);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
@@ -1750,17 +1766,20 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_embedded'):
-                            $items_class = new embedded_items();
-                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id && $default_value) {
+                            //$items_class = new embedded_items();
+                            //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                            //if ($embedded_id && $default_value) {
+
+                            if ($embedded_item) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_id);?>" />
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php //echo esc_attr($embedded_id);?><?php echo esc_attr($embedded_item);?>" />
                                 <div id="sub-form">
                                     <fieldset>
                                     <?php
                                     $params = array(
-                                        'doc_embedded_id' => $embedded_id,
+                                        //'doc_embedded_id' => $embedded_id,
+                                        'doc_embedded_id' => $embedded_item,
                                         'report_id' => $report_id,
                                     );
                                     $this->get_doc_field_contains($params);
@@ -1772,16 +1791,21 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_line_list'):
-                            $items_class = new embedded_items();
-                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id && $default_value) {
+                            //$items_class = new embedded_items();
+                            //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                            //if ($embedded_id && $default_value) {
+
+                            if ($embedded_item) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <div id="line-report-list">
                                     <?php
-                                    if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
-                                    elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
-                                    else echo $items_class->display_line_report_list($embedded_id);
+                                    //if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
+                                    //elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
+                                    //else echo $items_class->display_line_report_list($embedded_id);
+                                    if ($report_id) echo $items_class->display_line_report_list($embedded_item, $report_id);
+                                    elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_item, $prev_report_id);
+                                    else echo $items_class->display_line_report_list($embedded_item);
                                     ?>
                                 </div>
                                 <?php
@@ -1789,12 +1813,17 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_select'):
-                            $items_class = new embedded_items();
-                            $embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id && $default_value) {
+                            //$items_class = new embedded_items();
+                            //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
+                            //if ($embedded_id && $default_value) {
+
+                            if ($embedded_item) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_embedded_item_options($field_value, $embedded_id);?></select>
+                                <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all">
+                                    <?php //echo $items_class->select_embedded_item_options($field_value, $embedded_id);?>
+                                    <?php echo $this->select_doc_report_options($field_value, $embedded_item);?>
+                                </select>
                                 <?php
                             }
                             break;
@@ -1998,6 +2027,7 @@ if (!class_exists('display_documents')) {
                     $field_id = get_the_ID();
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
+                    $embedded_item = get_post_meta($field_id, 'embedded_item', true);
                     if ($is_default) {
                         $field_value = $this->get_doc_field_default_value($field_id, $user_id);
                     } else {
@@ -2049,10 +2079,13 @@ if (!class_exists('display_documents')) {
                         }
             
                         if ($field_type=='_embedded'){
-                            $items_class = new embedded_items();
-                            $embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id_by_number && $default_value) {
-                                $inner_query = $items_class->retrieve_embedded_item_data($embedded_id_by_number, 0);
+                            //$items_class = new embedded_items();
+                            //$embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
+                            //if ($embedded_id_by_number && $default_value) {
+
+                            if ($embedded_item) {
+                                //$inner_query = $items_class->retrieve_embedded_item_data($embedded_id_by_number, 0);
+                                $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $embedded_item));
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         $embedded_id = get_the_ID();
@@ -2066,10 +2099,13 @@ if (!class_exists('display_documents')) {
                         }
             
                         if ($field_type=='_line_list'){
-                            $items_class = new embedded_items();
-                            $embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
-                            if ($embedded_id_by_number && $default_value) {
-                                $inner_query = $items_class->retrieve_line_report_data($embedded_id_by_number);
+                            //$items_class = new embedded_items();
+                            //$embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
+                            //if ($embedded_id_by_number && $default_value) {
+
+                            if ($embedded_item) {
+                                //$inner_query = $items_class->retrieve_line_report_data($embedded_id_by_number);
+                                $inner_query = $items_class->retrieve_line_report_data($embedded_item);
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         $embedded_id = get_the_ID();

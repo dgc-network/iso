@@ -160,7 +160,7 @@ if (!class_exists('embedded_items')) {
             <?php
             return ob_get_clean();
         }
-
+/*
         function retrieve_embedded_data($paged=1, $embedded_number=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -362,7 +362,7 @@ if (!class_exists('embedded_items')) {
             // Return the next embedded ID or null if no next embedded is found
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
-
+*/
         function display_embedded_dialog($embedded_id=false) {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -370,8 +370,8 @@ if (!class_exists('embedded_items')) {
             //$prev_embedded_id = $this->get_previous_embedded_id($embedded_id); // Fetch the previous ID
             //$next_embedded_id = $this->get_next_embedded_id($embedded_id);     // Fetch the next ID
             $documents_class = new display_documents();
-            $prev_embedded_id = $documents_class->get_previous_doc_id($doc_id); // Fetch the previous ID
-            $next_embedded_id = $documents_class->get_next_doc_id($doc_id);     // Fetch the next ID
+            $prev_embedded_id = $documents_class->get_previous_doc_id($embedded_id); // Fetch the previous ID
+            $next_embedded_id = $documents_class->get_next_doc_id($embedded_id);     // Fetch the next ID
             $embedded_title = get_the_title($embedded_id);
             //$embedded_number = get_post_meta($embedded_id, 'embedded_number', true);
             $embedded_number = get_post_meta($embedded_id, 'doc_number', true);
@@ -493,7 +493,9 @@ if (!class_exists('embedded_items')) {
                 //update_post_meta($post_id, 'embedded_number', time());
                 update_post_meta($post_id, 'doc_number', '-');
 
-                $query = $this->retrieve_embedded_item_data($embedded_id, 0);
+                //$query = $this->retrieve_embedded_item_data($embedded_id, 0);
+                $documents_class = new display_documents();
+                $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $embedded_id));
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $field_id = get_the_ID();
@@ -545,7 +547,9 @@ if (!class_exists('embedded_items')) {
             if ($embedded_number === false) {
                 return null; // Return null if no embedded_number is provided
             }
-            $query = $this->retrieve_embedded_data(0, $embedded_number);
+            //$query = $this->retrieve_embedded_data(0, $embedded_number);
+            $documents_class = new display_documents();
+            $query = $documents_class->retrieve_document_data(0, 'embedded');
             if ($query->have_posts()) {
                 // Get the first post ID
                 $post_id = $query->posts[0]->ID; // Correctly retrieve the post ID
@@ -566,7 +570,7 @@ if (!class_exists('embedded_items')) {
             );
             register_post_type( 'embedded-item', $args );
         }
-
+/*
         function retrieve_embedded_item_data($embedded_id=false, $paged=1) {
             $args = array(
                 'post_type'      => 'embedded-item',
@@ -595,7 +599,7 @@ if (!class_exists('embedded_items')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         function display_embedded_item_list($embedded_id=false) {
             ob_start();
             ?>
@@ -768,7 +772,7 @@ if (!class_exists('embedded_items')) {
             }
             wp_send_json($response);
         }
-
+/*
         function select_embedded_item_options($selected_option=false, $embedded_id=false) {
             //$query = $this->retrieve_embedded_item_data($embedded_id, 0);
             $documents_class = new display_documents();
@@ -869,16 +873,24 @@ if (!class_exists('embedded_items')) {
                     $field_id = get_the_ID();
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
+                    $embedded_item = get_post_meta($field_id, 'embedded_item', true);
 
-                    if ($field_type=='_embedded' && $default_value) {
-                        $embedded_id = $this->get_embedded_id_by_number($default_value);
-                        if ($embedded_id) {
-                            $inner_query = $this->retrieve_embedded_item_data($embedded_id, 0);
+                    //if ($field_type=='_embedded' && $default_value) {
+
+                    if ($field_type=='_embedded' && $embedded_item) {
+                        //$embedded_id = $this->get_embedded_id_by_number($default_value);
+                        //if ($embedded_id) {
+
+                        if ($embedded_item) {
+                            //$inner_query = $this->retrieve_embedded_item_data($embedded_id, 0);
+                            $documents_class = new display_documents();
+                            $inner_query = $documents_class->retrieve_doc_field_data(array('doc_id' => $embedded_item));
                             if ($inner_query->have_posts()) :
                                 while ($inner_query->have_posts()) : $inner_query->the_post();
                                     $embedded_item_id = get_the_ID();
                                     $_list = array();
-                                    $_list["embedded_id"] = $embedded_id;
+                                    //$_list["embedded_id"] = $embedded_id;
+                                    $_list["embedded_id"] = $embedded_item;
                                     $_list["embedded_item_id"] = $embedded_item_id;
                                     $_list["field_type"] = get_post_meta($embedded_item_id, 'field_type', true);
                                     array_push($_array, $_list);
@@ -1016,7 +1028,9 @@ if (!class_exists('embedded_items')) {
             }
 
             // Update the post
-            $query = $this->retrieve_embedded_item_data($embedded_id, 0);
+            //$query = $this->retrieve_embedded_item_data($embedded_id, 0);
+            $documents_class = new display_documents();
+            $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $embedded_id));
             if ($query->have_posts()) :
                 while ($query->have_posts()) : $query->the_post();
                     $embedded_item_id = get_the_ID();
@@ -1039,9 +1053,11 @@ if (!class_exists('embedded_items')) {
 
         function get_line_report_field_keys($embedded_id=false) {
             $_array = array();
-            $inner_query = $this->retrieve_embedded_item_data($embedded_id, 0);
-            if ($inner_query->have_posts()) :
-                while ($inner_query->have_posts()) : $inner_query->the_post();
+            //$query = $this->retrieve_embedded_item_data($embedded_id, 0);
+            $documents_class = new display_documents();
+            $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $embedded_id));
+            if ($query->have_posts()) :
+                while ($inner_query->have_posts()) : $query->the_post();
                     $embedded_item_id = get_the_ID();
                     $_list = array();
                     $_list["embedded_item_id"] = $embedded_item_id;
