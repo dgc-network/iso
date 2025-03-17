@@ -11,7 +11,7 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_document_scripts' ) );
             add_action( 'wp_enqueue_scripts', array( $this,'add_mermaid_script' ) );
             //add_action( 'init', array( $this, 'register_document_post_type' ) );
-            //add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
+            add_action( 'init', array( $this, 'register_doc_report_post_type' ) );
             //add_action( 'init', array( $this, 'register_doc_field_post_type' ) );
 
             add_action( 'wp_ajax_set_document_dialog_data', array( $this, 'set_document_dialog_data' ) );

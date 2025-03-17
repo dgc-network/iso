@@ -652,10 +652,6 @@ jQuery(document).ready(function($) {
 
         $('[id^="edit-doc-field-"]').on( "click", function() {
             const field_id = this.id.substring(15);
-            if ($("#field-type").val() === '_select' || $("#field-type").val() === '_embedded' || $("#field-type").val() === '_line_list') {
-                $('#embedded-selection').show();
-            }
-
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
@@ -722,6 +718,10 @@ jQuery(document).ready(function($) {
                     }
                     $("#doc-field-dialog").dialog('open');
 
+                    if ($("#field-type").val() === '_select' || $("#field-type").val() === '_embedded' || $("#field-type").val() === '_line_list') {
+                        $('#embedded-selection').show();
+                    }
+        
                     $("#field-type").on("change", function() {
                         if ($(this).val() === '_select' || $(this).val() === '_embedded' || $(this).val() === '_line_list') {
                             $('#embedded-selection').show();
