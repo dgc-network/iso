@@ -307,7 +307,7 @@ if (!class_exists('display_documents')) {
                 $args['meta_query'][] = array(
                     'key'     => 'site_id',
                     'value'   => $site_id,
-                ),
+                );
 
                 $select_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
                 if ($select_category) {
