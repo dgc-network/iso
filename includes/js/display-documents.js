@@ -716,6 +716,9 @@ jQuery(document).ready(function($) {
                     $("#doc-field-dialog").dialog('open');
 
                     $("#field-type").on("change", function() {
+                        if ($(this).val() === '_select' || $(this).val() === '_embedded' || $(this).val() === '_line_list') {
+                            $('#embedded-selection').show();
+                        }
                         if ($(this).val() === 'heading' || $(this).val() === 'video' || $(this).val() === 'image' || $(this).val() === 'canvas' || $(this).val() === '_embedded' || $(this).val() === '_line_list') {
                             $('#listing-style').val('.');
                         }

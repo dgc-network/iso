@@ -1458,7 +1458,7 @@ if (!class_exists('display_documents')) {
                                 $field_id = get_the_ID();
                                 $field_title = get_the_title();
                                 $field_type = get_post_meta($field_id, 'field_type', true);
-                                $type = $this->get_field_type_data($field_type);
+                                $type_name = $this->get_field_type_data($field_type);
                                 $default_value = get_post_meta($field_id, 'default_value', true);
                                 $listing_style = get_post_meta($field_id, 'listing_style', true);
                                 $style = $this->get_listing_style_data($listing_style);
@@ -1469,7 +1469,7 @@ if (!class_exists('display_documents')) {
                                 } else {
                                     echo '<td style="text-align:center;">'.esc_html($field_title).'</td>';
                                 }
-                                echo '<td style="text-align:center;">'.esc_html($type).'</td>';
+                                echo '<td style="text-align:center;">'.esc_html($type_name).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html($default_value).'</td>';
                                 echo '<td style="text-align:center;">'.esc_html($style).'</td>';
 
@@ -1511,6 +1511,19 @@ if (!class_exists('display_documents')) {
                     </option>
                 <?php endforeach; ?>
                 </select>
+                <div id="embedded-selection" style="display:none">
+                    <label for="embedded-item"><?php echo __( 'Embedded Item', 'textdomain' );?></label>
+                    <select id="embedded-item" class="select ui-widget-content ui-corner-all">
+                    <?php
+                    $items_class = new embedded_items();
+                    $embedded_item_keys = $items_class->get_embedded_item_keys();
+                    foreach ($embedded_item_keys as $value => $label): ?>
+                        <option value="<?php echo esc_attr($value); ?>" <?php echo ($default_value == $value) ? 'selected' : ''; ?>>
+                            <?php echo esc_html($label); ?>
+                        </option>
+                    <?php endforeach; ?>
+                    </select>
+                </div>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
                 <input type="text" id="default-value" value="<?php echo esc_attr($default_value);?>" class="text ui-widget-content ui-corner-all" />
                 <?php $styles = $this->get_listing_style_data();?>

@@ -604,7 +604,7 @@ if (!class_exists('embedded_items')) {
                         $field_note = get_post_meta($embedded_item_id, 'field_note', true);
                         $field_type = get_post_meta($embedded_item_id, 'field_type', true);
                         $documents_class = new display_documents();
-                        $type = $documents_class->get_field_type_data($field_type);
+                        $type_name = $documents_class->get_field_type_data($field_type);
                         $default_value = get_post_meta($embedded_item_id, 'default_value', true);
                         if ($field_type=='heading') {
                             if (!$default_value) {
@@ -617,7 +617,7 @@ if (!class_exists('embedded_items')) {
                         ?>
                         <tr id="edit-item-<?php echo $embedded_item_id;?>" data-embedded-item-id="<?php echo esc_attr($embedded_item_id);?>">
                             <td><?php echo $embedded_item_title;?></td>
-                            <td style="text-align:center;"><?php echo esc_html($type);?></td>
+                            <td style="text-align:center;"><?php echo esc_html($type_name);?></td>
                             <td style="text-align:center;"><?php echo esc_html($default_value);?></td>
                         </tr>
                         <?php
