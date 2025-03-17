@@ -1515,6 +1515,8 @@ if (!class_exists('display_documents')) {
                     <label for="embedded-item"><?php echo __( 'Embedded Item', 'textdomain' );?></label>
                     <select id="embedded-item" class="select ui-widget-content ui-corner-all">
                     <?php
+                    echo $this->select_document_list_options($embedded_selection, 1);
+/*                    
                     $items_class = new embedded_items();
                     $embedded_item_keys = $items_class->get_embedded_item_keys();
                     foreach ($embedded_item_keys as $value => $label): ?>
@@ -1522,6 +1524,7 @@ if (!class_exists('display_documents')) {
                             <?php echo esc_html($label); ?>
                         </option>
                     <?php endforeach; ?>
+*/?>
                     </select>
                 </div>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
