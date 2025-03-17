@@ -405,8 +405,13 @@ if (!class_exists('display_documents')) {
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
             $multiple_select = get_post_meta($doc_id, 'multiple_select', true);
             $is_multiple_select = ($multiple_select==1) ? 'checked' : '';
+            $is_embedded_item = get_post_meta($doc_id, 'is_embedded_item', true);
+            $is_embedded_item_checked = ($is_embedded_item==1) ? 'checked' : '';
+            $is_public = get_post_meta($doc_id, 'is_public', true);
+            $is_public_checked = ($is_public==1) ? 'checked' : '';
             $todo_list_only = get_post_meta($doc_id, 'todo_list_only', true);
             $is_todo_list_only = ($todo_list_only==1) ? 'checked' : '';
+
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
 
             if (current_user_can('administrator')) {
@@ -490,12 +495,18 @@ if (!class_exists('display_documents')) {
                     <fieldset id="system-doc-div" style="display:none;">
                         <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
                         <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
+<?php /*                        
                         <label for="system-doc"><?php echo __( 'Field Type Name', 'textdomain' );?></label> (
                         <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
                         <label for="multiple-select"><?php echo __( '是否為多選', 'textdomain' );?></label>)
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
+*/?>
+                        <input type="checkbox" id="is-embedded-item" <?php echo esc_html($is_embedded_item_checked);?> />
+                        <label for="is-embedded-item"><?php echo __( 'Embedded Item', 'textdomain' );?></label><br>
+                        <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
+                        <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label><br>
                         <input type="checkbox" id="todo-list-only" <?php echo esc_html($is_todo_list_only);?> />
-                        <label for="todo-list-only"><?php echo __( 'Todo-list only', 'textdomain' );?></label>
+                        <label for="todo-list-only"><?php echo __( 'Display in Todo-list only', 'textdomain' );?></label>
                     </fieldset>
                 </div>
 
@@ -544,6 +555,8 @@ if (!class_exists('display_documents')) {
                 $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
                 $system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
                 $multiple_select = (isset($_POST['_multiple_select'])) ? sanitize_text_field($_POST['_multiple_select']) : 0;
+                $is_embedded_item = (isset($_POST['_is_embedded_item'])) ? sanitize_text_field($_POST['_is_embedded_item']) : 0;
+                $is_public = (isset($_POST['_is_public'])) ? sanitize_text_field($_POST['_is_public']) : 0;
                 $todo_list_only = (isset($_POST['_todo_list_only'])) ? sanitize_text_field($_POST['_todo_list_only']) : 0;
                 $doc_post_args = array(
                     'ID'           => $doc_id,
@@ -559,6 +572,8 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
                 update_post_meta($doc_id, 'system_doc', $system_doc);
                 update_post_meta($doc_id, 'multiple_select', $multiple_select);
+                update_post_meta($doc_id, 'is_embedded_item', $is_embedded_item);
+                update_post_meta($doc_id, 'is_public', $is_public);
                 update_post_meta($doc_id, 'todo_list_only', $todo_list_only);
 
                 $params = array(
@@ -1424,7 +1439,7 @@ if (!class_exists('display_documents')) {
 
             $system_doc_array = $this->get_system_doc_array();
             //error_log('$system_doc_array: ' . print_r($system_doc_array,true));
-            $field_types = $field_types + $system_doc_array;
+            //$field_types = $field_types + $system_doc_array;
             //error_log('$field_types: ' . print_r($field_types,true));
 
             // If $field_type is set and exists in $field_types, return the label
@@ -1496,6 +1511,7 @@ if (!class_exists('display_documents')) {
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
+            $embedded_item = get_post_meta($field_id, 'embedded_item', true);
             ?>
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
@@ -1514,17 +1530,7 @@ if (!class_exists('display_documents')) {
                 <div id="embedded-selection" style="display:none">
                     <label for="embedded-item"><?php echo __( 'Embedded Item', 'textdomain' );?></label>
                     <select id="embedded-item" class="select ui-widget-content ui-corner-all">
-                    <?php
-                    echo $this->select_document_list_options($embedded_selection, 1);
-/*                    
-                    $items_class = new embedded_items();
-                    $embedded_item_keys = $items_class->get_embedded_item_keys();
-                    foreach ($embedded_item_keys as $value => $label): ?>
-                        <option value="<?php echo esc_attr($value); ?>" <?php echo ($default_value == $value) ? 'selected' : ''; ?>>
-                            <?php echo esc_html($label); ?>
-                        </option>
-                    <?php endforeach; ?>
-*/?>
+                    <?php echo $this->select_document_list_options($embedded_item, 1);?>
                     </select>
                 </div>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
@@ -1562,6 +1568,7 @@ if (!class_exists('display_documents')) {
                 $field_type = isset($_POST['_field_type']) ? sanitize_text_field($_POST['_field_type']) : '';
                 $default_value = isset($_POST['_default_value']) ? sanitize_text_field($_POST['_default_value']) : '';
                 $listing_style = isset($_POST['_listing_style']) ? sanitize_text_field($_POST['_listing_style']) : '';
+                $embedded_item = isset($_POST['_embedded_item']) ? sanitize_text_field($_POST['_embedded_item']) : '';
                 wp_update_post(array(
                     'ID'          => $field_id,
                     'post_title'  => $field_title,
@@ -1569,6 +1576,7 @@ if (!class_exists('display_documents')) {
                         'field_type'    => $field_type,
                         'default_value' => $default_value,
                         'listing_style' => $listing_style,
+                        'embedded_item' => $embedded_item,
                     )
                 ));
             } else {
@@ -1754,14 +1762,18 @@ if (!class_exists('display_documents')) {
                         case ($field_type=='_doc_report'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value, 1);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all">
+                                <?php echo $this->select_document_list_options($field_value, 1);?>
+                            </select>
                             <?php
                             break;
 
                         case ($field_type=='_document'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_document_list_options($field_value, 0);?></select>
+                            <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all">
+                                <?php echo $this->select_document_list_options($field_value, 0);?>
+                            </select>
                             <?php
                             break;
 

@@ -489,6 +489,8 @@ jQuery(document).ready(function($) {
             ajaxData['_api_endpoint'] = $("#api-endpoint").val();
             ajaxData['_system_doc'] = $("#system-doc").val();
             ajaxData['_multiple_select'] = $("#multiple-select").is(":checked") ? 1 : 0;
+            ajaxData['_is_embedded_item'] = $("#is-embedded-item").is(":checked") ? 1 : 0;
+            ajaxData['_is_public'] = $("#is-public").is(":checked") ? 1 : 0;
             ajaxData['_todo_list_only'] = $("#todo-list-only").is(":checked") ? 1 : 0;
 
             $.ajax({
@@ -675,6 +677,7 @@ jQuery(document).ready(function($) {
                                         '_field_type': $("#field-type").val(),
                                         '_default_value': $("#default-value").val(),
                                         '_listing_style': $("#listing-style").val(),
+                                        '_embedded_item': $("#embedded-item").val(),
                                         '_order_field': $('#order-field').is(":checked") ? 'ASC' : '',
                                     },
                                     success: function (response) {
