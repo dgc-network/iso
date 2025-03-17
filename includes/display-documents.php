@@ -1585,7 +1585,7 @@ if (!class_exists('display_documents')) {
                 <div id="embedded-selection" style="display:none">
                     <label for="embedded-item"><?php echo __( 'Embedded Item', 'textdomain' );?></label>
                     <select id="embedded-item" class="select ui-widget-content ui-corner-all">
-                    <?php echo $this->select_document_list_options($embedded_item, 1);?>
+                        <?php echo $this->select_document_list_options($embedded_item, 'embedded');?>
                     </select>
                 </div>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
