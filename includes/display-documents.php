@@ -275,14 +275,14 @@ if (!class_exists('display_documents')) {
                     'key'     => 'is_embedded_item',
                     'value'   => 1,
                 );
-            }
-
-            $select_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
-            if ($select_category) {
-                $args['meta_query'][] = array(
-                    'key'     => 'doc_category',
-                    'value'   => $select_category,
-                );
+            } else {
+                $select_category = (isset($_GET['_category'])) ? sanitize_text_field($_GET['_category']) : 0;
+                if ($select_category) {
+                    $args['meta_query'][] = array(
+                        'key'     => 'doc_category',
+                        'value'   => $select_category,
+                    );
+                }    
             }
 
             // Sanitize and handle search query
