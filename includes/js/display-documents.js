@@ -901,7 +901,7 @@ jQuery(document).ready(function($) {
                 });
             })
         });
-
+/*
         $('[id^="save-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(16);
             const ajaxData = {
@@ -968,7 +968,7 @@ jQuery(document).ready(function($) {
                 });    
             })
         });
-
+*/
         $('[id^="del-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(15);
             if (window.confirm("Are you sure you want to delete this record?")) {

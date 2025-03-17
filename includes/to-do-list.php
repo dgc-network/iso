@@ -943,7 +943,7 @@ if (!class_exists('to_do_list')) {
             $documents_class->update_doc_field_contains(
                 array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
             );
-
+/*
             // update system_doc
             $system_doc = get_post_meta($doc_id, 'system_doc', true);
             if ($system_doc) {
@@ -961,7 +961,7 @@ if (!class_exists('to_do_list')) {
                     $documents_class->upsert_site_profile($new_report_id);
                 }
             }
-
+*/
             // Create a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',

@@ -1240,7 +1240,7 @@ if (!class_exists('display_documents')) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
                 $system_doc = get_post_meta($doc_id, 'system_doc', true);
-                if ($system_doc) {
+                //if ($system_doc) {
                     // Update the post
                     $post_data = array(
                         'ID'           => $report_id,
@@ -1254,7 +1254,7 @@ if (!class_exists('display_documents')) {
                         // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
                         $this->upsert_site_profile($report_id);
                     }
-                }
+                //}
 
                 $this->update_doc_field_contains(array('report_id' => $report_id));
 
