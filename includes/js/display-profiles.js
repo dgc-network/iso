@@ -807,7 +807,7 @@ jQuery(document).ready(function($) {
 
         $('[id^="del-action-user-"]').on("click", function () {
             if (window.confirm("Are you sure you want to delete this action user?")) {
-                const user_id = this.id.substring(16);
+                const user_id = this.id.substring(17);
                 $.ajax({
                     type: 'POST',
                     url: ajax_object.ajax_url,

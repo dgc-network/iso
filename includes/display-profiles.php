@@ -1149,7 +1149,7 @@ if (!class_exists('display_profiles')) {
                 $users = $this->retrieve_users_by_action_id($action_id);
                 foreach ($users as $user) {
                     ?>
-                    <tr id="del-doc-user-<?php echo $user->ID;?>">
+                    <tr id="del-action-user-<?php echo $user->ID;?>">
                         <td style="text-align:center;"><?php echo esc_html($user->display_name);?></td>
                         <td style="text-align:center;"><?php echo esc_html($user->user_email);?></td>
                     </tr>
