@@ -178,12 +178,11 @@ if (!class_exists('display_documents')) {
                         while ($query->have_posts()) : $query->the_post();
                             $doc_id = get_the_ID();
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
                             $doc_title = get_the_title();
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $doc_category = get_post_meta($doc_id, 'doc_category', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            $system_doc = get_post_meta($doc_id, 'system_doc', true);
+                            $embedded_item = get_post_meta($doc_id, 'embedded_item', true);
 
                             if (!$doc_category) {
                                 $doc_number = '<span style="color:red;">' . $doc_number . '</span>';
@@ -193,8 +192,8 @@ if (!class_exists('display_documents')) {
                                 $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
                             }
 
-                            if ($system_doc) {
-                                $doc_title = '<span style="color:blue;">**' . $doc_title . '</span>';
+                            if ($embedded_item) {
+                                $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
                             }
 
                             ?>
