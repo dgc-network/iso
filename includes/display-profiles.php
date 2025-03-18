@@ -1085,7 +1085,7 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_action_id']) ) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
-                $action_number = isset($_POST['_action_number']) ? sanitize_text_field($_POST['_action_number']) : '';
+                //$action_number = isset($_POST['_action_number']) ? sanitize_text_field($_POST['_action_number']) : '';
                 $action_connector = isset($_POST['_action_connector']) ? sanitize_text_field($_POST['_action_connector']) : 0;
                 $next_job = isset($_POST['_next_job']) ? sanitize_text_field($_POST['_next_job']) : 0;
                 $data = array(
@@ -1094,7 +1094,7 @@ if (!class_exists('display_profiles')) {
                     'post_content' => $_POST['_action_content'],
                 );
                 wp_update_post( $data );
-                update_post_meta($action_id, 'action_number', $action_number);
+                //update_post_meta($action_id, 'action_number', $action_number);
                 update_post_meta($action_id, 'action_connector', $action_connector);
                 update_post_meta($action_id, 'next_job', $next_job);
 
@@ -1110,14 +1110,14 @@ if (!class_exists('display_profiles')) {
                 // new action
                 $new_post = array(
                     'post_type'     => 'action',
-                    'post_title'    => __( 'New action', 'textdomain' ),
+                    'post_title'    => __( 'OK', 'textdomain' ),
                     'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
                     'post_author'   => $current_user_id,
                 );    
                 $new_action_id = wp_insert_post($new_post);
                 update_post_meta($new_action_id, 'site_id', $site_id);
-                update_post_meta($new_action_id, 'action_number', '-');
+                //update_post_meta($new_action_id, 'action_number', '-');
                 update_post_meta($new_action_id, 'doc_id', $doc_id);
             }
             $response['html_contain'] = $this->display_site_action_list($paged, $doc_id);
