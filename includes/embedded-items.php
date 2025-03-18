@@ -631,6 +631,8 @@ if (!class_exists('embedded_items')) {
                         $documents_class = new display_documents();
                         $type_name = $documents_class->get_field_type_data($field_type);
                         $default_value = get_post_meta($embedded_item_id, 'default_value', true);
+                        $embedded_item = get_post_meta($embedded_item_id, 'embedded_item', true);
+                        if ($embedded_item) $default_value = get_the_title($embedded_item);
                         if ($field_type=='heading') {
                             if (!$default_value) {
                                 $field_note = '<b>'.$field_note.'</b>';
