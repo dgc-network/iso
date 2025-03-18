@@ -675,6 +675,7 @@ if (!class_exists('embedded_items')) {
             $embedded_item_title = get_the_title($embedded_item_id);
             $field_type = get_post_meta($embedded_item_id, 'field_type', true);
             $default_value = get_post_meta($embedded_item_id, 'default_value', true);
+            $embedded_item = get_post_meta($embedded_item_id, 'embedded_item', true);
             $listing_style = get_post_meta($embedded_item_id, 'listing_style', true);            
             $field_note = get_post_meta($embedded_item_id, 'field_note', true);
             ?>
@@ -692,6 +693,12 @@ if (!class_exists('embedded_items')) {
                     </option>
                 <?php endforeach; ?>
                 </select>
+                <div id="embedded-selection" style="display:none">
+                    <label for="embedded-item"><?php echo __( 'Embedded Item', 'textdomain' );?></label>
+                    <select id="embedded-item" class="select ui-widget-content ui-corner-all">
+                        <?php echo $documents_class->select_document_list_options($embedded_item, 'embedded');?>
+                    </select>
+                </div>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
                 <textarea id="default-value" rows="2" style="width:100%;"><?php echo $default_value;?></textarea>
                 <label for="listing-style"><?php echo __( 'Align', 'textdomain' );?></label>
@@ -724,6 +731,7 @@ if (!class_exists('embedded_items')) {
                 $field_note = isset($_POST['_field_note']) ? sanitize_text_field($_POST['_field_note']) : '';
                 $field_type = isset($_POST['_field_type']) ? sanitize_text_field($_POST['_field_type']) : '';
                 $default_value = isset($_POST['_default_value']) ? sanitize_text_field($_POST['_default_value']) : '';
+                $embedded_item = isset($_POST['_embedded_item']) ? sanitize_text_field($_POST['_embedded_item']) : '';
                 $listing_style = isset($_POST['_listing_style']) ? sanitize_text_field($_POST['_listing_style']) : '';
                 $data = array(
                     'ID'           => $embedded_item_id,
@@ -733,6 +741,7 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($embedded_item_id, 'field_note', $field_note);
                 update_post_meta($embedded_item_id, 'field_type', $field_type);
                 update_post_meta($embedded_item_id, 'default_value', $default_value);
+                update_post_meta($embedded_item_id, 'embedded_item', $embedded_item);
                 update_post_meta($embedded_item_id, 'listing_style', $listing_style);
             } else {
                 $current_user_id = get_current_user_id();

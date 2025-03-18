@@ -379,6 +379,7 @@ jQuery(document).ready(function($) {
                                         '_embedded_item_title': $("#embedded-item-title").val(),
                                         '_field_type': $("#field-type").val(),
                                         '_default_value': $("#default-value").val(),
+                                        '_embedded_item': $("#embedded-item").val(),
                                         '_listing_style': $("#listing-style").val(),
                                         '_field_note': $("#embedded-item-note").val(),
                                     },
@@ -420,6 +421,24 @@ jQuery(document).ready(function($) {
                     }
                     $("#embedded-item-dialog").dialog('open');
 
+                    if ($("#field-type").val() === '_select' || $("#field-type").val() === '_embedded' || $("#field-type").val() === '_line_list') {
+                        $('#embedded-selection').show();
+                    }
+        
+                    $("#field-type").on("change", function() {
+                        if ($(this).val() === '_select' || $(this).val() === '_embedded' || $(this).val() === '_line_list') {
+                            $('#embedded-selection').show();
+                        } else {
+                            $('#embedded-selection').hide();
+                        }
+                        if ($(this).val() === 'heading' || $(this).val() === 'video' || $(this).val() === 'image' || $(this).val() === 'canvas' || $(this).val() === '_embedded' || $(this).val() === '_line_list') {
+                            $('#listing-style').val('.');
+                        }
+                        if ($(this).val() === 'textarea') {
+                            $('#listing-style').val('left');
+                        }
+                    });
+/*
                     $("#field-type").on("change", function() {
                         if ($(this).val() === 'heading' || $(this).val() === 'video' || $(this).val() === 'image' || $(this).val() === 'canvas' || $(this).val() === '_embedded' || $(this).val() === '_line_list') {
                             $('#listing-style').val('.');
@@ -428,7 +447,7 @@ jQuery(document).ready(function($) {
                             $('#listing-style').val('left');
                         }
                     });
-
+*/
                 },
                 error: function (error) {
                     console.error(error);
