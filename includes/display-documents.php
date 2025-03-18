@@ -182,7 +182,7 @@ if (!class_exists('display_documents')) {
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $doc_category = get_post_meta($doc_id, 'doc_category', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            $embedded_item = get_post_meta($doc_id, 'embedded_item', true);
+                            $is_embedded_item = get_post_meta($doc_id, 'is_embedded_item', true);
 
                             if (!$doc_category) {
                                 $doc_number = '<span style="color:red;">' . $doc_number . '</span>';
@@ -192,7 +192,7 @@ if (!class_exists('display_documents')) {
                                 $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
                             }
 
-                            if ($embedded_item) {
+                            if ($is_embedded_item) {
                                 $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
                             }
 
@@ -441,9 +441,9 @@ if (!class_exists('display_documents')) {
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
             $department_id = get_post_meta($doc_id, 'department_id', true);
             $api_endpoint = get_post_meta($doc_id, 'api_endpoint', true);
-            $system_doc = get_post_meta($doc_id, 'system_doc', true);
-            $multiple_select = get_post_meta($doc_id, 'multiple_select', true);
-            $is_multiple_select = ($multiple_select==1) ? 'checked' : '';
+            //$system_doc = get_post_meta($doc_id, 'system_doc', true);
+            //$multiple_select = get_post_meta($doc_id, 'multiple_select', true);
+            //$is_multiple_select = ($multiple_select==1) ? 'checked' : '';
             $is_embedded_item = get_post_meta($doc_id, 'is_embedded_item', true);
             $is_embedded_item_checked = ($is_embedded_item==1) ? 'checked' : '';
             $is_public = get_post_meta($doc_id, 'is_public', true);
@@ -595,8 +595,8 @@ if (!class_exists('display_documents')) {
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
                 $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
                 $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
-                $system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
-                $multiple_select = (isset($_POST['_multiple_select'])) ? sanitize_text_field($_POST['_multiple_select']) : 0;
+                //$system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
+                //$multiple_select = (isset($_POST['_multiple_select'])) ? sanitize_text_field($_POST['_multiple_select']) : 0;
                 $is_embedded_item = (isset($_POST['_is_embedded_item'])) ? sanitize_text_field($_POST['_is_embedded_item']) : 0;
                 $is_public = (isset($_POST['_is_public'])) ? sanitize_text_field($_POST['_is_public']) : 0;
                 $todo_list_only = (isset($_POST['_todo_list_only'])) ? sanitize_text_field($_POST['_todo_list_only']) : 0;
@@ -612,8 +612,8 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
                 update_post_meta($doc_id, 'department_id', $department_id);
                 update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
-                update_post_meta($doc_id, 'system_doc', $system_doc);
-                update_post_meta($doc_id, 'multiple_select', $multiple_select);
+                //update_post_meta($doc_id, 'system_doc', $system_doc);
+                //update_post_meta($doc_id, 'multiple_select', $multiple_select);
                 update_post_meta($doc_id, 'is_embedded_item', $is_embedded_item);
                 update_post_meta($doc_id, 'is_public', $is_public);
                 update_post_meta($doc_id, 'todo_list_only', $todo_list_only);
@@ -869,12 +869,15 @@ if (!class_exists('display_documents')) {
                         $iot_device = get_post_meta($field_value, 'iot_device', true);
                         echo esc_html(get_the_title($field_value));
                     } else {
+/*                        
                         $get_system_doc_id = $this->get_system_doc_id($field_type);
                         if ($get_system_doc_id) {
                             if ($field_value) echo esc_html(get_the_title($field_value));
                         } else {
                             echo esc_html($field_value);
                         }
+*/
+                        echo esc_html($field_value);
                     }
                     echo '</td>';
                 endwhile;                
@@ -1241,7 +1244,7 @@ if (!class_exists('display_documents')) {
                 // Update the existing post
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $system_doc = get_post_meta($doc_id, 'system_doc', true);
+                //$system_doc = get_post_meta($doc_id, 'system_doc', true);
                 //if ($system_doc) {
                     // Update the post
                     $post_data = array(
@@ -1251,13 +1254,13 @@ if (!class_exists('display_documents')) {
                     );        
                     wp_update_post($post_data);
                     update_post_meta($report_id, '_post_number', $_POST['_post_number']);
-
+/*
                     if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
                         // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
                         $this->upsert_site_profile($report_id);
                     }
                 //}
-
+*/
                 $this->update_doc_field_contains(array('report_id' => $report_id));
 
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
@@ -1494,7 +1497,7 @@ if (!class_exists('display_documents')) {
                 'video' => __('Video', 'textdomain'),
             ];
 
-            $system_doc_array = $this->get_system_doc_array();
+            //$system_doc_array = $this->get_system_doc_array();
             //error_log('$system_doc_array: ' . print_r($system_doc_array,true));
             //$field_types = $field_types + $system_doc_array;
             //error_log('$field_types: ' . print_r($field_types,true));
@@ -1961,6 +1964,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         default:
+/*                        
                             $get_system_doc_id = $this->get_system_doc_id($field_type);
                             if ($get_system_doc_id) {
                                 $params['doc_id'] = $get_system_doc_id;
@@ -1983,6 +1987,11 @@ if (!class_exists('display_documents')) {
                                 <input type="text" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
                                 <?php    
                             }
+*/
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <input type="text" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
+                            <?php    
                             break;
                     }
                 endwhile;
@@ -2126,7 +2135,7 @@ if (!class_exists('display_documents')) {
                 wp_reset_postdata();
             }
         }
-
+/*
         // sysytem doc
         function get_system_doc_array() {
             // Get the current user's site ID
@@ -2250,7 +2259,7 @@ if (!class_exists('display_documents')) {
             wp_reset_postdata();
             return $options;
         }
-
+*/
         // document misc
         function select_document_list_options($selected_option=false, $is_doc_report=false) {
             $query = $this->retrieve_document_data(0, $is_doc_report);

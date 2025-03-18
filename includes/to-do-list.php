@@ -945,7 +945,7 @@ if (!class_exists('to_do_list')) {
             );
 
             // update system_doc
-            $system_doc = get_post_meta($doc_id, 'system_doc', true);
+            //$system_doc = get_post_meta($doc_id, 'system_doc', true);
             //if ($system_doc) {
                 // Update the post
                 $post_data = array(
@@ -955,13 +955,13 @@ if (!class_exists('to_do_list')) {
                 );        
                 wp_update_post($post_data);
                 update_post_meta($new_report_id, '_post_number', $_POST['_post_number']);
-
+/*
                 if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
                     // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
                     $documents_class->upsert_site_profile($new_report_id);
                 }
             //}
-
+*/
             // Create a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',

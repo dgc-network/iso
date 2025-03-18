@@ -488,8 +488,8 @@ jQuery(document).ready(function($) {
             ajaxData['_doc_content'] = $("#doc-content").val();
             ajaxData['_is_doc_report'] = $("#is-doc-report").val();
             ajaxData['_api_endpoint'] = $("#api-endpoint").val();
-            ajaxData['_system_doc'] = $("#system-doc").val();
-            ajaxData['_multiple_select'] = $("#multiple-select").is(":checked") ? 1 : 0;
+            //ajaxData['_system_doc'] = $("#system-doc").val();
+            //ajaxData['_multiple_select'] = $("#multiple-select").is(":checked") ? 1 : 0;
             ajaxData['_is_embedded_item'] = $("#is-embedded-item").is(":checked") ? 1 : 0;
             ajaxData['_is_public'] = $("#is-public").is(":checked") ? 1 : 0;
             ajaxData['_todo_list_only'] = $("#todo-list-only").is(":checked") ? 1 : 0;
