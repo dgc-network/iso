@@ -463,6 +463,7 @@ jQuery(document).ready(function($) {
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or update the parameters
             urlParams.set("_is_doc_report", 1);
+            urlParams.set("paged", 1);
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
