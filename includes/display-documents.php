@@ -455,7 +455,7 @@ if (!class_exists('display_documents')) {
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
 
             if (current_user_can('administrator')) {
-                $is_action_connector=true;
+                //$is_action_connector=true;
             }
             ?>
             <div class="ui-widget" id="result-container">
@@ -475,7 +475,10 @@ if (!class_exists('display_documents')) {
                 <label for="doc-revision"><?php echo __( 'Document Rev.', 'textdomain' );?></label>
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="doc-category"><?php echo __( 'Categories', 'textdomain' );?></label><br>
-                <select id="doc-category" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options($doc_category, $is_action_connector);?></select>
+                <select id="doc-category" class="select ui-widget-content ui-corner-all">
+                    <?php //echo $items_class->select_doc_category_options($doc_category, $is_action_connector);?>
+                    <?php echo $items_class->select_doc_category_options($doc_category);?>
+                </select>
 
                 <input type="hidden" id="is-doc-report" value="<?php echo $is_doc_report;?>" />
 

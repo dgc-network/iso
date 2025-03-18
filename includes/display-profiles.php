@@ -1036,7 +1036,7 @@ if (!class_exists('display_profiles')) {
             $action_number = get_post_meta($action_id, 'action_number', true);
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
-            $action_connector = get_post_meta($action_id, 'action_connector', true);
+            $action_connector = get_post_meta($action_id, 'action_connector', true); // doc_category
             $next_job = get_post_meta($action_id, 'next_job', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $doc_title = get_the_title($doc_id);
@@ -1050,7 +1050,10 @@ if (!class_exists('display_profiles')) {
                 <label for="action-content"><?php echo __( 'Content', 'textdomain' );?></label>
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-connector"><?php echo __( 'Connector', 'textdomain' );?></label>
-                <select id="action-connector" class="select ui-widget-content ui-corner-all" ><?php echo $items_class->select_doc_category_options($action_connector, true);?></select>
+                <select id="action-connector" class="select ui-widget-content ui-corner-all" >
+                    <?php //echo $items_class->select_doc_category_options($action_connector, true);?>
+                    <?php echo $items_class->select_doc_category_options($action_connector);?>
+                </select>
                 <label for="next-job"><?php echo __( 'Action', 'textdomain' );?></label>
                 <select id="next-job" class="select ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $action_connector);?></select>
                 <label for="user-list"><?php echo __( 'User List', 'textdomain' );?></label>

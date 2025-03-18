@@ -81,6 +81,7 @@ if (!class_exists('embedded_items')) {
         }
 
         // embedded
+/*        
         function register_embedded_post_type() {
             $labels = array(
                 'menu_name'     => _x('embedded', 'admin menu', 'textdomain'),
@@ -91,10 +92,10 @@ if (!class_exists('embedded_items')) {
             );
             register_post_type( 'embedded', $args );
         }
-        
+*/        
         function display_embedded_list() {
             ob_start();
-            $profiles_class = new display_profiles();
+            //$profiles_class = new display_profiles();
             $documents_class = new display_documents();
             ?>
             <div class="ui-widget" id="result-container">
@@ -542,7 +543,7 @@ if (!class_exists('embedded_items')) {
             wp_reset_postdata();
             return $options;
         }
-
+/*
         function get_embedded_id_by_number($embedded_number = false) {
             if ($embedded_number === false) {
                 return null; // Return null if no embedded_number is provided
@@ -840,6 +841,7 @@ if (!class_exists('embedded_items')) {
             }
         }
 */
+/*
         function get_embedded_item_ids($embedded_id=false) {
             $args = array(
                 'post_type'  => 'embedded-item',
@@ -863,7 +865,7 @@ if (!class_exists('embedded_items')) {
             wp_reset_postdata();        
             return $post_ids;
         }
-
+*/
         function get_embedded_item_keys($doc_id=false) {
             $_array = array();
             $documents_class = new display_documents();
@@ -1104,9 +1106,10 @@ if (!class_exists('embedded_items')) {
                     <tbody>
                     <?php
                     if (current_user_can('administrator')) {
-                        $is_action_connector=true;
+                        //$is_action_connector=true;
                     }
-                    $query = $this->retrieve_doc_category_data($is_action_connector);
+                    //$query = $this->retrieve_doc_category_data($is_action_connector);
+                    $query = $this->retrieve_doc_category_data();
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $category_id = get_the_ID();
@@ -1136,7 +1139,9 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_doc_category_data($is_action_connector=false) {
+        //function retrieve_doc_category_data($is_action_connector=false) {
+
+        function retrieve_doc_category_data() {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
@@ -1161,10 +1166,12 @@ if (!class_exists('embedded_items')) {
                         'key'   => 'api_password',
                         'compare' => 'EXISTS',
                     ),
+/*                    
                     array(
                         'key'   => 'is_action_connector',
                         'value' => 1,
                     ),
+*/
                     array(
                         'key'   => 'site_id',
                         'value' => $site_id,
@@ -1172,6 +1179,7 @@ if (!class_exists('embedded_items')) {
                 );
             } else {
                 $args['meta_query'][] = array(
+/*                    
                     'relation' => 'AND',
                     array(
                         'relation' => 'OR',
@@ -1184,6 +1192,7 @@ if (!class_exists('embedded_items')) {
                             'value' => 0,
                         )
                     ),
+*/
                     array(
                         'key'   => 'site_id',
                         'value' => $site_id,
@@ -1201,8 +1210,8 @@ if (!class_exists('embedded_items')) {
             $iso_category = get_post_meta($category_id, 'iso_category', true);
             $api_username = get_post_meta($category_id, 'api_username', true);
             $api_password = get_post_meta($category_id, 'api_password', true);
-            $is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
-            $is_checked = ($is_action_connector==1) ? 'checked' : '';
+            //$is_action_connector = get_post_meta($category_id, 'is_action_connector', true);
+            //$is_checked = ($is_action_connector==1) ? 'checked' : '';
             ?>
             <fieldset>
                 <input type="hidden" id="category-id" value="<?php echo esc_attr($category_id);?>" />
@@ -1238,7 +1247,7 @@ if (!class_exists('embedded_items')) {
                 $api_username = (isset($_POST['_api_username'])) ? sanitize_text_field($_POST['_api_username']) : '';
                 $api_password = (isset($_POST['_api_password'])) ? sanitize_text_field($_POST['_api_password']) : '';
                 $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
-                $is_action_connector = (isset($_POST['_is_action_connector'])) ? sanitize_text_field($_POST['_is_action_connector']) : 0;
+                //$is_action_connector = (isset($_POST['_is_action_connector'])) ? sanitize_text_field($_POST['_is_action_connector']) : 0;
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => $category_title,
@@ -1248,7 +1257,7 @@ if (!class_exists('embedded_items')) {
                 update_post_meta($category_id, 'iso_category', $iso_category);
                 update_post_meta($category_id, 'api_username', $api_username);
                 update_post_meta($category_id, 'api_password', $api_password);
-                update_post_meta($category_id, 'is_action_connector', $is_action_connector);
+                //update_post_meta($category_id, 'is_action_connector', $is_action_connector);
 
                 $params = array(
                     'log_message' => sprintf(
@@ -1294,8 +1303,11 @@ if (!class_exists('embedded_items')) {
             wp_send_json($response);
         }
 
-        function select_doc_category_options($selected_option=false, $is_action_connector=false) {
-            $query = $this->retrieve_doc_category_data($is_action_connector);
+        //function select_doc_category_options($selected_option=false, $is_action_connector=false) {
+
+        function select_doc_category_options($selected_option=false) {
+            //$query = $this->retrieve_doc_category_data($is_action_connector);
+            $query = $this->retrieve_doc_category_data();
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
