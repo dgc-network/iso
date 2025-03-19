@@ -1021,7 +1021,7 @@ if (!class_exists('embedded_items')) {
             $line_report_id = (isset($_POST['_line_report_id'])) ? sanitize_text_field($_POST['_line_report_id']) : 0;
             $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
             $response['html_contain'] = $this->display_line_report_dialog($line_report_id, $embedded_id);
-            //$response['line_report_fields'] = $this->get_line_report_field_keys($embedded_id);
+            $response['line_report_fields'] = $this->get_line_report_field_keys($embedded_id);
             wp_send_json($response);
         }
 
@@ -1070,7 +1070,7 @@ if (!class_exists('embedded_items')) {
             $documents_class = new display_documents();
             $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $embedded_id));
             if ($query->have_posts()) :
-                while ($inner_query->have_posts()) : $query->the_post();
+                while ($query->have_posts()) : $query->the_post();
                     $embedded_item_id = get_the_ID();
                     $_list = array();
                     $_list["embedded_item_id"] = $embedded_item_id;
