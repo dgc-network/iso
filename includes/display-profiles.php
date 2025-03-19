@@ -157,9 +157,6 @@ if (!class_exists('display_profiles')) {
             echo "Meta keys have been renamed successfully.";
         }
         
-        // Run the function once
-        rename_meta_keys();
-        
         function migrate_embedded_to_document() {
             global $wpdb;
         
