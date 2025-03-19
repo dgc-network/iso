@@ -182,7 +182,7 @@ if (!class_exists('display_documents')) {
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $doc_category = get_post_meta($doc_id, 'doc_category', true);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                            $is_embedded_item = get_post_meta($doc_id, 'is_embedded_item', true);
+                            $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
 
                             if (!$doc_category) {
                                 $doc_number = '<span style="color:red;">' . $doc_number . '</span>';
@@ -192,7 +192,7 @@ if (!class_exists('display_documents')) {
                                 $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
                             }
 
-                            if ($is_embedded_item) {
+                            if ($is_embedded_doc) {
                                 $doc_title = '<span style="color:blue;">*' . $doc_title . '</span>';
                             }
 
@@ -267,7 +267,7 @@ if (!class_exists('display_documents')) {
 
             if ($is_doc_report == 'embedded') {
                 $args['meta_query'][] = array(
-                    'key'     => 'is_embedded_item',
+                    'key'     => 'is_embedded_doc',
                     'value'   => 1,
                 );
                 if (!current_user_can('administrator')) {
@@ -444,8 +444,8 @@ if (!class_exists('display_documents')) {
             //$system_doc = get_post_meta($doc_id, 'system_doc', true);
             //$multiple_select = get_post_meta($doc_id, 'multiple_select', true);
             //$is_multiple_select = ($multiple_select==1) ? 'checked' : '';
-            $is_embedded_item = get_post_meta($doc_id, 'is_embedded_item', true);
-            $is_embedded_item_checked = ($is_embedded_item==1) ? 'checked' : '';
+            $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
+            $is_embedded_item_checked = ($is_embedded_doc==1) ? 'checked' : '';
             $is_public = get_post_meta($doc_id, 'is_public', true);
             $is_public_checked = ($is_public==1) ? 'checked' : '';
             $todo_list_only = get_post_meta($doc_id, 'todo_list_only', true);
@@ -543,8 +543,8 @@ if (!class_exists('display_documents')) {
                         <label for="multiple-select"><?php echo __( '是否為多選', 'textdomain' );?></label>)
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
 */?>
-                        <input type="checkbox" id="is-embedded-item" <?php echo esc_html($is_embedded_item_checked);?> />
-                        <label for="is-embedded-item"><?php echo __( 'Embedded Item', 'textdomain' );?></label><br>
+                        <input type="checkbox" id="is-embedded-doc" <?php echo esc_html($is_embedded_item_checked);?> />
+                        <label for="is-embedded-doc"><?php echo __( 'Embedded Item', 'textdomain' );?></label><br>
                         <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
                         <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label><br>
                         <input type="checkbox" id="todo-list-only" <?php echo esc_html($is_todo_list_only);?> />
@@ -597,7 +597,7 @@ if (!class_exists('display_documents')) {
                 $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
                 //$system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
                 //$multiple_select = (isset($_POST['_multiple_select'])) ? sanitize_text_field($_POST['_multiple_select']) : 0;
-                $is_embedded_item = (isset($_POST['_is_embedded_item'])) ? sanitize_text_field($_POST['_is_embedded_item']) : 0;
+                $is_embedded_doc = (isset($_POST['_is_embedded_doc'])) ? sanitize_text_field($_POST['_is_embedded_doc']) : 0;
                 $is_public = (isset($_POST['_is_public'])) ? sanitize_text_field($_POST['_is_public']) : 0;
                 $todo_list_only = (isset($_POST['_todo_list_only'])) ? sanitize_text_field($_POST['_todo_list_only']) : 0;
                 $doc_post_args = array(
@@ -614,7 +614,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
                 //update_post_meta($doc_id, 'system_doc', $system_doc);
                 //update_post_meta($doc_id, 'multiple_select', $multiple_select);
-                update_post_meta($doc_id, 'is_embedded_item', $is_embedded_item);
+                update_post_meta($doc_id, 'is_embedded_doc', $is_embedded_doc);
                 update_post_meta($doc_id, 'is_public', $is_public);
                 update_post_meta($doc_id, 'todo_list_only', $todo_list_only);
 
@@ -1535,8 +1535,8 @@ if (!class_exists('display_documents')) {
                                 $field_type = get_post_meta($field_id, 'field_type', true);
                                 $type_name = $this->get_field_type_data($field_type);
                                 $default_value = get_post_meta($field_id, 'default_value', true);
-                                $embedded_item = get_post_meta($field_id, 'embedded_item', true);
-                                if ($embedded_item) $default_value = get_the_title($embedded_item);
+                                $embedded_doc = get_post_meta($field_id, 'embedded_doc', true);
+                                if ($embedded_doc) $default_value = get_the_title($embedded_doc);
                                 $listing_style = get_post_meta($field_id, 'listing_style', true);
                                 $style = $this->get_listing_style_data($listing_style);
                                 echo '<tr id="edit-doc-field-'.esc_attr($field_id).'" data-field-id="'.esc_attr($field_id).'">';
@@ -1573,7 +1573,7 @@ if (!class_exists('display_documents')) {
             $field_type = get_post_meta($field_id, 'field_type', true);
             $default_value = get_post_meta($field_id, 'default_value', true);
             $listing_style = get_post_meta($field_id, 'listing_style', true);
-            $embedded_item = get_post_meta($field_id, 'embedded_item', true);
+            $embedded_doc = get_post_meta($field_id, 'embedded_doc', true);
             ?>
             <fieldset>
                 <input type="hidden" id="field-id" value="<?php echo esc_attr($field_id);?>" />
@@ -1590,9 +1590,9 @@ if (!class_exists('display_documents')) {
                 <?php endforeach; ?>
                 </select>
                 <div id="embedded-selection" style="display:none">
-                    <label for="embedded-item"><?php echo __( 'Embedded Item', 'textdomain' );?></label>
-                    <select id="embedded-item" class="select ui-widget-content ui-corner-all">
-                        <?php echo $this->select_document_list_options($embedded_item, 'embedded');?>
+                    <label for="embedded-doc"><?php echo __( 'Embedded Document', 'textdomain' );?></label>
+                    <select id="embedded-doc" class="select ui-widget-content ui-corner-all">
+                        <?php echo $this->select_document_list_options($embedded_doc, 'embedded');?>
                     </select>
                 </div>
                 <label for="default-value"><?php echo __( 'Default', 'textdomain' );?></label>
@@ -1630,7 +1630,7 @@ if (!class_exists('display_documents')) {
                 $field_type = isset($_POST['_field_type']) ? sanitize_text_field($_POST['_field_type']) : '';
                 $default_value = isset($_POST['_default_value']) ? sanitize_text_field($_POST['_default_value']) : '';
                 $listing_style = isset($_POST['_listing_style']) ? sanitize_text_field($_POST['_listing_style']) : '';
-                $embedded_item = isset($_POST['_embedded_item']) ? sanitize_text_field($_POST['_embedded_item']) : '';
+                $embedded_doc = isset($_POST['_embedded_doc']) ? sanitize_text_field($_POST['_embedded_doc']) : '';
                 wp_update_post(array(
                     'ID'          => $field_id,
                     'post_title'  => $field_title,
@@ -1638,7 +1638,7 @@ if (!class_exists('display_documents')) {
                         'field_type'    => $field_type,
                         'default_value' => $default_value,
                         'listing_style' => $listing_style,
-                        'embedded_item' => $embedded_item,
+                        'embedded_doc' => $embedded_doc,
                     )
                 ));
             } else {
@@ -1745,7 +1745,7 @@ if (!class_exists('display_documents')) {
                     $field_title = get_the_title($field_id);
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
-                    $embedded_item = get_post_meta($field_id, 'embedded_item', true);
+                    $embedded_doc = get_post_meta($field_id, 'embedded_doc', true);
 
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
@@ -1779,16 +1779,16 @@ if (!class_exists('display_documents')) {
                             //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             //if ($embedded_id && $default_value) {
 
-                            if ($embedded_item) {
+                            if ($embedded_doc) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php //echo esc_attr($embedded_id);?><?php echo esc_attr($embedded_item);?>" />
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php //echo esc_attr($embedded_id);?><?php echo esc_attr($embedded_doc);?>" />
                                 <div id="sub-form">
                                     <fieldset>
                                     <?php
                                     $params = array(
                                         //'doc_embedded_id' => $embedded_id,
-                                        'doc_embedded_id' => $embedded_item,
+                                        'doc_embedded_id' => $embedded_doc,
                                         'report_id' => $report_id,
                                     );
                                     $this->get_doc_field_contains($params);
@@ -1804,7 +1804,7 @@ if (!class_exists('display_documents')) {
                             //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             //if ($embedded_id && $default_value) {
 
-                            if ($embedded_item) {
+                            if ($embedded_doc) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <div id="line-report-list">
@@ -1812,9 +1812,9 @@ if (!class_exists('display_documents')) {
                                     //if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
                                     //elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
                                     //else echo $items_class->display_line_report_list($embedded_id);
-                                    if ($report_id) echo $items_class->display_line_report_list($embedded_item, $report_id);
-                                    elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_item, $prev_report_id);
-                                    else echo $items_class->display_line_report_list($embedded_item);
+                                    if ($report_id) echo $items_class->display_line_report_list($embedded_doc, $report_id);
+                                    elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_doc, $prev_report_id);
+                                    else echo $items_class->display_line_report_list($embedded_doc);
                                     ?>
                                 </div>
                                 <?php
@@ -1826,12 +1826,12 @@ if (!class_exists('display_documents')) {
                             //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             //if ($embedded_id && $default_value) {
 
-                            if ($embedded_item) {
+                            if ($embedded_doc) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all">
                                     <?php //echo $items_class->select_embedded_item_options($field_value, $embedded_id);?>
-                                    <?php echo $this->select_doc_report_options($field_value, $embedded_item);?>
+                                    <?php echo $this->select_doc_report_options($field_value, $embedded_doc);?>
                                 </select>
                                 <?php
                             }
@@ -2042,7 +2042,7 @@ if (!class_exists('display_documents')) {
                     $field_id = get_the_ID();
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
-                    $embedded_item = get_post_meta($field_id, 'embedded_item', true);
+                    $embedded_doc = get_post_meta($field_id, 'embedded_doc', true);
                     if ($is_default) {
                         $field_value = $this->get_doc_field_default_value($field_id, $user_id);
                     } else {
@@ -2098,9 +2098,9 @@ if (!class_exists('display_documents')) {
                             //$embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
                             //if ($embedded_id_by_number && $default_value) {
 
-                            if ($embedded_item) {
+                            if ($embedded_doc) {
                                 //$inner_query = $items_class->retrieve_embedded_item_data($embedded_id_by_number, 0);
-                                $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $embedded_item));
+                                $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $embedded_doc));
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         $embedded_id = get_the_ID();
@@ -2118,9 +2118,9 @@ if (!class_exists('display_documents')) {
                             //$embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
                             //if ($embedded_id_by_number && $default_value) {
 
-                            if ($embedded_item) {
+                            if ($embedded_doc) {
                                 //$inner_query = $items_class->retrieve_line_report_data($embedded_id_by_number);
-                                $inner_query = $items_class->retrieve_line_report_data($embedded_item);
+                                $inner_query = $items_class->retrieve_line_report_data($embedded_doc);
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         $embedded_id = get_the_ID();

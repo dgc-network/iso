@@ -116,10 +116,50 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 echo '</div>';
 
+                if ($_GET['_select_profile']=='rename_meta_keys') echo $this->rename_meta_keys();
                 if ($_GET['_select_profile']=='migrate_embedded_to_document') echo $this->migrate_embedded_to_document();
             }
         }
 
+        function rename_meta_keys() {
+            global $wpdb;
+        
+            // Rename meta in "document" post type
+            $documents = get_posts([
+                'post_type'      => 'document',
+                'posts_per_page' => -1, // Get all posts
+                'fields'         => 'ids' // Only retrieve post IDs
+            ]);
+        
+            foreach ($documents as $doc_id) {
+                $old_value = get_post_meta($doc_id, 'is_embedded_item', true);
+                if (!empty($old_value)) {
+                    update_post_meta($doc_id, 'is_embedded_doc', $old_value);
+                    delete_post_meta($doc_id, 'is_embedded_item');
+                }
+            }
+        
+            // Rename meta in "doc-field" post type
+            $doc_fields = get_posts([
+                'post_type'      => 'doc-field',
+                'posts_per_page' => -1, // Get all posts
+                'fields'         => 'ids' // Only retrieve post IDs
+            ]);
+        
+            foreach ($doc_fields as $field_id) {
+                $old_value = get_post_meta($field_id, 'embedded_item', true);
+                if (!empty($old_value)) {
+                    update_post_meta($field_id, 'embedded_doc', $old_value);
+                    delete_post_meta($field_id, 'embedded_item');
+                }
+            }
+        
+            echo "Meta keys have been renamed successfully.";
+        }
+        
+        // Run the function once
+        rename_meta_keys();
+        
         function migrate_embedded_to_document() {
             global $wpdb;
         
@@ -154,7 +194,7 @@ if (!class_exists('display_profiles')) {
                     update_post_meta($new_doc_id, 'doc_number', '-');
                     update_post_meta($new_doc_id, 'doc_revision', 'draft');
                     update_post_meta($new_doc_id, 'is_doc_report', 1);
-                    update_post_meta($new_doc_id, 'is_embedded_item', 1);
+                    update_post_meta($new_doc_id, 'is_embedded_doc', 1);
                 }
             }
         

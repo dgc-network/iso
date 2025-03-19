@@ -379,7 +379,7 @@ jQuery(document).ready(function($) {
                                         '_embedded_item_title': $("#embedded-item-title").val(),
                                         '_field_type': $("#field-type").val(),
                                         '_default_value': $("#default-value").val(),
-                                        '_embedded_item': $("#embedded-item").val(),
+                                        '_embedded_doc': $("#embedded-item").val(),
                                         '_listing_style': $("#listing-style").val(),
                                         '_field_note': $("#embedded-item-note").val(),
                                     },
