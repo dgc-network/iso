@@ -990,7 +990,7 @@ if (!class_exists('to_do_list')) {
                 'prev_report_id' => $new_report_id,
             );
 
-            if ($next_job>0) $this->proceed_to_next_job($params);
+            //if ($next_job>0) $this->proceed_to_next_job($params);
         }
         
         // proceed-to-next-job
