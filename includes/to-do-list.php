@@ -921,7 +921,7 @@ if (!class_exists('to_do_list')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                $this->set_start_job_and_go_next($action_id);
+                //$this->set_start_job_and_go_next($action_id);
             }
             wp_send_json($response);
         }
@@ -953,7 +953,7 @@ if (!class_exists('to_do_list')) {
             $documents_class->update_doc_field_contains(
                 array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
             );
-/*
+
             if ($is_embedded_doc) {
                 $embedded_doc_title = get_the_title($doc_id);
                 if (stripos($embedded_doc_title, 'customer') !== false || 
@@ -966,7 +966,7 @@ if (!class_exists('to_do_list')) {
                     $documents_class->update_site_profile($new_report_id);
                 }
             }
-*/
+
             // Create a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
@@ -990,7 +990,7 @@ if (!class_exists('to_do_list')) {
                 'prev_report_id' => $new_report_id,
             );
 
-            //if ($next_job>0) $this->proceed_to_next_job($params);
+            if ($next_job>0) $this->proceed_to_next_job($params);
         }
         
         // proceed-to-next-job
