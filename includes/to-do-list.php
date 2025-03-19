@@ -921,7 +921,7 @@ if (!class_exists('to_do_list')) {
             $response = array();
             if( isset($_POST['_action_id']) ) {
                 $action_id = sanitize_text_field($_POST['_action_id']);
-                //$this->set_start_job_and_go_next($action_id);
+                $this->set_start_job_and_go_next($action_id);
             }
             wp_send_json($response);
         }
@@ -935,12 +935,14 @@ if (!class_exists('to_do_list')) {
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
+            $post_title = isset($_POST['_post_title']) ? sanitize_text_field($_POST['_post_title']) : '';
+            $post_content = isset($_POST['_post_content']) ? sanitize_text_field($_POST['_post_content']) : '';
 
             // Create a new doc-report for current action
             $new_post = array(
                 'post_type'     => 'doc-report',
-                'post_title'   => $_POST['_post_title'],
-                'post_content' => $_POST['_post_content'],
+                'post_title'   => $post_title,
+                'post_content' => $post_content,
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
             );    

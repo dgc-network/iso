@@ -877,7 +877,7 @@ if (!class_exists('embedded_items')) {
         }
 
         function del_doc_category_dialog_data() {
-            $category_id = (isset($_POST['_category_id'])) ? sanitize_text_field($_POST['_category_id']) : 0;
+            $category_id = isset($_POST['_category_id']) ? sanitize_text_field($_POST['_category_id']) : 0;
             $params = array(
                 'log_message' => sprintf(
                     __( 'Category %s has been deleted.', 'textdomain' ),
