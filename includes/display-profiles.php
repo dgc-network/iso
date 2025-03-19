@@ -708,7 +708,7 @@ if (!class_exists('display_profiles')) {
                 <fieldset>
                     <table class="ui-widget" style="width:100%;">
                         <thead>
-                            <th></th>
+                            <th>#</th>
                             <th><?php echo __( 'Action', 'textdomain' );?></th>
                             <th><?php echo __( 'Document', 'textdomain' );?></th>
                         </thead>
@@ -720,11 +720,11 @@ if (!class_exists('display_profiles')) {
                                     $action_id = get_the_ID();
                                     $action_title = get_the_title();
                                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                                    $user_action_checked = $this->is_user_action($action_id, $user_id) ? 'checked' : '';
+                                    $user_action_checked = $this->is_user_action($action_id, $user_id, true) ? 'checked' : '';
                                     echo '<tr id="check-user-action-' . $action_id . '">';
                                     echo '<td style="text-align:center;"><input type="checkbox" id="is-user-action-'.$action_id.'" ' . $user_action_checked . ' /></td>';
                                     echo '<td style="text-align:center;">' . get_the_title() . '</td>';
-                                    echo '<td style="text-align:center;">' . get_the_title($doc_id) . '</td>';
+                                    echo '<td>' . get_the_title($doc_id) . '</td>';
                                     echo '</tr>';
                                 endwhile;
                                 wp_reset_postdata();                                    
@@ -949,7 +949,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_site_action_data($paged = 1, $doc_id = false, $is_nest = false) {
+        function retrieve_site_action_data($paged=1, $doc_id=false, $is_nest=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
         
@@ -1343,10 +1343,10 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function is_user_action($action_id=false, $user_id=false) {
+        function is_user_action($action_id=false, $user_id=false, $user_action_checked=false) {
             // Get the current user ID
             if (!$user_id) $user_id = get_current_user_id();    
-            if (is_site_admin($user_id)) return true;
+            if (is_site_admin($user_id) && !$user_action_checked) return true;
             // Get the user's action IDs as an array
             $user_action_ids = get_user_meta($user_id, 'user_action_ids', true);
             // If $user_action_ids is not an array, convert it to an array
