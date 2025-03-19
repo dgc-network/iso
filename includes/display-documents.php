@@ -439,13 +439,13 @@ if (!class_exists('display_documents')) {
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
-            $department_id = get_post_meta($doc_id, 'department_id', true);
+            //$department_id = get_post_meta($doc_id, 'department_id', true);
             $api_endpoint = get_post_meta($doc_id, 'api_endpoint', true);
             //$system_doc = get_post_meta($doc_id, 'system_doc', true);
             //$multiple_select = get_post_meta($doc_id, 'multiple_select', true);
             //$is_multiple_select = ($multiple_select==1) ? 'checked' : '';
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
-            $is_embedded_item_checked = ($is_embedded_doc==1) ? 'checked' : '';
+            $is_embedded_doc_checked = ($is_embedded_doc==1) ? 'checked' : '';
             $is_public = get_post_meta($doc_id, 'is_public', true);
             $is_public_checked = ($is_public==1) ? 'checked' : '';
             $todo_list_only = get_post_meta($doc_id, 'todo_list_only', true);
@@ -529,8 +529,10 @@ if (!class_exists('display_documents')) {
                         <div id="site-action-list">
                             <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
                         </div>
+<?php /*                        
                         <label for="department-id"><?php echo __( '部門', 'textdomain' );?></label>
                         <select id="department-id" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
+*/?>
                     </div>
 
                     <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'textdomain' );?></label>
@@ -543,7 +545,7 @@ if (!class_exists('display_documents')) {
                         <label for="multiple-select"><?php echo __( '是否為多選', 'textdomain' );?></label>)
                         <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
 */?>
-                        <input type="checkbox" id="is-embedded-doc" <?php echo esc_html($is_embedded_item_checked);?> />
+                        <input type="checkbox" id="is-embedded-doc" <?php echo esc_html($is_embedded_doc_checked);?> />
                         <label for="is-embedded-doc"><?php echo __( 'Embedded Item', 'textdomain' );?></label><br>
                         <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
                         <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label><br>
@@ -591,7 +593,7 @@ if (!class_exists('display_documents')) {
                 $doc_number = (isset($_POST['_doc_number'])) ? sanitize_text_field($_POST['_doc_number']) : '';
                 $doc_revision = (isset($_POST['_doc_revision'])) ? sanitize_text_field($_POST['_doc_revision']) : '';
                 $doc_category = (isset($_POST['_doc_category'])) ? sanitize_text_field($_POST['_doc_category']) : 0;
-                $department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
+                //$department_id = (isset($_POST['_department_id'])) ? sanitize_text_field($_POST['_department_id']) : 0;
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
                 $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
                 $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
@@ -610,7 +612,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'doc_revision', $doc_revision);
                 update_post_meta($doc_id, 'doc_category', $doc_category);
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
-                update_post_meta($doc_id, 'department_id', $department_id);
+                //update_post_meta($doc_id, 'department_id', $department_id);
                 update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
                 //update_post_meta($doc_id, 'system_doc', $system_doc);
                 //update_post_meta($doc_id, 'multiple_select', $multiple_select);
@@ -693,7 +695,7 @@ if (!class_exists('display_documents')) {
 
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <input type="button" id="share-document" value="<?php echo __( '文件分享', 'textdomain' );?>" style="margin:3px;" />
+                    <input type="button" id="share-document" value="<?php echo __( 'Share', 'textdomain' );?>" style="margin:3px;" />
                 </div>
                 <div style="text-align:right; display:flex;">
                     <input type="button" id="exit-doc-content" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:3px;" />
@@ -804,13 +806,13 @@ if (!class_exists('display_documents')) {
         }
 
         function get_field_contain_list_display($params=array()) {
-            $doc_embedded_id = isset($params['doc_embedded_id']) ? $params['doc_embedded_id'] : 0;
+            $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             //$inner_query = $this->retrieve_doc_field_data($params);
-            if ($doc_embedded_id) {
+            if ($embedded_doc_id) {
                 //$items_class = new embedded_items();
-                //$inner_query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
-                $params['doc_id'] = $doc_embedded_id;
+                //$inner_query = $items_class->retrieve_embedded_item_data($embedded_doc_id, 0);
+                $params['doc_id'] = $embedded_doc_id;
             }
             $inner_query = $this->retrieve_doc_field_data($params);
             if ($inner_query->have_posts()) {
@@ -1244,23 +1246,29 @@ if (!class_exists('display_documents')) {
                 // Update the existing post
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $doc_id = get_post_meta($report_id, 'doc_id', true);
-                //$system_doc = get_post_meta($doc_id, 'system_doc', true);
-                //if ($system_doc) {
-                    // Update the post
-                    $post_data = array(
-                        'ID'           => $report_id,
-                        'post_title'   => $_POST['_post_title'],
-                        'post_content' => $_POST['_post_content'],
-                    );        
-                    wp_update_post($post_data);
-                    update_post_meta($report_id, '_post_number', $_POST['_post_number']);
-/*
-                    if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
+                $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
+
+                $post_data = array(
+                    'ID'           => $report_id,
+                    'post_title'   => $_POST['_post_title'],
+                    'post_content' => $_POST['_post_content'],
+                );        
+                wp_update_post($post_data);
+                update_post_meta($report_id, '_post_number', $_POST['_post_number']);
+
+                if ($is_embedded_doc) {
+                    $embedded_doc_title = get_the_title($doc_id);
+                    if (stripos($embedded_doc_title, 'customer') !== false || 
+                        stripos($embedded_doc_title, '客戶') !== false || 
+                        stripos($embedded_doc_title, '顧客') !== false || 
+                        stripos($embedded_doc_title, '廠商') !== false || 
+                        stripos($embedded_doc_title, '供應商') !== false || 
+                        stripos($embedded_doc_title, 'vendor') !== false) {
                         // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
-                        $this->upsert_site_profile($report_id);
+                        $this->update_site_profile($report_id);
                     }
-                //}
-*/
+                }
+
                 $this->update_doc_field_contains(array('report_id' => $report_id));
 
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
@@ -1323,7 +1331,7 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
-        function upsert_site_profile($_id=false) {
+        function update_site_profile($_id=false) {
             if (empty($_id)) {
                 return false; // Ensure the ID is provided
             }
@@ -1728,15 +1736,15 @@ if (!class_exists('display_documents')) {
             $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
             $is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
-            $doc_embedded_id = isset($params['doc_embedded_id']) ? $params['doc_embedded_id'] : 0;
+            $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
             $embedded_item_id = isset($params['embedded_item_id']) ? $params['embedded_item_id'] : 0;
             $line_report_id = isset($params['line_report_id']) ? $params['line_report_id'] : 0;
 
             //$query = $this->retrieve_doc_field_data($params);
-            if ($doc_embedded_id) {
+            if ($embedded_doc_id) {
                 //$items_class = new embedded_items();
-                //$query = $items_class->retrieve_embedded_item_data($doc_embedded_id, 0);
-                $params['doc_id'] = $doc_embedded_id;
+                //$query = $items_class->retrieve_embedded_item_data($embedded_doc_id, 0);
+                $params['doc_id'] = $embedded_doc_id;
             }
             $query = $this->retrieve_doc_field_data($params);
             if ($query->have_posts()) {
@@ -1787,8 +1795,8 @@ if (!class_exists('display_documents')) {
                                     <fieldset>
                                     <?php
                                     $params = array(
-                                        //'doc_embedded_id' => $embedded_id,
-                                        'doc_embedded_id' => $embedded_doc,
+                                        //'embedded_doc_id' => $embedded_id,
+                                        'embedded_doc_id' => $embedded_doc,
                                         'report_id' => $report_id,
                                     );
                                     $this->get_doc_field_contains($params);
@@ -1800,7 +1808,7 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_line_list'):
-                            //$items_class = new embedded_items();
+                            $items_class = new embedded_items();
                             //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
                             //if ($embedded_id && $default_value) {
 

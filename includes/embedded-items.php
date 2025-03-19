@@ -960,7 +960,7 @@ if (!class_exists('embedded_items')) {
 
                         $documents_class = new display_documents();
                         $params = array(
-                            'doc_embedded_id' => $report_id,
+                            'embedded_doc_id' => $report_id,
                             'report_id' => $line_report_id,
                         );                
                         $documents_class->get_field_contain_list_display($params);
@@ -1006,7 +1006,7 @@ if (!class_exists('embedded_items')) {
                 <?php
                 $documents_class = new display_documents();
                 $params = array(
-                    'doc_embedded_id' => $report_id,
+                    'embedded_doc_id' => $report_id,
                     'report_id' => $line_report_id,
                 );                
                 $documents_class->get_doc_field_contains($params);

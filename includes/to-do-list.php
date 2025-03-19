@@ -926,42 +926,41 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($user_id, 'site_id', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
-            $is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
+            //$is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
+            $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
 
             // Create a new doc-report for current action
             $new_post = array(
                 'post_type'     => 'doc-report',
-                'post_title'    => get_the_title($doc_id),
+                //'post_title'    => get_the_title($doc_id),
+                'post_title'   => $_POST['_post_title'],
+                'post_content' => $_POST['_post_content'],
                 'post_status'   => 'publish',
                 'post_author'   => $user_id,
             );    
             $new_report_id = wp_insert_post($new_post);
             update_post_meta($new_report_id, 'doc_id', $doc_id);
             update_post_meta($new_report_id, 'todo_status', $next_job);
+            update_post_meta($new_report_id, '_post_number', $_POST['_post_number']);
 
             // Update the doc-field meta for new doc-report
             $documents_class->update_doc_field_contains(
                 array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
             );
 
-            // update system_doc
-            //$system_doc = get_post_meta($doc_id, 'system_doc', true);
-            //if ($system_doc) {
-                // Update the post
-                $post_data = array(
-                    'ID'           => $new_report_id,
-                    'post_title'   => $_POST['_post_title'],
-                    'post_content' => $_POST['_post_content'],
-                );        
-                wp_update_post($post_data);
-                update_post_meta($new_report_id, '_post_number', $_POST['_post_number']);
-/*
-                if (stripos($system_doc, 'customer') !== false || stripos($system_doc, 'vendor') !== false) {
+            if ($is_embedded_doc) {
+                $embedded_doc_title = get_the_title($doc_id);
+                if (stripos($embedded_doc_title, 'customer') !== false || 
+                    stripos($embedded_doc_title, '客戶') !== false || 
+                    stripos($embedded_doc_title, '顧客') !== false || 
+                    stripos($embedded_doc_title, '廠商') !== false || 
+                    stripos($embedded_doc_title, '供應商') !== false || 
+                    stripos($embedded_doc_title, 'vendor') !== false) {
                     // Code to execute if $system_doc includes 'customer' or 'vendor', case-insensitive
-                    $documents_class->upsert_site_profile($new_report_id);
+                    $documents_class->update_site_profile($new_report_id);
                 }
-            //}
-*/
+            }
+
             // Create a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
