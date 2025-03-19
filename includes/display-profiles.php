@@ -35,8 +35,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_set_site_user_action_data', array( $this, 'set_site_user_action_data' ) );
             add_action( 'wp_ajax_nopriv_set_site_user_action_data', array( $this, 'set_site_user_action_data' ) );
 
-            add_action( 'wp_ajax_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
-            add_action( 'wp_ajax_nopriv_get_site_profile_content', array( $this, 'get_site_profile_content' ) );
+            add_action( 'wp_ajax_get_site_NDA_content', array( $this, 'get_site_NDA_content' ) );
+            add_action( 'wp_ajax_nopriv_get_site_NDA_content', array( $this, 'get_site_NDA_content' ) );
             add_action( 'wp_ajax_set_NDA_assignment', array( $this, 'set_NDA_assignment' ) );
             add_action( 'wp_ajax_nopriv_set_NDA_assignment', array( $this, 'set_NDA_assignment' ) );
 
@@ -86,8 +86,10 @@ if (!class_exists('display_profiles')) {
                 <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( 'Site Configuration', 'textdomain' );?></option>
                 <?php if (current_user_can('administrator')) {?>                
                     <option value="user-list" <?php echo ($select_option=="user-list") ? 'selected' : ''?>><?php echo __( 'User Configuration', 'textdomain' );?></option>
-                <?php }?>                
+                <?php }?>
+<?php /*                
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( 'Departments', 'textdomain' );?></option>
+*/?>                
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
             </select>
             <?php
@@ -115,38 +117,9 @@ if (!class_exists('display_profiles')) {
                 echo '</div>';
 
                 if ($_GET['_select_profile']=='migrate_embedded_to_document') echo $this->migrate_embedded_to_document();
-                if ($_GET['_select_profile']=='rename_embedded_item_meta') echo $this->rename_embedded_item_meta();
             }
         }
 
-        function rename_embedded_item_meta() {
-            global $wpdb;
-        
-            // Fetch all "document" posts that have the meta key "embedded_item"
-            $documents = get_posts([
-                'post_type'      => 'document',
-                'posts_per_page' => -1,
-                'meta_key'       => 'embedded_item',
-            ]);
-        
-            foreach ($documents as $document) {
-                $post_id = $document->ID;
-        
-                // Get the existing meta value
-                $embedded_item_value = get_post_meta($post_id, 'embedded_item', true);
-        
-                if (!empty($embedded_item_value)) {
-                    // Update with new meta key
-                    update_post_meta($post_id, 'is_embedded_item', $embedded_item_value);
-        
-                    // Delete the old meta key
-                    delete_post_meta($post_id, 'embedded_item');
-                }
-            }
-        
-            echo "Meta key renamed successfully!";
-        }
-        
         function migrate_embedded_to_document() {
             global $wpdb;
         
@@ -246,8 +219,10 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="my-action-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
                 <div id="my-action-list"><?php echo $this->display_my_action_list();?></div>
-                <label for="phone-number"><?php echo __( 'Phone', 'textdomain' );?></label>
+<?php /*                
+                <label for="phone-number"><?php echo __( 'Phone', 'textdomain' );?></label>                
                 <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
+*/?>
                 <label for="gemini-api-key"><?php echo __( 'Gemini API key', 'textdomain' );?></label>
                 <input type="password" id="gemini-api-key" value="<?php echo $gemini_api_key;?>" class="text ui-widget-content ui-corner-all" />
                 <?php
@@ -269,7 +244,7 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             wp_update_user(array('ID' => $current_user_id, 'display_name' => $_POST['_display_name']));
             wp_update_user(array('ID' => $current_user_id, 'user_email' => $_POST['_user_email']));
-            update_user_meta( $current_user_id, 'phone_number', $_POST['_phone_number']);
+            //update_user_meta( $current_user_id, 'phone_number', $_POST['_phone_number']);
             update_user_meta( $current_user_id, 'gemini_api_key', $_POST['_gemini_api_key']);
             $response = array('success' => true);
             wp_send_json($response);
@@ -515,9 +490,9 @@ if (!class_exists('display_profiles')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $site_content = get_post_field('post_content', $site_id);
-            $unified_number = get_post_meta($site_id, 'unified_number', true);
-            $company_phone = get_post_meta($site_id, 'company_phone', true);
-            $company_address = get_post_meta($site_id, 'company_address', true);
+            //$unified_number = get_post_meta($site_id, 'unified_number', true);
+            //$company_phone = get_post_meta($site_id, 'company_phone', true);
+            //$company_address = get_post_meta($site_id, 'company_address', true);
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'Site Configuration', 'textdomain' );?></h2>
@@ -552,23 +527,24 @@ if (!class_exists('display_profiles')) {
 
                 <label for="site-content"><?php echo __( 'Non-Disclosure Agreement', 'textdomain' );?></label>
                 <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
+<?php /*                
                 <label for="company-phone"><?php echo __( 'Phone', 'textdomain' );?></label>
                 <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="company-address"><?php echo __( 'Company Address', 'textdomain' );?></label>
                 <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
                 <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
                 <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
-
+*/?>
                 <?php if (is_site_admin()) {?>
-                <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><label for="site-jobs"><?php echo __( 'Job List', 'textdomain' );?></label></div>
-                    <div style="text-align: right">
-                        <input type="text" id="site-action-search" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
+                    <div style="display:flex; justify-content:space-between; margin:5px;">
+                        <div><label for="site-jobs"><?php echo __( 'Job List', 'textdomain' );?></label></div>
+                        <div style="text-align: right">
+                            <input type="text" id="site-action-search" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
+                        </div>
                     </div>
-                </div>
-                <div id="site-action-list">
-                    <?php echo $this->display_site_action_list();?>
-                </div>
+                    <div id="site-action-list">
+                        <?php echo $this->display_site_action_list();?>
+                    </div>
                 <?php }?>
 
             </fieldset>
@@ -589,9 +565,9 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_site_id']) ) {
                 $site_id = isset($_POST['_site_id']) ? sanitize_text_field($_POST['_site_id']) : 0;
                 $site_title = isset($_POST['_site_title']) ? sanitize_text_field($_POST['_site_title']) : '';
-                $company_phone = isset($_POST['_company_phone']) ? sanitize_text_field($_POST['_company_phone']) : '';
-                $company_address = isset($_POST['_company_address']) ? sanitize_text_field($_POST['_company_address']) : '';
-                $unified_number = isset($_POST['_unified_number']) ? sanitize_text_field($_POST['_unified_number']) : '';
+                //$company_phone = isset($_POST['_company_phone']) ? sanitize_text_field($_POST['_company_phone']) : '';
+                //$company_address = isset($_POST['_company_address']) ? sanitize_text_field($_POST['_company_address']) : '';
+                //$unified_number = isset($_POST['_unified_number']) ? sanitize_text_field($_POST['_unified_number']) : '';
                 // Update the post
                 $post_data = array(
                     'ID'           => $site_id,
@@ -600,9 +576,9 @@ if (!class_exists('display_profiles')) {
                 );        
                 wp_update_post($post_data);
                 update_post_meta($site_id, 'image_url', $_POST['_image_url'] );
-                update_post_meta($site_id, 'company_phone', $company_phone);
-                update_post_meta($site_id, 'company_address', $company_address);
-                update_post_meta($site_id, 'unified_number', $unified_number);
+                //update_post_meta($site_id, 'company_phone', $company_phone);
+                //update_post_meta($site_id, 'company_address', $company_address);
+                //update_post_meta($site_id, 'unified_number', $unified_number);
                 $response = array('success' => true);
 
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
@@ -658,7 +634,7 @@ if (!class_exists('display_profiles')) {
                     // Loop through the users
                     foreach ($users as $user) {
                         $user_site = get_user_meta($user->ID, 'site_id', true);
-                        if ($user_site) $display_name = ($user_site == $site_id) ? $user->display_name : '*'.$user->display_name.'('.get_the_title($user_site).')';
+                        if ($user_site) $display_name = ($user_site == $site_id) ? '<span style="color:blue;">'.$user->display_name.'</span>' : $user->display_name.'('.get_the_title($user_site).')';
                         else $display_name = ($user_site == $site_id) ? $user->display_name : $user->display_name.'<span style="color:red;">***</span>';
                         $is_admin_checked = (is_site_admin($user->ID, $site_id)) ? 'checked' : '';
                         ?>
@@ -702,7 +678,7 @@ if (!class_exists('display_profiles')) {
                         </thead>
                         <tbody>
                             <?php
-                            $query = $this->retrieve_site_action_list_data(0);
+                            $query = $this->retrieve_site_action_data(0);
                             if ($query->have_posts()) {
                                 while ($query->have_posts()) : $query->the_post();
                                     $action_id = get_the_ID();
@@ -829,8 +805,8 @@ if (!class_exists('display_profiles')) {
                     ),
                 ),
             );
-            $query = new WP_User_Query($args);
-            $users = $query->get_results();
+            $user_query = new WP_User_Query($args);
+            $users = $user_query->get_results();
             foreach ($users as $user) {
                 $selected = ($selected_option == $user->ID) ? 'selected' : '';
                 $options .= '<option value="' . esc_attr($user->ID) . '" '.$selected.' >' . esc_html($user->display_name) . '</option>';
@@ -889,7 +865,7 @@ if (!class_exists('display_profiles')) {
                     <tbody>
                     <?php
                     $paged = empty($paged) ? max(1, get_query_var('paged')) : $paged; // Get the current page number
-                    $query = $this->retrieve_site_action_list_data($paged, $root_doc_id);
+                    $query = $this->retrieve_site_action_data($paged, $root_doc_id);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
 
@@ -898,7 +874,7 @@ if (!class_exists('display_profiles')) {
                             $action_id = get_the_ID();
                             $action_title = get_the_title();
                             $action_content = get_the_content();
-                            $action_number = get_post_meta($action_id, 'action_number', true);
+                            //$action_number = get_post_meta($action_id, 'action_number', true);
                             $action_connector = get_post_meta($action_id, 'action_connector', true);
                             $next_job = get_post_meta($action_id, 'next_job', true);
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
@@ -938,7 +914,7 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
-        function retrieve_site_action_list_data($paged = 1, $doc_id = false, $is_nest = false) {
+        function retrieve_site_action_data($paged = 1, $doc_id = false, $is_nest = false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
         
@@ -1033,7 +1009,7 @@ if (!class_exists('display_profiles')) {
         function display_site_action_dialog($action_id=false) {
             ob_start();
             $items_class = new embedded_items();
-            $action_number = get_post_meta($action_id, 'action_number', true);
+            //$action_number = get_post_meta($action_id, 'action_number', true);
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
             $action_connector = get_post_meta($action_id, 'action_connector', true); // doc_category
@@ -1471,7 +1447,7 @@ if (!class_exists('display_profiles')) {
             return $options;
         }
 
-        // site-profile list
+        // site-profile
         function get_site_list_data() {
             $search_query = sanitize_text_field($_POST['_site_title']);
             $args = array(
@@ -1505,7 +1481,7 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-        function get_site_profile_content() {
+        function get_site_NDA_content() {
             // Check if the site_id is passed
             if(isset($_POST['site_id'])) {
                 $site_id = intval($_POST['site_id']);
@@ -1516,7 +1492,7 @@ if (!class_exists('display_profiles')) {
                 if($post && $post->post_type == 'site-profile') {
                     wp_send_json_success(array(
                         'content' => apply_filters('the_content', $post->post_content),
-                        'unified_number' => get_post_meta($site_id, 'unified_number', true),
+                        //'unified_number' => get_post_meta($site_id, 'unified_number', true),
                     ));
                 } else {
                     wp_send_json_error(array('message' => 'Invalid site ID or post type.'));
@@ -1531,10 +1507,10 @@ if (!class_exists('display_profiles')) {
             if (!is_site_admin()) return;
             $site_id = get_user_meta($user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
-            $unified_number = get_post_meta($site_id, 'unified_number', true);
+            //$unified_number = get_post_meta($site_id, 'unified_number', true);
             $user = get_userdata($user_id);
             $display_name = $user->display_name;
-            $identity_number = get_user_meta($user_id, 'identity_number', true);
+            //$identity_number = get_user_meta($user_id, 'identity_number', true);
             $nda_content = get_user_meta($user_id, 'nda_content', true);
             $nda_signature = get_user_meta($user_id, 'nda_signature', true);
             $submit_date = get_user_meta($user_id, 'submit_date', true);
@@ -1544,15 +1520,19 @@ if (!class_exists('display_profiles')) {
                 <div>
                     <label for="site-title"><b><?php echo __( 'Party A', 'textdomain' );?></b></label>
                     <input type="text" id="site-title" value="<?php echo $site_title;?>" class="text ui-widget-content ui-corner-all" disabled />
+<?php /*
                     <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
                     <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" disabled />
+*/?>                    
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
                 </div>
                 <div>
                     <label for="display-name"><b><?php echo __( 'Party B', 'textdomain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
+<?php /*                    
                     <label for="identity-number"><?php echo __( 'ID Number', 'textdomain' );?></label>
                     <input type="text" id="identity-number" value="<?php echo $identity_number;?>" class="text ui-widget-content ui-corner-all" disabled />
+*/?>
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
                 <div id="nda-content"><?php echo $nda_content;?></div>
@@ -1614,14 +1594,18 @@ if (!class_exists('display_profiles')) {
                             }
                         ?>
                     </select>
+<?php /*                    
                     <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
                     <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" disabled />
+*/?>                    
                 </div>
                 <div>
                     <label for="display-name"><b><?php echo __( 'Party B', 'textdomain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
+<?php /*                    
                     <label for="identity-number"><?php echo __( 'ID Number', 'textdomain' );?></label>
                     <input type="text" id="identity-number" class="text ui-widget-content ui-corner-all" />
+*/?>
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
                 <div id="site-content">
@@ -1650,96 +1634,13 @@ if (!class_exists('display_profiles')) {
         function set_NDA_assignment() {
             $response = array();
             $line_bot_api = new line_bot_api();
-            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_reject_date'])) {
-                $user_id = intval($_POST['_user_id']);
-                $user = get_userdata($user_id);
-                $site_id = intval($_POST['_site_id']);
-                $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
-                if (!is_array($activated_site_users)) $activated_site_users = array();
-                $activated_site_users[] = $user_id;
-                update_user_meta( $user_id, 'reject_id', get_current_user_id());
-                update_user_meta( $user_id, 'reject_date', $_POST['_reject_date']);
-
-                $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-                $line_bot_api->send_flex_message([
-                    'to' => $line_user_id,
-                    'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    'body_contents' => [
-                        [
-                            'type' => 'text',
-                            'text' => sprintf(
-                                __( 'The NDA of %s has been rejected. Check with the administrator.', 'textdomain' ),
-                                esc_html( $user->display_name )
-                            ),
-                            'wrap' => true,
-                        ],
-                    ],                    
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
-                ]);
-
-                $params = array(
-                    'log_message' => sprintf(
-                        __('The NDA of %s has been rejected by %s', 'textdomain'),
-                        $user->display_name,
-                        wp_get_current_user()->display_name
-                    ),     
-                    'user_id' => $user_id,
-                );
-                $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);    
-
-                $response = array('nda'=>'rejected', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
-            }
-
-            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_approve_date'])) {
-                $user_id = intval($_POST['_user_id']);
-                $user = get_userdata($user_id);
-                $site_id = intval($_POST['_site_id']);
-                $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
-                if (!is_array($activated_site_users)) $activated_site_users = array();
-                $activated_site_users[] = $user_id;
-                update_user_meta( $user_id, 'approve_id', get_current_user_id());
-                update_user_meta( $user_id, 'approve_date', $_POST['_approve_date']);
-                update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
-
-                $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-                $line_bot_api->send_flex_message([
-                    'to' => $line_user_id,
-                    'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    'body_contents' => [
-                        [
-                            'type' => 'text',
-                            'text' => sprintf(
-                                __('The NDA of %s has been approved. Go to your profile.', 'textdomain'),
-                                $user->display_name
-                            ),
-                            'wrap' => true
-                        ]
-                    ],                    
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_select_profile=my-profile")], 'style' => 'primary']],
-                ]);
-
-                $params = array(
-                    'log_message' => sprintf(
-                        __('The NDA of %s has been approved by %s', 'textdomain'),
-                        $user->display_name,
-                        wp_get_current_user()->display_name
-                    ),                    
-                    'user_id' => $user_id,
-                );
-                $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);    
-
-                $response = array('nda'=>'approved', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
-            }
-
-            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_identity_number'])) {
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_submit_date'])) {
                 $user_id = intval($_POST['_user_id']);
                 $user = get_userdata($user_id);
                 $site_id = intval($_POST['_site_id']);
                 update_user_meta( $user_id, 'site_id', $site_id);
                 update_user_meta( $user_id, 'display_name', $_POST['_display_name']);
-                update_user_meta( $user_id, 'identity_number', $_POST['_identity_number']);
+                //update_user_meta( $user_id, 'identity_number', $_POST['_identity_number']);
                 update_user_meta( $user_id, 'nda_content', $_POST['_nda_content']);
                 update_user_meta( $user_id, 'nda_signature', $_POST['_nda_signature']);
                 update_user_meta( $user_id, 'submit_date', $_POST['_submit_date']);
@@ -1761,11 +1662,155 @@ if (!class_exists('display_profiles')) {
                                 'wrap' => true
                             ]
                         ],                        
-                        'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' =>  __( 'View Details', 'textdomain' ), 'uri' => home_url("/display-profiles/?_nda_user_id=$user_id")], 'style' => 'primary']],
+                        'footer_contents' => [
+                            [
+                                'type' => 'button', 
+                                'action' => [
+                                    'type' => 'uri', 
+                                    'label' =>  __( 'View Details', 'textdomain' ), 
+                                    'uri' => home_url("/display-profiles/?_nda_user_id=$user_id")
+                                ], 
+                                'style' => 'primary'
+                            ]
+                        ],
                     ]);
                 }
+
+                // Retrieve all administrators
+                $admins = get_users(['role' => 'administrator']);
+                $admin_emails = [];
+                
+                foreach ($admins as $admin) {
+                    $admin_emails[] = $admin->user_email;
+                }
+                
+                if (!empty($admin_emails)) {
+                    $subject = __('NDA Signed Notification', 'textdomain');
+                    $message = sprintf(
+                        __("Hello Admin,\n\n%s has signed the NDA of %s.\n\nYou can view the details here:\n%s", 'textdomain'),
+                        $user->display_name,
+                        get_the_title($site_id),
+                        home_url("/display-profiles/?_nda_user_id=$user_id")
+                    );
+                
+                    $headers = ['Content-Type: text/plain; charset=UTF-8'];
+                
+                    // Send email to all administrators
+                    wp_mail($admin_emails, $subject, $message, $headers);
+                }
+                
                 $response = array('nda'=>'submitted');
             }
+
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_approve_date'])) {
+                $user_id = intval($_POST['_user_id']);
+                $user = get_userdata($user_id);
+                $site_id = intval($_POST['_site_id']);
+                $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
+                if (!is_array($activated_site_users)) $activated_site_users = array();
+                $activated_site_users[] = $user_id;
+                update_user_meta( $user_id, 'approve_id', get_current_user_id());
+                update_user_meta( $user_id, 'approve_date', $_POST['_approve_date']);
+                update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
+
+                $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
+                    'body_contents' => [
+                        [
+                            'type' => 'text',
+                            'text' => sprintf(
+                                __('The NDA between %s and %s has been approved by %s.', 'textdomain') . __('Go to your profile.', 'textdomain'),
+                                $user->display_name,
+                                get_the_title($site_id),
+                                wp_get_current_user()->display_name
+                            ),
+                            'wrap' => true
+                        ]
+                    ],                    
+                    'footer_contents' => [
+                        [
+                            'type' => 'button', 
+                            'action' => [
+                                'type' => 'uri', 
+                                'label' => __( 'View Details', 'textdomain' ), 
+                                'uri' => home_url("/display-profiles/?_select_profile=my-profile")
+                            ], 
+                            'style' => 'primary'
+                        ]
+                    ],
+                ]);
+
+                $params = array(
+                    'log_message' => sprintf(
+                        __('The NDA between %s and %s has been approved by %s.', 'textdomain'),
+                        $user->display_name,
+                        get_the_title($site_id),
+                        wp_get_current_user()->display_name
+                    ),                    
+                    'user_id' => $user_id,
+                );
+                $todo_class = new to_do_list();
+                $todo_class->set_system_log($params);    
+
+                $response = array('nda'=>'approved', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
+            }
+
+            if(isset($_POST['_user_id']) && isset($_POST['_site_id']) && isset($_POST['_reject_date'])) {
+                $user_id = intval($_POST['_user_id']);
+                $user = get_userdata($user_id);
+                $site_id = intval($_POST['_site_id']);
+                $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
+                if (!is_array($activated_site_users)) $activated_site_users = array();
+                $activated_site_users[] = $user_id;
+                update_user_meta( $user_id, 'reject_id', get_current_user_id());
+                update_user_meta( $user_id, 'reject_date', $_POST['_reject_date']);
+
+                $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
+                    'body_contents' => [
+                        [
+                            'type' => 'text',
+                            'text' => sprintf(
+                                __( 'The NDA between %s and %s has been rejected by %s.', 'textdomain' ) . __( 'Check with the administrator.', 'textdomain' ),
+                                $user->display_name,
+                                get_the_title($site_id),
+                                wp_get_current_user()->display_name
+                            ),
+                            'wrap' => true,
+                        ],
+                    ],                    
+                    'footer_contents' => [
+                        [
+                            'type' => 'button', 
+                            'action' => [
+                                'type' => 'uri', 
+                                'label' => __( 'View Details', 'textdomain' ), 
+                                'uri' => home_url("/display-profiles/?_select_profile=my-profile")
+                            ], 
+                            'style' => 'primary'
+                        ]
+                    ],
+                ]);
+
+                $params = array(
+                    'log_message' => sprintf(
+                        __('The NDA between %s and %s has been rejected by %s.', 'textdomain'),
+                        $user->display_name,
+                        get_the_title($site_id),
+                        wp_get_current_user()->display_name
+                    ),     
+                    'user_id' => $user_id,
+                );
+                $todo_class = new to_do_list();
+                $todo_class->set_system_log($params);    
+
+                $response = array('nda'=>'rejected', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
+            }
+
             wp_send_json($response);
         }
     }

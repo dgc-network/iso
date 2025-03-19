@@ -501,7 +501,7 @@ if (!class_exists('display_documents')) {
                         <pre class="mermaid">
                             graph TD 
                             <?php                        
-                            $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id, true);
+                            $query = $profiles_class->retrieve_site_action_data(0, $doc_id, true);
                             if ($query->have_posts()) :
                                 while ($query->have_posts()) : $query->the_post();
                                     $action_id = get_the_ID();
@@ -1159,7 +1159,7 @@ if (!class_exists('display_documents')) {
                     <div>
                     <?php
                     $profiles_class = new display_profiles();
-                    $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
+                    $query = $profiles_class->retrieve_site_action_data(0, $doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $action_id = get_the_ID();
@@ -1488,10 +1488,10 @@ if (!class_exists('display_documents')) {
                 '_embedded' => __('Embedded', 'textdomain'),
                 '_line_list' => __('Line List', 'textdomain'),
                 '_select' => __('Select', 'textdomain'),
-                '_iot_device' => __('IoT devices', 'textdomain'),
+                //'_iot_device' => __('IoT devices', 'textdomain'),
                 '_document' => __('Document', 'textdomain'),
                 '_doc_report' => __('Report', 'textdomain'),
-                '_department' => __('Department', 'textdomain'),
+                //'_department' => __('Department', 'textdomain'),
                 '_employee' => __('Employee', 'textdomain'),
                 'image' => __('Image', 'textdomain'),
                 'video' => __('Video', 'textdomain'),
@@ -2622,7 +2622,7 @@ if (!class_exists('display_documents')) {
 
             // Create the Action List for $post_id
             $profiles_class = new display_profiles();
-            $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
+            $query = $profiles_class->retrieve_site_action_data(0, $doc_id);
             if ($query->have_posts()) {
                 while ($query->have_posts()) : $query->the_post();
                     $action_id = get_the_ID();

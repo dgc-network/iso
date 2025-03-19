@@ -850,7 +850,7 @@ jQuery(document).ready(function($) {
                 '_user_id': $("#user-id").val(),
                 '_site_id': $("#select-nda-site").val(),
                 '_display_name': $("#display-name").val(),
-                '_identity_number': $("#identity-number").val(),
+                //'_identity_number': $("#identity-number").val(),
                 '_nda_signature': dataURL,
                 '_nda_content': $("#site-content").val(),
                 '_submit_date': $("#submit-date").val(),
@@ -925,7 +925,7 @@ jQuery(document).ready(function($) {
                 type: 'POST',
                 url: ajax_object.ajax_url, // Ensure this is set in your localized script
                 data: {
-                    'action': 'get_site_profile_content', // Define a custom action in your functions.php
+                    'action': 'get_site_NDA_content', // Define a custom action in your functions.php
                     'site_id': siteID,
                 },
                 success: function(response) {

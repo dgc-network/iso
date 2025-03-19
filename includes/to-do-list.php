@@ -876,7 +876,7 @@ if (!class_exists('to_do_list')) {
                 <div>
                 <?php
                     $profiles_class = new display_profiles();
-                    $query = $profiles_class->retrieve_site_action_list_data(0, $doc_id);
+                    $query = $profiles_class->retrieve_site_action_data(0, $doc_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $action_id = get_the_ID();
@@ -1097,7 +1097,7 @@ if (!class_exists('to_do_list')) {
 
                 // Create the new Actions for new Todo
                 $profiles_class = new display_profiles();
-                $query = $profiles_class->retrieve_site_action_list_data(0, $next_job);
+                $query = $profiles_class->retrieve_site_action_data(0, $next_job);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) : $query->the_post();
                         $action_id = get_the_ID();
@@ -1154,8 +1154,8 @@ if (!class_exists('to_do_list')) {
                     ),
                 ),
             );
-            $query = new WP_User_Query($args);
-            $users = $query->get_results();
+            $user_query = new WP_User_Query($args);
+            $users = $user_query->get_results();
             foreach ($users as $user) {
                 $header_contents = array(
                     array(
@@ -1367,8 +1367,8 @@ if (!class_exists('to_do_list')) {
                     ),
                 ),
             );
-            $query = new WP_User_Query($args);
-            $users = $query->get_results();
+            $user_query = new WP_User_Query($args);
+            $users = $user_query->get_results();
             foreach ($users as $user) {
 
                 $header_contents = array(
