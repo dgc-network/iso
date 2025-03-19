@@ -937,6 +937,7 @@ if (!class_exists('to_do_list')) {
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             $post_title = isset($_POST['_post_title']) ? sanitize_text_field($_POST['_post_title']) : '';
             $post_content = isset($_POST['_post_content']) ? sanitize_text_field($_POST['_post_content']) : '';
+            $post_number = isset($_POST['_post_number']) ? sanitize_text_field($_POST['_post_number']) : '';
 
             // Create a new doc-report for current action
             $new_post = array(
@@ -949,7 +950,7 @@ if (!class_exists('to_do_list')) {
             $new_report_id = wp_insert_post($new_post);
             update_post_meta($new_report_id, 'doc_id', $doc_id);
             update_post_meta($new_report_id, 'todo_status', $next_job);
-            update_post_meta($new_report_id, '_post_number', $_POST['_post_number']);
+            update_post_meta($new_report_id, '_post_number', $post_number);
 
             // Update the doc-field meta for new doc-report
             $documents_class->update_doc_field_contains(
