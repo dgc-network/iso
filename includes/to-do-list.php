@@ -953,7 +953,7 @@ if (!class_exists('to_do_list')) {
             $documents_class->update_doc_field_contains(
                 array('report_id' => $new_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
             );
-
+/*
             if ($is_embedded_doc) {
                 $embedded_doc_title = get_the_title($doc_id);
                 if (stripos($embedded_doc_title, 'customer') !== false || 
@@ -966,7 +966,7 @@ if (!class_exists('to_do_list')) {
                     $documents_class->update_site_profile($new_report_id);
                 }
             }
-
+*/
             // Create a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
