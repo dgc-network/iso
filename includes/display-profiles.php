@@ -10,7 +10,6 @@ if (!class_exists('display_profiles')) {
             add_shortcode( 'display-profiles', array( $this, 'display_profiles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
             //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
-            //add_action( 'init', array( $this, 'register_exception_notification_setting_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -911,7 +910,6 @@ if (!class_exists('display_profiles')) {
                             $action_id = get_the_ID();
                             $action_title = get_the_title();
                             $action_content = get_the_content();
-                            //$action_number = get_post_meta($action_id, 'action_number', true);
                             $action_connector = get_post_meta($action_id, 'action_connector', true);
                             $next_job = get_post_meta($action_id, 'next_job', true);
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
@@ -1046,7 +1044,6 @@ if (!class_exists('display_profiles')) {
         function display_site_action_dialog($action_id=false) {
             ob_start();
             $items_class = new embedded_items();
-            //$action_number = get_post_meta($action_id, 'action_number', true);
             $action_title = get_the_title($action_id);
             $action_content = get_post_field('post_content', $action_id);
             $action_connector = get_post_meta($action_id, 'action_connector', true); // doc_category
@@ -1064,7 +1061,6 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-connector"><?php echo __( 'Connector', 'textdomain' );?></label>
                 <select id="action-connector" class="select ui-widget-content ui-corner-all" >
-                    <?php //echo $items_class->select_doc_category_options($action_connector, true);?>
                     <?php echo $items_class->select_doc_category_options($action_connector);?>
                 </select>
                 <label for="next-job"><?php echo __( 'Action', 'textdomain' );?></label>
@@ -1098,7 +1094,6 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_action_id']) ) {
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $action_title = isset($_POST['_action_title']) ? sanitize_text_field($_POST['_action_title']) : '';
-                //$action_number = isset($_POST['_action_number']) ? sanitize_text_field($_POST['_action_number']) : '';
                 $action_connector = isset($_POST['_action_connector']) ? sanitize_text_field($_POST['_action_connector']) : 0;
                 $next_job = isset($_POST['_next_job']) ? sanitize_text_field($_POST['_next_job']) : 0;
                 $data = array(
@@ -1107,7 +1102,6 @@ if (!class_exists('display_profiles')) {
                     'post_content' => $_POST['_action_content'],
                 );
                 wp_update_post( $data );
-                //update_post_meta($action_id, 'action_number', $action_number);
                 update_post_meta($action_id, 'action_connector', $action_connector);
                 update_post_meta($action_id, 'next_job', $next_job);
 
@@ -1130,7 +1124,6 @@ if (!class_exists('display_profiles')) {
                 );    
                 $new_action_id = wp_insert_post($new_post);
                 update_post_meta($new_action_id, 'site_id', $site_id);
-                //update_post_meta($new_action_id, 'action_number', '-');
                 update_post_meta($new_action_id, 'doc_id', $doc_id);
             }
             $response['html_contain'] = $this->display_site_action_list($paged, $doc_id);

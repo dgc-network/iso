@@ -405,7 +405,6 @@ if (!class_exists('display_documents')) {
                     array(
                         'key'     => 'site_id',
                         'value'   => $site_id,
-                        //'compare' => '=',    
                     ),
                     array(
                         'key'     => 'doc_number',
@@ -441,9 +440,6 @@ if (!class_exists('display_documents')) {
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
             //$department_id = get_post_meta($doc_id, 'department_id', true);
             $api_endpoint = get_post_meta($doc_id, 'api_endpoint', true);
-            //$system_doc = get_post_meta($doc_id, 'system_doc', true);
-            //$multiple_select = get_post_meta($doc_id, 'multiple_select', true);
-            //$is_multiple_select = ($multiple_select==1) ? 'checked' : '';
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             $is_embedded_doc_checked = ($is_embedded_doc==1) ? 'checked' : '';
             $is_public = get_post_meta($doc_id, 'is_public', true);
@@ -453,9 +449,6 @@ if (!class_exists('display_documents')) {
 
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
 
-            if (current_user_can('administrator')) {
-                //$is_action_connector=true;
-            }
             ?>
             <div class="ui-widget" id="result-container">
             <div>
@@ -475,7 +468,6 @@ if (!class_exists('display_documents')) {
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="doc-category"><?php echo __( 'Categories', 'textdomain' );?></label><br>
                 <select id="doc-category" class="select ui-widget-content ui-corner-all">
-                    <?php //echo $items_class->select_doc_category_options($doc_category, $is_action_connector);?>
                     <?php echo $items_class->select_doc_category_options($doc_category);?>
                 </select>
 
@@ -539,12 +531,6 @@ if (!class_exists('display_documents')) {
                     <fieldset id="system-doc-div" style="display:none;">
                         <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
                         <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
-<?php /*                        
-                        <label for="system-doc"><?php echo __( 'Field Type Name', 'textdomain' );?></label> (
-                        <input type="checkbox" id="multiple-select" <?php echo esc_html($is_multiple_select);?> />
-                        <label for="multiple-select"><?php echo __( '是否為多選', 'textdomain' );?></label>)
-                        <input type="text" id="system-doc" value="<?php echo esc_html($system_doc);?>" class="text ui-widget-content ui-corner-all" />
-*/?>
                         <input type="checkbox" id="is-embedded-doc" <?php echo esc_html($is_embedded_doc_checked);?> />
                         <label for="is-embedded-doc"><?php echo __( 'Embedded Item', 'textdomain' );?></label><br>
                         <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
@@ -597,8 +583,6 @@ if (!class_exists('display_documents')) {
                 $is_doc_report = (isset($_POST['_is_doc_report'])) ? sanitize_text_field($_POST['_is_doc_report']) : 0;
                 $doc_content = ($is_doc_report==1) ? $_POST['_job_content'] : $_POST['_doc_content'];
                 $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
-                //$system_doc = (isset($_POST['_system_doc'])) ? sanitize_text_field($_POST['_system_doc']) : '';
-                //$multiple_select = (isset($_POST['_multiple_select'])) ? sanitize_text_field($_POST['_multiple_select']) : 0;
                 $is_embedded_doc = (isset($_POST['_is_embedded_doc'])) ? sanitize_text_field($_POST['_is_embedded_doc']) : 0;
                 $is_public = (isset($_POST['_is_public'])) ? sanitize_text_field($_POST['_is_public']) : 0;
                 $todo_list_only = (isset($_POST['_todo_list_only'])) ? sanitize_text_field($_POST['_todo_list_only']) : 0;
@@ -614,8 +598,6 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'is_doc_report', $is_doc_report);
                 //update_post_meta($doc_id, 'department_id', $department_id);
                 update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
-                //update_post_meta($doc_id, 'system_doc', $system_doc);
-                //update_post_meta($doc_id, 'multiple_select', $multiple_select);
                 update_post_meta($doc_id, 'is_embedded_doc', $is_embedded_doc);
                 update_post_meta($doc_id, 'is_public', $is_public);
                 update_post_meta($doc_id, 'todo_list_only', $todo_list_only);
@@ -808,10 +790,7 @@ if (!class_exists('display_documents')) {
         function get_field_contain_list_display($params=array()) {
             $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
-            //$inner_query = $this->retrieve_doc_field_data($params);
             if ($embedded_doc_id) {
-                //$items_class = new embedded_items();
-                //$inner_query = $items_class->retrieve_embedded_item_data($embedded_doc_id, 0);
                 $params['doc_id'] = $embedded_doc_id;
             }
             $inner_query = $this->retrieve_doc_field_data($params);
@@ -871,14 +850,6 @@ if (!class_exists('display_documents')) {
                         $iot_device = get_post_meta($field_value, 'iot_device', true);
                         echo esc_html(get_the_title($field_value));
                     } else {
-/*                        
-                        $get_system_doc_id = $this->get_system_doc_id($field_type);
-                        if ($get_system_doc_id) {
-                            if ($field_value) echo esc_html(get_the_title($field_value));
-                        } else {
-                            echo esc_html($field_value);
-                        }
-*/
                         echo esc_html($field_value);
                     }
                     echo '</td>';
@@ -1505,11 +1476,6 @@ if (!class_exists('display_documents')) {
                 'video' => __('Video', 'textdomain'),
             ];
 
-            //$system_doc_array = $this->get_system_doc_array();
-            //error_log('$system_doc_array: ' . print_r($system_doc_array,true));
-            //$field_types = $field_types + $system_doc_array;
-            //error_log('$field_types: ' . print_r($field_types,true));
-
             // If $field_type is set and exists in $field_types, return the label
             if ($field_type !== false && isset($field_types[$field_type])) {
                 return $field_types[$field_type];
@@ -1783,19 +1749,14 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_embedded'):
-                            //$items_class = new embedded_items();
-                            //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            //if ($embedded_id && $default_value) {
-
                             if ($embedded_doc) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php //echo esc_attr($embedded_id);?><?php echo esc_attr($embedded_doc);?>" />
+                                <input type="hidden" id="<?php echo esc_attr($field_id); ?>" value="<?php echo esc_attr($embedded_doc);?>" />
                                 <div id="sub-form">
                                     <fieldset>
                                     <?php
                                     $params = array(
-                                        //'embedded_doc_id' => $embedded_id,
                                         'embedded_doc_id' => $embedded_doc,
                                         'report_id' => $report_id,
                                     );
@@ -1808,18 +1769,12 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_line_list'):
-                            $items_class = new embedded_items();
-                            //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            //if ($embedded_id && $default_value) {
-
                             if ($embedded_doc) {
+                                $items_class = new embedded_items();
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <div id="line-report-list">
                                     <?php
-                                    //if ($report_id) echo $items_class->display_line_report_list($embedded_id, $report_id);
-                                    //elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_id, $prev_report_id);
-                                    //else echo $items_class->display_line_report_list($embedded_id);
                                     if ($report_id) echo $items_class->display_line_report_list($embedded_doc, $report_id);
                                     elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_doc, $prev_report_id);
                                     else echo $items_class->display_line_report_list($embedded_doc);
@@ -1830,15 +1785,10 @@ if (!class_exists('display_documents')) {
                             break;
 
                         case ($field_type=='_select'):
-                            //$items_class = new embedded_items();
-                            //$embedded_id = $items_class->get_embedded_id_by_number($default_value);
-                            //if ($embedded_id && $default_value) {
-
                             if ($embedded_doc) {
                                 ?>
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all">
-                                    <?php //echo $items_class->select_embedded_item_options($field_value, $embedded_id);?>
                                     <?php echo $this->select_doc_report_options($field_value, $embedded_doc);?>
                                 </select>
                                 <?php
@@ -1972,30 +1922,6 @@ if (!class_exists('display_documents')) {
                             break;
 
                         default:
-/*                        
-                            $get_system_doc_id = $this->get_system_doc_id($field_type);
-                            if ($get_system_doc_id) {
-                                $params['doc_id'] = $get_system_doc_id;
-                                $multiple_select = get_post_meta($get_system_doc_id, 'multiple_select', true);
-                                if ($multiple_select) {
-                                    error_log('Multiple select: '.print_r($field_value, true));
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select multiple id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_multiple_system_doc_options($field_value, $params);?></select>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                    <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $this->select_system_doc_options($field_value, $params);?></select>
-                                    <?php
-                                }
-                            } else {
-                                ?>
-                                <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
-                                <input type="text" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
-                                <?php    
-                            }
-*/
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                             <input type="text" id="<?php echo esc_attr($field_id);?>" value="<?php echo esc_html($field_value);?>" class="text ui-widget-content ui-corner-all" />
@@ -2102,12 +2028,7 @@ if (!class_exists('display_documents')) {
                         }
             
                         if ($field_type=='_embedded'){
-                            //$items_class = new embedded_items();
-                            //$embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
-                            //if ($embedded_id_by_number && $default_value) {
-
                             if ($embedded_doc) {
-                                //$inner_query = $items_class->retrieve_embedded_item_data($embedded_id_by_number, 0);
                                 $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $embedded_doc));
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -2122,12 +2043,7 @@ if (!class_exists('display_documents')) {
                         }
             
                         if ($field_type=='_line_list'){
-                            //$items_class = new embedded_items();
-                            //$embedded_id_by_number = $items_class->get_embedded_id_by_number($default_value);
-                            //if ($embedded_id_by_number && $default_value) {
-
                             if ($embedded_doc) {
-                                //$inner_query = $items_class->retrieve_line_report_data($embedded_id_by_number);
                                 $inner_query = $items_class->retrieve_line_report_data($embedded_doc);
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -2143,131 +2059,7 @@ if (!class_exists('display_documents')) {
                 wp_reset_postdata();
             }
         }
-/*
-        // sysytem doc
-        function get_system_doc_array() {
-            // Get the current user's site ID
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-        
-            // Return an empty array if site_id is not set
-            if (empty($site_id)) {
-                return array();
-            }
-        
-            // Query arguments for retrieving documents with system_doc meta
-            $args = array(
-                'post_type'      => 'document',
-                'posts_per_page' => -1, // Retrieve all matching posts
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'system_doc',
-                        'value'   => '', // Ensure system_doc is not empty
-                        'compare' => '!=',
-                    ),
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id, // Match the site ID
-                    ),
-                ),
-                'fields' => 'ids', // Only retrieve post IDs for efficiency
-            );
-        
-            // Perform the query
-            $query = new WP_Query($args);
-        
-            // Prepare the result array
-            $system_doc_array = array();
-        
-            if (!empty($query->posts)) {
-                foreach ($query->posts as $post_id) {
-                    $system_doc = sanitize_text_field(get_post_meta($post_id, 'system_doc', true));
-                    if (!empty($system_doc) && !in_array($system_doc, $system_doc_array, true)) {
-                        $system_doc_array[$post_id] = $system_doc;
-                    }
-                }
-            }
-        
-            // Reset post data and return the result
-            wp_reset_postdata();
-            return $system_doc_array;
-        }
 
-        function get_system_doc_id($field_type = false) {
-            // Ensure $field_type is provided
-            if (!$field_type) {
-                return false;
-            }
-
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-
-            // If site_id is not set, return false early
-            if (!$site_id) {
-                return false;
-            }
-
-            // Query arguments
-            $args = array(
-                'post_type'      => 'document', // Specify the post type
-                'posts_per_page' => 1, // Only retrieve one post (to optimize performance)
-                'meta_query'     => array(
-                    'relation' => 'AND', // Combine all conditions
-                    array(
-                        'key'     => 'system_doc', // The meta key to check
-                        'value'   => $field_type,  // The value to match
-                        'compare' => 'LIKE',
-                    ),
-                    array(
-                        'key'     => 'site_id', // Check site_id meta key
-                        'value'   => $site_id, // Match the 'site_id' meta value
-                    ),
-                ),
-            );
-            // Perform the query
-            $query = new WP_Query($args);
-
-            // Check if posts exist
-            if ($query->have_posts()) {
-                $query->the_post(); // Set up the post data
-                $post_id = get_the_ID(); // Retrieve the post ID
-                wp_reset_postdata(); // Reset the global post object
-                return $post_id; // Return the ID of the first matching post
-            } else {
-                return false; // No matches found
-            }
-        }
-
-        function select_system_doc_options($selected_option=0, $params=array()) {
-            $query = $this->retrieve_doc_report_data($params);
-            $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
-            while ($query->have_posts()) : $query->the_post();
-                $report_id = get_the_ID();
-                $report_title = get_the_title();
-                $selected = ($selected_option == $report_id) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' >' . esc_html($report_title) . '</option>';
-            endwhile;
-            wp_reset_postdata();
-            return $options;
-        }
-
-        function select_multiple_system_doc_options($selected_options=array(), $params=array()) {
-            if (!is_array($selected_options)) {
-                $selected_options = array();
-            }
-            $query = $this->retrieve_doc_report_data($params);
-            $options = '';
-            while ($query->have_posts()) : $query->the_post();
-                $report_id = get_the_ID();
-                $report_title = get_the_title();
-                $selected = in_array($report_id, $selected_options) ? 'selected' : '';
-                $options .= '<option value="' . esc_attr($report_id) . '" '.$selected.' >' . esc_html($report_title) . '</option>';
-            endwhile;
-            wp_reset_postdata();
-            return $options;
-        }
-*/
         // document misc
         function select_document_list_options($selected_option=false, $is_doc_report=false) {
             $query = $this->retrieve_document_data(0, $is_doc_report);

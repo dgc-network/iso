@@ -926,13 +926,11 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($user_id, 'site_id', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
-            //$is_summary_job = get_post_meta($next_job, 'is_summary_job', true);
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
 
             // Create a new doc-report for current action
             $new_post = array(
                 'post_type'     => 'doc-report',
-                //'post_title'    => get_the_title($doc_id),
                 'post_title'   => $_POST['_post_title'],
                 'post_content' => $_POST['_post_content'],
                 'post_status'   => 'publish',
@@ -1195,167 +1193,7 @@ if (!class_exists('to_do_list')) {
                 ]);
             }
         }
-/*
-        function notice_the_responsible_persons($todo_id=0) {
 
-            $line_bot_api = new line_bot_api();
-            $todo_title = get_the_title($todo_id);
-            $doc_id = get_post_meta($todo_id, 'doc_id', true);
-            //$doc_title = get_post_meta($doc_id, 'doc_title', true);
-            //$doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $todo_due = get_post_meta($todo_id, 'todo_due', true);
-            $due_date = wp_date( get_option('date_format'), $todo_due );
-
-            $text_message = sprintf(
-                __('Your job in %s has a document that needs to be signed and completed before %s. You can click the link below to view the document.', 'textdomain'),
-                $todo_title,
-                $due_date
-            );            
-
-            $link_uri = home_url().'/to-do-list/?_select_todo=todo-list&_todo_id='.$todo_id;
-        
-            $args = array(
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'user_doc_ids',
-                        'value'   => $doc_id,
-                        'compare' => 'LIKE',
-                    ),
-                ),
-            );
-            $query = new WP_User_Query($args);
-            $users = $query->get_results();
-            foreach ($users as $user) {
-                $header_contents = array(
-                    array(
-                        'type' => 'text',
-                        'text' => 'Hello, ' . $user->display_name,
-                        'size' => 'lg',
-                        'weight' => 'bold',
-                    ),
-                );
-
-                $body_contents = array(
-                    array(
-                        'type' => 'text',
-                        'text' => $text_message,
-                        'wrap' => true,
-                    ),
-                );
-
-                $footer_contents = array(
-                    array(
-                        'type' => 'button',
-                        'action' => array(
-                            'type' => 'uri',
-                            'label' => $todo_title,
-                            'uri' => $link_uri, // Use the desired URI
-                        ),
-                        'style' => 'primary',
-                        'margin' => 'sm',
-                    ),
-                );
-
-                $line_bot_api->send_flex_message([
-                    'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
-                    'header_contents' => $header_contents,
-                    'body_contents' => $body_contents,
-                    'footer_contents' => $footer_contents,
-                ]);
-            }
-
-            // Check if Employees or Department in report
-            $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-            if ($report_id) {
-                $department_id = get_post_meta($report_id, '_department', true);
-                $user_ids = get_post_meta($department_id, 'user_ids', true);
-                if (is_array($user_ids)) {
-                    foreach ($user_ids as $user_id) {
-                        $header_contents = array(
-                            array(
-                                'type' => 'text',
-                                'text' => 'Hello, ' . $user->display_name,
-                                'size' => 'lg',
-                                'weight' => 'bold',
-                            ),
-                        );
-        
-                        $body_contents = array(
-                            array(
-                                'type' => 'text',
-                                'text' => $text_message,
-                                'wrap' => true,
-                            ),
-                        );
-        
-                        $footer_contents = array(
-                            array(
-                                'type' => 'button',
-                                'action' => array(
-                                    'type' => 'uri',
-                                    'label' => $todo_title,
-                                    'uri' => $link_uri, // Use the desired URI
-                                ),
-                                'style' => 'primary',
-                                'margin' => 'sm',
-                            ),
-                        );
-        
-                        $line_bot_api->send_flex_message([
-                            'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
-                            'header_contents' => $header_contents,
-                            'body_contents' => $body_contents,
-                            'footer_contents' => $footer_contents,
-                        ]);
-                    }    
-                }
-
-                $user_ids = get_post_meta($report_id, '_employees', true);
-                if (is_array($user_ids)) {
-                    foreach ($user_ids as $user_id) {
-                        $user = get_userdata($user_id);
-
-                        $header_contents = array(
-                            array(
-                                'type' => 'text',
-                                'text' => 'Hello, ' . $user->display_name,
-                                'size' => 'lg',
-                                'weight' => 'bold',
-                            ),
-                        );
-        
-                        $body_contents = array(
-                            array(
-                                'type' => 'text',
-                                'text' => $text_message,
-                                'wrap' => true,
-                            ),
-                        );
-        
-                        $footer_contents = array(
-                            array(
-                                'type' => 'button',
-                                'action' => array(
-                                    'type' => 'uri',
-                                    'label' => $todo_title,
-                                    'uri' => $link_uri, // Use the desired URI
-                                ),
-                                'style' => 'primary',
-                                'margin' => 'sm',
-                            ),
-                        );
-        
-                        $line_bot_api->send_flex_message([
-                            'to' => get_user_meta($user->ID, 'line_user_id', TRUE),
-                            'header_contents' => $header_contents,
-                            'body_contents' => $body_contents,
-                            'footer_contents' => $footer_contents,
-                        ]);
-                    }    
-                }
-            }
-        }
-*/
         // Notice the persons in site
         function notice_the_persons_in_site($site_id=0, $text_message='', $link_uri='') {
             $args = array(
