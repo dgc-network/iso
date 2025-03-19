@@ -1020,8 +1020,8 @@ if (!class_exists('embedded_items')) {
             $response = array();
             $line_report_id = (isset($_POST['_line_report_id'])) ? sanitize_text_field($_POST['_line_report_id']) : 0;
             $embedded_id = (isset($_POST['_embedded_id'])) ? sanitize_text_field($_POST['_embedded_id']) : 0;
-            //$response['html_contain'] = $this->display_line_report_dialog($line_report_id, $embedded_id);
-            $response['line_report_fields'] = $this->get_line_report_field_keys($embedded_id);
+            $response['html_contain'] = $this->display_line_report_dialog($line_report_id, $embedded_id);
+            //$response['line_report_fields'] = $this->get_line_report_field_keys($embedded_id);
             wp_send_json($response);
         }
 
