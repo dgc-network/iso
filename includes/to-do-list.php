@@ -191,6 +191,7 @@ if (!class_exists('to_do_list')) {
                             $todo_due = wp_date(get_option('date_format'), $todo_due);
                             $doc_id = get_post_meta($todo_id, 'doc_id', true);
                             $doc_title = get_the_title($doc_id);
+/*                            
                             $doc_category = get_post_meta($doc_id, 'doc_category', true);
                             $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                             $report_id = get_post_meta($todo_id, 'prev_report_id', true);
@@ -198,6 +199,7 @@ if (!class_exists('to_do_list')) {
                                 $report_doc_id = get_post_meta($report_id, 'doc_id', true);
                                 $doc_title = get_the_title($report_doc_id).':'.get_the_title();
                             }
+*/
                             if ($report_id) $doc_title .= '(#'.$report_id.')';
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
                             ?>
@@ -443,8 +445,8 @@ if (!class_exists('to_do_list')) {
             <?php
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                 $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-                $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+                //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                 //error_log('is_action_connector: '.$is_action_connector);
                 //error_log('doc_category: '.$doc_category);
                 //error_log('report_doc_id: '.get_the_title($report_doc_id));
@@ -459,7 +461,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    if ($is_action_connector) $params['doc_id'] = $report_doc_id;
+                    //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_report_native_list($params);
                 } else {
                     //$doc_id = get_post_meta($todo_id, 'doc_id', true);
@@ -470,7 +472,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'          => $doc_id,
                         'prev_report_id'  => $prev_report_id,
                     );
-                    if ($is_action_connector) $params['doc_id'] = $report_doc_id;
+                    //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_field_contains($params);
                 }
             ?>
@@ -526,15 +528,15 @@ if (!class_exists('to_do_list')) {
             if (!$user_id) $user_id = get_current_user_id();
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
-            $doc_category = get_post_meta($doc_id, 'doc_category', true);
-            $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+            //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+            //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
             //error_log('doc_id: '.get_the_title($doc_id));
             //error_log('doc_category: '.$doc_category);
             //error_log('is_action_connector: '.$is_action_connector);
             // 如果是is_action_connector==1審核、核准、彙整之類的工作，就不需要新增一個doc-report了
-            if ($is_action_connector) {
+            //if ($is_action_connector) {
                 $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-            } else {
+            //} else {
                 // Add a new doc-report
                 $new_post = array(
                     'post_type'     => 'doc-report',
@@ -550,7 +552,7 @@ if (!class_exists('to_do_list')) {
                 $documents_class->update_doc_field_contains(
                     array('report_id' => $prev_report_id, 'is_default' => $is_default, 'user_id' => $user_id)
                 );
-            }
+            //}
             //error_log('report_doc_id: '.get_the_title($report_doc_id));
             //error_log('prev_report_id: '.$prev_report_id);
 
@@ -685,9 +687,11 @@ if (!class_exists('to_do_list')) {
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                    $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                    if (!empty($doc_id) && !$is_action_connector) {
+                    //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+                    //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                    //if (!empty($doc_id) && !$is_action_connector) {
+
+                    if (!empty($doc_id)) {
                         $user_doc_ids[] = $doc_id;
                     }
                 }
@@ -754,9 +758,11 @@ if (!class_exists('to_do_list')) {
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                    $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                    if (!empty($doc_id) && !$is_action_connector) {
+                    //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+                    //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                    //if (!empty($doc_id) && !$is_action_connector) {
+
+                    if (!empty($doc_id)) {
                         $user_doc_ids[] = $doc_id;
                     }
                 }
@@ -806,9 +812,11 @@ if (!class_exists('to_do_list')) {
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                    $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                    if (!empty($doc_id) && !$is_action_connector) {
+                    //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+                    //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                    //if (!empty($doc_id) && !$is_action_connector) {
+
+                    if (!empty($doc_id)) {
                         $user_doc_ids[] = $doc_id;
                     }
                 }
@@ -1466,8 +1474,8 @@ if (!class_exists('to_do_list')) {
 
                 $prev_report_id = get_post_meta($log_id, 'prev_report_id', true);
                 $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-                $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+                //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
 
                 $submit_time = get_post_meta($log_id, 'submit_time', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
@@ -1486,7 +1494,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    if ($is_action_connector) $params['doc_id'] = $report_doc_id;
+                    //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_report_native_list($params);
                 } else {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
@@ -1497,7 +1505,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'          => $doc_id,
                         'prev_report_id'  => $prev_report_id,
                     );
-                    if ($is_action_connector) $params['doc_id'] = $report_doc_id;
+                    //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_field_contains($params);
                 }
             ?>
@@ -1544,13 +1552,15 @@ if (!class_exists('to_do_list')) {
                             $todo_id = get_the_ID();
                             $doc_id = get_post_meta($todo_id, 'doc_id', true);
                             $log_title = get_the_title($doc_id);
-                            $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                            $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
+                            //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+                            //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
                             $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
+/*                            
                             if ($is_action_connector) {
                                 $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
                                 $log_title = get_the_title($report_doc_id).':'.get_the_title($doc_id);
                             }
+*/                                
                             if ($prev_report_id) {
                                 $log_title .= '(#'.$prev_report_id.')';
                             }

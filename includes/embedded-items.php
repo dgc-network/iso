@@ -903,10 +903,10 @@ if (!class_exists('embedded_items')) {
                 $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' >' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-            if (!$is_action_connector) {
+            //if (!$is_action_connector) {
                 $selected = ($selected_option=="embedded") ? 'selected' : '';
                 $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
-            }
+            //}
             return $options;
         }
         
