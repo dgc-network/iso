@@ -115,45 +115,63 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 echo '</div>';
 
-                if ($_GET['_select_profile']=='rename_meta_keys') echo $this->rename_meta_keys();
+                if ($_GET['_select_profile']=='migrate_doc_report_to_todo') echo $this->migrate_doc_report_to_todo();
                 if ($_GET['_select_profile']=='migrate_embedded_to_document') echo $this->migrate_embedded_to_document();
             }
         }
 
-        function rename_meta_keys() {
+        function migrate_doc_report_to_todo() {
             global $wpdb;
         
-            // Rename meta in "document" post type
-            $documents = get_posts([
-                'post_type'      => 'document',
-                'posts_per_page' => -1, // Get all posts
-                'fields'         => 'ids' // Only retrieve post IDs
+            // Get all doc-report posts
+            $doc_reports = get_posts([
+                'post_type'      => 'doc-report',
+                'posts_per_page' => -1,
+                'post_status'    => 'any',
             ]);
         
-            foreach ($documents as $doc_id) {
-                $old_value = get_post_meta($doc_id, 'is_embedded_item', true);
-                if (!empty($old_value)) {
-                    update_post_meta($doc_id, 'is_embedded_doc', $old_value);
-                    delete_post_meta($doc_id, 'is_embedded_item');
-                }
+            if (empty($doc_reports)) {
+                error_log('No doc-report posts found.');
+                return;
             }
         
-            // Rename meta in "doc-field" post type
-            $doc_fields = get_posts([
-                'post_type'      => 'doc-field',
-                'posts_per_page' => -1, // Get all posts
-                'fields'         => 'ids' // Only retrieve post IDs
-            ]);
+            foreach ($doc_reports as $doc) {
+                $doc_id = $doc->ID;
         
-            foreach ($doc_fields as $field_id) {
-                $old_value = get_post_meta($field_id, 'embedded_item', true);
-                if (!empty($old_value)) {
-                    update_post_meta($field_id, 'embedded_doc', $old_value);
-                    delete_post_meta($field_id, 'embedded_item');
+                // Find todo posts that reference this doc-report
+                $todo_posts = get_posts([
+                    'post_type'      => 'todo',
+                    'posts_per_page' => -1,
+                    'post_status'    => 'any',
+                    'meta_query'     => [
+                        [
+                            'key'   => 'prev_report_id',
+                            'value' => $doc_id,
+                            'compare' => '=',
+                        ],
+                    ],
+                ]);
+        
+                foreach ($todo_posts as $todo) {
+                    $todo_id = $todo->ID;
+        
+                    // Copy metadata from doc-report to todo
+                    $doc_meta = get_post_meta($doc_id);
+                    foreach ($doc_meta as $key => $values) {
+                        foreach ($values as $value) {
+                            update_post_meta($todo_id, $key, $value);
+                        }
+                    }
+        
+                    // Optionally, update meta to indicate migration
+                    update_post_meta($todo_id, 'migrated_from_doc_report', $doc_id);
                 }
+        
+                // Optionally, delete the doc-report after migration
+                wp_delete_post($doc_id, true);
             }
         
-            echo "Meta keys have been renamed successfully.";
+            error_log('Migration from doc-report to todo completed.');
         }
         
         function migrate_embedded_to_document() {
