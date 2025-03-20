@@ -948,7 +948,8 @@ if (!class_exists('display_documents')) {
             }
 
             $args = array(
-                'post_type'      => 'doc-report',
+                //'post_type'      => 'doc-report',
+                'post_type'      => 'todo',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
                 'meta_query'     => $meta_query,
@@ -1027,7 +1028,8 @@ if (!class_exists('display_documents')) {
             }
         
             $args = array(
-                'post_type'      => 'doc-report',
+                //'post_type'      => 'doc-report',
+                'post_type'      => 'todo',
                 'posts_per_page' => 1,
                 'orderby'        => 'date', // Sort by post date
                 'order'          => 'ASC', // Find the earliest report after the current one
@@ -1059,7 +1061,8 @@ if (!class_exists('display_documents')) {
             }
         
             $args = array(
-                'post_type'      => 'doc-report',
+                //'post_type'      => 'doc-report',
+                'post_type'      => 'todo',
                 'posts_per_page' => 1,
                 'orderby'        => 'date', // Sort by post date
                 'order'          => 'DESC', // Find the latest report before the current one
