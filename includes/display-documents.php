@@ -545,6 +545,7 @@ if (!class_exists('display_documents')) {
                     $this->get_transactions_by_key_value_pair(array('_document' => $doc_id));
                 ?>
                 
+                <br>
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
@@ -1116,6 +1117,7 @@ if (!class_exists('display_documents')) {
 
                 $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
+                <br>
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">

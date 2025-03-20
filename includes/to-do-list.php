@@ -873,6 +873,7 @@ if (!class_exists('to_do_list')) {
                 $doc_title = get_the_title($doc_id);
                 $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
+                <br>
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
