@@ -148,7 +148,8 @@ if (!class_exists('display_profiles')) {
                 if ($linked_todo) {
                     wp_update_post([
                         'ID'         => $linked_todo,
-                        'post_title' => get_the_title($doc_field_id),
+                        //'post_title' => get_the_title($doc_field_id),
+                        'post_title' => get_post_meta($doc_field_id, 'field_value', true),
                     ]);
                 }
             }
@@ -177,7 +178,8 @@ if (!class_exists('display_profiles')) {
                 if ($linked_todo) {
                     wp_update_post([
                         'ID'           => $linked_todo,
-                        'post_content' => get_post_field('post_content', $doc_field_id),
+                        //'post_content' => get_post_field('post_content', $doc_field_id),
+                        'post_content' => get_post_meta($doc_field_id, 'field_value', true),
                     ]);
                 }
             }
