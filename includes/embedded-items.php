@@ -1312,7 +1312,7 @@ if (!class_exists('embedded_items')) {
                     '_department'   => $department_id,
                 );
                 $documents_class = new display_documents();
-                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class->display_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <?php

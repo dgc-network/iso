@@ -542,7 +542,7 @@ if (!class_exists('display_documents')) {
 
                 <?php
                     // transaction data vs card key/value
-                    $this->get_transactions_by_key_value_pair(array('_document' => $doc_id));
+                    $this->display_transactions_by_key_value_pair(array('_document' => $doc_id));
                 ?>
 
                 <br>
@@ -1166,7 +1166,9 @@ if (!class_exists('display_documents')) {
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <input type="button" id="action-log-button" value="<?php echo __('Sign-off Record', 'textdomain')?>" style="margin:3px;" />
+<?php /*                        
                         <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'textdomain' );?>" style="margin:3px;" />
+*/?>
                     </div>
                     <div style="text-align:right;">
                         <input type="button" id="exit-doc-report-dialog" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:5px;" />
@@ -1176,6 +1178,18 @@ if (!class_exists('display_documents')) {
                 }
                 ?>
             </fieldset>
+
+            <?php
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
+            if ($is_embedded_doc) {
+                // transaction data vs card key/value
+                $key_value_pair = array(
+                    '_embedded_doc'   => $report_id,
+                );
+                $this->display_transactions_by_key_value_pair($key_value_pair);
+            }
+            ?>
 
             <div id="report-action-log-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
@@ -1353,7 +1367,7 @@ if (!class_exists('display_documents')) {
             }
         }
         
-        function get_transactions_by_key_value_pair($key_value_pair = array()) {
+        function display_transactions_by_key_value_pair($key_value_pair = array()) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             if (!empty($key_value_pair)) {

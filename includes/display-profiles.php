@@ -267,7 +267,7 @@ if (!class_exists('display_profiles')) {
                     '_employee' => get_current_user_id(),
                 );
                 $documents_class = new display_documents();
-                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class->display_transactions_by_key_value_pair($key_value_pair);
                 ?>
             </fieldset>
             <button type="submit" id="my-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'textdomain' );?></button>

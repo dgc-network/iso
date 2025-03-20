@@ -795,7 +795,7 @@ if (!class_exists('iot_messages')) {
                     '_iot_device'   => $device_id,
                 );
                 $documents_class = new display_documents();
-                $documents_class->get_transactions_by_key_value_pair($key_value_pair);
+                $documents_class->display_transactions_by_key_value_pair($key_value_pair);
                 
                 // exception notification setting
                 ?>
