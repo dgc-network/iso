@@ -135,8 +135,10 @@ if (!class_exists('display_profiles')) {
                 return;
             }
         
-            foreach ($doc_reports as $doc) {
-                $doc_id = $doc->ID;
+            foreach ($doc_reports as $doc_report) {
+                $doc_report_id = $doc_report->ID;
+                $doc_report_title = $doc_report->post_title;
+                $doc_report_content = $doc_report->post_content;
         
                 // Find todo posts that reference this doc-report
                 $todo_posts = get_posts([
@@ -146,7 +148,7 @@ if (!class_exists('display_profiles')) {
                     'meta_query'     => [
                         [
                             'key'   => 'prev_report_id',
-                            'value' => $doc_id,
+                            'value' => $doc_report_id,
                             'compare' => '=',
                         ],
                     ],
@@ -155,25 +157,32 @@ if (!class_exists('display_profiles')) {
                 foreach ($todo_posts as $todo) {
                     $todo_id = $todo->ID;
         
+                    // Update title and content of the todo post
+                    wp_update_post([
+                        'ID'           => $todo_id,
+                        'post_title'   => $doc_report_title,
+                        'post_content' => $doc_report_content,
+                    ]);
+        
                     // Copy metadata from doc-report to todo
-                    $doc_meta = get_post_meta($doc_id);
-                    foreach ($doc_meta as $key => $values) {
+                    $doc_report_meta = get_post_meta($doc_report_id);
+                    foreach ($doc_report_meta as $key => $values) {
                         foreach ($values as $value) {
                             update_post_meta($todo_id, $key, $value);
                         }
                     }
         
                     // Optionally, update meta to indicate migration
-                    update_post_meta($todo_id, 'migrated_from_doc_report', $doc_id);
+                    update_post_meta($todo_id, 'migrated_from_doc_report', $doc_report_id);
                 }
         
                 // Optionally, delete the doc-report after migration
-                wp_delete_post($doc_id, true);
+                wp_delete_post($doc_report_id, true);
             }
         
             error_log('Migration from doc-report to todo completed.');
         }
-        
+
         function migrate_embedded_to_document() {
             global $wpdb;
         
