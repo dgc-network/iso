@@ -893,6 +893,7 @@ if (!class_exists('display_profiles')) {
             <fieldset>
                 <table class="ui-widget" style="width:100%;">
                     <thead>
+                        <th><?php echo __( 'No.', 'textdomain' );?></th>
                         <th><?php echo __( 'Document', 'textdomain' );?></th>
                         <th><?php echo __( 'Action', 'textdomain' );?></th>
                         <th><?php echo __( 'Connector', 'textdomain' );?></th>
@@ -915,9 +916,10 @@ if (!class_exists('display_profiles')) {
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_the_title($doc_id);
-                            if ($doc_number) $doc_title .= '('.$doc_number.')';
+                            //if ($doc_number) $doc_title .= '('.$doc_number.')';
                             ?>
                             <tr id="edit-site-action-<?php echo $action_id;?>">
+                                <td style="text-align:center;"><?php echo $doc_number;?></td>
                                 <td><?php echo $doc_title;?></td>
                                 <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
                                 <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
