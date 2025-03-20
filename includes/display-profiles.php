@@ -115,7 +115,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 echo '</div>';
 
-                if ($_GET['_select_profile']=='update_todo_title_and_content') echo $this->update_todo_title_and_content();
+                //if ($_GET['_select_profile']=='update_todo_title_and_content') echo $this->update_todo_title_and_content();
                 if ($_GET['_select_profile']=='migrate_doc_report_to_todo') echo $this->migrate_doc_report_to_todo();
                 if ($_GET['_select_profile']=='migrate_embedded_to_document') echo $this->migrate_embedded_to_document();
             }

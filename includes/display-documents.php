@@ -873,7 +873,7 @@ if (!class_exists('display_documents')) {
                             echo '<th>'.esc_html($field_title).'</th>';
                         endwhile;
                         //if (current_user_can('administrator')) {
-                            echo '<th>'. __( 'Todo', 'textdomain' ).'</th>';
+                        //    echo '<th>'. __( 'Todo', 'textdomain' ).'</th>';
                         //}
                         echo '</tr>';
                         wp_reset_postdata();
@@ -894,7 +894,7 @@ if (!class_exists('display_documents')) {
                             //if (current_user_can('administrator')) {
                                 $next_job = get_post_meta($report_id, 'todo_status', true);
                                 $todo_status = ($next_job) ? get_the_title($next_job) : 'Draft';
-                                echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
+                            //    echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
                             //}
                             echo '</tr>';
                         endwhile;                
