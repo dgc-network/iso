@@ -2222,7 +2222,7 @@ if (!class_exists('display_documents')) {
                             <button id="statement-page2-prev-step" class="button" style="margin:5px;"><?php echo __( 'Back', 'textdomain' );?></button>
                         </div>
                         <div style="text-align: right">
-                            <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'Done', 'textdomain' );?></button>
+                            <button id="exit-statement" class="button" style="margin:5px;"><?php echo __( 'OK', 'textdomain' );?></button>
                         </div>
                     <?php }?>
                 </div>
