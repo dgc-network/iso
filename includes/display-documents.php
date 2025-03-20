@@ -1193,7 +1193,7 @@ if (!class_exists('display_documents')) {
 
             <div id="report-action-log-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_action_log_list($report_id);?>
+                <?php echo $todo_class->get_transaction_log_list($report_id);?>
             </div>
             
             </div>

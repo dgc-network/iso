@@ -23,8 +23,8 @@ if (!class_exists('to_do_list')) {
             add_action( 'wp_ajax_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_start_job_dialog_data', array( $this, 'set_start_job_dialog_data' ) );
 
-            add_action( 'wp_ajax_del_action_log_dialog_data', array( $this, 'del_action_log_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_action_log_dialog_data', array( $this, 'del_action_log_dialog_data' ) );
+            add_action( 'wp_ajax_del_transaction_log_dialog_data', array( $this, 'del_transaction_log_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_transaction_log_dialog_data', array( $this, 'del_transaction_log_dialog_data' ) );
 
             add_action( 'init', array( $this, 'schedule_event_and_action' ) );
 
@@ -85,8 +85,8 @@ if (!class_exists('to_do_list')) {
                 }
                 
                 if ($_GET['_select_todo']=='action-log') {
-                    if (isset($_GET['_log_id'])) echo $this->display_action_log_dialog($_GET['_log_id']);
-                    else echo $this->display_action_log_list();                    
+                    if (isset($_GET['_log_id'])) echo $this->display_transaction_log_dialog($_GET['_log_id']);
+                    else echo $this->display_transaction_log_list();                    
                 }
 
                 if ($_GET['_select_todo']=='cron-events') {
@@ -1395,10 +1395,10 @@ if (!class_exists('to_do_list')) {
             return $query;
         }
         
-        // action_log
-        function display_action_log_list() {
+        // transaction_log
+        function display_transaction_log_list() {
             ob_start();
-            $query = $this->retrieve_action_log_data(0);
+            $query = $this->retrieve_transaction_log_data(0);
             $total_posts = $query->found_posts;
             ?>
             <div class="ui-widget" id="result-container">
@@ -1410,7 +1410,7 @@ if (!class_exists('to_do_list')) {
                         <input type="text" id="search-log" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
                 </div>
-                <?php echo $this->get_action_log_list();?>
+                <?php echo $this->get_transaction_log_list();?>
                 <div style="background-color:lightblue; text-align:center;">
                     <?php echo __( 'Total Submissions: ', 'textdomain' );?> <?php echo $total_posts;?>
                 </div>
@@ -1419,9 +1419,9 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
 
-        //function retrieve_action_log_data($paged=1, $report_id=false) {
+        //function retrieve_transaction_log_data($paged=1, $report_id=false) {
 
-        function retrieve_action_log_data($paged=1, $todo_id=false) {
+        function retrieve_transaction_log_data($paged=1, $todo_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
 
@@ -1571,7 +1571,7 @@ if (!class_exists('to_do_list')) {
             return $query->have_posts() ? $query->posts[0]->ID : null;
         }
 
-        function display_action_log_dialog($log_id=false) {
+        function display_transaction_log_dialog($log_id=false) {
             ob_start();
             $documents_class = new display_documents();
             $prev_log_id = $this->get_previous_log_id($log_id); // Fetch the previous ID
@@ -1651,7 +1651,7 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
         
-        function get_action_log_list($report_id=false) {
+        function get_transaction_log_list($report_id=false) {
             ob_start();
             ?>
             <fieldset>
@@ -1668,7 +1668,7 @@ if (!class_exists('to_do_list')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_action_log_data($paged, $report_id);
+                    $query = $this->retrieve_transaction_log_data($paged, $report_id);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
@@ -1723,11 +1723,11 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
 
-        function del_action_log_dialog_data() {
+        function del_transaction_log_dialog_data() {
             $response = array();
             if (isset($_POST['_log_id'])) {
                 wp_delete_post($_POST['_log_id'], true);
-                $response['html_contain'] = $this->display_action_log_list();
+                $response['html_contain'] = $this->display_transaction_log_list();
             } else {
                 $response['error'] = 'Invalid request!';
             }

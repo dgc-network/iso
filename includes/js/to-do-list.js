@@ -471,8 +471,8 @@ jQuery(document).ready(function($) {
         window.location.href = "?" + urlParams.toString();
     });            
 
-    activate_action_log_dialog_data();
-    function activate_action_log_dialog_data(){
+    activate_transaction_log_dialog_data();
+    function activate_transaction_log_dialog_data(){
         $("#del-action-log").on("click", function () {
             if (window.confirm("Are you sure you want to delete this action log?")) {
                 $.ajax({
@@ -480,7 +480,7 @@ jQuery(document).ready(function($) {
                     url: ajax_object.ajax_url,
                     dataType: "json",
                     data: {
-                        'action': 'del_action_log_dialog_data',
+                        'action': 'del_transaction_log_dialog_data',
                         '_log_id': $("#log-id").val(),
                     },
                     success: function (response) {
