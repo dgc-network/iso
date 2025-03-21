@@ -1664,8 +1664,8 @@ if (!class_exists('to_do_list')) {
                                 $next_job = get_post_meta($submit_action, 'next_job', true);
                                 $next_job_title = get_the_title($next_job);
                             } else {
+                                $log_title = get_the_title();
                                 $action_title = get_post_meta($todo_id, 'action_title', true);
-                                //$log_title = get_the_content();
                                 $next_job_title = '';
                             }
                             $submit_time = get_post_meta($todo_id, 'submit_time', true);
