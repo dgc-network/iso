@@ -1075,7 +1075,7 @@ if (!class_exists('to_do_list')) {
                                     endwhile;
                                     wp_reset_postdata();
                                 endif;
-                                update_post_meta($report_id, '_embedded', $field_value);
+                                //update_post_meta($report_id, '_embedded', $field_value);
                             }
                         }
             
@@ -1089,14 +1089,15 @@ if (!class_exists('to_do_list')) {
                                     endwhile;
                                     wp_reset_postdata();
                                 endif;
-                                update_post_meta($report_id, '_line_list', $field_value);
+                                //update_post_meta($report_id, '_line_list', $field_value);
                             }
                         }
 
                         if ($field_type=='_select'){
-                            //if ($embedded_doc) {
-                                update_post_meta($report_id, '_select', $field_value);
-                            //}
+                            if ($embedded_doc) {
+                                //update_post_meta($report_id, '_select', $field_value);
+                                update_post_meta($report_id, '_select', $embedded_doc);
+                            }
                         }
 
                     }
