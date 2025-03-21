@@ -462,7 +462,7 @@ if (!class_exists('to_do_list')) {
                         'todo_in_summary'  => $todo_in_summary,
                     );
                     //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
-                    $documents_class->get_doc_report_native_list($params);
+                    $documents_class->get_doc_report_inner_list($params);
                 } else {
                     //$doc_id = get_post_meta($todo_id, 'doc_id', true);
                     //$prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
@@ -1298,7 +1298,7 @@ if (!class_exists('to_do_list')) {
                         <input type="text" id="search-log" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
                 </div>
-                <?php echo $this->get_transaction_log_inner();?>
+                <?php echo $this->get_transaction_log_inner_list();?>
                 <div style="background-color:lightblue; text-align:center;">
                     <?php echo __( 'Total Submissions: ', 'textdomain' );?> <?php echo $total_posts;?>
                 </div>
@@ -1489,7 +1489,7 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    $documents_class->get_doc_report_native_list($params);
+                    $documents_class->get_doc_report_inner_list($params);
                 } else {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
                     $prev_report_id = get_post_meta($log_id, 'prev_report_id', true);
@@ -1520,7 +1520,7 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
         
-        function get_transaction_log_inner($report_id=false) {
+        function get_transaction_log_inner_list($report_id=false) {
             ob_start();
             ?>
             <fieldset>

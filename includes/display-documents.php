@@ -757,7 +757,7 @@ if (!class_exists('display_documents')) {
                 $total_posts = $query->found_posts;
                 $total_pages = ceil($total_posts / get_option('operation_row_counts'));
 
-                $this->get_doc_report_native_list($params);
+                $this->get_doc_report_inner_list($params);
                 ?>
                 <div class="pagination">
                     <?php
@@ -861,7 +861,7 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function get_doc_report_native_list($params) {
+        function get_doc_report_inner_list($params) {
             $params['is_listing'] = true;
             ?>
             <table style="width:100%;">
@@ -1192,7 +1192,7 @@ if (!class_exists('display_documents')) {
 
             <div id="report-action-log-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_transaction_log_inner($report_id);?>
+                <?php echo $todo_class->get_transaction_log_inner_list($report_id);?>
             </div>
             
             </div>
@@ -1367,6 +1367,7 @@ if (!class_exists('display_documents')) {
         }
         
         function display_transactions_by_key_value_pair($key_value_pair = array()) {
+            error_log('display_transactions_by_key_value_pair: '.print_r($key_value_pair, true));
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             if (!empty($key_value_pair)) {
@@ -1402,7 +1403,7 @@ if (!class_exists('display_documents')) {
                                 if ($doc_report->have_posts()) {
                                     echo $doc_title;
                                     echo '<fieldset>';
-                                    $this->get_doc_report_native_list($params);
+                                    $this->get_doc_report_inner_list($params);
                                     echo '</fieldset>';    
                                 }        
                             }

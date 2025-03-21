@@ -17,9 +17,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
-
 function plugin_load_textdomain() {
     load_plugin_textdomain( 'textdomain', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
@@ -91,3 +88,6 @@ function isURL($str) {
     $pattern = '/^(http|https):\/\/[^ "]+$/';
     return preg_match($pattern, $str) === 1;
 }
+
+require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
