@@ -853,7 +853,7 @@ if (!class_exists('iot_messages')) {
 
                 $params = array(
                     'log_message' => sprintf(
-                        __( 'IoT device "#%s" has been updated successfully.', 'textdomain' ),
+                        __( 'IoT device #%s has been updated.', 'textdomain' ),
                         $device_number
                     ),                    
                     'action_title' => 'Update',

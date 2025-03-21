@@ -851,7 +851,7 @@ if (!class_exists('embedded_items')) {
 
                 $params = array(
                     'log_message' => sprintf(
-                        __( 'Category %s has been updated successfully.', 'textdomain' ),
+                        __( 'Category %s has been updated.', 'textdomain' ),
                         $category_title
                     ),                    
                     'action_title' => 'Update',
@@ -1342,7 +1342,7 @@ if (!class_exists('embedded_items')) {
 
                 $params = array(
                     'log_message' => sprintf(
-                        __( 'Department %s has been updated successfully.', 'textdomain' ),
+                        __( 'Department %s has been updated.', 'textdomain' ),
                         $department_title
                     ),                    
                     'action_title' => 'Update',

@@ -605,7 +605,7 @@ if (!class_exists('display_documents')) {
 
                 $params = array(
                     'log_message' => sprintf(
-                        __( 'Document %s has been updated successfully.', 'textdomain' ),
+                        __( 'Document %s has been updated.', 'textdomain' ),
                         $doc_title
                     ),                    
                     'action_title' => 'Update',
