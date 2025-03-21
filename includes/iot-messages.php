@@ -856,10 +856,11 @@ if (!class_exists('iot_messages')) {
                         __( 'IoT device "#%s" has been updated successfully.', 'textdomain' ),
                         $device_number
                     ),                    
+                    'action_title' => 'Update IoT Device',
                     'device_id' => $device_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);    
+                $todo_class->set_transaction_log($params);    
 
             } else {
                 $current_user_id = get_current_user_id();
@@ -890,10 +891,11 @@ if (!class_exists('iot_messages')) {
                     __( 'IoT device "#%s" has been deleted', 'textdomain' ),
                     $device_number
                 ),                
+                'action_title' => 'Delete IoT Device',
                 'device_id' => $device_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->set_system_log($params);    
+            $todo_class->set_transaction_log($params);    
 
             wp_delete_post($device_id, true);
             $response = array('html_contain' => $this->display_iot_device_list());

@@ -1875,10 +1875,11 @@ if (!class_exists('display_profiles')) {
                         get_the_title($site_id),
                         wp_get_current_user()->display_name
                     ),                    
+                    'action_title' => 'Approve NDA',
                     'user_id' => $user_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);    
+                $todo_class->set_transaction_log($params);    
 
                 $response = array('nda'=>'approved', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
             }
@@ -1929,10 +1930,11 @@ if (!class_exists('display_profiles')) {
                         get_the_title($site_id),
                         wp_get_current_user()->display_name
                     ),     
+                    'action_title' => 'Reject NDA',
                     'user_id' => $user_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);    
+                $todo_class->set_transaction_log($params);    
 
                 $response = array('nda'=>'rejected', 'user_id'=>$user_id, 'activated_site_users'=>$activated_site_users);
             }

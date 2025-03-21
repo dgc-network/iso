@@ -1420,8 +1420,6 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
 
-        //function retrieve_transaction_log_data($paged=1, $report_id=false) {
-
         function retrieve_transaction_log_data($paged=1, $todo_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
@@ -1455,21 +1453,7 @@ if (!class_exists('to_do_list')) {
             if ($todo_id) {
                 $args['p'] = absint($todo_id); // Ensures the value is a positive integer
             }
-/*            
-            // If $todo_id is provided, filter by post ID
-            if (!empty($todo_id)) {
-                $todo_id = array_map('absint', (array) $todo_id); // Ensure $todo_id is an array of integers
-                $args['post__in'] = $todo_id;
-            }
-/*        
-            // If $report_id is provided, filter by prev_report_id
-            if ($report_id) {
-                $args['meta_query'][] = array(
-                    'key'   => 'prev_report_id',
-                    'value' => $report_id,
-                );
-            }
-*/
+
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
@@ -1599,8 +1583,6 @@ if (!class_exists('to_do_list')) {
 
                 $prev_report_id = get_post_meta($log_id, 'prev_report_id', true);
                 $report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-                //$doc_category = get_post_meta($doc_id, 'doc_category', true);
-                //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
 
                 $submit_time = get_post_meta($log_id, 'submit_time', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
@@ -1619,7 +1601,6 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_report_native_list($params);
                 } else {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
@@ -1630,7 +1611,6 @@ if (!class_exists('to_do_list')) {
                         'doc_id'          => $doc_id,
                         'prev_report_id'  => $prev_report_id,
                     );
-                    //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_field_contains($params);
                 }
             ?>
@@ -1677,20 +1657,15 @@ if (!class_exists('to_do_list')) {
                             $todo_id = get_the_ID();
                             $doc_id = get_post_meta($todo_id, 'doc_id', true);
                             $log_title = get_the_title($doc_id).'(#'.$todo_id.')';
-/*
-                            $prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                            if ($prev_report_id) {
-                                $log_title .= '(#'.$prev_report_id.')';
-                            }
-*/
+
                             $submit_action = get_post_meta($todo_id, 'submit_action', true);
                             if ($submit_action) {
                                 $action_title = get_the_title($submit_action);
                                 $next_job = get_post_meta($submit_action, 'next_job', true);
                                 $next_job_title = get_the_title($next_job);
                             } else {
-                                $action_title = __( 'System log', 'textdomain' );
-                                $log_title = get_the_content();
+                                $action_title = get_post_meta($todo_id, 'action_title', true);
+                                //$log_title = get_the_content();
                                 $next_job_title = '';
                             }
                             $submit_time = get_post_meta($todo_id, 'submit_time', true);
@@ -1724,6 +1699,56 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
 
+        function set_transaction_log($params=array()) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+/*
+            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+/*
+            if ($report_id) {
+                $doc_id = get_post_meta($report_id, 'doc_id', true);
+                $log_title = get_the_title($doc_id);
+            } else {
+                $log_title = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
+                $log_content = __( 'System log', 'textdomain' ); 
+            }
+*/
+            $log_title = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
+            // Create a new To-do for the current action
+            $new_post = array(
+                'post_type'     => 'todo',
+                'post_title'    => $log_title,
+                //'post_content'  => $log_content,
+                'post_status'   => 'publish',
+                'post_author'   => $current_user_id,
+            );    
+            $new_todo_id = wp_insert_post($new_post);    
+
+            update_post_meta($new_todo_id, 'site_id', $site_id );
+            //update_post_meta($new_todo_id, 'prev_report_id', $report_id);
+            update_post_meta($new_todo_id, 'submit_user', $current_user_id);
+            //update_post_meta($new_todo_id, 'submit_action', $action_id);
+            update_post_meta($new_todo_id, 'submit_time', time());
+            //update_post_meta($new_todo_id, 'next_job', $next_job);
+
+            $action_title = isset($params['action_title']) ? $params['action_title'] : '';
+            if ($action_title) update_post_meta($new_todo_id, 'action_title', $action_title);
+
+            $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            if ($doc_id) update_post_meta($new_todo_id, 'doc_id', $doc_id);
+            $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+            if ($user_id) update_post_meta($new_todo_id, 'user_id', $user_id);
+            $category_id = isset($params['category_id']) ? $params['category_id'] : 0;
+            if ($category_id) update_post_meta($new_todo_id, 'category_id', $category_id);
+            $department_id = isset($params['department_id']) ? $params['department_id'] : 0;
+            if ($department_id) update_post_meta($new_todo_id, 'department_id', $department_id);
+            $device_id = isset($params['device_id']) ? $params['device_id'] : 0;
+            if ($device_id) update_post_meta($new_todo_id, 'device_id', $device_id);
+
+            //update_post_meta($report_id, 'todo_status', $next_job);
+        }
+
         function del_transaction_log_dialog_data() {
             $response = array();
             if (isset($_POST['_log_id'])) {
@@ -1733,50 +1758,6 @@ if (!class_exists('to_do_list')) {
                 $response['error'] = 'Invalid request!';
             }
             wp_send_json($response);
-        }
-
-        function set_system_log($params=array()) {
-            $current_user_id = get_current_user_id();
-            $site_id = get_user_meta($current_user_id, 'site_id', true);
-
-            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
-            $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-            $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
-            $category_id = isset($params['category_id']) ? $params['category_id'] : 0;
-            $department_id = isset($params['department_id']) ? $params['department_id'] : 0;
-            $device_id = isset($params['device_id']) ? $params['device_id'] : 0;
-
-            if ($report_id) {
-                $doc_id = get_post_meta($report_id, 'doc_id', true);
-                $log_title = get_the_title($doc_id);
-            } else {
-                $log_title = __( 'System log', 'textdomain' ); 
-                $log_content = isset($params['log_message']) ? $params['log_message'] : __( 'No messages.', 'textdomain' ); 
-            }
-
-            // Create a new To-do for the current action
-            $new_post = array(
-                'post_type'     => 'todo',
-                'post_title'    => $log_title,
-                'post_content'  => $log_content,
-                'post_status'   => 'publish',
-                'post_author'   => $current_user_id,
-            );    
-            $new_todo_id = wp_insert_post($new_post);    
-
-            update_post_meta($new_todo_id, 'site_id', $site_id );
-            update_post_meta($new_todo_id, 'doc_id', $doc_id);
-            update_post_meta($new_todo_id, 'prev_report_id', $report_id);
-            update_post_meta($new_todo_id, 'submit_user', $current_user_id);
-            update_post_meta($new_todo_id, 'submit_action', $action_id);
-            update_post_meta($new_todo_id, 'submit_time', time());
-            update_post_meta($new_todo_id, 'next_job', $next_job);
-            if ($user_id) update_post_meta($new_todo_id, 'user_id', $user_id);
-            if ($category_id) update_post_meta($new_todo_id, 'category_id', $category_id);
-            if ($department_id) update_post_meta($new_todo_id, 'department_id', $department_id);
-            if ($device_id) update_post_meta($new_todo_id, 'device_id', $device_id);
-
-            update_post_meta($report_id, 'todo_status', $next_job);
         }
 
         // doc-report recurrence setting

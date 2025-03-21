@@ -854,10 +854,11 @@ if (!class_exists('embedded_items')) {
                         __( 'Category %s has been updated successfully.', 'textdomain' ),
                         $category_title
                     ),                    
+                    'action_title' => 'Update Category',
                     'category_id' => $category_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);    
+                $todo_class->set_transaction_log($params);    
 
             } else {
                 $current_user_id = get_current_user_id();
@@ -883,10 +884,11 @@ if (!class_exists('embedded_items')) {
                     __( 'Category %s has been deleted.', 'textdomain' ),
                     get_the_title($category_id)
                 ),                
+                'action_title' => 'Delete Category',
                 'category_id' => $category_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->set_system_log($params);    
+            $todo_class->set_transaction_log($params);    
 
             wp_delete_post($_POST['_category_id'], true);
             $response = array('html_contain' => $this->display_doc_category_list());
@@ -1343,10 +1345,11 @@ if (!class_exists('embedded_items')) {
                         __( 'Department %s has been updated successfully.', 'textdomain' ),
                         $department_title
                     ),                    
+                    'action_title' => 'Update Department',
                     'department_id' => $department_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);    
+                $todo_class->set_transaction_log($params);    
 
             } else {
                 $current_user_id = get_current_user_id();
@@ -1373,10 +1376,11 @@ if (!class_exists('embedded_items')) {
                     __( 'Department %s has been deleted.', 'textdomain' ),
                     get_the_title($department_id)
                 ),                
+                'action_title' => 'Delete Department',
                 'department_id' => $department_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->set_system_log($params);    
+            $todo_class->set_transaction_log($params);    
 
             wp_delete_post($_POST['_department_id'], true);
             $response = array('html_contain' => $this->display_department_card_list());

@@ -608,10 +608,11 @@ if (!class_exists('display_documents')) {
                         __( 'Document %s has been updated successfully.', 'textdomain' ),
                         $doc_title
                     ),                    
+                    'action_title' => 'Update Document',
                     'doc_id' => $doc_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);    
+                $todo_class->set_transaction_log($params);    
 
             } else {
                 $current_user_id = get_current_user_id();
@@ -641,10 +642,11 @@ if (!class_exists('display_documents')) {
                     __( 'Document %s has been deleted.', 'textdomain' ),
                     get_the_title($doc_id)
                 ),                
+                'action_title' => 'Delete Document',
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->set_system_log($params);    
+            $todo_class->set_transaction_log($params);    
 
             wp_delete_post($_POST['_doc_id'], true);
             wp_send_json($response);
@@ -1260,9 +1262,8 @@ if (!class_exists('display_documents')) {
                 }
 
                 $todo_class = new to_do_list();
-                //$this->update_transactions_key_value_pair(array('report_id' => $report_id));
                 $todo_class->update_transactions_key_value_pair(array('report_id' => $report_id));
-
+/*
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $proceed_to_todo = isset($_POST['_proceed_to_todo']) ? sanitize_text_field($_POST['_proceed_to_todo']) : 0;
         
@@ -1272,8 +1273,9 @@ if (!class_exists('display_documents')) {
                         'report_id' => $report_id,
                     );        
                     $todo_class = new to_do_list();
-                    $todo_class->set_system_log($params);
+                    $todo_class->set_transaction_log($params);
                 }
+*/                    
             }
             wp_send_json($response);
         }
@@ -2272,10 +2274,11 @@ if (!class_exists('display_documents')) {
 
                 $params = array(
                     'log_message' => sprintf( __( 'Draft %s has been created.', 'textdomain' ), esc_html( $draft_title ) ),
+                    'action_title' => 'Create draft',
                     'doc_id' => $draft_id,
                 );
                 $todo_class = new to_do_list();
-                $todo_class->set_system_log($params);
+                $todo_class->set_transaction_log($params);
 
                 $response = array('success' => true, 'data' => $draft_id);
 
@@ -2338,11 +2341,12 @@ if (!class_exists('display_documents')) {
             update_post_meta($post_id, 'is_doc_report', $is_doc_report);
 
             $params = array(
-                'log_message' => sprintf( __( 'Document %s has been created.', 'textdomain' ), esc_html( $doc_title ) ),
+                'log_message' => sprintf( __( 'Draft %s has been created.', 'textdomain' ), esc_html( $doc_title ) ),
+                'action_title' => 'Create draft',
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
-            $todo_class->set_system_log($params);
+            $todo_class->set_transaction_log($params);
 
             // Create the Action List for $post_id
             $profiles_class = new display_profiles();
