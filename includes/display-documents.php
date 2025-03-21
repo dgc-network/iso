@@ -1258,8 +1258,8 @@ if (!class_exists('display_documents')) {
                     }
                 }
 
-                $todo_class = new to_do_list();
-                $todo_class->update_transactions_key_value_pair(array('report_id' => $report_id));
+                //$todo_class = new to_do_list();
+                $this->update_doc_field_contains(array('report_id' => $report_id));
 /*
                 $action_id = isset($_POST['_action_id']) ? sanitize_text_field($_POST['_action_id']) : 0;
                 $proceed_to_todo = isset($_POST['_proceed_to_todo']) ? sanitize_text_field($_POST['_proceed_to_todo']) : 0;
@@ -1723,13 +1723,9 @@ if (!class_exists('display_documents')) {
             $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
             $is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
             $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
-            $embedded_item_id = isset($params['embedded_item_id']) ? $params['embedded_item_id'] : 0;
             $line_report_id = isset($params['line_report_id']) ? $params['line_report_id'] : 0;
 
-            //$query = $this->retrieve_doc_field_data($params);
             if ($embedded_doc_id) {
-                //$items_class = new embedded_items();
-                //$query = $items_class->retrieve_embedded_item_data($embedded_doc_id, 0);
                 $params['doc_id'] = $embedded_doc_id;
             }
             $query = $this->retrieve_doc_field_data($params);
@@ -1949,6 +1945,111 @@ if (!class_exists('display_documents')) {
                             break;
                     }
                 endwhile;
+                wp_reset_postdata();
+            }
+        }
+
+        function update_doc_field_contains($params=array()) {
+            //$documents_class = new display_documents();
+            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            $is_default = isset($params['is_default']) ? $params['is_default'] : false;
+            $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+                    // standard fields
+                    $field_id = get_the_ID();
+                    $field_type = get_post_meta($field_id, 'field_type', true);
+                    $default_value = get_post_meta($field_id, 'default_value', true);
+                    $embedded_doc = get_post_meta($field_id, 'embedded_doc', true);
+                    if ($is_default) {
+                        $field_value = $this->get_doc_field_default_value($field_id, $user_id);
+                    } else {
+                        $field_value = $_POST[$field_id];
+                    }
+
+                    if (!empty($field_value)) {
+                        update_post_meta($report_id, $field_id, $field_value);
+                        error_log('Update '.$field_type . '('. $field_id . ') value: ' . $field_value . ' for report_id: ' . $report_id);
+    
+                        // special field-type
+                        if ($field_type=='_employees'){
+                            $employee_ids = get_post_meta($report_id, '_employees', true);
+                            // Ensure $employee_ids is an array, or initialize it as an empty array
+                            if (!is_array($employee_ids)) {
+                                $employee_ids = array();
+                            }
+            
+                            if ($default_value=='me'){
+                                $current_user_id = get_current_user_id();
+                                // Check if the $current_user_id is not already in the $employee_ids array
+                                if (!in_array($current_user_id, $employee_ids)) {
+                                    // Add the value to the $employee_ids array
+                                    $employee_ids = array($current_user_id);
+                                }
+                            } else {
+                                // Loop through each value in $field_value to check and add to $employee_ids
+                                foreach ($field_value as $value) {
+                                    // Check if the value is not already in the $employee_ids array
+                                    if (!in_array($value, $employee_ids)) {
+                                        // Add the value to the $employee_ids array
+                                        $employee_ids[] = $value;
+                                    }
+                                }    
+                            }
+                            update_post_meta($report_id, '_employees', $employee_ids);
+                        }
+            
+                        if ($field_type=='_employee'){
+                            update_post_meta($report_id, '_employee', $field_value);
+                        }
+            
+                        if ($field_type=='_document'){
+                            update_post_meta($report_id, '_document', $field_value);
+                        }
+/*            
+                        if ($field_type=='_department'){
+                            update_post_meta($report_id, '_department', $field_value);
+                        }
+*/            
+                        if ($field_type=='_embedded'){
+                            if ($embedded_doc) {
+                                $inner_query = $documents_class->retrieve_doc_field_data(array('doc_id' => $embedded_doc));
+                                if ($inner_query->have_posts()) :
+                                    while ($inner_query->have_posts()) : $inner_query->the_post();
+                                        $embedded_id = get_the_ID();
+                                        $embedded_item_value = $_POST[$embedded_id];
+                                        update_post_meta($report_id, $embedded_id, $embedded_item_value);
+                                        error_log('Update '.$field_type . '('. $embedded_id . ') value: ' . $embedded_item_value . ' for report_id: ' . $report_id);
+                                    endwhile;
+                                    wp_reset_postdata();
+                                endif;
+                            }
+                        }
+            
+                        if ($field_type=='_line_list'){
+                            if ($embedded_doc) {
+                                $inner_query = $items_class->retrieve_line_report_data($embedded_doc);
+                                if ($inner_query->have_posts()) :
+                                    while ($inner_query->have_posts()) : $inner_query->the_post();
+                                        $embedded_id = get_the_ID();
+                                        update_post_meta($embedded_id, 'report_id', $report_id);
+                                    endwhile;
+                                    wp_reset_postdata();
+                                endif;
+                            }
+                        }
+
+                        if ($field_type=='_select'){
+                            if ($embedded_doc) {
+                                update_post_meta($report_id, '_select', $field_value);
+                            }
+                        }
+
+                    }
+                }
                 wp_reset_postdata();
             }
         }
