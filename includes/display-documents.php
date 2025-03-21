@@ -1186,10 +1186,7 @@ if (!class_exists('display_documents')) {
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             if ($is_embedded_doc) {
                 // transaction data vs card key/value
-                $key_value_pair = array(
-                    '_embedded_doc'   => $report_id,
-                );
-                $this->display_transactions_by_key_value_pair(['_embedded_doc' => $doc_id,]);
+                $this->display_transactions_by_key_value_pair(['_select' => $doc_id,]);
             }
             ?>
 
