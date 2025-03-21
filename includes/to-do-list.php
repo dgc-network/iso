@@ -1587,7 +1587,8 @@ if (!class_exists('to_do_list')) {
                 $submit_time = get_post_meta($log_id, 'submit_time', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
                 if (!$submit_action) {
-                    echo get_post_field('post_content', $log_id);
+                    //echo get_post_field('post_content', $log_id);
+                    echo get_the_title($log_id);
                     $user_id = get_post_meta($log_id, 'user_id', true);
                     if ($user_id) {
                         $nda_content = get_user_meta($user_id, 'nda_content', true);
