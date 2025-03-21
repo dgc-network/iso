@@ -999,11 +999,12 @@ if (!class_exists('to_do_list')) {
         }
         
         function update_transactions_key_value_pair($params=array()) {
+            $documents_class = new display_documents();
             $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             $is_default = isset($params['is_default']) ? $params['is_default'] : false;
             $user_id = isset($params['user_id']) ? $params['user_id'] : 0;
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
+            $query = $documents_class->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($query->have_posts()) {
                 while ($query->have_posts()) {
                     $query->the_post();
@@ -1013,7 +1014,7 @@ if (!class_exists('to_do_list')) {
                     $default_value = get_post_meta($field_id, 'default_value', true);
                     $embedded_doc = get_post_meta($field_id, 'embedded_doc', true);
                     if ($is_default) {
-                        $field_value = $this->get_doc_field_default_value($field_id, $user_id);
+                        $field_value = $documents_class->get_doc_field_default_value($field_id, $user_id);
                     } else {
                         $field_value = $_POST[$field_id];
                     }
@@ -1064,7 +1065,7 @@ if (!class_exists('to_do_list')) {
 */            
                         if ($field_type=='_embedded'){
                             if ($embedded_doc) {
-                                $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $embedded_doc));
+                                $inner_query = $documents_class->retrieve_doc_field_data(array('doc_id' => $embedded_doc));
                                 if ($inner_query->have_posts()) :
                                     while ($inner_query->have_posts()) : $inner_query->the_post();
                                         $embedded_id = get_the_ID();
