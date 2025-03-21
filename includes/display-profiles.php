@@ -1875,7 +1875,7 @@ if (!class_exists('display_profiles')) {
                         get_the_title($site_id),
                         wp_get_current_user()->display_name
                     ),                    
-                    'action_title' => 'Approve NDA',
+                    'action_title' => 'Approve',
                     'user_id' => $user_id,
                 );
                 $todo_class = new to_do_list();
@@ -1930,7 +1930,7 @@ if (!class_exists('display_profiles')) {
                         get_the_title($site_id),
                         wp_get_current_user()->display_name
                     ),     
-                    'action_title' => 'Reject NDA',
+                    'action_title' => 'Reject',
                     'user_id' => $user_id,
                 );
                 $todo_class = new to_do_list();

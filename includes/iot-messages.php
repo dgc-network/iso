@@ -856,7 +856,7 @@ if (!class_exists('iot_messages')) {
                         __( 'IoT device "#%s" has been updated successfully.', 'textdomain' ),
                         $device_number
                     ),                    
-                    'action_title' => 'Update IoT Device',
+                    'action_title' => 'Update',
                     'device_id' => $device_id,
                 );
                 $todo_class = new to_do_list();
@@ -891,7 +891,7 @@ if (!class_exists('iot_messages')) {
                     __( 'IoT device "#%s" has been deleted', 'textdomain' ),
                     $device_number
                 ),                
-                'action_title' => 'Delete IoT Device',
+                'action_title' => 'Delete',
                 'device_id' => $device_id,
             );
             $todo_class = new to_do_list();

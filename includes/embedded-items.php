@@ -854,7 +854,7 @@ if (!class_exists('embedded_items')) {
                         __( 'Category %s has been updated successfully.', 'textdomain' ),
                         $category_title
                     ),                    
-                    'action_title' => 'Update Category',
+                    'action_title' => 'Update',
                     'category_id' => $category_id,
                 );
                 $todo_class = new to_do_list();
@@ -884,7 +884,7 @@ if (!class_exists('embedded_items')) {
                     __( 'Category %s has been deleted.', 'textdomain' ),
                     get_the_title($category_id)
                 ),                
-                'action_title' => 'Delete Category',
+                'action_title' => 'Delete',
                 'category_id' => $category_id,
             );
             $todo_class = new to_do_list();
@@ -1345,7 +1345,7 @@ if (!class_exists('embedded_items')) {
                         __( 'Department %s has been updated successfully.', 'textdomain' ),
                         $department_title
                     ),                    
-                    'action_title' => 'Update Department',
+                    'action_title' => 'Update',
                     'department_id' => $department_id,
                 );
                 $todo_class = new to_do_list();
@@ -1376,7 +1376,7 @@ if (!class_exists('embedded_items')) {
                     __( 'Department %s has been deleted.', 'textdomain' ),
                     get_the_title($department_id)
                 ),                
-                'action_title' => 'Delete Department',
+                'action_title' => 'Delete',
                 'department_id' => $department_id,
             );
             $todo_class = new to_do_list();

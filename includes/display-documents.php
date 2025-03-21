@@ -608,7 +608,7 @@ if (!class_exists('display_documents')) {
                         __( 'Document %s has been updated successfully.', 'textdomain' ),
                         $doc_title
                     ),                    
-                    'action_title' => 'Update Document',
+                    'action_title' => 'Update',
                     'doc_id' => $doc_id,
                 );
                 $todo_class = new to_do_list();
@@ -642,7 +642,7 @@ if (!class_exists('display_documents')) {
                     __( 'Document %s has been deleted.', 'textdomain' ),
                     get_the_title($doc_id)
                 ),                
-                'action_title' => 'Delete Document',
+                'action_title' => 'Delete',
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
@@ -2274,7 +2274,7 @@ if (!class_exists('display_documents')) {
 
                 $params = array(
                     'log_message' => sprintf( __( 'Draft %s has been created.', 'textdomain' ), esc_html( $draft_title ) ),
-                    'action_title' => 'Create draft',
+                    'action_title' => 'Create',
                     'doc_id' => $draft_id,
                 );
                 $todo_class = new to_do_list();
@@ -2342,7 +2342,7 @@ if (!class_exists('display_documents')) {
 
             $params = array(
                 'log_message' => sprintf( __( 'Draft %s has been created.', 'textdomain' ), esc_html( $doc_title ) ),
-                'action_title' => 'Create draft',
+                'action_title' => 'Create',
                 'doc_id' => $doc_id,
             );
             $todo_class = new to_do_list();
