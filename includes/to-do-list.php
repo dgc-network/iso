@@ -1075,7 +1075,7 @@ if (!class_exists('to_do_list')) {
                                     endwhile;
                                     wp_reset_postdata();
                                 endif;
-                                update_post_meta($report_id, '_embedded_doc', $field_value);
+                                //update_post_meta($report_id, '_embedded_doc', $field_value);
                             }
                         }
             
@@ -1089,7 +1089,7 @@ if (!class_exists('to_do_list')) {
                                     endwhile;
                                     wp_reset_postdata();
                                 endif;
-                                update_post_meta($report_id, '_embedded_doc', $field_value);
+                                //update_post_meta($report_id, '_embedded_doc', $field_value);
                             }
                         }
 
@@ -1411,7 +1411,7 @@ if (!class_exists('to_do_list')) {
                         <input type="text" id="search-log" style="display:inline" placeholder="<?php echo __( 'Search...', 'textdomain' );?>" />
                     </div>
                 </div>
-                <?php echo $this->get_transaction_log_list();?>
+                <?php echo $this->get_transaction_log_inner();?>
                 <div style="background-color:lightblue; text-align:center;">
                     <?php echo __( 'Total Submissions: ', 'textdomain' );?> <?php echo $total_posts;?>
                 </div>
@@ -1633,7 +1633,7 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
         
-        function get_transaction_log_list($report_id=false) {
+        function get_transaction_log_inner($report_id=false) {
             ob_start();
             ?>
             <fieldset>

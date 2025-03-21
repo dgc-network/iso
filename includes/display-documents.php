@@ -542,7 +542,7 @@ if (!class_exists('display_documents')) {
 
                 <?php
                     // transaction data vs card key/value
-                    $this->display_transactions_by_key_value_pair(array('_document' => $doc_id));
+                    $this->display_transactions_by_key_value_pair(['_document' => $doc_id]);
                 ?>
 
                 <br><br>
@@ -1189,13 +1189,13 @@ if (!class_exists('display_documents')) {
                 $key_value_pair = array(
                     '_embedded_doc'   => $report_id,
                 );
-                $this->display_transactions_by_key_value_pair($key_value_pair);
+                $this->display_transactions_by_key_value_pair(['_embedded_doc' => $doc_id,]);
             }
             ?>
 
             <div id="report-action-log-div" style="display:none;">
                 <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_transaction_log_list($report_id);?>
+                <?php echo $todo_class->get_transaction_log_inner($report_id);?>
             </div>
             
             </div>
