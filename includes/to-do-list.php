@@ -1378,6 +1378,7 @@ if (!class_exists('to_do_list')) {
                 'post_type'      => 'todo',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
+/*
                 'meta_query'     => array(
                     'relation' => 'AND',
                     array(
@@ -1389,6 +1390,7 @@ if (!class_exists('to_do_list')) {
                         'value'   => $site_id,
                     ),
                 ),
+*/                
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'submit_time',
                 'order'          => 'DESC',
@@ -1404,12 +1406,22 @@ if (!class_exists('to_do_list')) {
                 $todo_ids = array_map('absint', $todo_ids); // Ensure IDs are integers
                 $args['post__in'] = $todo_ids;
             }
-/*
-            // If $todo_id is provided, filter by post ID
-            if (!empty($todo_ids)) {
-                $args['post__in'] = $todo_ids; // Keeps other filters active
+
+            // Check if meta_query is causing issues
+            if (empty($todo_ids)) {
+                $args['meta_query'] = array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                    ),
+                );
             }
-*/            
+
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
