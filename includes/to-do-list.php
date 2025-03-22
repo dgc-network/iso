@@ -470,7 +470,7 @@ if (!class_exists('to_do_list')) {
                         'is_todo'         => true,
                         'todo_id'         => $todo_id,
                         'doc_id'          => $doc_id,
-                        'prev_report_id'  => $prev_report_id,
+                        //'prev_report_id'  => $prev_report_id,
                     );
                     //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_field_contains($params);
@@ -1409,7 +1409,7 @@ if (!class_exists('to_do_list')) {
                 $args['p'] = absint($todo_id); // Ensures the value is a positive integer
             }
 */
-            if ($todo_id) {
+            if (!empty($todo_ids)) {
                 $args['post__in'] = $todo_ids; // Keeps other filters active
             }
             
@@ -1569,7 +1569,7 @@ if (!class_exists('to_do_list')) {
                         'is_todo'         => true,
                         'todo_id'         => $log_id,
                         'doc_id'          => $doc_id,
-                        'prev_report_id'  => $prev_report_id,
+                        //'prev_report_id'  => $prev_report_id,
                     );
                     $documents_class->get_doc_field_contains($params);
                 }

@@ -1116,7 +1116,8 @@ if (!class_exists('display_documents')) {
                 <?php
                 $params = array(
                     'doc_id'    => $doc_id,
-                    'report_id' => $report_id,
+                    //'report_id' => $report_id,
+                    'todo_id' => $report_id,
                 );                
                 $this->get_doc_field_contains($params);
 
@@ -1721,8 +1722,8 @@ if (!class_exists('display_documents')) {
 
         function get_doc_field_contains($params=array()) {
             $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
-            $prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
+            //$report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            //$prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
             $is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
             $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
@@ -1739,7 +1740,7 @@ if (!class_exists('display_documents')) {
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $default_value = get_post_meta($field_id, 'default_value', true);
                     $embedded_doc = get_post_meta($field_id, 'embedded_doc', true);
-
+/*
                     if ($report_id) {
                         $field_value = get_post_meta($report_id, $field_id, true);
                         $todo_status = get_post_meta($report_id, 'todo_status', true);
@@ -1751,10 +1752,13 @@ if (!class_exists('display_documents')) {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
                     error_log('Get '.$field_type . '('. $field_id . ') value: ' . $field_value . ' report_id: ' . $report_id . ' prev_report_id: ' . $prev_report_id);
-
+*/
                     if ($todo_id) {
                         $field_value = get_post_meta($todo_id, $field_id, true);
+                    } else {
+                        $field_value = $this->get_doc_field_default_value($field_id);
                     }
+                    error_log('Get '.$field_type . '('. $field_id . ') value: ' . $field_value . ' todo_id: ' . $todo_id );
 
                     switch (true) {
                         case ($field_type=='_employee'):
@@ -1781,7 +1785,8 @@ if (!class_exists('display_documents')) {
                                     <?php
                                     $params = array(
                                         'embedded_doc_id' => $embedded_doc,
-                                        'report_id' => $report_id,
+                                        //'report_id' => $report_id,
+                                        'todo_id' => $todo_id,
                                     );
                                     $this->get_doc_field_contains($params);
                                     ?>
@@ -1798,8 +1803,9 @@ if (!class_exists('display_documents')) {
                                 <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
                                 <div id="line-report-list">
                                     <?php
-                                    if ($report_id) echo $items_class->display_line_report_list($embedded_doc, $report_id);
-                                    elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_doc, $prev_report_id);
+                                    if ($todo_id) echo $items_class->display_line_report_list($embedded_doc, $todo_id);
+                                    //if ($report_id) echo $items_class->display_line_report_list($embedded_doc, $report_id);
+                                    //elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_doc, $prev_report_id);
                                     else echo $items_class->display_line_report_list($embedded_doc);
                                     ?>
                                 </div>
