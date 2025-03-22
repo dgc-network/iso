@@ -1406,6 +1406,7 @@ if (!class_exists('to_do_list')) {
             }
 */
             if (!empty($todo_ids)) {
+                $args['posts_per_page'] = -1;
                 $args['post__in'] = $todo_ids; // Keeps other filters active
             }
             
