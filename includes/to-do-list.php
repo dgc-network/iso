@@ -1404,10 +1404,15 @@ if (!class_exists('to_do_list')) {
             }
 
             // If $todo_id is provided, filter by post ID
+/*            
             if ($todo_id) {
                 $args['p'] = absint($todo_id); // Ensures the value is a positive integer
             }
-
+*/
+            if ($todo_id) {
+                $args['post__in'] = array(absint($todo_id)); // Keeps other filters active
+            }
+            
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
