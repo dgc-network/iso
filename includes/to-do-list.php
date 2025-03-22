@@ -1399,17 +1399,17 @@ if (!class_exists('to_do_list')) {
                 $args['posts_per_page'] = -1;
             }
 
-            // If $todo_id is provided, filter by post ID
-/*            
-            if ($todo_id) {
-                $args['p'] = absint($todo_id); // Ensures the value is a positive integer
+            // Ensure $todo_ids is valid before applying post__in
+            if (!empty($todo_ids) && is_array($todo_ids)) {
+                $todo_ids = array_map('absint', $todo_ids); // Ensure IDs are integers
+                $args['post__in'] = $todo_ids;
             }
-*/
+/*
+            // If $todo_id is provided, filter by post ID
             if (!empty($todo_ids)) {
-                $args['posts_per_page'] = -1;
                 $args['post__in'] = $todo_ids; // Keeps other filters active
             }
-            
+*/            
             // Sanitize and handle search query
             $search_query = isset($_GET['_search']) ? sanitize_text_field($_GET['_search']) : '';
             if (!empty($search_query)) {
