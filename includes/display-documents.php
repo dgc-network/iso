@@ -1190,8 +1190,10 @@ if (!class_exists('display_documents')) {
             ?>
 
             <div id="report-action-log-div" style="display:none;">
-                <?php $todo_class = new to_do_list();?>
-                <?php echo $todo_class->get_transaction_log_inner_list($report_id);?>
+                <?php 
+                $todo_ids = array(absint($report_id));
+                $todo_class = new to_do_list();
+                echo $todo_class->get_transaction_log_inner_list($todo_ids);?>
             </div>
             
             </div>

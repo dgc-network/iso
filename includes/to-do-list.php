@@ -1307,7 +1307,7 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
 
-        function get_transaction_log_inner_list($report_id=false) {
+        function get_transaction_log_inner_list($todo_ids=array()) {
             ob_start();
             ?>
             <fieldset>
@@ -1324,7 +1324,7 @@ if (!class_exists('to_do_list')) {
                     <tbody>
                     <?php
                     $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_transaction_log_data($paged, $report_id);
+                    $query = $this->retrieve_transaction_log_data($paged, $todo_ids);
                     $total_posts = $query->found_posts;
                     $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
                     if ($query->have_posts()) :
@@ -1374,7 +1374,7 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
 
-        function retrieve_transaction_log_data($paged=1, $todo_id=false) {
+        function retrieve_transaction_log_data($paged=1, $todo_ids=array()) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
 
@@ -1410,7 +1410,7 @@ if (!class_exists('to_do_list')) {
             }
 */
             if ($todo_id) {
-                $args['post__in'] = array(absint($todo_id)); // Keeps other filters active
+                $args['post__in'] = $todo_ids; // Keeps other filters active
             }
             
             // Sanitize and handle search query
