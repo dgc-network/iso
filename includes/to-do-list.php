@@ -677,10 +677,6 @@ if (!class_exists('to_do_list')) {
             if (!empty($user_action_ids) && is_array($user_action_ids)) {
                 foreach ($user_action_ids as $action_id) {
                     $doc_id = get_post_meta($action_id, 'doc_id', true);
-                    //$doc_category = get_post_meta($doc_id, 'doc_category', true);
-                    //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                    //if (!empty($doc_id) && !$is_action_connector) {
-
                     if (!empty($doc_id)) {
                         $user_doc_ids[] = $doc_id;
                     }
