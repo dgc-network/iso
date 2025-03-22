@@ -541,8 +541,8 @@ if (!class_exists('display_documents')) {
                 </div>
 
                 <?php
-                    // transaction data vs card key/value
-                    $this->display_transactions_by_key_value_pair(['_document' => $doc_id]);
+                    // transaction data vs key/value
+                    $this->display_transaction_report_for_master(['_document' => $doc_id]);
                 ?>
 
                 <br><br>
@@ -1182,12 +1182,10 @@ if (!class_exists('display_documents')) {
             </fieldset>
 
             <?php
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             if ($is_embedded_doc) {
-                // transaction data vs card key/value
-                //$this->display_transactions_by_key_value_pair(['_select' => $doc_id,]);
-                $this->display_transactions_by_key_value_pair(['_select' => $report_id,]);
+                // transaction data vs key/value
+                $this->display_transaction_report_for_master(['_select' => $report_id,]);
             }
             ?>
 
@@ -1367,8 +1365,8 @@ if (!class_exists('display_documents')) {
             }
         }
         
-        function display_transactions_by_key_value_pair($key_value_pair = array()) {
-            error_log('display_transactions_by_key_value_pair: '.print_r($key_value_pair, true));
+        function display_transaction_report_for_master($key_value_pair = array()) {
+            error_log('display_transaction_report_for_master: '.print_r($key_value_pair, true));
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             if (!empty($key_value_pair)) {
@@ -1750,6 +1748,10 @@ if (!class_exists('display_documents')) {
                         $field_value = $this->get_doc_field_default_value($field_id);
                     }
                     error_log('Get '.$field_type . '('. $field_id . ') value: ' . $field_value . ' report_id: ' . $report_id . ' prev_report_id: ' . $prev_report_id);
+
+                    if ($todo_id) {
+                        $field_value = get_post_meta($todo_id, $field_id, true);
+                    }
 
                     switch (true) {
                         case ($field_type=='_employee'):

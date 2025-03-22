@@ -1307,6 +1307,73 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
 
+        function get_transaction_log_inner_list($report_id=false) {
+            ob_start();
+            ?>
+            <fieldset>
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __( 'Time', 'textdomain' );?></th>
+                            <th><?php echo __( 'Document', 'textdomain' );?></th>
+                            <th><?php echo __( 'Action', 'textdomain' );?></th>
+                            <th><?php echo __( 'User', 'textdomain' );?></th>
+                            <th><?php echo __( 'Status', 'textdomain' );?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $paged = max(1, get_query_var('paged')); // Get the current page number
+                    $query = $this->retrieve_transaction_log_data($paged, $report_id);
+                    $total_posts = $query->found_posts;
+                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
+                            $todo_id = get_the_ID();
+                            $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                            $log_title = get_the_title($doc_id).'(#'.$todo_id.')';
+
+                            $submit_action = get_post_meta($todo_id, 'submit_action', true);
+                            if ($submit_action) {
+                                $action_title = get_the_title($submit_action);
+                                $next_job = get_post_meta($submit_action, 'next_job', true);
+                                $next_job_title = get_the_title($next_job);
+                            } else {
+                                $log_title = get_the_title();
+                                $action_title = get_post_meta($todo_id, 'action_title', true);
+                                $next_job_title = '';
+                            }
+                            $submit_time = get_post_meta($todo_id, 'submit_time', true);
+                            $submit_user = get_post_meta($todo_id, 'submit_user', true);
+                            $user_data = get_userdata( $submit_user );
+                            ?>
+                            <tr id="edit-action-log<?php esc_attr(the_ID()); ?>">
+                                <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
+                                <td><?php echo esc_html($log_title);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
+                                <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
+                            </tr>
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    endif;
+                    ?>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <?php
+                    // Display pagination links
+                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
+                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
+                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
+                    ?>
+                </div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
+        }
+
         function retrieve_transaction_log_data($paged=1, $todo_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
@@ -1520,73 +1587,6 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
         
-        function get_transaction_log_inner_list($report_id=false) {
-            ob_start();
-            ?>
-            <fieldset>
-                <table class="ui-widget" style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th><?php echo __( 'Time', 'textdomain' );?></th>
-                            <th><?php echo __( 'Document', 'textdomain' );?></th>
-                            <th><?php echo __( 'Action', 'textdomain' );?></th>
-                            <th><?php echo __( 'User', 'textdomain' );?></th>
-                            <th><?php echo __( 'Status', 'textdomain' );?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $paged = max(1, get_query_var('paged')); // Get the current page number
-                    $query = $this->retrieve_transaction_log_data($paged, $report_id);
-                    $total_posts = $query->found_posts;
-                    $total_pages = ceil($total_posts / get_option('operation_row_counts')); // Calculate the total number of pages
-                    if ($query->have_posts()) :
-                        while ($query->have_posts()) : $query->the_post();
-                            $todo_id = get_the_ID();
-                            $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                            $log_title = get_the_title($doc_id).'(#'.$todo_id.')';
-
-                            $submit_action = get_post_meta($todo_id, 'submit_action', true);
-                            if ($submit_action) {
-                                $action_title = get_the_title($submit_action);
-                                $next_job = get_post_meta($submit_action, 'next_job', true);
-                                $next_job_title = get_the_title($next_job);
-                            } else {
-                                $log_title = get_the_title();
-                                $action_title = get_post_meta($todo_id, 'action_title', true);
-                                $next_job_title = '';
-                            }
-                            $submit_time = get_post_meta($todo_id, 'submit_time', true);
-                            $submit_user = get_post_meta($todo_id, 'submit_user', true);
-                            $user_data = get_userdata( $submit_user );
-                            ?>
-                            <tr id="edit-action-log<?php esc_attr(the_ID()); ?>">
-                                <td style="text-align:center;"><?php echo wp_date(get_option('date_format'), $submit_time).' '.wp_date(get_option('time_format'), $submit_time);?></td>
-                                <td><?php echo esc_html($log_title);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($action_title);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($user_data->display_name);?></td>
-                                <td style="text-align:center;"><?php echo esc_html($next_job_title);?></td>
-                            </tr>
-                            <?php
-                        endwhile;
-                        wp_reset_postdata();
-                    endif;
-                    ?>
-                    </tbody>
-                </table>
-                <div class="pagination">
-                    <?php
-                    // Display pagination links
-                    if ($paged > 1) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged - 1)) . '"> < </a></span>';
-                    echo '<span class="page-numbers">' . sprintf(__('Page %d of %d', 'textdomain'), $paged, $total_pages) . '</span>';
-                    if ($paged < $total_pages) echo '<span class="button"><a href="' . esc_url(get_pagenum_link($paged + 1)) . '"> > </a></span>';
-                    ?>
-                </div>
-            </fieldset>
-            <?php
-            return ob_get_clean();
-        }
-
         function set_transaction_log($params=array()) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);

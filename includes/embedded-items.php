@@ -1309,12 +1309,12 @@ if (!class_exists('embedded_items')) {
                 <label for="department-members"><?php echo __( 'Department Members', 'textdomain' );?></label>
                 <?php echo $this->display_department_user_list($department_id);?>
                 <?php
-                // transaction data vs card key/value
+                // transaction data vs key/value
                 $key_value_pair = array(
                     '_department'   => $department_id,
                 );
                 $documents_class = new display_documents();
-                $documents_class->display_transactions_by_key_value_pair($key_value_pair);
+                $documents_class->display_transaction_report_for_master($key_value_pair);
                 ?>
             </fieldset>
             <?php

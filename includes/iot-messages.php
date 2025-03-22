@@ -790,12 +790,12 @@ if (!class_exists('iot_messages')) {
                 <label for="iot-message"><?php echo __( 'IoT messages', 'textdomain' );?></label>
                 <?php echo $this->display_iot_message_list($device_id);?>
                 <?php
-                // transaction data vs card key/value
+                // transaction data vs key/value
                 $key_value_pair = array(
                     '_iot_device'   => $device_id,
                 );
                 $documents_class = new display_documents();
-                $documents_class->display_transactions_by_key_value_pair($key_value_pair);
+                $documents_class->display_transaction_report_for_master($key_value_pair);
                 
                 // exception notification setting
                 ?>
