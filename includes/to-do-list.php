@@ -1330,16 +1330,16 @@ if (!class_exists('to_do_list')) {
                     if ($query->have_posts()) :
                         while ($query->have_posts()) : $query->the_post();
                             $todo_id = get_the_ID();
-                            $doc_id = get_post_meta($todo_id, 'doc_id', true);
-                            $log_title = get_the_title($doc_id).'(#'.$todo_id.')';
+                            $log_title = get_the_title();
 
                             $submit_action = get_post_meta($todo_id, 'submit_action', true);
                             if ($submit_action) {
+                                $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                                $log_title = get_the_title($doc_id).'(#'.$todo_id.$log_title.')';
                                 $action_title = get_the_title($submit_action);
                                 $next_job = get_post_meta($submit_action, 'next_job', true);
                                 $next_job_title = get_the_title($next_job);
                             } else {
-                                $log_title = get_the_title();
                                 $action_title = get_post_meta($todo_id, 'action_title', true);
                                 $next_job_title = '';
                             }
