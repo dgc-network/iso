@@ -444,8 +444,8 @@ if (!class_exists('display_documents')) {
             $is_embedded_doc_checked = ($is_embedded_doc==1) ? 'checked' : '';
             $is_public = get_post_meta($doc_id, 'is_public', true);
             $is_public_checked = ($is_public==1) ? 'checked' : '';
-            $todo_list_only = get_post_meta($doc_id, 'todo_list_only', true);
-            $is_todo_list_only = ($todo_list_only==1) ? 'checked' : '';
+            $not_start_job = get_post_meta($doc_id, 'not_start_job', true);
+            $is_not_start_job = ($not_start_job==1) ? 'checked' : '';
 
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
 
@@ -535,8 +535,8 @@ if (!class_exists('display_documents')) {
                         <label for="is-embedded-doc"><?php echo __( 'Embedded Item', 'textdomain' );?></label><br>
                         <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
                         <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label><br>
-                        <input type="checkbox" id="todo-list-only" <?php echo esc_html($is_todo_list_only);?> />
-                        <label for="todo-list-only"><?php echo __( 'Display in Todo-list only', 'textdomain' );?></label>
+                        <input type="checkbox" id="not-start-job" <?php echo esc_html($is_not_start_job);?> />
+                        <label for="not-start-job"><?php echo __( 'Not display in Start Job', 'textdomain' );?></label>
                     </fieldset>
                 </div>
 
@@ -586,7 +586,7 @@ if (!class_exists('display_documents')) {
                 $api_endpoint = (isset($_POST['_api_endpoint'])) ? sanitize_text_field($_POST['_api_endpoint']) : '';
                 $is_embedded_doc = (isset($_POST['_is_embedded_doc'])) ? sanitize_text_field($_POST['_is_embedded_doc']) : 0;
                 $is_public = (isset($_POST['_is_public'])) ? sanitize_text_field($_POST['_is_public']) : 0;
-                $todo_list_only = (isset($_POST['_todo_list_only'])) ? sanitize_text_field($_POST['_todo_list_only']) : 0;
+                $not_start_job = (isset($_POST['_not_start_job'])) ? sanitize_text_field($_POST['_not_start_job']) : 0;
                 $doc_post_args = array(
                     'ID'           => $doc_id,
                     'post_title'   => $doc_title,
@@ -601,7 +601,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'api_endpoint', $api_endpoint);
                 update_post_meta($doc_id, 'is_embedded_doc', $is_embedded_doc);
                 update_post_meta($doc_id, 'is_public', $is_public);
-                update_post_meta($doc_id, 'todo_list_only', $todo_list_only);
+                update_post_meta($doc_id, 'not_start_job', $not_start_job);
 
                 $params = array(
                     'log_message' => sprintf(

@@ -701,11 +701,11 @@ if (!class_exists('to_do_list')) {
                     array(
                         'relation' => 'OR',
                         array(
-                            'key'     => 'todo_list_only',
+                            'key'     => 'not_start_job',
                             'compare' => 'NOT EXISTS',
                         ),
                         array(
-                            'key'     => 'todo_list_only',
+                            'key'     => 'not_start_job',
                             'value'   => 0,
                         )
                     ),

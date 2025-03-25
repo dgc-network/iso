@@ -492,7 +492,7 @@ jQuery(document).ready(function($) {
             //ajaxData['_multiple_select'] = $("#multiple-select").is(":checked") ? 1 : 0;
             ajaxData['_is_embedded_doc'] = $("#is-embedded-doc").is(":checked") ? 1 : 0;
             ajaxData['_is_public'] = $("#is-public").is(":checked") ? 1 : 0;
-            ajaxData['_todo_list_only'] = $("#todo-list-only").is(":checked") ? 1 : 0;
+            ajaxData['_not_start_job'] = $("#not-start-job").is(":checked") ? 1 : 0;
 
             $.ajax({
                 type: 'POST',

@@ -490,50 +490,97 @@ function get_valid_jwt_token($doc_category=false) {
     return false;
 }
 
-// Register the report-completed API endpoint
-function report_completed_register_post_api() {
-    register_rest_route('api/v1', '/report-completed/', [
+// Register the record-saved API endpoint
+function record_saved_register_post_api() {
+    register_rest_route('api/v1', '/record-saved/', [
         'methods'  => 'POST',
-        'callback' => 'report_completed_api_post_data',
+        'callback' => 'record_saved_api_post_data',
         'permission_callback' => function ($request) {
             return is_user_logged_in() || jwt_auth_check_token($request);
         }
     ]);
 }
-add_action('rest_api_init', 'report_completed_register_post_api');
+add_action('rest_api_init', 'record_saved_register_post_api');
 
-function report_completed_api_post_data(WP_REST_Request $request) {
+function record_saved_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
-    $next_job = isset($params['next_job']) ? sanitize_text_field($params['next_job']) : 0;
-    $report_id = isset($params['prev_report_id']) ? sanitize_text_field($params['prev_report_id']) : 0;
+    $user_id = isset($params['user_id']) ? sanitize_text_field($params['user_id']) : 0;
+    $todo_id = isset($params['todo_id']) ? sanitize_text_field($params['todo_id']) : 0;
+    $site_id = get_user_meta($user_id, 'site_id', true);
+    $doc_id = get_post_meta($report_id, '_document', true);
 
-    if (empty($report_id)) {
+    if (empty($user_id) || empty($todo_id)) {
         return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
     }
 
-    //if ($report_id) update_post_meta($report_id, 'todo_status', $next_job );
+    $text_message = sprintf(
+        __( 'The record %s has been saved on %s, you can click the link below to view the detail.', 'textdomain' ),
+        get_the_title($doc_id),
+        wp_date( get_option('date_format'), time() )
+    );
+    $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
 
     // Notice the persons in site
-    //$this->notice_the_persons_in_site($new_todo_id, $next_job);
+    $todo_class = new to_do_list();
+    $todo_class->notice_the_persons_in_site($site_id, $text_message, $link_uri);
 
     return new WP_REST_Response([
         'message' => 'Report Completed!',
     ], 200);
 }
 
-// Register the report-summary API endpoint
-function report_summary_register_post_api() {
-    register_rest_route('api/v1', '/report-summary/', [
+// Register the record-deleted API endpoint
+function record_deleted_register_post_api() {
+    register_rest_route('api/v1', '/record-deleted/', [
         'methods'  => 'POST',
-        'callback' => 'report_summary_api_post_data',
+        'callback' => 'record_deleted_api_post_data',
         'permission_callback' => function ($request) {
             return is_user_logged_in() || jwt_auth_check_token($request);
         }
     ]);
 }
-add_action('rest_api_init', 'report_summary_register_post_api');
+add_action('rest_api_init', 'record_deleted_register_post_api');
 
-function report_summary_api_post_data(WP_REST_Request $request) {
+function record_deleted_api_post_data(WP_REST_Request $request) {
+    $params = $request->get_json_params(); // Get JSON payload
+    $user_id = isset($params['user_id']) ? sanitize_text_field($params['user_id']) : 0;
+    $todo_id = isset($params['todo_id']) ? sanitize_text_field($params['todo_id']) : 0;
+    $site_id = get_user_meta($user_id, 'site_id', true);
+    $doc_id = get_post_meta($report_id, '_document', true);
+
+    if (empty($user_id) || empty($todo_id)) {
+        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
+    }
+
+    $text_message = sprintf(
+        __( 'The record %s has been deleted on %s, you can click the link below to view the detail.', 'textdomain' ),
+        get_the_title($doc_id),
+        wp_date( get_option('date_format'), time() )
+    );
+    $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
+
+    // Notice the persons in site
+    $todo_class = new to_do_list();
+    $todo_class->notice_the_persons_in_site($site_id, $text_message, $link_uri);
+
+    return new WP_REST_Response([
+        'message' => 'Report Completed!',
+    ], 200);
+}
+
+// Register the record-summarized API endpoint
+function record_summarized_register_post_api() {
+    register_rest_route('api/v1', '/record-summarized/', [
+        'methods'  => 'POST',
+        'callback' => 'record_summarized_api_post_data',
+        'permission_callback' => function ($request) {
+            return is_user_logged_in() || jwt_auth_check_token($request);
+        }
+    ]);
+}
+add_action('rest_api_init', 'record_summarized_register_post_api');
+
+function record_summarized_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
     $doc_id = isset($params['doc_id']) ? sanitize_text_field($params['doc_id']) : 0;
     $prev_todo_id = isset($params['prev_todo_id']) ? sanitize_text_field($params['prev_todo_id']) : 0;
