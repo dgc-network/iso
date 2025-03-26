@@ -517,9 +517,9 @@ if (!class_exists('display_documents')) {
                     </div>
 
                     <div id="job-setting-div" style="display:none;">
-                        <label for="job-content"><?php echo __( '職務內容', 'textdomain' );?></label>
+                        <label for="job-content"><?php echo __( 'Job Content', 'textdomain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
-                        <label for="action-list"><?php echo __( '動作設定', 'textdomain' );?></label>
+                        <label for="action-list"><?php echo __( 'Action List', 'textdomain' );?></label>
                         <div id="site-action-list">
                             <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
                         </div>
