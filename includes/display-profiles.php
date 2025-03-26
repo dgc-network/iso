@@ -1546,6 +1546,51 @@ if (!class_exists('display_profiles')) {
                         array(
                             'key'   => 'is_embedded_doc',
                             'value' => 1,
+                            'compare' => '='
+                        ),
+                        array(
+                            'relation' => 'OR',
+                            // Case 1: in_public exists and is 0
+                            array(
+                                'relation' => 'AND',
+                                array(
+                                    'key'   => 'in_public',
+                                    'value' => 0,
+                                    'compare' => '='
+                                ),
+                                array(
+                                    'key'   => 'site_id',
+                                    'value' => $site_id,
+                                    'compare' => '='
+                                )
+                            ),
+                            // Case 2: in_public does not exist
+                            array(
+                                'relation' => 'AND',
+                                array(
+                                    'key'     => 'in_public',
+                                    'compare' => 'NOT EXISTS'
+                                ),
+                                array(
+                                    'key'   => 'site_id',
+                                    'value' => $site_id,
+                                    'compare' => '='
+                                )
+                            ),
+                            // Case 3: is_public == 1 (should always be included)
+                            array(
+                                'key'   => 'is_public',
+                                'value' => 1,
+                                'compare' => '='
+                            )
+                        )
+                    );
+/*                    
+                    $args['meta_query'][] = array(
+                        'relation' => 'AND',
+                        array(
+                            'key'   => 'is_embedded_doc',
+                            'value' => 1,
                         ),
                         array(
                             'relation' => 'AND',
@@ -1566,6 +1611,7 @@ if (!class_exists('display_profiles')) {
                             )
                         ),
                     );
+*/                    
                 } else {
                     $args['meta_query'][] = array(
                         'key'   => 'doc_category',
