@@ -170,6 +170,7 @@ if (!class_exists('to_do_list')) {
                 <table class="ui-widget" style="width:100%;">
                     <thead>
                         <tr>
+                            <th><?php echo __( 'No.', 'textdomain' );?></th>
                             <th><?php echo __( 'Document', 'textdomain' );?></th>
                             <th><?php echo __( 'Due date', 'textdomain' );?></th>
                             <th><?php echo __( 'Actions', 'textdomain' );?></th>
@@ -191,20 +192,13 @@ if (!class_exists('to_do_list')) {
                             $todo_due = wp_date(get_option('date_format'), $todo_due);
                             $doc_id = get_post_meta($todo_id, 'doc_id', true);
                             $doc_title = get_the_title($doc_id);
-/*                            
-                            $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                            $is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                            $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                            if ($is_action_connector) {
-                                $report_doc_id = get_post_meta($report_id, 'doc_id', true);
-                                $doc_title = get_the_title($report_doc_id).':'.get_the_title();
-                            }
-*/
+
                             //if ($report_id) $doc_title .= '(#'.$report_id.')';
-                            if ($todo_id) $doc_title .= '(#'.$todo_id.')';
+                            //if ($todo_id) $doc_title .= '(#'.$todo_id.')';
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
+                                <td style="text-align:center;"><?php echo esc_html($todo_id);?></td>
                                 <td><?php echo esc_html($doc_title);?></td>
                                 <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($action_titles);?></td>
@@ -451,7 +445,8 @@ if (!class_exists('to_do_list')) {
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    $documents_class->get_doc_report_inner_list($params);
+                    //$documents_class->get_doc_report_inner_list($params);
+                    $documents_class->get_doc_report_inner_list(array('todo_id' => $prev_todo_id));
                 } else {
                     $prev_todo_id = get_post_meta($todo_id, 'prev_todo_id', true);
                     if ($prev_todo_id) {
