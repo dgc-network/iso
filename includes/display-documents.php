@@ -446,6 +446,8 @@ if (!class_exists('display_documents')) {
             $is_public_checked = ($is_public==1) ? 'checked' : '';
             $not_start_job = get_post_meta($doc_id, 'not_start_job', true);
             $is_not_start_job = ($not_start_job==1) ? 'checked' : '';
+            $is_summary_report = get_post_meta($doc_id, 'is_summary_report', true);
+            $is_summary_report_checked = ($is_summary_report==1) ? 'checked' : '';
 
             $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
 
@@ -536,7 +538,9 @@ if (!class_exists('display_documents')) {
                         <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
                         <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label><br>
                         <input type="checkbox" id="not-start-job" <?php echo esc_html($is_not_start_job);?> />
-                        <label for="not-start-job"><?php echo __( 'Do not display in Start Job', 'textdomain' );?></label>
+                        <label for="not-start-job"><?php echo __( 'Do not display in Start Job', 'textdomain' );?></label><br>
+                        <input type="checkbox" id="is-summary-report" <?php echo esc_html($is_summary_report_checked);?> />
+                        <label for="is-summary-report"><?php echo __( 'Summary Report', 'textdomain' );?></label><br>
                     </fieldset>
                 </div>
 
@@ -587,6 +591,7 @@ if (!class_exists('display_documents')) {
                 $is_embedded_doc = (isset($_POST['_is_embedded_doc'])) ? sanitize_text_field($_POST['_is_embedded_doc']) : 0;
                 $is_public = (isset($_POST['_is_public'])) ? sanitize_text_field($_POST['_is_public']) : 0;
                 $not_start_job = (isset($_POST['_not_start_job'])) ? sanitize_text_field($_POST['_not_start_job']) : 0;
+                $is_summary_report = (isset($_POST['_is_summary_report'])) ? sanitize_text_field($_POST['_is_summary_report']) : 0;
                 $doc_post_args = array(
                     'ID'           => $doc_id,
                     'post_title'   => $doc_title,
@@ -602,6 +607,7 @@ if (!class_exists('display_documents')) {
                 update_post_meta($doc_id, 'is_embedded_doc', $is_embedded_doc);
                 update_post_meta($doc_id, 'is_public', $is_public);
                 update_post_meta($doc_id, 'not_start_job', $not_start_job);
+                update_post_meta($doc_id, 'is_summary_report', $is_summary_report);
 
                 $params = array(
                     'log_message' => sprintf(
