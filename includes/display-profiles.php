@@ -1006,17 +1006,17 @@ if (!class_exists('display_profiles')) {
                             $action_title = get_the_title();
                             $action_content = get_the_content();
                             $action_connector = get_post_meta($action_id, 'action_connector', true);
+                            $connector_title = ($action_connector=='embedded') ? __( 'Embedded Items', 'textdomain' ) : get_the_title($action_connector);
                             $next_job = get_post_meta($action_id, 'next_job', true);
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_the_title($doc_id);
-                            //if ($doc_number) $doc_title .= '('.$doc_number.')';
                             ?>
                             <tr id="edit-site-action-<?php echo $action_id;?>">
                                 <td style="text-align:center;"><?php echo $doc_number;?></td>
                                 <td><?php echo $doc_title;?></td>
                                 <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
-                                <td style="text-align:center;"><?php echo get_the_title($action_connector);?></td>
+                                <td style="text-align:center;"><?php echo $connector_title;?></td>
                                 <td><?php echo get_the_title($next_job);?></td>
                             </tr>
                             <?php 
@@ -1542,7 +1542,7 @@ if (!class_exists('display_profiles')) {
             if ($action_connector) {
                 if ($action_connector == 'embedded') {
                     $args['meta_query'][] = array(
-                        'key'   => 'is_embedded_item',
+                        'key'   => 'is_embedded_doc',
                         'value' => 1,
                     );
                 } else {
