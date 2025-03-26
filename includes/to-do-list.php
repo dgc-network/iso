@@ -444,40 +444,21 @@ if (!class_exists('to_do_list')) {
             <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
             <fieldset>
             <?php
-                //$prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                //$report_doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-                //$doc_category = get_post_meta($doc_id, 'doc_category', true);
-                //$is_action_connector = get_post_meta($doc_category, 'is_action_connector', true);
-                //error_log('is_action_connector: '.$is_action_connector);
-                //error_log('doc_category: '.$doc_category);
-                //error_log('report_doc_id: '.get_the_title($report_doc_id));
-                //error_log('prev_report_id: '.$prev_report_id);
-                //error_log('doc_id: '.get_the_title($doc_id));
-
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Figure out the summary-job Step 3
                 if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
-                    //$doc_id = get_post_meta($todo_id, 'doc_id', true);
                     $params = array(
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $documents_class->get_doc_report_inner_list($params);
                 } else {
-                    //$doc_id = get_post_meta($todo_id, 'doc_id', true);
-                    //$prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                    $params = array(
-                        //'is_todo'         => true,
-                        'todo_id'         => $todo_id,
-                        //'doc_id'          => $doc_id,
-                        //'prev_report_id'  => $prev_report_id,
-                    );
-                    //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
                     $prev_todo_id = get_post_meta($todo_id, 'prev_todo_id', true);
-                    $prev_doc_id = get_post_meta($prev_todo_id, 'doc_id', true);
-                    if ($prev_doc_id) $params['doc_id'] = $prev_doc_id;
-                    $documents_class->get_doc_field_contains($params);
+                    if ($prev_todo_id) {
+                        $documents_class->get_doc_field_contains(array('todo_id' => $prev_todo_id));
+                    } else {
+                        $documents_class->get_doc_field_contains(array('todo_id' => $todo_id));
+                    }
                 }
             ?>
             <hr>
@@ -532,17 +513,7 @@ if (!class_exists('to_do_list')) {
             if (!$user_id) $user_id = get_current_user_id();
             $todo_id = get_post_meta($action_id, 'todo_id', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
-            //$prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
-/*            
-            $new_post = array(
-                'post_type'     => 'doc-report',
-                'post_title'    => get_the_title($doc_id),
-                'post_status'   => 'publish',
-                'post_author'   => $user_id,
-            );    
-            $prev_report_id = wp_insert_post($new_post);
-            update_post_meta($prev_report_id, 'doc_id', $doc_id);
-*/
+
             // Update the post meta
             $documents_class = new display_documents();
             $documents_class->update_doc_field_contains(
@@ -551,19 +522,8 @@ if (!class_exists('to_do_list')) {
 
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $summary_todos = get_post_meta($doc_id, 'summary_todos', true);
-            //$summary_todos = get_post_meta($todo_id, 'summary_todos', true);
-            // Update todo status
-            if (!empty($summary_todos) && is_array($summary_todos)) {
-                foreach ($summary_todos as $todo_id) {
-                    $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                    update_post_meta($report_id, 'todo_status', $next_job);
-                }
-            } else {
-                update_post_meta($prev_report_id, 'todo_status', $next_job);    
-            }
 
             // Update current todo
-            update_post_meta($todo_id, 'prev_report_id', $prev_report_id);
             update_post_meta($todo_id, 'submit_user', $user_id );
             update_post_meta($todo_id, 'submit_action', $action_id );
             update_post_meta($todo_id, 'submit_time', time() );
@@ -576,11 +536,7 @@ if (!class_exists('to_do_list')) {
                 'action_id' => $action_id,
                 'prev_todo_id' => $todo_id,
             );
-            if (!empty($summary_todos) && is_array($summary_todos)) {
-                $params['doc_id'] = $doc_id;
-            } else {
-                $params['prev_report_id'] = $prev_report_id;
-            }
+
             if ($next_job>0) $this->proceed_to_next_job($params);
         }
         
@@ -912,30 +868,15 @@ if (!class_exists('to_do_list')) {
         
         function set_start_job_and_go_next($action_id=false, $user_id=false, $is_default=false) {
             // Run a set_start_job_and_go_next() from schedule_event_callback($params).
-            $documents_class = new display_documents();
             // Action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $next_job = get_post_meta($action_id, 'next_job', true);
-            $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             $post_title = isset($_POST['_post_title']) ? sanitize_text_field($_POST['_post_title']) : '';
             $post_content = isset($_POST['_post_content']) ? sanitize_text_field($_POST['_post_content']) : '';
             $post_number = isset($_POST['_post_number']) ? sanitize_text_field($_POST['_post_number']) : '';
-/*
-            // Create a new doc-report for current action
-            $new_post = array(
-                'post_type'     => 'doc-report',
-                'post_title'   => $post_title,
-                'post_content' => $post_content,
-                'post_status'   => 'publish',
-                'post_author'   => $user_id,
-            );    
-            $new_report_id = wp_insert_post($new_post);
-            update_post_meta($new_report_id, 'doc_id', $doc_id);
-            update_post_meta($new_report_id, 'todo_status', $next_job);
-            update_post_meta($new_report_id, '_post_number', $post_number);
-*/
+
             // Create a new todo for current action
             $new_post = array(
                 'post_type'     => 'todo',
@@ -947,28 +888,28 @@ if (!class_exists('to_do_list')) {
             $new_todo_id = wp_insert_post($new_post);
             update_post_meta($new_todo_id, 'site_id', $site_id );
             update_post_meta($new_todo_id, 'doc_id', $doc_id);
-            //update_post_meta($new_todo_id, 'prev_report_id', $new_report_id);
             update_post_meta($new_todo_id, 'submit_user', $user_id );
             update_post_meta($new_todo_id, 'submit_action', $action_id );
             update_post_meta($new_todo_id, 'submit_time', time() );
             update_post_meta($new_todo_id, 'next_job', $next_job );
-            update_post_meta($new_todo_id, 'todo_status', $next_job);
+            //update_post_meta($new_todo_id, 'todo_status', $next_job);
 
             // Update the doc-field meta for new doc-report
+            $documents_class = new display_documents();
             $documents_class->update_doc_field_contains(
                 array('report_id' => $new_todo_id, 'user_id' => $user_id, 'is_default' => $is_default)
             );
 
+            $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             if ($is_embedded_doc) {
                 $embedded_doc_title = get_the_title($doc_id);
                 if (stripos($embedded_doc_title, 'customer') !== false || 
                     stripos($embedded_doc_title, '客戶') !== false || 
                     stripos($embedded_doc_title, '顧客') !== false || 
-                    stripos($embedded_doc_title, '廠商') !== false || 
+                    stripos($embedded_doc_title, 'vendor') !== false || 
                     stripos($embedded_doc_title, '供應商') !== false || 
-                    stripos($embedded_doc_title, 'vendor') !== false) {
+                    stripos($embedded_doc_title, '廠商') !== false) {
                     // Code to execute if $embedded_doc_title includes 'customer' or 'vendor', case-insensitive
-                    //$documents_class->update_site_profile($new_report_id);
                     $documents_class->update_site_profile($new_todo_id);
                 }
             }
@@ -978,8 +919,6 @@ if (!class_exists('to_do_list')) {
                 'user_id' => $user_id,
                 'action_id' => $action_id,
                 'prev_todo_id' => $new_todo_id,
-                //'prev_report_id' => $new_report_id,
-                //'prev_report_id' => $new_todo_id,
             );
 
             if ($next_job>0) $this->proceed_to_next_job($params);
@@ -993,17 +932,7 @@ if (!class_exists('to_do_list')) {
             $user_id = ($user_id) ? $user_id : 1;
             $params['user_id'] = $user_id;
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
-            //$prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
-            //$todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
-/*
-            // Find the doc_id
-            if ($prev_report_id) {
-                $doc_id = get_post_meta($prev_report_id, 'doc_id', true);
-            } else {
-                $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-            }
-            $params['doc_id'] = $doc_id;
-*/
+
             // Find the next_job, next_leadtime
             if ($action_id > 0) {
                 $next_job      = get_post_meta($action_id, 'next_job', true);
@@ -1064,8 +993,6 @@ if (!class_exists('to_do_list')) {
             
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
             $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
-            //// $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
-            //$prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
             $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
             $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
             $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
@@ -1083,8 +1010,6 @@ if (!class_exists('to_do_list')) {
             update_post_meta($new_todo_id, 'site_id', $site_id );
             update_post_meta($new_todo_id, 'doc_id', $next_job );
 
-            //if ($prev_report_id) update_post_meta($new_todo_id, 'prev_report_id', $prev_report_id );
-
             if ($next_job>0) {
                 // Update the post meta
                 $not_start_job = get_post_meta($next_job, 'not_start_job', true);
@@ -1095,7 +1020,6 @@ if (!class_exists('to_do_list')) {
                 // Update the summary-job
                 $is_summary_report = get_post_meta($next_job, 'is_summary_report', true);
                 if ($is_summary_report) {
-                    //$prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
                     update_post_meta($new_todo_id, 'todo_in_summary', array($prev_todo_id));
                     update_post_meta($next_job, 'summary_todos', array($new_todo_id));
                 }    
