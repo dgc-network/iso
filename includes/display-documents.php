@@ -529,7 +529,7 @@ if (!class_exists('display_documents')) {
 */?>
                     </div>
 
-                    <label id="system-doc-label" class="button"><?php echo __( '系統文件設定', 'textdomain' );?></label>
+                    <label id="system-doc-label" class="button"><?php echo __( 'System Document Settings', 'textdomain' );?></label>
                     <fieldset id="system-doc-div" style="display:none;">
                         <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
                         <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
