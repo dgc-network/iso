@@ -1172,6 +1172,7 @@ if (!class_exists('display_documents')) {
                     ?>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
+                        <input type="button" id="transaction-button" value="<?php echo __('Transactions', 'textdomain')?>" style="margin:3px;" />
                         <input type="button" id="action-log-button" value="<?php echo __('Sign-off Record', 'textdomain')?>" style="margin:3px;" />
 <?php /*                        
                         <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'textdomain' );?>" style="margin:3px;" />
@@ -1186,20 +1187,23 @@ if (!class_exists('display_documents')) {
                 ?>
             </fieldset>
 
-            <?php
-            $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
-            if ($is_embedded_doc) {
-                // transaction data vs key/value
-                $this->display_transaction_report_for_master(['_select' => $report_id,]);
-            }
-            ?>
+            <div id="transaction-data" style="display:none;">
+                <?php
+                $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
+                if ($is_embedded_doc) {
+                    // transaction data vs key/value
+                    $this->display_transaction_report_for_master(['_select' => $report_id,]);
+                }
+                ?>
+            </div>
 
             <div id="report-action-log-div" style="display:none;">
                 <?php 
                 $todo_ids = array(absint($report_id));
                 error_log('todo_ids: '.print_r($todo_ids, true));
                 $todo_class = new to_do_list();
-                echo $todo_class->get_transaction_log_inner_list($todo_ids);?>
+                echo $todo_class->get_transaction_log_inner_list($todo_ids);
+                ?>
             </div>
             
             </div>

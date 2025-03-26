@@ -1074,6 +1074,10 @@ jQuery(document).ready(function($) {
             }    
         });
 
+        $("#transaction-button").on("click", function () {
+            $("#transaction-data").toggle()
+        });
+
         $("#action-log-button").on("click", function () {
             $("#report-action-log-div").toggle()
         });
