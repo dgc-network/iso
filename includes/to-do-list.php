@@ -521,8 +521,40 @@ if (!class_exists('to_do_list')) {
             );
 
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
+            $prev_todo_id = get_post_meta($todo_id, 'prev_todo_id', true);
             $summary_todos = get_post_meta($doc_id, 'summary_todos', true);
-
+            if (!empty($summary_todos) && is_array($summary_todos)) {
+                // Query for all 'todo' posts in $summary_todos with meta query conditions
+                $meta_query = array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'todo_due',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'submit_user',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                );
+            
+                $query_args = array(
+                    'post_type'  => 'todo',
+                    'post__in'   => $summary_todos, // Use the array of IDs directly
+                    'meta_query' => $meta_query,
+                );
+                $query = new WP_Query($query_args);
+            
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $todo_in_summary = get_post_meta(get_the_ID(), 'todo_in_summary', true);
+                        $todo_in_summary[] = $prev_todo_id;
+                        update_post_meta(get_the_ID(), 'todo_in_summary', $todo_in_summary);
+                    }
+                }
+                wp_reset_postdata(); // Reset query
+            }
+        
             // Update current todo
             update_post_meta($todo_id, 'submit_user', $user_id );
             update_post_meta($todo_id, 'submit_action', $action_id );
