@@ -438,17 +438,18 @@ if (!class_exists('to_do_list')) {
             <input type="hidden" id="next-todo-id" value="<?php echo esc_attr($next_todo_id); ?>" />
             <fieldset>
             <?php
+                $prev_todo_id = get_post_meta($todo_id, 'prev_todo_id', true);
                 $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
                 // Figure out the summary-job Step 3
                 if (!empty($todo_in_summary) && is_array($todo_in_summary)) {
+                    if ($prev_todo_id) $doc_id = get_post_meta($prev_todo_id, 'doc_id', true);
                     $params = array(
                         'doc_id'           => $doc_id,
                         'todo_in_summary'  => $todo_in_summary,
                     );
-                    //$documents_class->get_doc_report_inner_list($params);
-                    $documents_class->get_doc_report_inner_list(array('todo_id' => $prev_todo_id));
+                    $documents_class->get_doc_report_inner_list($params);
+                    //$documents_class->get_doc_report_inner_list(array('todo_id' => $prev_todo_id));
                 } else {
-                    $prev_todo_id = get_post_meta($todo_id, 'prev_todo_id', true);
                     if ($prev_todo_id) {
                         $documents_class->get_doc_field_contains(array('todo_id' => $prev_todo_id));
                     } else {
