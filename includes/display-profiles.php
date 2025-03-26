@@ -1540,10 +1540,17 @@ if (!class_exists('display_profiles')) {
             );
 
             if ($action_connector) {
-                $args['meta_query'][] = array(
-                    'key'   => 'doc_category',
-                    'value' => $action_connector,
-                );
+                if ($action_connector == 'embedded') {
+                    $args['meta_query'][] = array(
+                        'key'   => 'is_embedded_item',
+                        'value' => 1,
+                    );
+                } else {
+                    $args['meta_query'][] = array(
+                        'key'   => 'doc_category',
+                        'value' => $action_connector,
+                    );    
+                }
             } else {
                 $args['meta_query'][] = array(
                     'relation' => 'OR',
