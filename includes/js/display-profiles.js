@@ -94,6 +94,10 @@ jQuery(document).ready(function($) {
     // my-profile
     activate_my_profile_data();
     function activate_my_profile_data(){
+        $("#transaction-button").on("click", function () {
+            $("#transaction-data").toggle();
+        })
+
         $("#my-profile-submit").on("click", function () {
             $.ajax({
                 type: 'POST',

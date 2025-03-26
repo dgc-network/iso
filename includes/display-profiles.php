@@ -355,7 +355,18 @@ if (!class_exists('display_profiles')) {
 */?>
                 <label for="gemini-api-key"><?php echo __( 'Gemini API key', 'textdomain' );?></label>
                 <input type="password" id="gemini-api-key" value="<?php echo $gemini_api_key;?>" class="text ui-widget-content ui-corner-all" />
-                <?php
+            </fieldset>
+            <div style="display:flex; justify-content:space-between; margin:5px;">
+                <div>
+                    <input type="button" id="transaction-button" value="<?php echo __( 'Transactions', 'textdomain' );?>" style="margin:3px;" />
+                </div>
+                <div style="text-align: right">
+                    <input type="button" id="my-profile-submit" value="<?php echo __( 'Submit', 'textdomain' );?>" style="margin:3px;" />
+                </div>
+            </div>
+
+            <div id="transaction-data" style="display:none;">
+            <?php
                 // transaction data vs key/value
                 $key_value_pair = array(
                     '_employee' => get_current_user_id(),
@@ -363,8 +374,7 @@ if (!class_exists('display_profiles')) {
                 $documents_class = new display_documents();
                 $documents_class->display_transaction_report_for_master($key_value_pair);
                 ?>
-            </fieldset>
-            <button type="submit" id="my-profile-submit" style="margin:3px;"><?php echo __( 'Submit', 'textdomain' );?></button>
+            </div>
             <?php
             return ob_get_clean();
         }
