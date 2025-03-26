@@ -534,7 +534,7 @@ if (!class_exists('display_documents')) {
                         <label for="api-endpoint"><?php echo __( 'API endpoint', 'textdomain' );?></label>
                         <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
                         <input type="checkbox" id="is-embedded-doc" <?php echo esc_html($is_embedded_doc_checked);?> />
-                        <label for="is-embedded-doc"><?php echo __( 'Embedded Item', 'textdomain' );?></label><br>
+                        <label for="is-embedded-doc"><?php echo __( 'Embedded Document', 'textdomain' );?></label><br>
                         <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
                         <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label><br>
                         <input type="checkbox" id="not-start-job" <?php echo esc_html($is_not_start_job);?> />
