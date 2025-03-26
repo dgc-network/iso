@@ -1548,18 +1548,21 @@ if (!class_exists('display_profiles')) {
                             'value' => 1,
                         ),
                         array(
-                            'relation' => 'OR',
+                            'relation' => 'AND',
                             array(
                                 'key'   => 'site_id',
                                 'value' => $site_id,
                             ),
                             array(
-                                'key'   => 'is_public',
-                                'value' => 0,
-                            ),
-                            array(
-                                'key'   => 'is_public',
-                                'compare' => 'NOT EXISTS',
+                                'relation' => 'OR',
+                                array(
+                                    'key'   => 'is_public',
+                                    'value' => 0,
+                                ),
+                                array(
+                                    'key'   => 'is_public',
+                                    'compare' => 'NOT EXISTS',
+                                )    
                             )
                         ),
                     );
