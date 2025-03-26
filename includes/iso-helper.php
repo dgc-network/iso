@@ -567,7 +567,7 @@ function record_deleted_api_post_data(WP_REST_Request $request) {
         'message' => 'Report Completed!',
     ], 200);
 }
-
+/*
 // Register the record-summarized API endpoint
 function record_summarized_register_post_api() {
     register_rest_route('api/v1', '/record-summarized/', [
@@ -626,7 +626,7 @@ function record_summarized_api_post_data(WP_REST_Request $request) {
         'message' => 'Report Summary Updated!',
     ], 200);
 }
-
+*/
 // Register the document-released API endpoint
 function document_released_register_post_api() {
     register_rest_route('api/v1', '/document-released/', [
