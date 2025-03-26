@@ -536,7 +536,7 @@ if (!class_exists('display_documents')) {
                         <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
                         <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label><br>
                         <input type="checkbox" id="not-start-job" <?php echo esc_html($is_not_start_job);?> />
-                        <label for="not-start-job"><?php echo __( 'Not display in Start Job', 'textdomain' );?></label>
+                        <label for="not-start-job"><?php echo __( 'Do not display in Start Job', 'textdomain' );?></label>
                     </fieldset>
                 </div>
 

@@ -781,10 +781,10 @@ if (!class_exists('embedded_items')) {
                         'key'   => 'api_password',
                         'compare' => 'EXISTS',
                     ),
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
+                    //array(
+                    //    'key'   => 'site_id',
+                    //    'value' => $site_id,
+                    //),
                 );
             } else {
                 $args['meta_query'][] = array(
