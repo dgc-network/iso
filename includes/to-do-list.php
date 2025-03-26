@@ -200,7 +200,8 @@ if (!class_exists('to_do_list')) {
                                 $doc_title = get_the_title($report_doc_id).':'.get_the_title();
                             }
 */
-                            if ($report_id) $doc_title .= '(#'.$report_id.')';
+                            //if ($report_id) $doc_title .= '(#'.$report_id.')';
+                            if ($todo_id) $doc_title .= '(#'.$todo_id.')';
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
@@ -467,9 +468,9 @@ if (!class_exists('to_do_list')) {
                     //$doc_id = get_post_meta($todo_id, 'doc_id', true);
                     //$prev_report_id = get_post_meta($todo_id, 'prev_report_id', true);
                     $params = array(
-                        'is_todo'         => true,
+                        //'is_todo'         => true,
                         'todo_id'         => $todo_id,
-                        'doc_id'          => $doc_id,
+                        //'doc_id'          => $doc_id,
                         //'prev_report_id'  => $prev_report_id,
                     );
                     //if ($is_action_connector) $params['doc_id'] = $report_doc_id;
@@ -1579,9 +1580,9 @@ if (!class_exists('to_do_list')) {
                     $doc_id = get_post_meta($log_id, 'doc_id', true);
                     $prev_report_id = get_post_meta($log_id, 'prev_report_id', true);
                     $params = array(
-                        'is_todo'         => true,
+                        //'is_todo'         => true,
                         'todo_id'         => $log_id,
-                        'doc_id'          => $doc_id,
+                        //'doc_id'          => $doc_id,
                         //'prev_report_id'  => $prev_report_id,
                     );
                     $documents_class->get_doc_field_contains($params);

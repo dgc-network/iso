@@ -1121,7 +1121,7 @@ if (!class_exists('display_documents')) {
             <fieldset>
                 <?php
                 $params = array(
-                    'doc_id'    => $doc_id,
+                    //'doc_id'    => $doc_id,
                     //'report_id' => $report_id,
                     'todo_id' => $report_id,
                 );                
@@ -1727,14 +1727,22 @@ if (!class_exists('display_documents')) {
         }
 
         function get_doc_field_contains($params=array()) {
-            $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
             //$report_id = isset($params['report_id']) ? $params['report_id'] : 0;
             //$prev_report_id = isset($params['prev_report_id']) ? $params['prev_report_id'] : 0;
-            $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
-            $is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
-            $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
-            $line_report_id = isset($params['line_report_id']) ? $params['line_report_id'] : 0;
+            //$is_todo = isset($params['is_todo']) ? $params['is_todo'] : 0;
+            //$line_report_id = isset($params['line_report_id']) ? $params['line_report_id'] : 0;
 
+            $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
+            if ($todo_id) {
+                $prev_todo_id = get_post_meta($todo_id, 'prev_todo_id', true);
+                if ($prev_todo_id) $todo_id = $prev_todo_id;
+                $doc_id = get_post_meta($todo_id, 'doc_id', true);
+                $params['doc_id'] = $doc_id;
+            } else {
+                $doc_id = isset($params['doc_id']) ? $params['doc_id'] : 0;
+            }
+
+            $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
             if ($embedded_doc_id) {
                 $params['doc_id'] = $embedded_doc_id;
             }
