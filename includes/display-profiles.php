@@ -1542,8 +1542,26 @@ if (!class_exists('display_profiles')) {
             if ($action_connector) {
                 if ($action_connector == 'embedded') {
                     $args['meta_query'][] = array(
-                        'key'   => 'is_embedded_doc',
-                        'value' => 1,
+                        'relation' => 'AND',
+                        array(
+                            'key'   => 'is_embedded_doc',
+                            'value' => 1,
+                        ),
+                        array(
+                            'relation' => 'OR',
+                            array(
+                                'key'   => 'site_id',
+                                'value' => $site_id,
+                            ),
+                            array(
+                                'key'   => 'is_public',
+                                'value' => 0,
+                            ),
+                            array(
+                                'key'   => 'is_public',
+                                'compare' => 'NOT EXISTS',
+                            )
+                        ),
                     );
                 } else {
                     $args['meta_query'][] = array(
