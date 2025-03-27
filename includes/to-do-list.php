@@ -1057,8 +1057,8 @@ if (!class_exists('to_do_list')) {
                         update_post_meta($summary_todo_id, 'summary_todos', $summary_todos);
                     } else {
                         update_post_meta($summary_todo_id, 'summary_todos', array($prev_todo_id));
-                        update_post_meta($next_job, 'summary_todo_id', $summary_todo_id);
                     }
+                    update_post_meta($next_job, 'summary_todo_id', $summary_todo_id);
                 }    
 
                 return $new_todo_id;
