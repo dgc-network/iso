@@ -518,7 +518,7 @@ if (!class_exists('to_do_list')) {
             // Delete the summary_to_id if it exists
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $is_summary_report = get_post_meta($doc_id, 'is_summary_report', true);
-            if ($is_summary_report) delete_post_meta($todo_id, 'summary_to_id');
+            if ($is_summary_report) delete_post_meta($doc_id, 'summary_to_id');
 
             // Update current todo
             update_post_meta($todo_id, 'submit_user', $user_id );
@@ -1063,6 +1063,7 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($new_todo_id, 'summary_todos', array($prev_todo_id));
                 }
                 update_post_meta($next_job, 'summary_todo_id', $new_todo_id);
+                if ($is_summary_report) delete_post_meta($next_job, 'summary_to_id');
             }    
 
             return $new_todo_id;
