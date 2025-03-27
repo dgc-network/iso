@@ -1017,7 +1017,7 @@ if (!class_exists('display_documents')) {
             if (!empty($params['summary_todos'])) {
                 unset($args['meta_query']); 
                 $summary_todos = $params['summary_todos'];
-                $args = array( 'post__in' => $summary_todos ); // Reset args and only keep post__in
+                $args['post__in'] = $summary_todos;
                 $args['posts_per_page'] = -1;
                 error_log('summary_todos: '.print_r($summary_todos, true));
             }
