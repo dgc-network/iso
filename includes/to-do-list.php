@@ -515,6 +515,7 @@ if (!class_exists('to_do_list')) {
                 array('report_id' => $todo_id, 'user_id' => $user_id, 'is_default' => $is_default)
             );
 
+            // Delete the summary_to_id if it exists
             $doc_id = get_post_meta($todo_id, 'doc_id', true);
             $is_summary_report = get_post_meta($doc_id, 'is_summary_report', true);
             if ($is_summary_report) delete_post_meta($todo_id, 'summary_to_id');
@@ -1514,7 +1515,7 @@ if (!class_exists('to_do_list')) {
                         //'prev_report_id'  => $prev_report_id,
                     );
                     //$documents_class->get_doc_field_contains($params);
-                    $documents_class->get_doc_field_contains(array('tdo_id' => $log_id));
+                    $documents_class->get_doc_field_contains(array('todo_id' => $log_id));
                 }
             ?>
             <hr>
