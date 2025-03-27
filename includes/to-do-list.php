@@ -998,6 +998,7 @@ if (!class_exists('to_do_list')) {
 
             // Update the summary-job
             $new_todo_id = get_post_meta($next_job, 'summary_todo_id', true);
+            error_log('summary_todo_id: ' . $new_todo_id);
             if (empty($new_todo_id)) {
                 // Create a new Todo for next_job
                 $new_post = array(
@@ -1006,7 +1007,8 @@ if (!class_exists('to_do_list')) {
                     'post_author'   => $user_id,
                 );    
                 $new_todo_id = wp_insert_post($new_post);
-                //$summary_todo_id = $new_todo_id;
+                error_log('Create a new Todo for next_job: ' . $new_todo_id);
+
                 update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
                 update_post_meta($new_todo_id, 'site_id', $site_id );
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
