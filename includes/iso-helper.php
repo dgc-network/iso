@@ -567,66 +567,7 @@ function record_deleted_api_post_data(WP_REST_Request $request) {
         'message' => 'Report Completed!',
     ], 200);
 }
-/*
-// Register the record-summarized API endpoint
-function record_summarized_register_post_api() {
-    register_rest_route('api/v1', '/record-summarized/', [
-        'methods'  => 'POST',
-        'callback' => 'record_summarized_api_post_data',
-        'permission_callback' => function ($request) {
-            return is_user_logged_in() || jwt_auth_check_token($request);
-        }
-    ]);
-}
-add_action('rest_api_init', 'record_summarized_register_post_api');
 
-function record_summarized_api_post_data(WP_REST_Request $request) {
-    $params = $request->get_json_params(); // Get JSON payload
-    $doc_id = isset($params['doc_id']) ? sanitize_text_field($params['doc_id']) : 0;
-    $prev_todo_id = isset($params['prev_todo_id']) ? sanitize_text_field($params['prev_todo_id']) : 0;
-    if (empty($prev_todo_id) || empty($doc_id)) {
-        return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
-    }
-
-    $summary_todos = get_post_meta($doc_id, 'summary_todos', true);
-    if (!empty($summary_todos) && is_array($summary_todos)) {
-        // Query for all 'todo' posts in $summary_todos with meta query conditions
-        $meta_query = array(
-            'relation' => 'AND',
-            array(
-                'key'     => 'todo_due',
-                'compare' => 'EXISTS',
-            ),
-            array(
-                'key'     => 'submit_user',
-                'compare' => 'NOT EXISTS',
-            ),
-        );
-    
-        $query_args = array(
-            'post_type'  => 'todo',
-            'post__in'   => $summary_todos, // Use the array of IDs directly
-            'meta_query' => $meta_query,
-        );
-        $query = new WP_Query($query_args);
-    
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $todo_id = get_the_ID();
-                $todo_in_summary = get_post_meta($todo_id, 'todo_in_summary', true);
-                $todo_in_summary[] = $prev_todo_id;
-                update_post_meta($todo_id, 'todo_in_summary', $todo_in_summary);
-            }
-        }
-        wp_reset_postdata(); // Reset query
-    }
-
-    return new WP_REST_Response([
-        'message' => 'Report Summary Updated!',
-    ], 200);
-}
-*/
 // Register the document-released API endpoint
 function document_released_register_post_api() {
     register_rest_route('api/v1', '/document-released/', [
