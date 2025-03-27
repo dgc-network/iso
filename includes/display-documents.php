@@ -967,17 +967,14 @@ if (!class_exists('display_documents')) {
 
             if (!empty($params['summary_todos'])) {
                 $summary_todos = $params['summary_todos'];
-/*
-                $report_ids = array();
-                foreach ($summary_todos as $todo_id) {
-                    $report_id = get_post_meta($todo_id, 'prev_report_id', true);
-                    $report_ids[] = $report_id;
-                }
-                $args['post__in'] = $report_ids;
-*/
+                $args = array( 'post__in' => $summary_todos ); // Reset args and only keep post__in
+            }
+/*            
+            if (!empty($params['summary_todos'])) {
+                $summary_todos = $params['summary_todos'];
                 $args['post__in'] = $summary_todos;
             }
-
+*/
             $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();

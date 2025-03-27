@@ -442,7 +442,6 @@ if (!class_exists('to_do_list')) {
                 $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
                 // Figure out the summary-job
                 if (!empty($summary_todos) && is_array($summary_todos)) {
-                    //if ($prev_todo_id) $doc_id = get_post_meta($prev_todo_id, 'doc_id', true);
                     $params = array(
                         'doc_id'         => $doc_id,
                         'summary_todos'  => $summary_todos,
@@ -1000,9 +999,7 @@ if (!class_exists('to_do_list')) {
             }
         
             $new_todo_id = get_post_meta($next_job, 'summary_todo_id', true);
-            //if (empty($new_todo_id)) {
-
-            if ($new_todo_id) {
+            if (empty($new_todo_id)) {
                 $new_post = array(
                     'post_type'   => 'todo',
                     'post_status' => 'publish',
