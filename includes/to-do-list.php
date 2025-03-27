@@ -1063,7 +1063,7 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($new_todo_id, 'summary_todos', array($prev_todo_id));
                 }
                 update_post_meta($next_job, 'summary_todo_id', $new_todo_id);
-                if ($is_summary_report) delete_post_meta($next_job, 'summary_to_id');
+                //if ($is_summary_report) delete_post_meta($next_job, 'summary_to_id');
             }    
 
             return $new_todo_id;
