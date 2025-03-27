@@ -964,13 +964,6 @@ if (!class_exists('display_documents')) {
                 'order' => 'DESC',
             );
 
-            if (!empty($params['summary_todos'])) {
-                $summary_todos = $params['summary_todos'];
-                $args = array( 'post__in' => $summary_todos ); // Reset args and only keep post__in
-                unset($args['meta_query']); 
-                error_log('summary_todos: '.print_r($summary_todos, true));
-            }
-
             $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
@@ -1020,6 +1013,15 @@ if (!class_exists('display_documents')) {
                 // Reset only the inner loop's data
                 wp_reset_postdata();
             }
+
+            if (!empty($params['summary_todos'])) {
+                unset($args['meta_query']); 
+                $summary_todos = $params['summary_todos'];
+                $args = array( 'post__in' => $summary_todos ); // Reset args and only keep post__in
+                $args['posts_per_page'] = -1;
+                error_log('summary_todos: '.print_r($summary_todos, true));
+            }
+
             $query = new WP_Query($args);
             return $query;
         }
