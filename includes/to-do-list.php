@@ -192,15 +192,12 @@ if (!class_exists('to_do_list')) {
                             $todo_due = wp_date(get_option('date_format'), $todo_due);
                             $doc_id = get_post_meta($todo_id, 'doc_id', true);
                             $doc_title = get_the_title($doc_id);
-
-                            //if ($report_id) $doc_title .= '(#'.$report_id.')';
-                            //if ($todo_id) $doc_title .= '(#'.$todo_id.')';
                             $action_titles = $this->get_action_titles_by_doc_id($doc_id);
                             ?>
                             <tr id="edit-todo-<?php echo esc_attr($todo_id);?>">
                                 <td style="text-align:center;"><?php echo esc_html($todo_id);?></td>
                                 <td><?php echo esc_html($doc_title);?></td>
-                                <td style="text-align:center; <?php echo $todo_due_color?>"><?php echo esc_html($todo_due);?></td>
+                                <td style="text-align:center; <?php echo $todo_due_color;?>"><?php echo esc_html($todo_due);?></td>
                                 <td style="text-align:center;"><?php echo esc_html($action_titles);?></td>
                             </tr>
                             <?php

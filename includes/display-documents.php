@@ -956,7 +956,6 @@ if (!class_exists('display_documents')) {
             }
 
             $args = array(
-                //'post_type'      => 'doc-report',
                 'post_type'      => 'todo',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
@@ -968,14 +967,10 @@ if (!class_exists('display_documents')) {
             if (!empty($params['summary_todos'])) {
                 $summary_todos = $params['summary_todos'];
                 $args = array( 'post__in' => $summary_todos ); // Reset args and only keep post__in
+                unset($args['meta_query']); 
                 error_log('summary_todos: '.print_r($summary_todos, true));
             }
-/*            
-            if (!empty($params['summary_todos'])) {
-                $summary_todos = $params['summary_todos'];
-                $args['post__in'] = $summary_todos;
-            }
-*/
+
             $inner_query = $this->retrieve_doc_field_data(array('doc_id' => $doc_id));
             if ($inner_query->have_posts()) {
                 while ($inner_query->have_posts()) : $inner_query->the_post();
