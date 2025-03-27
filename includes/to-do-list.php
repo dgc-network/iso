@@ -987,6 +987,89 @@ if (!class_exists('to_do_list')) {
             }
         }
 
+        function create_next_todo_and_actions($params = array()) {
+            $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
+            $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
+            $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
+            $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
+            $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
+            $site_id = get_user_meta($user_id, 'site_id', true);
+        
+            if (!$next_job || !is_numeric($next_job)) {
+                return false;
+            }
+        
+            $new_todo_id = get_post_meta($next_job, 'summary_todo_id', true);
+            if (empty($new_todo_id)) {
+                $new_post = array(
+                    'post_type'   => 'todo',
+                    'post_status' => 'publish',
+                    'post_author' => $user_id,
+                    'post_title'  => 'New Todo ' . time(), // Set a title
+                );
+        
+                $new_todo_id = wp_insert_post($new_post);
+                if (!$new_todo_id || is_wp_error($new_todo_id)) {
+                    error_log('Failed to create a new Todo.');
+                    return false;
+                }
+        
+                update_post_meta($new_todo_id, 'todo_due', time() + $next_leadtime);
+                update_post_meta($new_todo_id, 'site_id', $site_id);
+                update_post_meta($new_todo_id, 'doc_id', $next_job);
+        
+                if (get_post_meta($next_job, 'not_start_job', true)) {
+                    update_post_meta($new_todo_id, 'prev_todo_id', $prev_todo_id);
+                }
+        
+                $profiles_class = new display_profiles();
+                $query = $profiles_class->retrieve_site_action_data(0, $next_job);
+                if ($query instanceof WP_Query && $query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $action_id = get_the_ID();
+                        $new_action_id = wp_insert_post(array(
+                            'post_type'   => 'action',
+                            'post_title'  => get_the_title(),
+                            'post_content'=> get_the_content(),
+                            'post_status' => 'publish',
+                            'post_author' => $user_id,
+                        ));
+        
+                        if ($new_action_id) {
+                            update_post_meta($new_action_id, 'todo_id', $new_todo_id);
+                            update_post_meta($new_action_id, 'next_job', get_post_meta($action_id, 'next_job', true));
+                            update_post_meta($new_action_id, 'next_leadtime', get_post_meta($action_id, 'next_leadtime', true));
+        
+                            $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
+                            if ($action_authorized_ids) {
+                                update_post_meta($new_action_id, 'action_authorized_ids', $action_authorized_ids);
+                            }
+        
+                            if (method_exists($this, 'notice_the_responsible_persons')) {
+                                $this->notice_the_responsible_persons($action_id);
+                            }
+                        }
+                    }
+                    wp_reset_postdata();
+                }
+            }
+        
+            if (get_post_meta($next_job, 'is_summary_report', true)) {
+                $summary_todos = get_post_meta($new_todo_id, 'summary_todos', true);
+                if (!is_array($summary_todos)) {
+                    $summary_todos = array();
+                }
+                if (!in_array($prev_todo_id, $summary_todos)) {
+                    $summary_todos[] = $prev_todo_id;
+                    update_post_meta($new_todo_id, 'summary_todos', $summary_todos);
+                }
+                update_post_meta($next_job, 'summary_todo_id', $new_todo_id);
+            }
+        
+            return $new_todo_id;
+        }
+/*        
         function create_next_todo_and_actions($params=array()) {
             
             $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
@@ -1005,6 +1088,7 @@ if (!class_exists('to_do_list')) {
                     'post_type'     => 'todo',
                     'post_status'   => 'publish',
                     'post_author'   => $user_id,
+                    'post_title'  => 'New Todo ' . time(), // Example of a unique title
                 );    
                 $new_todo_id = wp_insert_post($new_post);
                 error_log('Create a new Todo for next_job: ' . $new_todo_id);
@@ -1063,13 +1147,13 @@ if (!class_exists('to_do_list')) {
                     update_post_meta($new_todo_id, 'summary_todos', array($prev_todo_id));
                 }
                 update_post_meta($next_job, 'summary_todo_id', $new_todo_id);
-                //if ($is_summary_report) delete_post_meta($next_job, 'summary_to_id');
+                if ($is_summary_report) delete_post_meta($next_job, 'summary_to_id');
             }    
 
             return $new_todo_id;
 
         }
-
+*/
         // Notice the persons in charge the job
         function notice_the_responsible_persons($action_id=0) {
             $todo_id = get_post_meta($action_id, 'todo_id', true);
