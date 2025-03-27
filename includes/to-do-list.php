@@ -996,8 +996,8 @@ if (!class_exists('to_do_list')) {
             $site_id = get_user_meta($user_id, 'site_id', true);
 
             // Update the summary-job
-            $summary_todo_id = get_post_meta($next_job, 'summary_todo_id', true);
-            if (!$summary_todo_id) {
+            $new_todo_id = get_post_meta($next_job, 'summary_todo_id', true);
+            if (empty($new_todo_id)) {
                 // Create a new Todo for next_job
                 $new_post = array(
                     'post_type'     => 'todo',
@@ -1005,7 +1005,7 @@ if (!class_exists('to_do_list')) {
                     'post_author'   => $user_id,
                 );    
                 $new_todo_id = wp_insert_post($new_post);
-                $summary_todo_id = $new_todo_id;
+                //$summary_todo_id = $new_todo_id;
                 update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
                 update_post_meta($new_todo_id, 'site_id', $site_id );
                 update_post_meta($new_todo_id, 'doc_id', $next_job );
@@ -1052,14 +1052,14 @@ if (!class_exists('to_do_list')) {
 
             $is_summary_report = get_post_meta($next_job, 'is_summary_report', true);
             if ($is_summary_report) {
-                $summary_todos = get_post_meta($summary_todo_id, 'summary_todos', true);
+                $summary_todos = get_post_meta($new_todo_id, 'summary_todos', true);
                 if (!empty($summary_todos) && is_array($summary_todos)) {
                     $summary_todos[] = $prev_todo_id;
-                    update_post_meta($summary_todo_id, 'summary_todos', $summary_todos);
+                    update_post_meta($new_todo_id, 'summary_todos', $summary_todos);
                 } else {
-                    update_post_meta($summary_todo_id, 'summary_todos', array($prev_todo_id));
+                    update_post_meta($new_todo_id, 'summary_todos', array($prev_todo_id));
                 }
-                update_post_meta($next_job, 'summary_todo_id', $summary_todo_id);
+                update_post_meta($next_job, 'summary_todo_id', $new_todo_id);
             }    
 
             return $new_todo_id;
