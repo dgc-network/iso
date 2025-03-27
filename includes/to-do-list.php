@@ -981,6 +981,7 @@ if (!class_exists('to_do_list')) {
                         }
                     }
                 } else {
+                    error_log('Proceed to create the next todo and actions: ' . print_r($params, true));
                     $next_todo_id = $this->create_next_todo_and_actions($params);
                 }
             }
