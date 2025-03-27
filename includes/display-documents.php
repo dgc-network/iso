@@ -796,9 +796,10 @@ if (!class_exists('display_documents')) {
             return ob_get_clean();
         }
 
-        function get_field_contain_list_display($params=array()) {
+        function get_doc_field_contain_list($params=array()) {
             $embedded_doc_id = isset($params['embedded_doc_id']) ? $params['embedded_doc_id'] : 0;
-            $report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            //$report_id = isset($params['report_id']) ? $params['report_id'] : 0;
+            $todo_id = isset($params['todo_id']) ? $params['todo_id'] : 0;
             if ($embedded_doc_id) {
                 $params['doc_id'] = $embedded_doc_id;
             }
@@ -808,7 +809,7 @@ if (!class_exists('display_documents')) {
                     $field_id = get_the_ID();
                     $field_type = get_post_meta($field_id, 'field_type', true);
                     $listing_style = get_post_meta($field_id, 'listing_style', true);
-                    $field_value = get_post_meta($report_id, $field_id, true);
+                    $field_value = get_post_meta($todo_id, $field_id, true);
                     $is_checked = ($field_value==1) ? 'checked' : '';
                     echo '<td style="text-align:'.$listing_style.';">';
                     if ($field_type=='checkbox') {
@@ -880,9 +881,6 @@ if (!class_exists('display_documents')) {
                             $field_title = get_the_title();
                             echo '<th>'.esc_html($field_title).'</th>';
                         endwhile;
-                        //if (current_user_can('administrator')) {
-                        //    echo '<th>'. __( 'Todo', 'textdomain' ).'</th>';
-                        //}
                         echo '</tr>';
                         wp_reset_postdata();
                     }
@@ -895,15 +893,8 @@ if (!class_exists('display_documents')) {
                         while ($query->have_posts()) : $query->the_post();
                             $report_id = get_the_ID();
                             echo '<tr id="edit-doc-report-'.$report_id.'">';
-
-                            $params['report_id'] = $report_id;
-                            $this->get_field_contain_list_display($params);
-
-                            //if (current_user_can('administrator')) {
-                                $next_job = get_post_meta($report_id, 'todo_status', true);
-                                $todo_status = ($next_job) ? get_the_title($next_job) : 'Draft';
-                            //    echo '<td style="text-align:center;">'.esc_html($todo_status).'</td>';
-                            //}
+                            $params['todo_id'] = $report_id;
+                            $this->get_doc_field_contain_list($params);
                             echo '</tr>';
                         endwhile;                
                         wp_reset_postdata();
@@ -1118,10 +1109,7 @@ if (!class_exists('display_documents')) {
             <input type="hidden" id="doc-id" value="<?php echo esc_attr($doc_id);?>" />
             <fieldset>
                 <?php
-                $params = array(
-                    'todo_id' => $report_id,
-                );                
-                $this->get_doc_field_contains($params);
+                $this->get_doc_field_contains(array('todo_id' => $report_id));
 
                 $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
                 ?>
