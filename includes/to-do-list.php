@@ -1048,21 +1048,22 @@ if (!class_exists('to_do_list')) {
                     endwhile;
                     wp_reset_postdata();
                 }
-
-                $is_summary_report = get_post_meta($next_job, 'is_summary_report', true);
-                if ($is_summary_report) {
-                    $summary_todos = get_post_meta($summary_todo_id, 'summary_todos', true);
-                    if (!empty($summary_todos) && is_array($summary_todos)) {
-                        $summary_todos[] = $prev_todo_id;
-                        update_post_meta($summary_todo_id, 'summary_todos', $summary_todos);
-                    } else {
-                        update_post_meta($summary_todo_id, 'summary_todos', array($prev_todo_id));
-                    }
-                    update_post_meta($next_job, 'summary_todo_id', $summary_todo_id);
-                }    
-
-                return $new_todo_id;
             }
+
+            $is_summary_report = get_post_meta($next_job, 'is_summary_report', true);
+            if ($is_summary_report) {
+                $summary_todos = get_post_meta($summary_todo_id, 'summary_todos', true);
+                if (!empty($summary_todos) && is_array($summary_todos)) {
+                    $summary_todos[] = $prev_todo_id;
+                    update_post_meta($summary_todo_id, 'summary_todos', $summary_todos);
+                } else {
+                    update_post_meta($summary_todo_id, 'summary_todos', array($prev_todo_id));
+                }
+                update_post_meta($next_job, 'summary_todo_id', $summary_todo_id);
+            }    
+
+            return $new_todo_id;
+
         }
 
         // Notice the persons in charge the job
