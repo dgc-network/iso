@@ -9,7 +9,7 @@ if (!class_exists('to_do_list')) {
         public function __construct() {
             add_shortcode( 'to-do-list', array( $this, 'display_shortcode' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_to_do_list_scripts' ) );
-            //add_action( 'init', array( $this, 'register_todo_post_type' ) );
+            add_action( 'init', array( $this, 'register_todo_post_type' ) );
             add_action( 'add_meta_boxes', array( $this, 'add_todo_settings_metabox' ) );
             //add_action( 'init', array( $this, 'register_action_post_type' ) );
 
