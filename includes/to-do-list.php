@@ -442,8 +442,9 @@ if (!class_exists('to_do_list')) {
                 $summary_todos = get_post_meta($todo_id, 'summary_todos', true);
                 // Figure out the summary-job
                 if (!empty($summary_todos) && is_array($summary_todos)) {
+                    $prev_doc_id = get_post_meta($prev_todo_id, 'doc_id', true);
                     $params = array(
-                        'doc_id'         => $doc_id,
+                        'doc_id'         => $prev_doc_id,
                         'summary_todos'  => $summary_todos,
                     );
                     $documents_class->get_doc_report_inner_list($params);
@@ -1587,22 +1588,14 @@ if (!class_exists('to_do_list')) {
                 }
                 // Figure out the summary-job Step 3
                 else if (!empty($summary_todos) && is_array($summary_todos)) {
-                    $doc_id = get_post_meta($log_id, 'doc_id', true);
+                    $prev_todo_id = get_post_meta($log_id, 'prev_todo_id', true);
+                    $prev_doc_id = get_post_meta($prev_todo_id, 'doc_id', true);
                     $params = array(
-                        'doc_id'         => $doc_id,
+                        'doc_id'         => $prev_doc_id,
                         'summary_todos'  => $summary_todos,
                     );
                     $documents_class->get_doc_report_inner_list($params);
                 } else {
-                    $doc_id = get_post_meta($log_id, 'doc_id', true);
-                    $prev_report_id = get_post_meta($log_id, 'prev_report_id', true);
-                    $params = array(
-                        //'is_todo'         => true,
-                        'todo_id'         => $log_id,
-                        //'doc_id'          => $doc_id,
-                        //'prev_report_id'  => $prev_report_id,
-                    );
-                    //$documents_class->get_doc_field_contains($params);
                     $documents_class->get_doc_field_contains(array('todo_id' => $log_id));
                 }
             ?>
