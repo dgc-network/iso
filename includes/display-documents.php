@@ -968,6 +968,7 @@ if (!class_exists('display_documents')) {
             if (!empty($params['summary_todos'])) {
                 $summary_todos = $params['summary_todos'];
                 $args = array( 'post__in' => $summary_todos ); // Reset args and only keep post__in
+                error_log('summary_todos: '.print_r($summary_todos, true));
             }
 /*            
             if (!empty($params['summary_todos'])) {
