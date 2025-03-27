@@ -1000,7 +1000,9 @@ if (!class_exists('to_do_list')) {
             }
         
             $new_todo_id = get_post_meta($next_job, 'summary_todo_id', true);
-            if (empty($new_todo_id)) {
+            //if (empty($new_todo_id)) {
+
+            if ($new_todo_id) {
                 $new_post = array(
                     'post_type'   => 'todo',
                     'post_status' => 'publish',
