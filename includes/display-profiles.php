@@ -462,7 +462,7 @@ if (!class_exists('display_profiles')) {
                     echo sprintf(
                         __( 'Set the action %s of the job %s', 'textdomain' ),
                         get_the_title($action_id),
-                        get_the_title($doc_id),
+                        get_the_title($doc_id)
                     );
                     ?>
                     → <span class="authorized-status" style="color:blue;"><?php echo esc_html($authorized_status); ?></span>
