@@ -1662,11 +1662,14 @@ if (!class_exists('to_do_list')) {
             wp_send_json($response);
         }
 
-        // doc-report recurrence setting
+        // recurrence setting
         function schedule_event_callback($params) {
-            $action_id = $params['action_id'];
             $user_id = $params['user_id'];
-            $this->set_start_job_and_go_next($action_id, $user_id, true);
+            $action_id = $params['action_id'];
+            if ($action_id) $this->set_start_job_and_go_next($action_id, $user_id, true);
+            $report_id = $params['report_id'];
+            $documents_class = new display_documents();
+            if ($report_id) $documents_class->send_notification_for_record($report_id, $user_id);
         }
         
         function weekday_event_callback($params) {
@@ -1674,10 +1677,11 @@ if (!class_exists('to_do_list')) {
             $day_of_week = date('N');
             
             if ($day_of_week >= 1 && $day_of_week <= 5) {
+                $this->schedule_event_callback($params);
                 // Your weekday-specific code here, e.g., send_email_reminder(), update_daily_task(), etc.
-                $action_id = $params['action_id'];
-                $user_id = $params['user_id'];
-                $this->set_start_job_and_go_next($action_id, $user_id, true);
+                //$action_id = $params['action_id'];
+                //$user_id = $params['user_id'];
+                //$this->set_start_job_and_go_next($action_id, $user_id, true);
             }
         }
         

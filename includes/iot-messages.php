@@ -265,7 +265,7 @@ if (!class_exists('iot_messages')) {
                     $employee_id = get_post_meta($setting_id, '_employee_id', true);
                     $is_once_daily = get_post_meta($setting_id, '_is_once_daily', true);
                     $notification_message = $this->build_notification_message($device_id, $sensor_type, $sensor_value, $max_value, $min_value);
-                    $this->send_notification_handler($device_id, $employee_id, $notification_message, $is_once_daily);
+                    $this->send_notification_for_IoT($device_id, $employee_id, $notification_message, $is_once_daily);
                     error_log("Notification message: ".print_r($notification_message, true));
                 endwhile;
                 wp_reset_postdata();
@@ -301,7 +301,7 @@ if (!class_exists('iot_messages')) {
             return '';
         }
 
-        function send_notification_handler($device_id=false, $user_id=false, $message=false, $is_once_daily=false) {
+        function send_notification_for_IoT($device_id=false, $user_id=false, $message=false, $is_once_daily=false) {
             $last_notification = get_user_meta($user_id, 'last_notification_time_' . $device_id, true);
             $today = wp_date('Y-m-d');
         

@@ -157,12 +157,8 @@ jQuery(document).ready(function($) {
                                 data: {
                                     'action': 'set_my_action_dialog_data',
                                     _action_id: $("#action-id").val(),
-                                    //_is_action_authorized: $("#is-action-authorized").val(),
                                     _is_action_authorized: $("#is-action-authorized").is(":checked") ? 1 : 0,
                                     _recurrence_setting: $("#recurrence-setting").val(),
-                                    //_recurrence_start_date: $("#recurrence-start-date").val(),
-                                    //_recurrence_start_time: $("#recurrence-start-time").val(),
-                                    _prev_start_time: $("#prev-start-time").val(),
                                 },
                                 success: function (response) {
                                     console.log(response);

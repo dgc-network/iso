@@ -29,6 +29,9 @@ if (!class_exists('display_documents')) {
             add_action( 'wp_ajax_del_doc_report_dialog_data', array( $this, 'del_doc_report_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_report_dialog_data', array( $this, 'del_doc_report_dialog_data' ) );
 
+            add_action( 'wp_ajax_set_notification_settings_data', array( $this, 'set_notification_settings_data' ) );
+            add_action( 'wp_ajax_nopriv_set_notification_settings_data', array( $this, 'set_notification_settings_data' ) );
+
             add_action( 'wp_ajax_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
             add_action( 'wp_ajax_nopriv_duplicate_doc_report_data', array( $this, 'duplicate_doc_report_data' ) );
 
@@ -1235,6 +1238,104 @@ if (!class_exists('display_documents')) {
                 }
             }
             wp_send_json($response);
+        }
+
+        function set_notification_settings_data() {
+            $response = array();
+            if (isset($_POST['_report_id'])) {
+                $report_id = sanitize_text_field($_POST['_report_id']);
+                $interval = sanitize_text_field($_POST['_recurrence_setting']);
+                $args = array(
+                    'report_id' => $report_id,
+                    'user_id' => get_current_user_id(),
+                );
+
+                if ($interval) {
+                    // Frequency Report Setting
+                    update_post_meta($report_id, 'recurrence_setting', $interval);
+
+                    $start_time = time();
+                    $hook_name = 'iso_helper_post_event';
+                    // Check if an event with the same hook and args is already scheduled
+                    if (!wp_next_scheduled($hook_name, array($args))) {
+                        switch ($interval) {
+                            case 'hourly':
+                                wp_schedule_event($start_time, 'hourly', $hook_name, array($args));
+                                break;
+                            case 'twicedaily':
+                                wp_schedule_event($start_time, 'twicedaily', $hook_name, array($args));
+                                break;
+                            case 'weekday_daily':
+                                $hook_name = 'weekday_daily_post_event';
+                                wp_schedule_event($start_time, 'weekday_daily', $hook_name, array($args));
+                                break;
+                            case 'daily':
+                                wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+                                break;
+                            case 'weekly':
+                                wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+                                break;
+                            case 'biweekly':
+                                wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
+                                break;
+                            case 'monthly':
+                                wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+                                break;
+                            case 'bimonthly':
+                                wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
+                                break;
+                            case 'half_yearly':
+                                wp_schedule_event($start_time, 'half_yearly', $hook_name, array($args));
+                                break;
+                            case 'yearly':
+                                wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+                                break;
+                            default:
+                                return new WP_Error('invalid_interval', 'The specified interval is invalid.');
+                        }
+                    }
+                    // Store the hook name in options for later use
+                    update_option('schedule_event_hook_name', $hook_name);
+
+                } else {
+                    delete_post_meta($report_id, 'recurrence_setting');
+                    if ($interval=='weekday_daily') {
+                        $hook_name = 'weekday_daily_post_event';
+                    }
+                    $cron_jobs = _get_cron_array(); // Fetch all cron jobs
+                    if ($cron_jobs) {
+                        foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
+                            if (isset($scheduled_hooks[$hook_name])) {
+                                foreach ($scheduled_hooks[$hook_name] as $event) {
+                                    // Check if event args match the specified args
+                                    if (isset($event['args'][0]) && $event['args'][0] == $args) {
+                                        wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            wp_send_json($response);
+        }
+
+        function send_notification_for_record($report_id=false, $user_id=false) {
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);        
+            if ($line_user_id) {
+                error_log("Sending notification to Line User ID: " . print_r($line_user_id, true) . ", Message: " . print_r($message, true));
+        
+                $line_bot_api = new line_bot_api();
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => 'Please click the button below to view the details.', 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id")], 'style' => 'primary']],
+                ]);
+            } else {
+                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
+            }
         }
 
         function set_doc_report_dialog_data() {

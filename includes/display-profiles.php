@@ -502,16 +502,7 @@ if (!class_exists('display_profiles')) {
                 $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
                 if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
                 $authorize_exists = in_array($user_id, $action_authorized_ids);
-/*        
-                // Check the condition and update 'action_authorized_ids' accordingly
-                if (!$is_action_authorized && !$authorize_exists) {
-                    // Add $user_id to 'action_authorized_ids'
-                    $action_authorized_ids[] = $user_id;
-                } elseif ($is_action_authorized && $authorize_exists) {
-                    // Remove $user_id from 'action_authorized_ids'
-                    $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
-                }
-*/
+
                 // Check the condition and update 'action_authorized_ids' accordingly
                 if (!$is_action_authorized && $authorize_exists) {
                     // Remove $user_id from 'action_authorized_ids'
@@ -523,25 +514,13 @@ if (!class_exists('display_profiles')) {
 
                 // Update 'action_authorized_ids' meta value
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
-/*
-                // Get the timezone offset from WordPress settings
-                $timezone_offset = get_option('gmt_offset');
-                $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
 
-                // Calculate and save start time
-                $recurrence_start_date = sanitize_text_field($_POST['_recurrence_start_date']);
-                $recurrence_start_time = sanitize_text_field($_POST['_recurrence_start_time']);
-                $start_time = strtotime($recurrence_start_date . ' ' . $recurrence_start_time) - $offset_seconds;
-                update_post_meta($action_id, 'recurrence_start_time', $start_time);
-*/
                 $hook_name = 'iso_helper_post_event';
                 $interval = sanitize_text_field($_POST['_recurrence_setting']);
                 $args = array(
                     'action_id' => $action_id,
                     'user_id' => $user_id,
                 );
-
-                //if (!$is_action_authorized && !$authorize_exists) {
 
                 if ($interval) {
                     $start_time = time();
@@ -591,7 +570,7 @@ if (!class_exists('display_profiles')) {
 
                 } else {
                     delete_post_meta($action_id, 'recurrence_setting');
-                    delete_post_meta($action_id, 'recurrence_start_time');
+                    //delete_post_meta($action_id, 'recurrence_start_time');
                     if ($interval=='weekday_daily') {
                         $hook_name = 'weekday_daily_post_event';
                     }

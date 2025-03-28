@@ -1079,6 +1079,23 @@ jQuery(document).ready(function($) {
         });
 
         $("#notification-settings-submit").on("click", function () {
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'set_notification_settings_data',
+                    _report_id: $("#report-id").val(),
+                    _recurrence_setting: $("#recurrence-setting").val(),
+                },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
             $("#notification-settings").toggle()
         });
 
