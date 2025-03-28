@@ -452,11 +452,13 @@ if (!class_exists('display_profiles')) {
             $todo_class = new to_do_list();
             $doc_id = get_post_meta($action_id, 'doc_id', true);
             $is_action_authorized = $this->is_action_authorized($action_id);
+            $is_action_authorized_checked = $is_action_authorized ? 'checked' : '';
             $authorized_status = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
             $recurrence_setting = get_post_meta($action_id, 'recurrence_setting', true);
             $recurrence_start_time = get_post_meta($action_id, 'recurrence_start_time', true);
             ?>
             <div>
+<?php /*                
                 <h4>
                     <?php 
                     echo sprintf(
@@ -466,17 +468,22 @@ if (!class_exists('display_profiles')) {
                     );
                     ?>
                     → <span class="authorized-status" style="color:blue;"><?php echo esc_html($authorized_status); ?></span>
-                </h4>                
-                <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
+                </h4>
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
-                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings', 'textdomain' );?></label>
+*/?>
+                <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
+                <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
+                <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
+                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
+<?php /*                
                 <div id="recurrence-start-time-div">
                     <label for="recurrence-start-time"><?php echo __( 'Recurrence Start Time', 'textdomain' );?></label><br>
                     <input type="date" id="recurrence-start-date" value="<?php echo wp_date('Y-m-d', $recurrence_start_time);?>" />
                     <input type="time" id="recurrence-start-time" value="<?php echo wp_date('H:i', $recurrence_start_time);?>" />
                     <input type="hidden" id="prev-start-time" value="<?php echo $recurrence_start_time;?>" />
                 </div>
+*/?>
             </div>
             <?php
             return ob_get_clean();
@@ -522,7 +529,10 @@ if (!class_exists('display_profiles')) {
                     'user_id' => $user_id,
                 );
 
-                if (!$is_action_authorized && !$authorize_exists) {
+                //if (!$is_action_authorized && !$authorize_exists) {
+
+                if ($interval) {
+                    $start_time = time();
                     // Frequency Report Setting
                     update_post_meta($action_id, 'recurrence_setting', $interval);
 
