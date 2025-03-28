@@ -403,7 +403,7 @@ if (!class_exists('display_profiles')) {
                         <th><?php echo __( 'Authorized', 'textdomain' );?></th>
                         <th><?php echo __( 'Document', 'textdomain' );?></th>
                         <th><?php echo __( 'Action', 'textdomain' );?></th>
-                        <th><?php echo __( 'Next', 'textdomain' );?></th>
+                        <th><?php echo __( 'Recurrence', 'textdomain' );?></th>
                     </thead>
                     <tbody>
                     <?php    
@@ -417,6 +417,7 @@ if (!class_exists('display_profiles')) {
                             $doc_title = get_the_title($doc_id);
                             $action_connector = get_post_meta($action_id, 'action_connector', true);
                             $next_job = get_post_meta($action_id, 'next_job', true);
+                            $recurrence_setting = get_post_meta($action_id, 'recurrence_setting', true);
                             $is_action_authorized = $this->is_action_authorized($action_id) ? 'checked' : '';
                             if ($action_site == $site_id) {
                                 ?>
@@ -424,7 +425,7 @@ if (!class_exists('display_profiles')) {
                                     <td style="text-align:center;"><input type="radio" <?php echo $is_action_authorized;?> /></td>
                                     <td><?php echo $doc_title;?></td>
                                     <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
-                                    <td><?php echo get_the_title($next_job);?></td>
+                                    <td style="text-align:center;"><?php echo $recurrence_setting;?></td>
                                 </tr>
                                 <?php
                             }
