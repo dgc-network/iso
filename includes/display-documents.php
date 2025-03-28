@@ -1178,10 +1178,11 @@ if (!class_exists('display_documents')) {
                 ?>
             </fieldset>
 
-            <div id="notification-settings" style="display:none;">
+            <fieldset id="notification-settings" style="display:none;">
                 <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for current record', 'textdomain' );?></label>
                 <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
-            </div>
+                <input type="button" id="notification-settings-submit" value="<?php echo __( 'Submit', 'textdomain' );?>" style="margin:5px;" />
+            </fieldset>
 
             <div id="transaction-data" style="display:none;">
                 <?php

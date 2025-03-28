@@ -1078,6 +1078,10 @@ jQuery(document).ready(function($) {
             $("#notification-settings").toggle()
         });
 
+        $("#notification-settings-submit").on("click", function () {
+            $("#notification-settings").toggle()
+        });
+
         $("#transaction-button").on("click", function () {
             $("#transaction-data").toggle()
         });
