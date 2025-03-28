@@ -472,8 +472,9 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
 */?>
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
-                <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
                 <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
+                <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
+                <label for="is-action-authorized"><?php echo __( 'Please check or uncheck for Settings', 'textdomain' );?></label><br>
                 <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
 <?php /*                
@@ -499,7 +500,7 @@ if (!class_exists('display_profiles')) {
                 $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
                 if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
                 $authorize_exists = in_array($user_id, $action_authorized_ids);
-        
+/*        
                 // Check the condition and update 'action_authorized_ids' accordingly
                 if (!$is_action_authorized && !$authorize_exists) {
                     // Add $user_id to 'action_authorized_ids'
@@ -508,10 +509,19 @@ if (!class_exists('display_profiles')) {
                     // Remove $user_id from 'action_authorized_ids'
                     $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
                 }
+*/
+                // Check the condition and update 'action_authorized_ids' accordingly
+                if ($is_action_authorized && $authorize_exists) {
+                    // Add $user_id to 'action_authorized_ids'
+                    $action_authorized_ids[] = $user_id;
+                } else {
+                    // Remove $user_id from 'action_authorized_ids'
+                    $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
+                }
 
                 // Update 'action_authorized_ids' meta value
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
-
+/*
                 // Get the timezone offset from WordPress settings
                 $timezone_offset = get_option('gmt_offset');
                 $offset_seconds = $timezone_offset * 3600; // Convert hours to seconds
@@ -521,7 +531,7 @@ if (!class_exists('display_profiles')) {
                 $recurrence_start_time = sanitize_text_field($_POST['_recurrence_start_time']);
                 $start_time = strtotime($recurrence_start_date . ' ' . $recurrence_start_time) - $offset_seconds;
                 update_post_meta($action_id, 'recurrence_start_time', $start_time);
-
+*/
                 $hook_name = 'iso_helper_post_event';
                 $interval = sanitize_text_field($_POST['_recurrence_setting']);
                 $args = array(
