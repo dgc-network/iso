@@ -459,7 +459,7 @@ if (!class_exists('display_profiles')) {
             <div>
                 <h4>
                     <?php 
-                    printf(
+                    echo sprintf(
                         __( 'Set the action %s of the job %s', 'textdomain' ),
                         get_the_title($action_id),
                         get_the_title($doc_id),
