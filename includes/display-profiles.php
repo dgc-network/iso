@@ -475,6 +475,7 @@ if (!class_exists('display_profiles')) {
                 <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
                 <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
                 <label for="is-action-authorized"><?php echo __( 'Please check or uncheck for Settings', 'textdomain' );?></label><br>
+                <hr>
                 <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
 <?php /*                
@@ -511,12 +512,12 @@ if (!class_exists('display_profiles')) {
                 }
 */
                 // Check the condition and update 'action_authorized_ids' accordingly
-                if ($is_action_authorized && $authorize_exists) {
-                    // Add $user_id to 'action_authorized_ids'
-                    $action_authorized_ids[] = $user_id;
-                } else {
+                if (!$is_action_authorized && $authorize_exists) {
                     // Remove $user_id from 'action_authorized_ids'
                     $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
+                } elseif ($is_action_authorized && !$authorize_exists) {
+                    // Add $user_id to 'action_authorized_ids'
+                    $action_authorized_ids[] = $user_id;
                 }
 
                 // Update 'action_authorized_ids' meta value
