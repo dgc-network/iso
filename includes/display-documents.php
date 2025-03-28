@@ -1090,7 +1090,9 @@ if (!class_exists('display_documents')) {
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
+            $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             $todo_status = get_post_meta($report_id, 'todo_status', true);
+            $recurrence_setting = get_post_meta($report_id, 'recurrence_setting', true);
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1158,7 +1160,10 @@ if (!class_exists('display_documents')) {
                     ?>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
-                        <input type="button" id="transaction-button" value="<?php echo __('Transactions', 'textdomain')?>" style="margin:3px;" />
+                        <?php if ($is_embedded_doc) {?>
+                            <input type="button" id="transaction-button" value="<?php echo __('Transactions', 'textdomain')?>" style="margin:3px;" />
+                        <?php }?>
+                        <input type="button" id="notification-button" value="<?php echo __('Notifications', 'textdomain')?>" style="margin:3px;" />
                         <input type="button" id="action-log-button" value="<?php echo __('Sign-off Record', 'textdomain')?>" style="margin:3px;" />
 <?php /*                        
                         <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'textdomain' );?>" style="margin:3px;" />
@@ -1172,6 +1177,11 @@ if (!class_exists('display_documents')) {
                 }
                 ?>
             </fieldset>
+
+            <div id="notification-settings" style="display:none;">
+                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for current record', 'textdomain' );?></label>
+                <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
+            </div>
 
             <div id="transaction-data" style="display:none;">
                 <?php

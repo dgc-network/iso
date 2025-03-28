@@ -358,7 +358,7 @@ if (!class_exists('display_profiles')) {
             </fieldset>
             <div style="display:flex; justify-content:space-between; margin:5px;">
                 <div>
-                    <input type="button" id="transaction-button" value="<?php echo __( 'Transactions', 'textdomain' );?>" style="margin:3px;" />
+                    <input type="button" id="my-transaction-button" value="<?php echo __( 'Transactions', 'textdomain' );?>" style="margin:3px;" />
                 </div>
                 <div style="text-align: right">
                     <input type="button" id="my-profile-submit" value="<?php echo __( 'Submit', 'textdomain' );?>" style="margin:3px;" />
