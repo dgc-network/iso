@@ -1324,13 +1324,11 @@ if (!class_exists('display_documents')) {
             $doc_id = get_post_meta($report_id, 'doc_id', true);
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);        
             if ($line_user_id) {
-                error_log("Sending notification to Line User ID: " . print_r($line_user_id, true) . ", Message: " . print_r($message, true));
-        
                 $line_bot_api = new line_bot_api();
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
-                    'header_contents' => [['type' => 'text', 'text' => 'Notification', 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => 'Please click the button below to view the details.', 'wrap' => true]],
+                    'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => __( 'Please click the button below to view the details.', 'textdomain' ), 'wrap' => true]],
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id")], 'style' => 'primary']],
                 ]);
             } else {

@@ -427,14 +427,14 @@ function iso_helper_cron_schedules($schedules) {
     return $schedules;
 }
 add_filter( 'cron_schedules', 'iso_helper_cron_schedules' );
-
+/*
 function remove_weekday_event() {
     $timestamp = wp_next_scheduled('my_weekday_event');
     if ($timestamp) {
         wp_unschedule_event($timestamp, 'my_weekday_event');
     }
 }
-
+*/
 // API endpoints
 function get_valid_jwt_token($doc_category=false) {
     $jwt_token = get_option('jwt_token', '');
