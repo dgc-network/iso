@@ -459,19 +459,6 @@ if (!class_exists('display_profiles')) {
             $recurrence_start_time = get_post_meta($action_id, 'recurrence_start_time', true);
             ?>
             <div>
-<?php /*                
-                <h4>
-                    <?php 
-                    echo sprintf(
-                        __( 'Set the action %s of the job %s', 'textdomain' ),
-                        get_the_title($action_id),
-                        get_the_title($doc_id)
-                    );
-                    ?>
-                    → <span class="authorized-status" style="color:blue;"><?php echo esc_html($authorized_status); ?></span>
-                </h4>
-                <input type="hidden" id="is-action-authorized" value="<?php echo $is_action_authorized;?>" />
-*/?>
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
                 <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
                 <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
@@ -479,14 +466,6 @@ if (!class_exists('display_profiles')) {
                 <hr>
                 <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
-<?php /*                
-                <div id="recurrence-start-time-div">
-                    <label for="recurrence-start-time"><?php echo __( 'Recurrence Start Time', 'textdomain' );?></label><br>
-                    <input type="date" id="recurrence-start-date" value="<?php echo wp_date('Y-m-d', $recurrence_start_time);?>" />
-                    <input type="time" id="recurrence-start-time" value="<?php echo wp_date('H:i', $recurrence_start_time);?>" />
-                    <input type="hidden" id="prev-start-time" value="<?php echo $recurrence_start_time;?>" />
-                </div>
-*/?>
             </div>
             <?php
             return ob_get_clean();
@@ -570,7 +549,6 @@ if (!class_exists('display_profiles')) {
 
                 } else {
                     delete_post_meta($action_id, 'recurrence_setting');
-                    //delete_post_meta($action_id, 'recurrence_start_time');
                     if ($interval=='weekday_daily') {
                         $hook_name = 'weekday_daily_post_event';
                     }

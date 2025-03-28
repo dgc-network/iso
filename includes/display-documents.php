@@ -1245,6 +1245,8 @@ if (!class_exists('display_documents')) {
             if (isset($_POST['_report_id'])) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
                 $interval = sanitize_text_field($_POST['_recurrence_setting']);
+                $start_time = time();
+                $hook_name = 'iso_helper_post_event';
                 $args = array(
                     'report_id' => $report_id,
                     'user_id' => get_current_user_id(),
@@ -1253,9 +1255,6 @@ if (!class_exists('display_documents')) {
                 if ($interval) {
                     // Frequency Report Setting
                     update_post_meta($report_id, 'recurrence_setting', $interval);
-
-                    $start_time = time();
-                    $hook_name = 'iso_helper_post_event';
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
                         switch ($interval) {
