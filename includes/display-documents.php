@@ -1321,13 +1321,18 @@ if (!class_exists('display_documents')) {
 
         function send_notification_for_record($report_id=false, $user_id=false) {
             $doc_id = get_post_meta($report_id, 'doc_id', true);
+            $text_message = sprintf(
+                __( 'Please click the button below to view the details of %s in %s.', 'textdomain' ),
+                get_the_title($report_id),
+                get_the_title($doc_id)
+            );
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);        
             if ($line_user_id) {
                 $line_bot_api = new line_bot_api();
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => __( 'Please click the button below to view the details.', 'textdomain' ), 'wrap' => true]],
+                    'body_contents'   => [['type' => 'text', 'text' => $text_message, 'textdomain', 'wrap' => true]],
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id")], 'style' => 'primary']],
                 ]);
             } else {
