@@ -116,7 +116,7 @@ jQuery(document).ready(function($) {
 
     $(document).on("touchend", function (event) {
         touchEndX = event.originalEvent.changedTouches[0].screenX;
-        handleJobSwipe();
+        //handleJobSwipe();
     });
 
     function handleJobSwipe() {
@@ -160,7 +160,7 @@ jQuery(document).ready(function($) {
 
     $(document).on("touchend", function (event) {
         touchEndX = event.originalEvent.changedTouches[0].screenX;
-        handleTodoSwipe();
+        //handleTodoSwipe();
     });
 
     function handleTodoSwipe() {

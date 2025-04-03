@@ -775,6 +775,16 @@ jQuery(document).ready(function($) {
             window.location.href = "?" + urlParams.toString();
         });
 
+        $('[id^="new-doc-report"]').on("click", function () {
+            var docId = $(this).data("doc-id"); // Get doc_id from data attribute
+            if (!docId) {
+                console.error("Error: doc_id not found.");
+                return;
+            }
+            var linkUri = "<?php echo esc_url(home_url('/to-do-list/?_select_todo=start-job&_job_id=')); ?>" + docId;
+            window.location.href = linkUri;
+        });
+
         $('[id^="edit-doc-report-"]').on("click", function () {
             const report_id = this.id.substring(16);
             // Get existing URL parameters

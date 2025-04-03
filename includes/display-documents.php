@@ -1163,11 +1163,11 @@ if (!class_exists('display_documents')) {
                     ?>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
+                        <input type="button" id="action-log-button" value="<?php echo __('Sign-off Record', 'textdomain')?>" style="margin:3px;" />
                         <?php if ($is_embedded_doc) {?>
                             <input type="button" id="transaction-button" value="<?php echo __('Transactions', 'textdomain')?>" style="margin:3px;" />
                         <?php }?>
                         <input type="button" id="notification-button" value="<?php echo __('Notifications', 'textdomain')?>" style="margin:3px;" />
-                        <input type="button" id="action-log-button" value="<?php echo __('Sign-off Record', 'textdomain')?>" style="margin:3px;" />
 <?php /*                        
                         <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'textdomain' );?>" style="margin:3px;" />
 */?>
@@ -1556,8 +1556,11 @@ if (!class_exists('display_documents')) {
                                     echo $doc_title;
                                     echo '<fieldset>';
                                     $this->get_doc_report_inner_list($params);
-                                    echo '</fieldset>';    
-                                }        
+                                    if (is_site_admin()) {?>
+                                        <div id="new-doc-report" data-doc-id="<?php echo esc_attr($doc_id);?>" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                                    <?php }
+                                    echo '</fieldset>';
+                                }
                             }
                         }
                         return $query->posts; // Return the array of post IDs
