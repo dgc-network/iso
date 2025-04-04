@@ -1575,7 +1575,6 @@ if (!class_exists('to_do_list')) {
                 $submit_time = get_post_meta($log_id, 'submit_time', true);
                 $submit_action = get_post_meta($log_id, 'submit_action', true);
                 if (!$submit_action) {
-                    //echo get_post_field('post_content', $log_id);
                     echo get_the_title($log_id);
                     $user_id = get_post_meta($log_id, 'user_id', true);
                     if ($user_id) {
@@ -1623,18 +1622,14 @@ if (!class_exists('to_do_list')) {
             $new_post = array(
                 'post_type'     => 'todo',
                 'post_title'    => $log_title,
-                //'post_content'  => $log_content,
                 'post_status'   => 'publish',
                 'post_author'   => $current_user_id,
             );    
             $new_todo_id = wp_insert_post($new_post);    
 
             update_post_meta($new_todo_id, 'site_id', $site_id );
-            //update_post_meta($new_todo_id, 'prev_report_id', $report_id);
             update_post_meta($new_todo_id, 'submit_user', $current_user_id);
-            //update_post_meta($new_todo_id, 'submit_action', $action_id);
             update_post_meta($new_todo_id, 'submit_time', time());
-            //update_post_meta($new_todo_id, 'next_job', $next_job);
 
             $action_title = isset($params['action_title']) ? $params['action_title'] : '';
             if ($action_title) update_post_meta($new_todo_id, 'action_title', $action_title);
@@ -1678,10 +1673,6 @@ if (!class_exists('to_do_list')) {
             
             if ($day_of_week >= 1 && $day_of_week <= 5) {
                 $this->schedule_event_callback($params);
-                // Your weekday-specific code here, e.g., send_email_reminder(), update_daily_task(), etc.
-                //$action_id = $params['action_id'];
-                //$user_id = $params['user_id'];
-                //$this->set_start_job_and_go_next($action_id, $user_id, true);
             }
         }
         

@@ -326,7 +326,6 @@ if (!class_exists('iot_messages')) {
             }
 
             update_user_meta($user_id, 'last_notification_time_' . $device_id, time());
-
         }
 
         // iot message

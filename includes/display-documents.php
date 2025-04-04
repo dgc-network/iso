@@ -1181,11 +1181,14 @@ if (!class_exists('display_documents')) {
                 ?>
             </fieldset>
 
-            <fieldset id="notification-settings" style="display:none;">
-                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for current record', 'textdomain' );?></label>
-                <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
-                <input type="button" id="notification-settings-submit" value="<?php echo __( 'Submit', 'textdomain' );?>" style="margin:5px;" />
-            </fieldset>
+            <div id="report-action-log-div" style="display:none;">
+                <?php 
+                $todo_ids = array(absint($report_id));
+                error_log('todo_ids: '.print_r($todo_ids, true));
+                $todo_class = new to_do_list();
+                echo $todo_class->get_transaction_log_inner_list($todo_ids);
+                ?>
+            </div>
 
             <div id="transaction-data" style="display:none;">
                 <?php
@@ -1197,15 +1200,12 @@ if (!class_exists('display_documents')) {
                 ?>
             </div>
 
-            <div id="report-action-log-div" style="display:none;">
-                <?php 
-                $todo_ids = array(absint($report_id));
-                error_log('todo_ids: '.print_r($todo_ids, true));
-                $todo_class = new to_do_list();
-                echo $todo_class->get_transaction_log_inner_list($todo_ids);
-                ?>
-            </div>
-            
+            <fieldset id="notification-settings" style="display:none;">
+                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for current record', 'textdomain' );?></label>
+                <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
+                <input type="button" id="notification-settings-submit" value="<?php echo __( 'Submit', 'textdomain' );?>" style="margin:5px;" />
+            </fieldset>
+
             </div>
             <?php
             return ob_get_clean();
@@ -1336,22 +1336,26 @@ if (!class_exists('display_documents')) {
             // Get titles safely
             $report_title = get_the_title($report_id) ?: __('Unknown Report', 'textdomain');
             $doc_title = get_the_title($doc_id) ?: __('Unknown Document', 'textdomain');
-        
+
             // Prepare message
-            $text_message = sprintf(
-                __('Please click the button below to view the details of %s in %s.', 'textdomain'),
-                $report_title,
+            $head_message = sprintf(
+                __('%s Notification.', 'textdomain'),
                 $doc_title
             );
-        
+
+            $text_message = sprintf(
+                __('Please click the button below to view the details of the %s record.', 'textdomain'),
+                $report_title
+            );
+
             // Get LINE user ID
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-            
+
             if ($line_user_id) {
                 $line_bot_api = new line_bot_api();
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
-                    'header_contents' => [['type' => 'text', 'text' => __('Notification', 'textdomain'), 'weight' => 'bold']],
+                    'header_contents' => [['type' => 'text', 'text' => $head_message, 'weight' => 'bold']],
                     'body_contents'   => [['type' => 'text', 'text' => $text_message, 'wrap' => true]],
                     'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __('View Details', 'textdomain'), 'uri' => esc_url(home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id"))], 'style' => 'primary']],
                 ]);
@@ -1359,28 +1363,7 @@ if (!class_exists('display_documents')) {
                 error_log("Line User ID not found for User ID: " . print_r($user_id, true));
             }
         }
-/*        
-        function send_notification_for_record($report_id=false, $user_id=false) {
-            $doc_id = get_post_meta($report_id, 'doc_id', true);
-            $text_message = sprintf(
-                __( 'Please click the button below to view the details of %s in %s.', 'textdomain' ),
-                get_the_title($report_id),
-                get_the_title($doc_id)
-            );
-            $line_user_id = get_user_meta($user_id, 'line_user_id', true);        
-            if ($line_user_id) {
-                $line_bot_api = new line_bot_api();
-                $line_bot_api->send_flex_message([
-                    'to' => $line_user_id,
-                    'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => $text_message, 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => 'View Details', 'uri' => home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id")], 'style' => 'primary']],
-                ]);
-            } else {
-                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
-            }
-        }
-*/
+
         function set_doc_report_dialog_data() {
             $response = array();
             if (isset($_POST['_report_id'])) {
