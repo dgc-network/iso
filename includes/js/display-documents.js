@@ -778,9 +778,7 @@ jQuery(document).ready(function($) {
         $('[id^="new-doc-report"]').on("click", function () {
             var docId = $(this).data("doc-id"); // expects data-doc-id="5019", for example
             if (docId) {
-                var baseUrl = "<?php echo esc_url( home_url('/to-do-list/') ); ?>";
-                var fullUrl = baseUrl + "?_select_todo=start-job&_job_id=" + encodeURIComponent(docId);
-                window.location.href = fullUrl;
+                window.location.replace('/to-do-list/?_select_todo=start-job&_job_id='+ encodeURIComponent(docId));
             } else {
                 console.error("Missing docId on clicked element.");
             }
