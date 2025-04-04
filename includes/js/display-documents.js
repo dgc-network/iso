@@ -776,21 +776,13 @@ jQuery(document).ready(function($) {
         });
 
         $('[id^="new-doc-report"]').on("click", function () {
-            var docId = $(this).data("doc-id"); // expects data-doc-id="5019", for example
+            var docId = $(this).data("doc-id");
             if (docId) {
-                window.location.replace('/to-do-list/?_select_todo=start-job&_job_id='+ encodeURIComponent(docId));
+                //window.location.replace('/to-do-list/?_select_todo=start-job&_job_id='+ encodeURIComponent(docId));
+                window.location.href = '/to-do-list/?_select_todo=start-job&_job_id='+ encodeURIComponent(docId);
             } else {
                 console.error("Missing docId on clicked element.");
             }
-/*
-            var docId = $(this).data("doc-id"); // Get doc_id from data attribute
-            if (!docId) {
-                console.error("Error: doc_id not found.");
-                return;
-            }
-            var linkUri = "<?php echo esc_url(home_url('/to-do-list/?_select_todo=start-job&_job_id=')); ?>" + docId;
-            window.location.href = linkUri;
-*/            
         });
 
         $('[id^="edit-doc-report-"]').on("click", function () {
