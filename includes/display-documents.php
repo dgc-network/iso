@@ -1321,13 +1321,15 @@ if (!class_exists('display_documents')) {
 
         function send_notification_for_record($report_id=false, $user_id=false) {
             // Validate report_id
+/*            
             if (!$report_id) {
                 error_log("Invalid report_id: " . print_r($report_id, true));
                 return;
             }
-        
+*/        
             // Retrieve doc_id associated with the report
             $doc_id = get_post_meta($report_id, 'doc_id', true);
+/*            
             if (!$doc_id) {
                 error_log("No doc_id found for report_id: " . $report_id);
                 return;
@@ -1336,16 +1338,18 @@ if (!class_exists('display_documents')) {
             // Get titles safely
             $report_title = $report_id ? get_the_title($report_id) : __('Unknown Report', 'textdomain');
             $doc_title = $doc_id ? get_the_title($doc_id) : __('Unknown Document', 'textdomain');
-
+*/
             // Prepare message
             $head_message = sprintf(
                 __('%s Notification.', 'textdomain'),
-                $doc_title
+                //$doc_title
+                get_the_title($doc_id)
             );
 
             $text_message = sprintf(
                 __('Please click the button below to view the details of the %s record.', 'textdomain'),
-                $report_title
+                //$report_title
+                get_the_title($report_id)
             );
 
             // Get LINE user ID
