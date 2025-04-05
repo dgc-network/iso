@@ -1334,8 +1334,8 @@ if (!class_exists('display_documents')) {
             }
         
             // Get titles safely
-            $report_title = get_the_title($report_id) ?: __('Unknown Report', 'textdomain');
-            $doc_title = get_the_title($doc_id) ?: __('Unknown Document', 'textdomain');
+            $report_title = $report_id ? get_the_title($report_id) : __('Unknown Report', 'textdomain');
+            $doc_title = $doc_id ? get_the_title($doc_id) : __('Unknown Document', 'textdomain');
 
             // Prepare message
             $head_message = sprintf(
