@@ -1707,7 +1707,7 @@ if (!class_exists('to_do_list')) {
                         'action' => [
                             'type' => 'uri',
                             'label' => 'View Details',
-                            'uri' => esc_url( home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id") )
+                            'uri' => esc_url( home_url()."/display-documents/?_doc_id=".$doc_id."&_is_doc_report=1&_report_id=".$report_id )
                         ],
                         'style' => 'primary'
                     ]]
