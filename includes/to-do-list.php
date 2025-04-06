@@ -1200,7 +1200,7 @@ if (!class_exists('to_do_list')) {
                         'action' => array(
                             'type' => 'uri',
                             'label' => get_the_title($doc_id),
-                            'uri' => $link_uri, // Use the desired URI
+                            'uri' => esc_url_raw($link_uri), // Use the desired URI
                         ),
                         'style' => 'primary',
                         'margin' => 'sm',
@@ -1254,7 +1254,7 @@ if (!class_exists('to_do_list')) {
                         'action' => array(
                             'type' => 'uri',
                             'label' => __( 'Click me!', 'textdomain' ),
-                            'uri' => $link_uri, // Use the desired URI
+                            'uri' => esc_url_raw($link_uri), // Use the desired URI
                         ),
                         'style' => 'primary',
                         'margin' => 'sm',
@@ -1658,43 +1658,24 @@ if (!class_exists('to_do_list')) {
         }
 
         function send_notification_for_record($report_id=false, $user_id=false) {
-            // Validate report_id
-/*            
-            if (!$report_id) {
-                error_log("Invalid report_id: " . print_r($report_id, true));
-                return;
-            }
-*/        
             // Retrieve doc_id associated with the report
             $doc_id = get_post_meta($report_id, 'doc_id', true);
-/*            
-            if (!$doc_id) {
-                error_log("No doc_id found for report_id: " . $report_id);
-                return;
-            }
-        
-            // Get titles safely
-            $report_title = $report_id ? get_the_title($report_id) : __('Unknown Report', 'textdomain');
-            $doc_title = $doc_id ? get_the_title($doc_id) : __('Unknown Document', 'textdomain');
-*/
+
             // Prepare message
             $head_message = sprintf(
                 __('%s Notification.', 'textdomain'),
-                //$doc_title
                 get_the_title($doc_id)
             );
 
             $text_message = sprintf(
                 __('Please click the button below to view the details of the %s record.', 'textdomain'),
-                //$report_title
                 get_the_title($report_id)
             );
 
             // Get LINE user ID
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
             $line_user_id = get_user_meta(42, 'line_user_id', true);
-            //$link_uri = esc_url(home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id"));
-            $link_uri = esc_url_raw(home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id"));
+            $link_uri = home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id");
             error_log("uri: " . $link_uri);
 
             if ($line_user_id) {
@@ -1703,19 +1684,15 @@ if (!class_exists('to_do_list')) {
                     'to' => $line_user_id,
                     'header_contents' => [['type' => 'text', 'text' => $head_message, 'weight' => 'bold']],
                     'body_contents'   => [['type' => 'text', 'text' => $text_message, 'wrap' => true]],
-                    //'header_contents' => [['type' => 'text', 'text' => '$head_message', 'weight' => 'bold']],
-                    //'body_contents'   => [['type' => 'text', 'text' => '$text_message', 'wrap' => true]],
                     'footer_contents' => [[
                         'type' => 'button',
                         'action' => [
                             'type' => 'uri',
                             'label' => 'View Details',
-                            'uri' => $link_uri,
+                            'uri' => esc_url_raw($link_uri),
                         ],
                         'style' => 'primary'
                     ]]
-                    
-                    //'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __('View Details', 'textdomain'), 'uri' => esc_url(home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id"))], 'style' => 'primary']],
                 ]);
             } else {
                 error_log("Line User ID not found for User ID: " . print_r($user_id, true));

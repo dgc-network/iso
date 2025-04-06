@@ -1829,7 +1829,6 @@ if (!class_exists('display_profiles')) {
                 $site_id = intval($_POST['_site_id']);
                 update_user_meta( $user_id, 'site_id', $site_id);
                 update_user_meta( $user_id, 'display_name', $_POST['_display_name']);
-                //update_user_meta( $user_id, 'identity_number', $_POST['_identity_number']);
                 update_user_meta( $user_id, 'nda_content', $_POST['_nda_content']);
                 update_user_meta( $user_id, 'nda_signature', $_POST['_nda_signature']);
                 update_user_meta( $user_id, 'submit_date', $_POST['_submit_date']);
@@ -1857,7 +1856,7 @@ if (!class_exists('display_profiles')) {
                                 'action' => [
                                     'type' => 'uri', 
                                     'label' =>  __( 'View Details', 'textdomain' ), 
-                                    'uri' => home_url("/display-profiles/?_nda_user_id=$user_id")
+                                    'uri' => esc_url_raw(home_url("/display-profiles/?_nda_user_id=$user_id"))
                                 ], 
                                 'style' => 'primary'
                             ]
@@ -1924,7 +1923,7 @@ if (!class_exists('display_profiles')) {
                             'action' => [
                                 'type' => 'uri', 
                                 'label' => __( 'View Details', 'textdomain' ), 
-                                'uri' => home_url("/display-profiles/?_select_profile=my-profile")
+                                'uri' => esc_url_raw(home_url("/display-profiles/?_select_profile=my-profile"))
                             ], 
                             'style' => 'primary'
                         ]
@@ -1979,7 +1978,7 @@ if (!class_exists('display_profiles')) {
                             'action' => [
                                 'type' => 'uri', 
                                 'label' => __( 'View Details', 'textdomain' ), 
-                                'uri' => home_url("/display-profiles/?_select_profile=my-profile")
+                                'uri' => esc_url_raw(home_url("/display-profiles/?_select_profile=my-profile"))
                             ], 
                             'style' => 'primary'
                         ]

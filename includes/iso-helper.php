@@ -211,8 +211,8 @@ function init_webhook_events() {
                         'type' => 'button',
                         'action' => array(
                             'type' => 'uri',
-                            'label' => __( '點擊這裡', 'textdomain' ),
-                            'uri' => $url,
+                            'label' => __( 'Click me!', 'textdomain' ),
+                            'uri' => esc_url_raw($url),
                         ),
                         'style' => 'primary',
                         'margin' => 'sm',
@@ -273,7 +273,7 @@ function init_webhook_events() {
                                     'action' => array(
                                         'type' => 'uri',
                                         'label' => $doc_title,
-                                        'uri' => $link_uri,
+                                        'uri' => esc_url_raw($link_uri),
                                     ),
                                     'style' => 'primary',
                                     'margin' => 'sm',
@@ -703,7 +703,7 @@ function send_message_api_post_data(WP_REST_Request $request) {
             'action' => array(
                 'type' => 'uri',
                 'label' => __( 'Click me!', 'textdomain' ),
-                'uri' => $link_uri,
+                'uri' => esc_url_raw($link_uri),
             ),
             'style' => 'primary',
             'margin' => 'sm',
