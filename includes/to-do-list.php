@@ -1657,14 +1657,66 @@ if (!class_exists('to_do_list')) {
             wp_send_json($response);
         }
 
+        function send_notification_for_record($report_id=false, $user_id=false) {
+            // Validate report_id
+/*            
+            if (!$report_id) {
+                error_log("Invalid report_id: " . print_r($report_id, true));
+                return;
+            }
+*/        
+            // Retrieve doc_id associated with the report
+            $doc_id = get_post_meta($report_id, 'doc_id', true);
+/*            
+            if (!$doc_id) {
+                error_log("No doc_id found for report_id: " . $report_id);
+                return;
+            }
+        
+            // Get titles safely
+            $report_title = $report_id ? get_the_title($report_id) : __('Unknown Report', 'textdomain');
+            $doc_title = $doc_id ? get_the_title($doc_id) : __('Unknown Document', 'textdomain');
+*/
+            // Prepare message
+            $head_message = sprintf(
+                __('%s Notification.', 'textdomain'),
+                //$doc_title
+                get_the_title($doc_id)
+            );
+
+            $text_message = sprintf(
+                __('Please click the button below to view the details of the %s record.', 'textdomain'),
+                //$report_title
+                get_the_title($report_id)
+            );
+
+            // Get LINE user ID
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+
+            if ($line_user_id) {
+                $line_bot_api = new line_bot_api();
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    //'header_contents' => [['type' => 'text', 'text' => $head_message, 'weight' => 'bold']],
+                    //'body_contents'   => [['type' => 'text', 'text' => $text_message, 'wrap' => true]],
+                    'header_contents' => [['type' => 'text', 'text' => '$head_message', 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => '$text_message', 'wrap' => true]],
+                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __('View Details', 'textdomain'), 'uri' => esc_url(home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id"))], 'style' => 'primary']],
+                ]);
+            } else {
+                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
+            }
+        }
+
         // recurrence setting
         function schedule_event_callback($params) {
             $user_id = $params['user_id'];
             $action_id = $params['action_id'];
             if ($action_id) $this->set_start_job_and_go_next($action_id, $user_id, true);
             $report_id = $params['report_id'];
-            $documents_class = new display_documents();
-            if ($report_id) $documents_class->send_notification_for_record($report_id, $user_id);
+            //$documents_class = new display_documents();
+            //if ($report_id) $documents_class->send_notification_for_record($report_id, $user_id);
+            if ($report_id) $this->send_notification_for_record($report_id, $user_id);
         }
         
         function weekday_event_callback($params) {
