@@ -1095,7 +1095,7 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             $todo_status = get_post_meta($report_id, 'todo_status', true);
-            $recurrence_setting = get_post_meta($report_id, 'recurrence_setting', true);
+            $interval_setting = get_post_meta($report_id, 'interval_setting', true);
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -1201,8 +1201,8 @@ if (!class_exists('display_documents')) {
             </div>
 
             <fieldset id="notification-settings" style="display:none;">
-                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for current record', 'textdomain' );?></label>
-                <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
+                <label for="interval-setting"><?php echo __( 'Recurrence Settings for current record', 'textdomain' );?></label>
+                <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
                 <input type="button" id="notification-settings-submit" value="<?php echo __( 'Submit', 'textdomain' );?>" style="margin:5px;" />
             </fieldset>
 
@@ -1244,7 +1244,7 @@ if (!class_exists('display_documents')) {
             $response = array();
             if (isset($_POST['_report_id'])) {
                 $report_id = sanitize_text_field($_POST['_report_id']);
-                $interval = sanitize_text_field($_POST['_recurrence_setting']);
+                $interval = sanitize_text_field($_POST['_interval_setting']);
                 $start_time = time();
                 $hook_name = 'iso_helper_post_event';
                 $args = array(
@@ -1254,7 +1254,7 @@ if (!class_exists('display_documents')) {
 
                 if ($interval) {
                     // Frequency Report Setting
-                    update_post_meta($report_id, 'recurrence_setting', $interval);
+                    update_post_meta($report_id, 'interval_setting', $interval);
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
                         switch ($interval) {
@@ -1297,7 +1297,7 @@ if (!class_exists('display_documents')) {
                     update_option('schedule_event_hook_name', $hook_name);
 
                 } else {
-                    delete_post_meta($report_id, 'recurrence_setting');
+                    delete_post_meta($report_id, 'interval_setting');
                     if ($interval=='weekday_daily') {
                         $hook_name = 'weekday_daily_post_event';
                     }

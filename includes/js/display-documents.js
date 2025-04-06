@@ -1096,7 +1096,7 @@ jQuery(document).ready(function($) {
                 data: {
                     'action': 'set_notification_settings_data',
                     _report_id: $("#report-id").val(),
-                    _recurrence_setting: $("#recurrence-setting").val(),
+                    _interval_setting: $("#interval-setting").val(),
                 },
                 success: function (response) {
                     console.log(response);

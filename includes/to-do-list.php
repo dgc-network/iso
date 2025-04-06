@@ -861,8 +861,8 @@ if (!class_exists('to_do_list')) {
         }
         
         function set_start_job_and_go_next($action_id=false, $user_id=false, $is_default=false) {
-            // Run a set_start_job_and_go_next() from schedule_event_callback($params).
-            // Action button is clicked
+            // 1. Run a set_start_job_and_go_next() from schedule_event_callback($params).
+            // 2. Action button is clicked
             if (!$user_id) $user_id = get_current_user_id();
             $site_id = get_user_meta($user_id, 'site_id', true);
             $doc_id = get_post_meta($action_id, 'doc_id', true);
@@ -1066,91 +1066,7 @@ if (!class_exists('to_do_list')) {
         
             return $new_todo_id;
         }
-/*        
-        function create_next_todo_and_actions($params=array()) {
-            
-            $user_id = isset($params['user_id']) ? $params['user_id'] : get_current_user_id();
-            $action_id = isset($params['action_id']) ? $params['action_id'] : 0;
-            $prev_todo_id = isset($params['prev_todo_id']) ? $params['prev_todo_id'] : 0;
-            $next_job = isset($params['next_job']) ? $params['next_job'] : 0;
-            $next_leadtime = isset($params['next_leadtime']) ? $params['next_leadtime'] : 0;
-            $site_id = get_user_meta($user_id, 'site_id', true);
 
-            // Update the summary-job
-            $new_todo_id = get_post_meta($next_job, 'summary_todo_id', true);
-            error_log('summary_todo_id: ' . $new_todo_id);
-            if (empty($new_todo_id)) {
-                // Create a new Todo for next_job
-                $new_post = array(
-                    'post_type'     => 'todo',
-                    'post_status'   => 'publish',
-                    'post_author'   => $user_id,
-                    'post_title'  => 'New Todo ' . time(), // Example of a unique title
-                );    
-                $new_todo_id = wp_insert_post($new_post);
-                error_log('Create a new Todo for next_job: ' . $new_todo_id);
-
-                update_post_meta($new_todo_id, 'todo_due', time()+$next_leadtime );
-                update_post_meta($new_todo_id, 'site_id', $site_id );
-                update_post_meta($new_todo_id, 'doc_id', $next_job );
-    
-                // Update the post meta
-                $not_start_job = get_post_meta($next_job, 'not_start_job', true);
-                if ($not_start_job) {
-                    update_post_meta($new_todo_id, 'prev_todo_id', $prev_todo_id );
-                }
-
-                // Create the new Actions for new Todo
-                $profiles_class = new display_profiles();
-                $query = $profiles_class->retrieve_site_action_data(0, $next_job);
-                if ($query->have_posts()) {
-                    while ($query->have_posts()) : $query->the_post();
-                        $action_id = get_the_ID();
-                        $new_post = array(
-                            'post_type'     => 'action',
-                            'post_title'    => get_the_title(),
-                            'post_content'  => get_the_content(),
-                            'post_status'   => 'publish',
-                            'post_author'   => $user_id,
-                        );    
-                        $new_action_id = wp_insert_post($new_post);
-                        $new_next_job = get_post_meta($action_id, 'next_job', true);
-                        $new_next_leadtime = get_post_meta($action_id, 'next_leadtime', true);
-                        update_post_meta($new_action_id, 'todo_id', $new_todo_id);
-                        update_post_meta($new_action_id, 'next_job', $new_next_job);
-                        update_post_meta($new_action_id, 'next_leadtime', $new_next_leadtime);
-                        
-                        //Update the action_authorized_ids
-                        $action_authorized_ids = $profiles_class->is_action_authorized($action_id);
-                        if ($action_authorized_ids){
-                            update_post_meta($new_action_id, 'action_authorized_ids', $action_authorized_ids);
-                        }
-
-                        // Notice the persons in charge the action
-                        $this->notice_the_responsible_persons($action_id);
-
-                    endwhile;
-                    wp_reset_postdata();
-                }
-            }
-
-            $is_summary_report = get_post_meta($next_job, 'is_summary_report', true);
-            if ($is_summary_report) {
-                $summary_todos = get_post_meta($new_todo_id, 'summary_todos', true);
-                if (!empty($summary_todos) && is_array($summary_todos)) {
-                    $summary_todos[] = $prev_todo_id;
-                    update_post_meta($new_todo_id, 'summary_todos', $summary_todos);
-                } else {
-                    update_post_meta($new_todo_id, 'summary_todos', array($prev_todo_id));
-                }
-                update_post_meta($next_job, 'summary_todo_id', $new_todo_id);
-                if ($is_summary_report) delete_post_meta($next_job, 'summary_to_id');
-            }    
-
-            return $new_todo_id;
-
-        }
-*/
         // Notice the persons in charge the job
         function notice_the_responsible_persons($action_id=0) {
             $todo_id = get_post_meta($action_id, 'todo_id', true);
@@ -1398,19 +1314,6 @@ if (!class_exists('to_do_list')) {
                 'post_type'      => 'todo',
                 'posts_per_page' => get_option('operation_row_counts'),
                 'paged'          => $paged,
-/*
-                'meta_query'     => array(
-                    'relation' => 'AND',
-                    array(
-                        'key'     => 'submit_user',
-                        'compare' => 'EXISTS',
-                    ),
-                    array(
-                        'key'     => 'site_id',
-                        'value'   => $site_id,
-                    ),
-                ),
-*/                
                 'orderby'        => 'meta_value',
                 'meta_key'       => 'submit_time',
                 'order'          => 'DESC',

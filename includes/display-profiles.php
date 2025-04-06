@@ -417,7 +417,7 @@ if (!class_exists('display_profiles')) {
                             $doc_title = get_the_title($doc_id);
                             $action_connector = get_post_meta($action_id, 'action_connector', true);
                             $next_job = get_post_meta($action_id, 'next_job', true);
-                            $recurrence_setting = get_post_meta($action_id, 'recurrence_setting', true);
+                            $interval_setting = get_post_meta($action_id, 'interval_setting', true);
                             $is_action_authorized = $this->is_action_authorized($action_id) ? 'checked' : '';
                             if ($action_site == $site_id) {
                                 ?>
@@ -425,7 +425,7 @@ if (!class_exists('display_profiles')) {
                                     <td style="text-align:center;"><input type="radio" <?php echo $is_action_authorized;?> /></td>
                                     <td><?php echo $doc_title;?></td>
                                     <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
-                                    <td style="text-align:center;"><?php echo $recurrence_setting;?></td>
+                                    <td style="text-align:center;"><?php echo $interval_setting;?></td>
                                 </tr>
                                 <?php
                             }
@@ -455,7 +455,7 @@ if (!class_exists('display_profiles')) {
             $is_action_authorized = $this->is_action_authorized($action_id);
             $is_action_authorized_checked = $is_action_authorized ? 'checked' : '';
             $authorized_status = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
-            $recurrence_setting = get_post_meta($action_id, 'recurrence_setting', true);
+            $interval_setting = get_post_meta($action_id, 'interval_setting', true);
             $recurrence_start_time = get_post_meta($action_id, 'recurrence_start_time', true);
             ?>
             <div>
@@ -464,8 +464,8 @@ if (!class_exists('display_profiles')) {
                 <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
                 <label for="is-action-authorized"><?php echo __( 'Please check or uncheck the Settings.', 'textdomain' );?></label><br>
                 <hr>
-                <label for="recurrence-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
-                <select id="recurrence-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($recurrence_setting);?></select>
+                <label for="interval-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
+                <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
             </div>
             <?php
             return ob_get_clean();
@@ -495,7 +495,7 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
 
                 $hook_name = 'iso_helper_post_event';
-                $interval = sanitize_text_field($_POST['_recurrence_setting']);
+                $interval = sanitize_text_field($_POST['_interval_setting']);
                 $args = array(
                     'action_id' => $action_id,
                     'user_id' => $user_id,
@@ -504,7 +504,7 @@ if (!class_exists('display_profiles')) {
                 if ($interval) {
                     $start_time = time();
                     // Frequency Report Setting
-                    update_post_meta($action_id, 'recurrence_setting', $interval);
+                    update_post_meta($action_id, 'interval_setting', $interval);
 
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
@@ -548,7 +548,7 @@ if (!class_exists('display_profiles')) {
                     update_option('schedule_event_hook_name', $hook_name);
 
                 } else {
-                    delete_post_meta($action_id, 'recurrence_setting');
+                    delete_post_meta($action_id, 'interval_setting');
                     if ($interval=='weekday_daily') {
                         $hook_name = 'weekday_daily_post_event';
                     }

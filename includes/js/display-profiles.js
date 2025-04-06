@@ -158,7 +158,7 @@ jQuery(document).ready(function($) {
                                     'action': 'set_my_action_dialog_data',
                                     _action_id: $("#action-id").val(),
                                     _is_action_authorized: $("#is-action-authorized").is(":checked") ? 1 : 0,
-                                    _recurrence_setting: $("#recurrence-setting").val(),
+                                    _interval_setting: $("#interval-setting").val(),
                                 },
                                 success: function (response) {
                                     console.log(response);
@@ -191,11 +191,11 @@ jQuery(document).ready(function($) {
             buttons: {}
         });
 
-        if ($("#recurrence-setting").val()) {
+        if ($("#interval-setting").val()) {
             $("#recurrence-start-time-div").show();
         }
 
-        $("#recurrence-setting").on("change", function () {
+        $("#interval-setting").on("change", function () {
             if ($(this).val()) {
                 $("#recurrence-start-time-div").show();
             } else {
