@@ -1704,8 +1704,6 @@ if (!class_exists('to_do_list')) {
             $action_id = $params['action_id'];
             if ($action_id) $this->set_start_job_and_go_next($action_id, $user_id, true);
             $report_id = $params['report_id'];
-            //$documents_class = new display_documents();
-            //if ($report_id) $documents_class->send_notification_for_record($report_id, $user_id);
             if ($report_id) $this->send_notification_for_record($report_id, $user_id);
         }
         

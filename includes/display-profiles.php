@@ -1574,33 +1574,6 @@ if (!class_exists('display_profiles')) {
                             )
                         )
                     );
-/*                    
-                    $args['meta_query'][] = array(
-                        'relation' => 'AND',
-                        array(
-                            'key'   => 'is_embedded_doc',
-                            'value' => 1,
-                        ),
-                        array(
-                            'relation' => 'AND',
-                            array(
-                                'key'   => 'site_id',
-                                'value' => $site_id,
-                            ),
-                            array(
-                                'relation' => 'OR',
-                                array(
-                                    'key'   => 'is_public',
-                                    'value' => 0,
-                                ),
-                                array(
-                                    'key'   => 'is_public',
-                                    'compare' => 'NOT EXISTS',
-                                )    
-                            )
-                        ),
-                    );
-*/                    
                 } else {
                     $args['meta_query'][] = array(
                         'key'   => 'doc_category',

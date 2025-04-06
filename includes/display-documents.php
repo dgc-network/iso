@@ -1885,8 +1885,6 @@ if (!class_exists('display_documents')) {
                                 <div id="line-report-list">
                                     <?php
                                     if ($todo_id) echo $items_class->display_line_report_list($embedded_doc, $todo_id);
-                                    //if ($report_id) echo $items_class->display_line_report_list($embedded_doc, $report_id);
-                                    //elseif ($prev_report_id) echo $items_class->display_line_report_list($embedded_doc, $prev_report_id);
                                     else echo $items_class->display_line_report_list($embedded_doc);
                                     ?>
                                 </div>
