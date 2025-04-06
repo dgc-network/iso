@@ -1698,11 +1698,21 @@ if (!class_exists('to_do_list')) {
                 $line_bot_api = new line_bot_api();
                 $line_bot_api->send_flex_message([
                     'to' => $line_user_id,
-                    //'header_contents' => [['type' => 'text', 'text' => $head_message, 'weight' => 'bold']],
-                    //'body_contents'   => [['type' => 'text', 'text' => $text_message, 'wrap' => true]],
-                    'header_contents' => [['type' => 'text', 'text' => '$head_message', 'weight' => 'bold']],
-                    'body_contents'   => [['type' => 'text', 'text' => '$text_message', 'wrap' => true]],
-                    'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __('View Details', 'textdomain'), 'uri' => esc_url(home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id"))], 'style' => 'primary']],
+                    'header_contents' => [['type' => 'text', 'text' => $head_message, 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => $text_message, 'wrap' => true]],
+                    //'header_contents' => [['type' => 'text', 'text' => '$head_message', 'weight' => 'bold']],
+                    //'body_contents'   => [['type' => 'text', 'text' => '$text_message', 'wrap' => true]],
+                    'footer_contents' => [[
+                        'type' => 'button',
+                        'action' => [
+                            'type' => 'uri',
+                            'label' => 'View Details',
+                            'uri' => esc_url( home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id") )
+                        ],
+                        'style' => 'primary'
+                    ]]
+                    
+                    //'footer_contents' => [['type' => 'button', 'action' => ['type' => 'uri', 'label' => __('View Details', 'textdomain'), 'uri' => esc_url(home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id"))], 'style' => 'primary']],
                 ]);
             } else {
                 error_log("Line User ID not found for User ID: " . print_r($user_id, true));
