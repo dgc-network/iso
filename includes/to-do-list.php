@@ -1692,6 +1692,7 @@ if (!class_exists('to_do_list')) {
 
             // Get LINE user ID
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+            $line_user_id = get_user_meta(42, 'line_user_id', true);
 
             if ($line_user_id) {
                 $line_bot_api = new line_bot_api();
