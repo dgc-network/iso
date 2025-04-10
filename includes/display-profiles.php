@@ -19,12 +19,12 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_set_my_action_dialog_data', array( $this, 'set_my_action_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_action_dialog_data', array( $this, 'set_my_action_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
-            add_action( 'wp_ajax_nopriv_get_my_job_action_list_data', array( $this, 'get_my_job_action_list_data' ) );
-            add_action( 'wp_ajax_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_my_job_action_dialog_data', array( $this, 'get_my_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_set_my_job_action_dialog_data', array( $this, 'set_my_job_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_my_job_action_dialog_data', array( $this, 'set_my_job_action_dialog_data' ) );
+            add_action( 'wp_ajax_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
+            add_action( 'wp_ajax_nopriv_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
+            add_action( 'wp_ajax_get_my_job_dialog_data', array( $this, 'get_my_job_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_my_job_dialog_data', array( $this, 'get_my_job_dialog_data' ) );
+            add_action( 'wp_ajax_set_my_job_dialog_data', array( $this, 'set_my_job_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_my_job_dialog_data', array( $this, 'set_my_job_dialog_data' ) );
 
             add_action( 'wp_ajax_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_profile_data', array( $this, 'get_site_profile_data' ) );
@@ -407,33 +407,45 @@ if (!class_exists('display_profiles')) {
                     <?php    
                     // Accessing elements of the array
                     $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
+                    $user_doc_ids = array();
                     if (is_array($user_action_ids)) {
-                        $actions = array();
                         foreach ($user_action_ids as $action_id) {
-                            $action_site = get_post_meta($action_id, 'site_id', true);
-                            $action_title = get_the_title($action_id);
                             $doc_id = get_post_meta($action_id, 'doc_id', true);
-                            $doc_title = get_the_title($doc_id);
-                            $action_connector = get_post_meta($action_id, 'action_connector', true);
-                            $next_job = get_post_meta($action_id, 'next_job', true);
-                            $interval_setting = get_post_meta($action_id, 'interval_setting', true);
-                            $is_action_authorized = $this->is_action_authorized($action_id) ? 'checked' : '';
-                            if ($action_site == $site_id) {
-                                ?>
-                                <tr id="edit-my-action-<?php echo $action_id; ?>">
-                                    <td style="text-align:center;"><input type="radio" <?php echo $is_action_authorized;?> /></td>
-                                    <td><?php echo $doc_title;?></td>
-                                    <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
-                                    <td style="text-align:center;"><?php echo $interval_setting;?></td>
-                                </tr>
-                                <?php
+                            $doc_site = get_post_meta($doc_id, 'site_id', true);
+                            if ($doc_id && !in_array($doc_id, $user_doc_ids) && $doc_site == $site_id) {
+                                $user_doc_ids[] = $doc_id;
                             }
+                        }
+                    }
+
+                    if (is_array($user_doc_ids)) {
+                        foreach ($user_doc_ids as $doc_id) {
+                            $doc_title = get_the_title($doc_id);
+                            $doc_number = get_post_meta($doc_id, 'doc_number', true);
+                            $query = $this->retrieve_site_action_data($paged, $doc_id);
+                            if ($query->have_posts()) {
+                                while ($query->have_posts()) : $query->the_post();
+                                    $action_id = get_the_ID();
+                                    $is_action_authorized = $this->is_action_authorized($action_id);
+                                    if ($is_action_authorized) $action_title = get_the_title();
+                                    $interval_setting = get_post_meta($action_id, 'interval_setting', true);
+                                endwhile;
+                                wp_reset_postdata();                                    
+                            }
+                            ?>
+                            <tr id="edit-my-job-<?php echo $doc_id; ?>">
+                                <td style="text-align:center;"><?php echo $doc_number;?></td>
+                                <td><?php echo $doc_title;?></td>
+                                <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
+                                <td style="text-align:center;"><?php echo $interval_setting;?></td>
+                            </tr>
+                            <?php    
                         }
                     }
                     ?>
                     </tbody>
                 </table>
-                <div id="my-action-dialog" title="Action authorization"></div>
+                <div id="my-job-dialog" title="Action authorization"></div>
             </fieldset>
             <?php
             return ob_get_clean();
