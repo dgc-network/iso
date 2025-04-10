@@ -176,7 +176,8 @@ if (!class_exists('embedded_items')) {
                 <div id="embedded-item-list">
                     <?php echo $this->display_embedded_item_list($embedded_id);?>
                 </div>
-                <?php if ($embedded_site==$site_id || current_user_can('administrator')) {?>
+                <?php //if ($embedded_site==$site_id || current_user_can('administrator')) {?>
+                <?php if current_user_can('administrator') {?>
                     <div>
                         <input type="checkbox" id="is-public" <?php echo $is_public_checked;?> /> 
                         <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label>

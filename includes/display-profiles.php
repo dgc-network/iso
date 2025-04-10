@@ -347,12 +347,12 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email', 'textdomain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
+<?php /*
                 <label for="my-action-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
                 <div id="my-action-list"><?php echo $this->display_my_action_list();?></div>
-<?php /*                
-                <label for="phone-number"><?php echo __( 'Phone', 'textdomain' );?></label>                
-                <input type="text" id="phone-number" value="<?php echo $phone_number;?>" class="text ui-widget-content ui-corner-all" />
-*/?>
+*/?>                
+                <label for="my-job-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
+                <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
                 <label for="gemini-api-key"><?php echo __( 'Gemini API key', 'textdomain' );?></label>
                 <input type="password" id="gemini-api-key" value="<?php echo $gemini_api_key;?>" class="text ui-widget-content ui-corner-all" />
             </fieldset>
@@ -384,10 +384,59 @@ if (!class_exists('display_profiles')) {
             $current_user_id = get_current_user_id();
             wp_update_user(array('ID' => $current_user_id, 'display_name' => $_POST['_display_name']));
             wp_update_user(array('ID' => $current_user_id, 'user_email' => $_POST['_user_email']));
-            //update_user_meta( $current_user_id, 'phone_number', $_POST['_phone_number']);
             update_user_meta( $current_user_id, 'gemini_api_key', $_POST['_gemini_api_key']);
             $response = array('success' => true);
             wp_send_json($response);
+        }
+
+        // my-jobs
+        function display_my_job_list() {
+            ob_start();
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+            ?>
+            <fieldset style="margin-top:5px;">
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'No.', 'textdomain' );?></th>
+                        <th><?php echo __( 'Document', 'textdomain' );?></th>
+                        <th><?php echo __( 'Authorized Action', 'textdomain' );?></th>
+                        <th><?php echo __( 'Recurrence Job', 'textdomain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php    
+                    // Accessing elements of the array
+                    $user_action_ids = get_user_meta($current_user_id, 'user_action_ids', true);
+                    if (is_array($user_action_ids)) {
+                        $actions = array();
+                        foreach ($user_action_ids as $action_id) {
+                            $action_site = get_post_meta($action_id, 'site_id', true);
+                            $action_title = get_the_title($action_id);
+                            $doc_id = get_post_meta($action_id, 'doc_id', true);
+                            $doc_title = get_the_title($doc_id);
+                            $action_connector = get_post_meta($action_id, 'action_connector', true);
+                            $next_job = get_post_meta($action_id, 'next_job', true);
+                            $interval_setting = get_post_meta($action_id, 'interval_setting', true);
+                            $is_action_authorized = $this->is_action_authorized($action_id) ? 'checked' : '';
+                            if ($action_site == $site_id) {
+                                ?>
+                                <tr id="edit-my-action-<?php echo $action_id; ?>">
+                                    <td style="text-align:center;"><input type="radio" <?php echo $is_action_authorized;?> /></td>
+                                    <td><?php echo $doc_title;?></td>
+                                    <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
+                                    <td style="text-align:center;"><?php echo $interval_setting;?></td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                    }
+                    ?>
+                    </tbody>
+                </table>
+                <div id="my-action-dialog" title="Action authorization"></div>
+            </fieldset>
+            <?php
+            return ob_get_clean();
         }
 
         // my-action
