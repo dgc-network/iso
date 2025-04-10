@@ -422,12 +422,14 @@ if (!class_exists('display_profiles')) {
                         foreach ($user_doc_ids as $doc_id) {
                             $doc_title = get_the_title($doc_id);
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-                            $query = $this->retrieve_site_action_data($paged, $doc_id);
+                            $action_titles = array();
+                            $query = $this->retrieve_site_action_data(false, $doc_id);
                             if ($query->have_posts()) {
                                 while ($query->have_posts()) : $query->the_post();
                                     $action_id = get_the_ID();
                                     $is_action_authorized = $this->is_action_authorized($action_id);
                                     if ($is_action_authorized) $action_title = get_the_title();
+                                    $action_titles[] = $action_title;
                                     $interval_setting = get_post_meta($action_id, 'interval_setting', true);
                                 endwhile;
                                 wp_reset_postdata();                                    
@@ -436,7 +438,7 @@ if (!class_exists('display_profiles')) {
                             <tr id="edit-my-job-<?php echo $doc_id; ?>">
                                 <td style="text-align:center;"><?php echo $doc_number;?></td>
                                 <td><?php echo $doc_title;?></td>
-                                <td style="text-align:center;"><?php echo '<span style="color:blue;">'.$action_title.'</span>';?></td>
+                                <td style="text-align:center;"><?php echo '<span style="color:blue;">'.esc_html(implode(', ', $action_titles)).'</span>';?></td>
                                 <td style="text-align:center;"><?php echo $interval_setting;?></td>
                             </tr>
                             <?php    
