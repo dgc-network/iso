@@ -538,7 +538,7 @@ if (!class_exists('display_documents')) {
                         <input type="text" id="api-endpoint" value="<?php echo esc_html($api_endpoint);?>" class="text ui-widget-content ui-corner-all" />
                         <input type="checkbox" id="is-embedded-doc" <?php echo esc_html($is_embedded_doc_checked);?> />
                         <label for="is-embedded-doc"><?php echo __( 'Embedded Document', 'textdomain' );?></label><br>
-                        <?php if current_user_can('administrator') {?>
+                        <?php if (current_user_can('administrator')) {?>
                             <input type="checkbox" id="is-public" <?php echo esc_html($is_public_checked);?> />
                             <label for="is-public"><?php echo __( 'Is public', 'textdomain' );?></label><br>
                         <?php }?>
