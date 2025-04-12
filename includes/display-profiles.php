@@ -105,6 +105,7 @@ if (!class_exists('display_profiles')) {
             else {
                 echo '<div class="ui-widget" id="result-container">';
                 if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
+                if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'site-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
@@ -115,78 +116,11 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 echo '</div>';
 
-                //if ($_GET['_select_profile']=='update_todo_title_and_content') echo $this->update_todo_title_and_content();
                 if ($_GET['_select_profile']=='migrate_doc_report_to_todo') echo $this->migrate_doc_report_to_todo();
                 if ($_GET['_select_profile']=='migrate_embedded_to_document') echo $this->migrate_embedded_to_document();
             }
         }
 
-        function update_todo_title_and_content() {
-            global $wpdb;
-        
-            // Get all "doc-field" posts that define title updates
-            $title_fields = get_posts([
-                'post_type'      => 'doc-field',
-                'posts_per_page' => -1,
-                'post_status'    => 'any',
-                'meta_query'     => [
-                    [
-                        'key'   => 'default_value',
-                        'value' => '_post_title',
-                    ],
-                ],
-            ]);
-        
-            foreach ($title_fields as $field) {
-                $doc_field_id = $field->ID;
-                $linked_todo = $wpdb->get_var($wpdb->prepare(
-                    "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %d",
-                    'meta_value',  // Meta key that links "todo" to "doc-field"
-                    $doc_field_id
-                ));
-        
-                if ($linked_todo) {
-                    wp_update_post([
-                        'ID'         => $linked_todo,
-                        //'post_title' => get_the_title($doc_field_id),
-                        'post_title' => get_post_meta($doc_field_id, 'field_value', true),
-                    ]);
-                }
-            }
-        
-            // Get all "doc-field" posts that define content updates
-            $content_fields = get_posts([
-                'post_type'      => 'doc-field',
-                'posts_per_page' => -1,
-                'post_status'    => 'any',
-                'meta_query'     => [
-                    [
-                        'key'   => 'default_value',
-                        'value' => '_post_content',
-                    ],
-                ],
-            ]);
-        
-            foreach ($content_fields as $field) {
-                $doc_field_id = $field->ID;
-                $linked_todo = $wpdb->get_var($wpdb->prepare(
-                    "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %d",
-                    'meta_value',
-                    $doc_field_id
-                ));
-        
-                if ($linked_todo) {
-                    wp_update_post([
-                        'ID'           => $linked_todo,
-                        //'post_content' => get_post_field('post_content', $doc_field_id),
-                        'post_content' => get_post_meta($doc_field_id, 'field_value', true),
-                    ]);
-                }
-            }
-        
-            error_log('Updated "todo" titles and content based on "doc-field".');
-        }
-        
         function migrate_doc_report_to_todo() {
             global $wpdb;
         
