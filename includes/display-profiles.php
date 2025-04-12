@@ -83,13 +83,13 @@ if (!class_exists('display_profiles')) {
             <select id="select-profile">
                 <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( 'My Account', 'textdomain' );?></option>
                 <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( 'Site Configuration', 'textdomain' );?></option>
+                <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
                 <?php if (current_user_can('administrator')) {?>                
                     <option value="user-list" <?php echo ($select_option=="user-list") ? 'selected' : ''?>><?php echo __( 'User Configuration', 'textdomain' );?></option>
                 <?php }?>
 <?php /*                
                 <option value="department-card" <?php echo ($select_option=="department-card") ? 'selected' : ''?>><?php echo __( 'Departments', 'textdomain' );?></option>
 */?>                
-                <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
             </select>
             <?php
         }
@@ -104,8 +104,6 @@ if (!class_exists('display_profiles')) {
             elseif (isset($_GET['_report_id'])) echo $documents_class->display_doc_report_dialog($_GET['_report_id']);
             else {
                 echo '<div class="ui-widget" id="result-container">';
-                if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
-                if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'site-profile';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
@@ -114,6 +112,8 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
+                //if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
+                if (!isset($_GET['_select_profile'])) echo $this->display_site_profile();
                 echo '</div>';
 
                 if ($_GET['_select_profile']=='migrate_doc_report_to_todo') echo $this->migrate_doc_report_to_todo();
