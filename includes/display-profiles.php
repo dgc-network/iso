@@ -113,7 +113,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 //if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
-                if (!isset($_GET['_select_profile'])) echo $this->display_site_profile();
+                if (!isset($_GET['_select_profile'])) echo $this->display_my_profile();
                 echo '</div>';
 
                 if ($_GET['_select_profile']=='migrate_doc_report_to_todo') echo $this->migrate_doc_report_to_todo();
