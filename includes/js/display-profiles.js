@@ -136,6 +136,61 @@ jQuery(document).ready(function($) {
             });            
         });
 
+        $('[id^="edit-my-job-"]').on("click", function () {
+            const job_id = this.id.substring(12);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_my_job_dialog_data',
+                    '_job_id': job_id,
+                },
+                success: function (response) {
+                    $("#my-job-dialog").html(response.html_contain);
+                    $("#my-job-dialog").dialog("option", "buttons", {
+                        "Update": function () {
+                            $.ajax({
+                                type: 'POST',
+                                url: ajax_object.ajax_url,
+                                dataType: "json",
+                                data: {
+                                    'action': 'set_my_job_dialog_data',
+                                    _job_id: $("#job-id").val(),
+                                    _is_action_authorized: $("#is-action-authorized").is(":checked") ? 1 : 0,
+                                    _interval_setting: $("#interval-setting").val(),
+                                },
+                                success: function (response) {
+                                    console.log(response);
+                                    window.location.replace(window.location.href);
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                    alert(error);
+                                }
+                            });
+                        },
+                        "Cancel": function () {
+                            $("#my-job-dialog").dialog('close');
+                        },
+                    });
+                    $("#my-job-dialog").dialog('open');
+
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+
+        $("#my-action-dialog").dialog({
+            width: 390,
+            modal: true,
+            autoOpen: false,
+            buttons: {}
+        });
+
         $('[id^="edit-my-action-"]').on("click", function () {
             const action_id = this.id.substring(15);
             $.ajax({

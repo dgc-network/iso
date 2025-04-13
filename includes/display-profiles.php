@@ -391,6 +391,149 @@ if (!class_exists('display_profiles')) {
             return ob_get_clean();
         }
 
+        function get_my_job_dialog_data() {
+            if (isset($_POST['_job_id'])) {
+                $job_id = sanitize_text_field($_POST['_job_id']);
+                $response = array('html_contain' => $this->display_my_job_dialog($job_id));    
+            }
+            wp_send_json($response);
+        }
+
+        function display_my_job_dialog($job_id=false) {
+            ob_start();
+            $documents_class = new display_documents();
+            $documents_class->get_doc_field_contains(array('doc_id' => $job_id));
+/*
+            $todo_class = new to_do_list();
+            $doc_id = get_post_meta($action_id, 'doc_id', true);
+            $is_action_authorized = $this->is_action_authorized($action_id);
+            $is_action_authorized_checked = $is_action_authorized ? 'checked' : '';
+            $authorized_status = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
+            $interval_setting = get_post_meta($action_id, 'interval_setting', true);
+            $recurrence_start_time = get_post_meta($action_id, 'recurrence_start_time', true);
+            ?>
+            <div>
+                <input type="hidden" id="job-id" value="<?php echo $job_id;?>" />
+                <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
+                <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
+                <label for="is-action-authorized"><?php echo __( 'Please check or uncheck the Settings.', 'textdomain' );?></label><br>
+                <hr>
+                <label for="interval-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
+                <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
+            </div>
+            <?php
+*/            
+            return ob_get_clean();
+        }
+
+        function set_my_job_dialog_data() {
+            $response = array('success' => false, 'error' => 'Invalid data format');
+
+            if (isset($_POST['_job_id']) && isset($_POST['_is_action_authorized'])) {
+                $user_id = get_current_user_id();
+                $job_id = sanitize_text_field($_POST['_job_id']);
+                $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
+                $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
+                if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
+                $authorize_exists = in_array($user_id, $action_authorized_ids);
+
+                // Check the condition and update 'action_authorized_ids' accordingly
+                if (!$is_action_authorized && $authorize_exists) {
+                    // Remove $user_id from 'action_authorized_ids'
+                    $action_authorized_ids = array_diff($action_authorized_ids, array($user_id));
+                } elseif ($is_action_authorized && !$authorize_exists) {
+                    // Add $user_id to 'action_authorized_ids'
+                    $action_authorized_ids[] = $user_id;
+                }
+
+                // Update 'action_authorized_ids' meta value
+                update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
+
+                $hook_name = 'iso_helper_post_event';
+                $interval = sanitize_text_field($_POST['_interval_setting']);
+                $args = array(
+                    'action_id' => $action_id,
+                    'user_id' => $user_id,
+                );
+
+                if ($interval) {
+                    $start_time = time();
+                    // Frequency Report Setting
+                    update_post_meta($action_id, 'interval_setting', $interval);
+
+                    // Check if an event with the same hook and args is already scheduled
+                    if (!wp_next_scheduled($hook_name, array($args))) {
+                        switch ($interval) {
+                            case 'hourly':
+                                wp_schedule_event($start_time, 'hourly', $hook_name, array($args));
+                                break;
+                            case 'twicedaily':
+                                wp_schedule_event($start_time, 'twicedaily', $hook_name, array($args));
+                                break;
+                            case 'weekday_daily':
+                                $hook_name = 'weekday_daily_post_event';
+                                wp_schedule_event($start_time, 'weekday_daily', $hook_name, array($args));
+                                break;
+                            case 'daily':
+                                wp_schedule_event($start_time, 'daily', $hook_name, array($args));
+                                break;
+                            case 'weekly':
+                                wp_schedule_event($start_time, 'weekly', $hook_name, array($args));
+                                break;
+                            case 'biweekly':
+                                wp_schedule_event($start_time, 'biweekly', $hook_name, array($args));
+                                break;
+                            case 'monthly':
+                                wp_schedule_event($start_time, 'monthly', $hook_name, array($args));
+                                break;
+                            case 'bimonthly':
+                                wp_schedule_event($start_time, 'bimonthly', $hook_name, array($args));
+                                break;
+                            case 'half_yearly':
+                                wp_schedule_event($start_time, 'half_yearly', $hook_name, array($args));
+                                break;
+                            case 'yearly':
+                                wp_schedule_event($start_time, 'yearly', $hook_name, array($args));
+                                break;
+                            default:
+                                return new WP_Error('invalid_interval', 'The specified interval is invalid.');
+                        }
+                    }
+                    // Store the hook name in options for later use
+                    update_option('schedule_event_hook_name', $hook_name);
+
+                } else {
+                    delete_post_meta($action_id, 'interval_setting');
+                    if ($interval=='weekday_daily') {
+                        $hook_name = 'weekday_daily_post_event';
+                    }
+                    $cron_jobs = _get_cron_array(); // Fetch all cron jobs
+                    if ($cron_jobs) {
+                        foreach ($cron_jobs as $timestamp => $scheduled_hooks) {
+                            if (isset($scheduled_hooks[$hook_name])) {
+                                foreach ($scheduled_hooks[$hook_name] as $event) {
+                                    // Check if event args match the specified args
+                                    if (isset($event['args'][0]) && $event['args'][0] == $args) {
+                                        wp_unschedule_event($timestamp, $hook_name, $event['args']);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $response = array(
+                    'success' => true, 
+                    'job_id' => $job_id,
+                    'is_action_authorized' => $is_action_authorized,
+                    'authoriz_exists' => $authorize_exists,
+                    'action_authorized_ids' => $action_authorized_ids,
+                );
+            }
+            wp_send_json($response);
+        }
+
+
         // my-action
         function display_my_action_list() {
             ob_start();
