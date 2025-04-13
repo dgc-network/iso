@@ -184,7 +184,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#my-actionjob-dialog").dialog({
+        $("#my-job-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,
