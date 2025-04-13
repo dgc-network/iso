@@ -192,7 +192,13 @@ jQuery(document).ready(function($) {
             width: 390,
             modal: true,
             autoOpen: false,
-            buttons: {}
+            buttons: {},
+            open: function() {
+                // Ensure scroll only affects content area
+                $(this).css({
+                    'overflow-y': 'auto'
+                });
+            }
         });
 
         $('[id^="edit-my-action-"]').on("click", function () {
