@@ -149,7 +149,9 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#my-job-dialog").html(response.html_contain);
                     $("#my-job-dialog").dialog("option", "buttons", {
-                        "Update": function () {
+                        "Authorization": function () {
+                            $("#my-action-dialog").dialog('open');
+/*
                             $.ajax({
                                 type: 'POST',
                                 url: ajax_object.ajax_url,
@@ -169,9 +171,11 @@ jQuery(document).ready(function($) {
                                     alert(error);
                                 }
                             });
+*/                            
                         },
-                        "Cancel": function () {
-                            $("#my-job-dialog").dialog('close');
+                        "Recurrence": function () {
+                            $("#my-action-dialog").dialog('open');
+                            //$("#my-job-dialog").dialog('close');
                         },
                     });
                     $("#my-job-dialog").dialog('open');
