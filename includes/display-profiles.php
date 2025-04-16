@@ -417,13 +417,24 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="job-id" value="<?php echo $job_id;?>" />
                 <hr>
                 <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
-                <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
-                <label for="is-action-authorized"><?php echo __( 'Please check or uncheck the Settings.', 'textdomain' );?></label><br>
+                <?php
+                    $query = $this->retrieve_site_action_data(0, $job_id);
+                    if ($query->have_posts()) {
+                        while ($query->have_posts()) : $query->the_post();
+                            $action_id = get_the_ID();
+                            $action_title = get_the_title();
+                            echo '<input type="button" id="start-job-dialog-button-'.$action_id.'" value="'.$action_title.'" style="margin:5px;" />';
+                        endwhile;
+                        wp_reset_postdata();
+                    }
+                ?>
+                <input type="button" id="set-action-authorized" value="<?php echo __( 'Set', 'textdomain' );?>" style="margin:3px;" />
             </div>
             <div id="recurrence-settings" style="display:none;">
                 <hr>
                 <label for="interval-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
+                <input type="button" id="set-interval-setting" value="<?php echo __( 'Set', 'textdomain' );?>" style="margin:3px;" />
             </div>
             <?php            
             return ob_get_clean();
