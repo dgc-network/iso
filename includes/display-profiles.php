@@ -415,9 +415,12 @@ if (!class_exists('display_profiles')) {
             ?>
             <div id="authorization-settings" style="display:none;">
                 <input type="hidden" id="job-id" value="<?php echo $job_id;?>" />
+                <hr>
                 <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
                 <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
                 <label for="is-action-authorized"><?php echo __( 'Please check or uncheck the Settings.', 'textdomain' );?></label><br>
+            </div>
+            <div id="recurrence-settings" style="display:none;">
                 <hr>
                 <label for="interval-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>

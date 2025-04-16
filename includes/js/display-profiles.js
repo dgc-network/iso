@@ -174,7 +174,7 @@ jQuery(document).ready(function($) {
 */                            
                         },
                         "Recurrence": function () {
-                            $("#my-action-dialog").dialog('open');
+                            $("#recurrence-settings").toggle();
                             //$("#my-job-dialog").dialog('close');
                         },
                     });
