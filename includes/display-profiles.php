@@ -417,17 +417,20 @@ if (!class_exists('display_profiles')) {
                 <input type="hidden" id="job-id" value="<?php echo $job_id;?>" />
                 <hr>
                 <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
+                <div>
                 <?php
                     $query = $this->retrieve_site_action_data(0, $job_id);
                     if ($query->have_posts()) {
                         while ($query->have_posts()) : $query->the_post();
                             $action_id = get_the_ID();
                             $action_title = get_the_title();
-                            echo '<input type="button" id="start-job-dialog-button-'.$action_id.'" value="'.$action_title.'" style="margin:5px;" />';
+                            echo '<input type="radio" name="start-job-dialog-button" id="start-job-dialog-button-'.$action_id.'" value="'.$action_id.'" style="margin:5px;" />';
+                            echo '<input type="button" value="'.$action_title.'" style="margin:5px;" />';
                         endwhile;
                         wp_reset_postdata();
                     }
                 ?>
+                </div>
                 <input type="button" id="set-action-authorized" value="<?php echo __( 'Set', 'textdomain' );?>" style="margin:3px;" />
             </div>
             <div id="recurrence-settings" style="display:none;">
