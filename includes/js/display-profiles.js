@@ -150,7 +150,7 @@ jQuery(document).ready(function($) {
                     $("#my-job-dialog").html(response.html_contain);
                     $("#my-job-dialog").dialog("option", "buttons", {
                         "Authorization": function () {
-                            $("#my-action-dialog").dialog('open');
+                            $("#authorization-settings").toggle();
 /*
                             $.ajax({
                                 type: 'POST',

@@ -411,8 +411,9 @@ if (!class_exists('display_profiles')) {
             $authorized_status = $this->is_action_authorized($action_id) ? __( 'Cancel Authorization', 'textdomain' ) : __( 'Prepare for Authorization', 'textdomain' );
             $interval_setting = get_post_meta($action_id, 'interval_setting', true);
             $recurrence_start_time = get_post_meta($action_id, 'recurrence_start_time', true);
+*/            
             ?>
-            <div>
+            <div id="authorization-settings" style="display:none;">
                 <input type="hidden" id="job-id" value="<?php echo $job_id;?>" />
                 <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
                 <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
@@ -421,8 +422,7 @@ if (!class_exists('display_profiles')) {
                 <label for="interval-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
             </div>
-            <?php
-*/            
+            <?php            
             return ob_get_clean();
         }
 
