@@ -376,7 +376,7 @@ if (!class_exists('display_profiles')) {
                             <tr id="edit-my-job-<?php echo $doc_id; ?>">
                                 <td style="text-align:center;"><?php echo $doc_number;?></td>
                                 <td><?php echo $doc_title;?></td>
-                                <td style="text-align:center;"><?php echo esc_html(implode(', ', $action_titles));?></td>
+                                <td style="text-align:center;"><?php echo implode(', ', $action_titles);?></td>
                                 <td style="text-align:center;"><?php echo $interval_setting;?></td>
                             </tr>
                             <?php    
@@ -574,7 +574,7 @@ if (!class_exists('display_profiles')) {
 
             if (isset($_POST['_context']) && $_POST['_mode']=='unset' && $_POST['_context']=='recurrence') {
             }
-            
+
             wp_send_json($response);
         }
 
