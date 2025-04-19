@@ -252,7 +252,7 @@ jQuery(document).ready(function($) {
                             console.error(error);
                             alert(error);
                         }
-                    });        
+                    });
                     $("#recurrence-settings").hide();
                     $(".ui-dialog-buttonpane button:contains('Recurrence')").show();
                 }
@@ -287,6 +287,25 @@ jQuery(document).ready(function($) {
                     $("#authorization-settings").hide();
                     $(".ui-dialog-buttonpane button:contains('Authorization')").show();
                 } else {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_my_job_dialog_data',
+                            '_context': context,
+                            '_mode': 'unset',
+                            '_job_id': $("#job-id").val(),
+                            '_interval_setting': $("#interval-setting").val(),
+                        },
+                        success: function (response) {
+                            console.log("job_id: ", job_id);                        
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
                     $("#recurrence-settings").hide();
                     $(".ui-dialog-buttonpane button:contains('Recurrence')").show();
                 }
