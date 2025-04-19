@@ -148,34 +148,60 @@ jQuery(document).ready(function($) {
                 },
                 success: function (response) {
                     $("#my-job-dialog").html(response.html_contain);
+        
+                    let isAuthToggled = false;
+        
                     $("#my-job-dialog").dialog("option", "buttons", {
                         "Authorization": function () {
                             $("#authorization-settings").toggle();
-/*
-                            $.ajax({
-                                type: 'POST',
-                                url: ajax_object.ajax_url,
-                                dataType: "json",
-                                data: {
-                                    'action': 'set_my_job_dialog_data',
-                                    _job_id: $("#job-id").val(),
-                                    _is_action_authorized: $("#is-action-authorized").is(":checked") ? 1 : 0,
-                                    _interval_setting: $("#interval-setting").val(),
-                                },
-                                success: function (response) {
-                                    console.log(response);
-                                    window.location.replace(window.location.href);
-                                },
-                                error: function (error) {
-                                    console.error(error);
-                                    alert(error);
-                                }
+                            $("#recurrence-settings").hide();
+        
+                            // Toggle label between "Authorization" and "Set"
+                            const currentButtons = $("#my-job-dialog").dialog("option", "buttons");
+                            const newLabel = isAuthToggled ? "Authorization" : "Set";
+                            isAuthToggled = !isAuthToggled;
+        
+                            // Rebuild the button set with updated label
+                            $("#my-job-dialog").dialog("option", "buttons", {
+                                [newLabel]: currentButtons["Authorization"], // keep same function
+                                "Recurrence": currentButtons["Recurrence"]
                             });
-*/                            
                         },
                         "Recurrence": function () {
                             $("#recurrence-settings").toggle();
-                            //$("#my-job-dialog").dialog('close');
+                            $("#authorization-settings").hide();
+                        }
+                    });
+        
+                    $("#my-job-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+/*        
+        $('[id^="edit-my-job-"]').on("click", function () {
+            const job_id = this.id.substring(12);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_my_job_dialog_data',
+                    '_job_id': job_id,
+                },
+                success: function (response) {
+                    $("#my-job-dialog").html(response.html_contain);
+                    $("#my-job-dialog").dialog("option", "buttons", {
+                        "Authorization": function () {
+                            $("#authorization-settings").toggle();
+                            $("#recurrence-settings").hide();
+                        },
+                        "Recurrence": function () {
+                            $("#recurrence-settings").toggle();
+                            $("#authorization-settings").hide();
                         },
                     });
                     $("#my-job-dialog").dialog('open');
@@ -187,7 +213,7 @@ jQuery(document).ready(function($) {
                 }
             });
         });
-
+*/
         $("#my-job-dialog").dialog({
             width: 390,
             modal: true,
