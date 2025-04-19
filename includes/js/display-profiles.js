@@ -208,6 +208,34 @@ jQuery(document).ready(function($) {
             // Button actions
             $("#set-btn").on("click", function () {
                 console.log("Set clicked for", context);
+        
+                // Hide the active section
+                if (context === 'authorization') {
+                    $("#authorization-settings").hide();
+                    $(".ui-dialog-buttonpane button:contains('Authorization')").show();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_my_job_dialog_data',
+                            '_job_id': job_id,
+                        },
+                        success: function (response) {
+                            
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });        
+                } else {
+                    $("#recurrence-settings").hide();
+                    $(".ui-dialog-buttonpane button:contains('Recurrence')").show();
+                }
+        
+                $("#custom-set-unset").remove();
             });
         
             $("#unset-btn").on("click", function () {
@@ -225,209 +253,7 @@ jQuery(document).ready(function($) {
                 $("#custom-set-unset").remove();
             });
         }
-/*        
-        $('[id^="edit-my-job-"]').on("click", function () {
-            const job_id = this.id.substring(12);
-        
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_my_job_dialog_data',
-                    '_job_id': job_id,
-                },
-                success: function (response) {
-                    $("#my-job-dialog").html(response.html_contain);
-        
-                    // Set up base buttons
-                    $("#my-job-dialog").dialog("option", "buttons", {
-                        "Authorization": function () {
-                            $("#authorization-settings").show();
-                            $("#recurrence-settings").hide();
-                            showSetUnsetButtons('authorization');
-                        },
-                        "Recurrence": function () {
-                            $("#recurrence-settings").show();
-                            $("#authorization-settings").hide();
-                            showSetUnsetButtons('recurrence');
-                        }
-                    });
-        
-                    $("#my-job-dialog").dialog('open');
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-        
-        // Helper to add custom Set/Unset buttons
-        function showSetUnsetButtons(context) {
-            // Remove existing buttons
-            $(".ui-dialog-buttonpane button").hide();
-        
-            // Create container if not exists
-            if ($("#custom-button-container").length === 0) {
-                $(".ui-dialog-buttonpane").append('<div id="custom-button-container" style="position:absolute; left:10px; bottom:5px;"></div>');
-            }
-        
-            // Add buttons
-            $("#custom-button-container").html(`
-                <button type="button" id="set-btn" class="ui-button ui-corner-all ui-widget">Set</button>
-                <button type="button" id="unset-btn" class="ui-button ui-corner-all ui-widget">Unset</button>
-            `);
-        
-            // Optional: Bind their logic
-            $("#set-btn").on("click", function () {
-                console.log("Set clicked for", context);
-                // You can add additional logic here (e.g., submit or save)
-            });
-        
-            $("#unset-btn").on("click", function () {
-                console.log("Unset clicked for", context);
-                // Hide the section and bring back dialog buttons
-                if (context === 'authorization') {
-                    $("#authorization-settings").hide();
-                } else {
-                    $("#recurrence-settings").hide();
-                }
-        
-                // Show original buttons again
-                $(".ui-dialog-buttonpane button").show();
-                $("#custom-button-container").remove();
-            });
-        }
-/*        
-        $('[id^="edit-my-job-"]').on("click", function () {
-            const job_id = this.id.substring(12);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_my_job_dialog_data',
-                    '_job_id': job_id,
-                },
-                success: function (response) {
-                    $("#my-job-dialog").html(response.html_contain);
-        
-                    let isAuthToggled = false;
-                    let isRecToggled = false;
-        
-                    function updateDialogButtons() {
-                        let authLabel = isAuthToggled ? "Set" : "Authorization";
-                        let recLabel = isRecToggled ? "Set" : "Recurrence";
-        
-                        $("#my-job-dialog").dialog("option", "buttons", {
-                            [authLabel]: function () {
-                                $("#authorization-settings").toggle();
-                                $("#recurrence-settings").hide();
-        
-                                isAuthToggled = !isAuthToggled;
-                                isRecToggled = false; // reset other
-                                updateDialogButtons();
-                            },
-                            [recLabel]: function () {
-                                $("#recurrence-settings").toggle();
-                                $("#authorization-settings").hide();
-        
-                                isRecToggled = !isRecToggled;
-                                isAuthToggled = false; // reset other
-                                updateDialogButtons();
-                            }
-                        });
-                    }
-        
-                    updateDialogButtons();
-                    $("#my-job-dialog").dialog('open');
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-/*        
-        $('[id^="edit-my-job-"]').on("click", function () {
-            const job_id = this.id.substring(12);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_my_job_dialog_data',
-                    '_job_id': job_id,
-                },
-                success: function (response) {
-                    $("#my-job-dialog").html(response.html_contain);
-        
-                    let isAuthToggled = false;
-        
-                    $("#my-job-dialog").dialog("option", "buttons", {
-                        "Authorization": function () {
-                            $("#authorization-settings").toggle();
-                            $("#recurrence-settings").hide();
-        
-                            // Toggle label between "Authorization" and "Set"
-                            const currentButtons = $("#my-job-dialog").dialog("option", "buttons");
-                            const newLabel = isAuthToggled ? "Authorization" : "Set";
-                            isAuthToggled = !isAuthToggled;
-        
-                            // Rebuild the button set with updated label
-                            $("#my-job-dialog").dialog("option", "buttons", {
-                                [newLabel]: currentButtons["Authorization"], // keep same function
-                                "Recurrence": currentButtons["Recurrence"]
-                            });
-                        },
-                        "Recurrence": function () {
-                            $("#recurrence-settings").toggle();
-                            $("#authorization-settings").hide();
-                        }
-                    });
-        
-                    $("#my-job-dialog").dialog('open');
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-/*        
-        $('[id^="edit-my-job-"]').on("click", function () {
-            const job_id = this.id.substring(12);
-            $.ajax({
-                type: 'POST',
-                url: ajax_object.ajax_url,
-                dataType: "json",
-                data: {
-                    'action': 'get_my_job_dialog_data',
-                    '_job_id': job_id,
-                },
-                success: function (response) {
-                    $("#my-job-dialog").html(response.html_contain);
-                    $("#my-job-dialog").dialog("option", "buttons", {
-                        "Authorization": function () {
-                            $("#authorization-settings").toggle();
-                            $("#recurrence-settings").hide();
-                        },
-                        "Recurrence": function () {
-                            $("#recurrence-settings").toggle();
-                            $("#authorization-settings").hide();
-                        },
-                    });
-                    $("#my-job-dialog").dialog('open');
 
-                },
-                error: function (error) {
-                    console.error(error);
-                    alert(error);
-                }
-            });
-        });
-*/
         $("#my-job-dialog").dialog({
             width: 390,
             modal: true,
