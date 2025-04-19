@@ -223,7 +223,9 @@ jQuery(document).ready(function($) {
                             '_job_id': job_id,
                         },
                         success: function (response) {
-                            
+
+                            $("#custom-set-unset").remove();
+
                         },
                         error: function (error) {
                             console.error(error);
@@ -233,9 +235,26 @@ jQuery(document).ready(function($) {
                 } else {
                     $("#recurrence-settings").hide();
                     $(".ui-dialog-buttonpane button:contains('Recurrence')").show();
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_my_job_dialog_data',
+                            '_job_id': job_id,
+                        },
+                        success: function (response) {
+                            
+                            $("#custom-set-unset").remove();
+
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });        
                 }
         
-                $("#custom-set-unset").remove();
             });
         
             $("#unset-btn").on("click", function () {
