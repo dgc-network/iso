@@ -431,13 +431,11 @@ if (!class_exists('display_profiles')) {
                     }
                 ?>
                 </div>
-                <input type="button" id="set-action-authorized" value="<?php echo __( 'Set', 'textdomain' );?>" style="margin:3px;" />
             </div>
             <div id="recurrence-settings" style="display:none;">
                 <hr>
                 <label for="interval-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
-                <input type="button" id="set-interval-setting" value="<?php echo __( 'Set', 'textdomain' );?>" style="margin:3px;" />
             </div>
             <?php            
             return ob_get_clean();
