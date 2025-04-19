@@ -157,6 +157,7 @@ jQuery(document).ready(function($) {
         
                             // Hide Authorization button only
                             $(".ui-dialog-buttonpane button:contains('Authorization')").hide();
+                            $(".ui-dialog-buttonpane button:contains('Recurrence')").show();
         
                             // Add Set/Unset next to it
                             insertSetUnsetButtons('authorization');
@@ -167,6 +168,7 @@ jQuery(document).ready(function($) {
         
                             // Hide Recurrence button only
                             $(".ui-dialog-buttonpane button:contains('Recurrence')").hide();
+                            $(".ui-dialog-buttonpane button:contains('Authorization')").show();
         
                             // Add Set/Unset next to it
                             insertSetUnsetButtons('recurrence');
