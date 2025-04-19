@@ -208,10 +208,10 @@ jQuery(document).ready(function($) {
             // Button actions
             $("#set-btn").on("click", function () {
                 console.log("Set clicked for", context);
-                let selectedDocType = $("input[name='doc_type']:checked").val(); // Returns 'embedded' or 'external'
 
                 // Hide the active section
                 if (context === 'authorization') {
+                    let selectedDocType = $("input[name='start-job-dialog-button']:checked").val();
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -222,6 +222,7 @@ jQuery(document).ready(function($) {
                             '_action_id': $("input[name='start-job-dialog-button']:checked").val(),
                         },
                         success: function (response) {
+                            console.log("action_id: ", selectedDocType);
 
                             //$("#custom-set-unset").remove();
 
