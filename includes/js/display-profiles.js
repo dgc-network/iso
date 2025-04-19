@@ -211,7 +211,7 @@ jQuery(document).ready(function($) {
 
                 // Hide the active section
                 if (context === 'authorization') {
-                    let selectedDocType = $("input[name='start-job-dialog-button']:checked").val();
+                    let action_id = $("input[name='start-job-dialog-button']:checked").val();
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -219,19 +219,17 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_my_job_dialog_data',
                             '_context': context,
-                            '_action_id': $("input[name='start-job-dialog-button']:checked").val(),
+                            '_mode': 'set',
+                            '_action_id': action_id,
                         },
                         success: function (response) {
-                            console.log("action_id: ", selectedDocType);
-
-                            //$("#custom-set-unset").remove();
-
+                            console.log("action_id: ", action_id);
                         },
                         error: function (error) {
                             console.error(error);
                             alert(error);
                         }
-                    });        
+                    });
                     $("#authorization-settings").hide();
                     $(".ui-dialog-buttonpane button:contains('Authorization')").show();
 
@@ -266,6 +264,25 @@ jQuery(document).ready(function($) {
         
                 // Hide the active section
                 if (context === 'authorization') {
+                    let action_id = $("input[name='start-job-dialog-button']:checked").val();
+                    $.ajax({
+                        type: 'POST',
+                        url: ajax_object.ajax_url,
+                        dataType: "json",
+                        data: {
+                            'action': 'set_my_job_dialog_data',
+                            '_context': context,
+                            '_mode': 'unset',
+                            '_action_id': action_id,
+                        },
+                        success: function (response) {
+                            console.log("action_id: ", action_id);
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
                     $("#authorization-settings").hide();
                     $(".ui-dialog-buttonpane button:contains('Authorization')").show();
                 } else {
