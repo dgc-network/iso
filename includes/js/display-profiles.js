@@ -150,6 +150,56 @@ jQuery(document).ready(function($) {
                     $("#my-job-dialog").html(response.html_contain);
         
                     let isAuthToggled = false;
+                    let isRecToggled = false;
+        
+                    function updateDialogButtons() {
+                        let authLabel = isAuthToggled ? "Set" : "Authorization";
+                        let recLabel = isRecToggled ? "Set" : "Recurrence";
+        
+                        $("#my-job-dialog").dialog("option", "buttons", {
+                            [authLabel]: function () {
+                                $("#authorization-settings").toggle();
+                                $("#recurrence-settings").hide();
+        
+                                isAuthToggled = !isAuthToggled;
+                                isRecToggled = false; // reset other
+                                updateDialogButtons();
+                            },
+                            [recLabel]: function () {
+                                $("#recurrence-settings").toggle();
+                                $("#authorization-settings").hide();
+        
+                                isRecToggled = !isRecToggled;
+                                isAuthToggled = false; // reset other
+                                updateDialogButtons();
+                            }
+                        });
+                    }
+        
+                    updateDialogButtons();
+                    $("#my-job-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+/*        
+        $('[id^="edit-my-job-"]').on("click", function () {
+            const job_id = this.id.substring(12);
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_my_job_dialog_data',
+                    '_job_id': job_id,
+                },
+                success: function (response) {
+                    $("#my-job-dialog").html(response.html_contain);
+        
+                    let isAuthToggled = false;
         
                     $("#my-job-dialog").dialog("option", "buttons", {
                         "Authorization": function () {
