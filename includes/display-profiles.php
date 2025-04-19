@@ -403,6 +403,10 @@ if (!class_exists('display_profiles')) {
             ob_start();
             $documents_class = new display_documents();
             $documents_class->get_doc_field_contains(array('doc_id' => $job_id));
+            //$interval_setting = get_post_meta($job_id, 'interval_setting', true);
+            $current_user_id = get_current_user_id(); 
+            $interval_setting = get_user_meta($current_user_id, 'interval_setting_' . $job_id, true);
+
 /*
             $todo_class = new to_do_list();
             $doc_id = get_post_meta($action_id, 'doc_id', true);
@@ -414,7 +418,6 @@ if (!class_exists('display_profiles')) {
 */            
             ?>
             <div id="authorization-settings" style="display:none;">
-                <input type="hidden" id="job-id" value="<?php echo $job_id;?>" />
                 <hr>
                 <label for="is-action-authorized"><?php echo __( 'Action Authorization Settings for Todo list', 'textdomain' );?></label><br>
                 <div>
@@ -435,6 +438,7 @@ if (!class_exists('display_profiles')) {
                 </div>
             </div>
             <div id="recurrence-settings" style="display:none;">
+                <input type="hidden" id="job-id" value="<?php echo $job_id;?>" />
                 <hr>
                 <label for="interval-setting"><?php echo __( 'Default Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
@@ -487,20 +491,22 @@ if (!class_exists('display_profiles')) {
 
             if (isset($_POST['_context']) && $_POST['_mode']=='set' && $_POST['_context']=='recurrence') {
                 $user_id = get_current_user_id();
-                $action_id = sanitize_text_field($_POST['_action_id']);
-                $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
-
+                $job_id = sanitize_text_field($_POST['_job_id']);
                 $hook_name = 'iso_helper_post_event';
                 $interval = sanitize_text_field($_POST['_interval_setting']);
                 $args = array(
-                    'action_id' => $action_id,
+                    'job_id' => $job_id,
                     'user_id' => $user_id,
                 );
 
                 if ($interval) {
                     $start_time = time();
                     // Frequency Report Setting
-                    update_post_meta($action_id, 'interval_setting', $interval);
+                    //update_post_meta($job_id, 'interval_setting', $interval);
+                    //$current_user_id = get_current_user_id(); // Or pass in a $user_id if needed
+                    $meta_key = 'interval_setting_' . $job_id;
+                    update_user_meta($user_id, $meta_key, $interval);
+                    
 
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
@@ -544,7 +550,10 @@ if (!class_exists('display_profiles')) {
                     update_option('schedule_event_hook_name', $hook_name);
 
                 } else {
-                    delete_post_meta($action_id, 'interval_setting');
+                    //delete_post_meta($job_id, 'interval_setting');
+                    $meta_key = 'interval_setting_' . $job_id;
+                    delete_user_meta($user_id, $meta_key);
+
                     if ($interval=='weekday_daily') {
                         $hook_name = 'weekday_daily_post_event';
                     }

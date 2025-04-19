@@ -241,11 +241,12 @@ jQuery(document).ready(function($) {
                         data: {
                             'action': 'set_my_job_dialog_data',
                             '_context': context,
-                            //'_job_id': job_id,
+                            '_mode': 'set',
+                            '_job_id': $("#job-id").val(),
+                            '_interval_setting': $("#interval-setting").val(),
                         },
                         success: function (response) {
-                            
-
+                            console.log("job_id: ", job_id);                        
                         },
                         error: function (error) {
                             console.error(error);
