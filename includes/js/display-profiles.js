@@ -208,19 +208,18 @@ jQuery(document).ready(function($) {
             // Button actions
             $("#set-btn").on("click", function () {
                 console.log("Set clicked for", context);
-        
+                let selectedDocType = $("input[name='doc_type']:checked").val(); // Returns 'embedded' or 'external'
+
                 // Hide the active section
                 if (context === 'authorization') {
-                    $("#authorization-settings").hide();
-                    $(".ui-dialog-buttonpane button:contains('Authorization')").show();
-
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
                             'action': 'set_my_job_dialog_data',
-                            //'_job_id': job_id,
+                            '_context': context,
+                            '_action_id': $("input[name='start-job-dialog-button']:checked").val(),
                         },
                         success: function (response) {
 
@@ -232,15 +231,17 @@ jQuery(document).ready(function($) {
                             alert(error);
                         }
                     });        
+                    $("#authorization-settings").hide();
+                    $(".ui-dialog-buttonpane button:contains('Authorization')").show();
+
                 } else {
-                    $("#recurrence-settings").hide();
-                    $(".ui-dialog-buttonpane button:contains('Recurrence')").show();
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
                         dataType: "json",
                         data: {
                             'action': 'set_my_job_dialog_data',
+                            '_context': context,
                             //'_job_id': job_id,
                         },
                         success: function (response) {
@@ -252,6 +253,8 @@ jQuery(document).ready(function($) {
                             alert(error);
                         }
                     });        
+                    $("#recurrence-settings").hide();
+                    $(".ui-dialog-buttonpane button:contains('Recurrence')").show();
                 }
                 $("#custom-set-unset").remove();
         

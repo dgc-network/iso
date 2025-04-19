@@ -416,7 +416,7 @@ if (!class_exists('display_profiles')) {
             <div id="authorization-settings" style="display:none;">
                 <input type="hidden" id="job-id" value="<?php echo $job_id;?>" />
                 <hr>
-                <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
+                <label for="is-action-authorized"><?php echo __( 'Action Authorization Settings for Todo list', 'textdomain' );?></label><br>
                 <div>
                 <?php
                     $query = $this->retrieve_site_action_data(0, $job_id);
@@ -434,7 +434,7 @@ if (!class_exists('display_profiles')) {
             </div>
             <div id="recurrence-settings" style="display:none;">
                 <hr>
-                <label for="interval-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
+                <label for="interval-setting"><?php echo __( 'Default Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
             </div>
             <?php            
@@ -444,10 +444,9 @@ if (!class_exists('display_profiles')) {
         function set_my_job_dialog_data() {
             $response = array('success' => false, 'error' => 'Invalid data format');
 
-            if (isset($_POST['_job_id']) && isset($_POST['_is_action_authorized'])) {
+            if (isset($_POST['_context']) && $_POST['_context']=='authorization') {
                 $user_id = get_current_user_id();
-                $job_id = sanitize_text_field($_POST['_job_id']);
-                $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
+                $action_id = sanitize_text_field($_POST['_action_id']);
                 $action_authorized_ids = get_post_meta($action_id, 'action_authorized_ids', true);
                 if (!is_array($action_authorized_ids)) $action_authorized_ids = array();
                 $authorize_exists = in_array($user_id, $action_authorized_ids);
@@ -463,6 +462,12 @@ if (!class_exists('display_profiles')) {
 
                 // Update 'action_authorized_ids' meta value
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
+            }
+
+            if (isset($_POST['_job_id']) && isset($_POST['_is_action_authorized'])) {
+                $user_id = get_current_user_id();
+                $action_id = sanitize_text_field($_POST['_action_id']);
+                $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
 
                 $hook_name = 'iso_helper_post_event';
                 $interval = sanitize_text_field($_POST['_interval_setting']);
@@ -619,11 +624,11 @@ if (!class_exists('display_profiles')) {
             ?>
             <div>
                 <input type="hidden" id="action-id" value="<?php echo $action_id;?>" />
-                <label for="is-action-authorized"><?php echo __( 'Authorization Settings for Todo list', 'textdomain' );?></label><br>
+                <label for="is-action-authorized"><?php echo __( 'Action Authorization Settings for Todo list', 'textdomain' );?></label><br>
                 <input type="checkbox" id="is-action-authorized" <?php echo $is_action_authorized_checked;?> />
                 <label for="is-action-authorized"><?php echo __( 'Please check or uncheck the Settings.', 'textdomain' );?></label><br>
                 <hr>
-                <label for="interval-setting"><?php echo __( 'Recurrence Settings for Start job', 'textdomain' );?></label>
+                <label for="interval-setting"><?php echo __( 'Default Recurrence Settings for Start job', 'textdomain' );?></label>
                 <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
             </div>
             <?php
