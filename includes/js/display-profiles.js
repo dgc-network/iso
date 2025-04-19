@@ -150,6 +150,94 @@ jQuery(document).ready(function($) {
                 success: function (response) {
                     $("#my-job-dialog").html(response.html_contain);
         
+                    $("#my-job-dialog").dialog("option", "buttons", {
+                        "Authorization": function () {
+                            $("#authorization-settings").show();
+                            $("#recurrence-settings").hide();
+        
+                            // Hide Authorization button only
+                            $(".ui-dialog-buttonpane button:contains('Authorization')").hide();
+        
+                            // Add Set/Unset next to it
+                            insertSetUnsetButtons('authorization');
+                        },
+                        "Recurrence": function () {
+                            $("#recurrence-settings").show();
+                            $("#authorization-settings").hide();
+        
+                            // Hide Recurrence button only
+                            $(".ui-dialog-buttonpane button:contains('Recurrence')").hide();
+        
+                            // Add Set/Unset next to it
+                            insertSetUnsetButtons('recurrence');
+                        }
+                    });
+        
+                    $("#my-job-dialog").dialog('open');
+                },
+                error: function (error) {
+                    console.error(error);
+                    alert(error);
+                }
+            });
+        });
+        
+        function insertSetUnsetButtons(context) {
+            const $buttonPane = $(".ui-dialog-buttonpane");
+            const $existing = $("#custom-set-unset");
+        
+            // Remove any previous ones
+            if ($existing.length) $existing.remove();
+        
+            const $btnGroup = $(`
+                <span id="custom-set-unset" style="display:inline-block; margin-right: 10px;">
+                    <button type="button" id="set-btn" class="ui-button ui-corner-all ui-widget">Set</button>
+                    <button type="button" id="unset-btn" class="ui-button ui-corner-all ui-widget">Unset</button>
+                </span>
+            `);
+        
+            // Insert before whichever button is still visible
+            if (context === 'authorization') {
+                $btnGroup.insertBefore($buttonPane.find("button:contains('Recurrence')"));
+            } else {
+                $btnGroup.insertBefore($buttonPane.find("button:contains('Authorization')"));
+            }
+        
+            // Button actions
+            $("#set-btn").on("click", function () {
+                console.log("Set clicked for", context);
+            });
+        
+            $("#unset-btn").on("click", function () {
+                console.log("Unset clicked for", context);
+        
+                // Hide the active section
+                if (context === 'authorization') {
+                    $("#authorization-settings").hide();
+                    $(".ui-dialog-buttonpane button:contains('Authorization')").show();
+                } else {
+                    $("#recurrence-settings").hide();
+                    $(".ui-dialog-buttonpane button:contains('Recurrence')").show();
+                }
+        
+                $("#custom-set-unset").remove();
+            });
+        }
+/*        
+        $('[id^="edit-my-job-"]').on("click", function () {
+            const job_id = this.id.substring(12);
+        
+            $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                dataType: "json",
+                data: {
+                    'action': 'get_my_job_dialog_data',
+                    '_job_id': job_id,
+                },
+                success: function (response) {
+                    $("#my-job-dialog").html(response.html_contain);
+        
                     // Set up base buttons
                     $("#my-job-dialog").dialog("option", "buttons", {
                         "Authorization": function () {
