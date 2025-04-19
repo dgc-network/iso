@@ -424,7 +424,9 @@ if (!class_exists('display_profiles')) {
                         while ($query->have_posts()) : $query->the_post();
                             $action_id = get_the_ID();
                             $action_title = get_the_title();
-                            echo '<input type="radio" name="start-job-dialog-button" id="start-job-dialog-button-'.$action_id.'" value="'.$action_id.'" style="margin:5px;" />';
+                            $is_action_authorized = $this->is_action_authorized($action_id);
+                            $is_action_authorized_checked = $is_action_authorized ? 'checked' : '';
+                            echo '<input type="radio" name="start-job-dialog-button" id="start-job-dialog-button-'.$action_id.'" value="'.$action_id.'" style="margin:5px;" '.$is_action_authorized_checked.' />';
                             echo '<input type="button" value="'.$action_title.'" style="margin:5px;" />';
                         endwhile;
                         wp_reset_postdata();
