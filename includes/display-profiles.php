@@ -485,7 +485,7 @@ if (!class_exists('display_profiles')) {
                 update_post_meta($action_id, 'action_authorized_ids', $action_authorized_ids);
             }
 
-            if (isset($_POST['_context']) && $_POST['_context']=='authorization') {
+            if (isset($_POST['_context']) && $_POST['_mode']=='set' && $_POST['_context']=='recurrence') {
                 $user_id = get_current_user_id();
                 $action_id = sanitize_text_field($_POST['_action_id']);
                 $is_action_authorized = sanitize_text_field($_POST['_is_action_authorized']);
@@ -571,6 +571,10 @@ if (!class_exists('display_profiles')) {
                     'action_authorized_ids' => $action_authorized_ids,
                 );
             }
+
+            if (isset($_POST['_context']) && $_POST['_mode']=='unset' && $_POST['_context']=='recurrence') {
+            }
+            
             wp_send_json($response);
         }
 
