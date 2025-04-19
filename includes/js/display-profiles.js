@@ -220,11 +220,11 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_my_job_dialog_data',
-                            '_job_id': job_id,
+                            //'_job_id': job_id,
                         },
                         success: function (response) {
 
-                            $("#custom-set-unset").remove();
+                            //$("#custom-set-unset").remove();
 
                         },
                         error: function (error) {
@@ -241,11 +241,10 @@ jQuery(document).ready(function($) {
                         dataType: "json",
                         data: {
                             'action': 'set_my_job_dialog_data',
-                            '_job_id': job_id,
+                            //'_job_id': job_id,
                         },
                         success: function (response) {
                             
-                            $("#custom-set-unset").remove();
 
                         },
                         error: function (error) {
@@ -254,6 +253,7 @@ jQuery(document).ready(function($) {
                         }
                     });        
                 }
+                $("#custom-set-unset").remove();
         
             });
         
