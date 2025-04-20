@@ -1560,6 +1560,47 @@ if (!class_exists('to_do_list')) {
             wp_send_json($response);
         }
 
+        function send_notification_for_start_job($doc_id=false, $user_id=false) {
+            // Retrieve doc_id associated with the report
+            //$doc_id = get_post_meta($report_id, 'doc_id', true);
+
+            // Prepare message
+            $head_message = sprintf(
+                __('%s Notification.', 'textdomain'),
+                get_the_title($doc_id)
+            );
+
+            $text_message = sprintf(
+                __('Please click the button below to view the details of the %s record.', 'textdomain'),
+                get_the_title($report_id)
+            );
+
+            // Get LINE user ID
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+            $link_uri = home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id");
+            error_log("uri: " . $link_uri);
+
+            if ($line_user_id) {
+                $line_bot_api = new line_bot_api();
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    'header_contents' => [['type' => 'text', 'text' => $head_message, 'weight' => 'bold']],
+                    'body_contents'   => [['type' => 'text', 'text' => $text_message, 'wrap' => true]],
+                    'footer_contents' => [[
+                        'type' => 'button',
+                        'action' => [
+                            'type' => 'uri',
+                            'label' => 'View Details',
+                            'uri' => esc_url_raw($link_uri),
+                        ],
+                        'style' => 'primary'
+                    ]]
+                ]);
+            } else {
+                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
+            }
+        }
+
         function send_notification_for_record($report_id=false, $user_id=false) {
             // Retrieve doc_id associated with the report
             $doc_id = get_post_meta($report_id, 'doc_id', true);
@@ -1606,8 +1647,10 @@ if (!class_exists('to_do_list')) {
             $user_id = $params['user_id'];
             $action_id = $params['action_id'];
             if ($action_id) $this->set_start_job_and_go_next($action_id, $user_id, true);
-            $report_id = $params['report_id'];
-            if ($report_id) $this->send_notification_for_record($report_id, $user_id);
+            //$report_id = $params['report_id'];
+            //if ($report_id) $this->send_notification_for_record($report_id, $user_id);
+            $job_id = $params['job_id'];
+            if ($job_id) $this->send_notification_for_start_job($job_id, $user_id);
         }
         
         function weekday_event_callback($params) {
