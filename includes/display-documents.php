@@ -1169,8 +1169,8 @@ if (!class_exists('display_documents')) {
                         <?php if ($is_embedded_doc) {?>
                             <input type="button" id="transaction-button" value="<?php echo __('Transactions', 'textdomain')?>" style="margin:3px;" />
                         <?php }?>
-                        <input type="button" id="notification-button" value="<?php echo __('Notifications', 'textdomain')?>" style="margin:3px;" />
 <?php /*                        
+                        <input type="button" id="notification-button" value="<?php echo __('Notifications', 'textdomain')?>" style="margin:3px;" />
                         <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'textdomain' );?>" style="margin:3px;" />
 */?>
                     </div>
