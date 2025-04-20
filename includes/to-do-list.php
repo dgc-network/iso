@@ -1561,23 +1561,19 @@ if (!class_exists('to_do_list')) {
         }
 
         function send_notification_for_start_job($doc_id=false, $user_id=false) {
-            // Retrieve doc_id associated with the report
-            //$doc_id = get_post_meta($report_id, 'doc_id', true);
-
             // Prepare message
             $head_message = sprintf(
-                __('%s Notification.', 'textdomain'),
-                get_the_title($doc_id)
+                __('Notification.', 'textdomain'),
             );
 
             $text_message = sprintf(
                 __('Please click the button below to view the details of the %s record.', 'textdomain'),
-                get_the_title($report_id)
+                get_the_title($doc_id)
             );
 
             // Get LINE user ID
             $line_user_id = get_user_meta($user_id, 'line_user_id', true);
-            $link_uri = home_url("/display-documents/?_doc_id=$doc_id&_is_doc_report=1&_report_id=$report_id");
+            $link_uri = home_url("/to-do-list/?_job_id=$doc_id");
             error_log("uri: " . $link_uri);
 
             if ($line_user_id) {
