@@ -368,10 +368,11 @@ if (!class_exists('display_profiles')) {
                                         $action_title = get_the_title();
                                     }
                                     $action_titles[] = $action_title;
-                                    $interval_setting = get_post_meta($action_id, 'interval_setting', true);
                                 endwhile;
                                 wp_reset_postdata();                                    
                             }
+                            //$interval_setting = get_post_meta($action_id, 'interval_setting', true);
+                            $interval_setting = get_user_meta($current_user_id, 'interval_setting_' . $doc_id, true);
                             ?>
                             <tr id="edit-my-job-<?php echo $doc_id; ?>">
                                 <td style="text-align:center;"><?php echo $doc_number;?></td>
