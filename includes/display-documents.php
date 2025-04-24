@@ -1201,13 +1201,13 @@ if (!class_exists('display_documents')) {
                 }
                 ?>
             </div>
-
+<?php /*
             <fieldset id="notification-settings" style="display:none;">
                 <label for="interval-setting"><?php echo __( 'Recurrence Settings for current record', 'textdomain' );?></label>
                 <select id="interval-setting" class="select ui-widget-content ui-corner-all"><?php echo select_cron_schedules_option($interval_setting);?></select>
                 <input type="button" id="notification-settings-submit" value="<?php echo __( 'Submit', 'textdomain' );?>" style="margin:5px;" />
             </fieldset>
-
+*/?>
             </div>
             <?php
             return ob_get_clean();

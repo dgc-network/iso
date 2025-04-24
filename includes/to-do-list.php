@@ -1328,6 +1328,7 @@ if (!class_exists('to_do_list')) {
             if (!empty($todo_ids) && is_array($todo_ids)) {
                 $todo_ids = array_map('absint', $todo_ids); // Ensure IDs are integers
                 $args['post__in'] = $todo_ids;
+                $args['posts_per_page'] = -1;
             }
 
             // Check if meta_query is causing issues
