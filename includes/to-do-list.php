@@ -1306,7 +1306,7 @@ if (!class_exists('to_do_list')) {
             return ob_get_clean();
         }
 
-        function retrieve_transaction_log_data($paged=1, $todo_ids=array()) {
+        function retrieve_transaction_log_data($paged=1, $todo_id=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true); // Get current user's site_id
 
@@ -1323,16 +1323,16 @@ if (!class_exists('to_do_list')) {
             if ($paged == 0) {
                 $args['posts_per_page'] = -1;
             }
-
+/*
             // Ensure $todo_ids is valid before applying post__in
             if (!empty($todo_ids) && is_array($todo_ids)) {
                 $todo_ids = array_map('absint', $todo_ids); // Ensure IDs are integers
                 //$args['post__in'] = $todo_ids;
                 $args['posts_per_page'] = -1;
             }
-
+*/
             // Check if meta_query is causing issues
-            if (empty($todo_ids)) {
+            if (empty($todo_id)) {
                 $args['meta_query'] = array(
                     'relation' => 'AND',
                     array(
@@ -1344,6 +1344,8 @@ if (!class_exists('to_do_list')) {
                         'value'   => $site_id,
                     ),
                 );
+            } else {
+                $args['post__in'] = is_array($todo_id) ? $todo_id : array($todo_id);
             }
 
             // Sanitize and handle search query

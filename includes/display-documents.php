@@ -1188,7 +1188,8 @@ if (!class_exists('display_documents')) {
                 $todo_ids = array(absint($report_id));
                 error_log('todo_ids: '.print_r($todo_ids, true));
                 $todo_class = new to_do_list();
-                echo $todo_class->get_transaction_log_inner_list($todo_ids);
+                //echo $todo_class->get_transaction_log_inner_list($todo_ids);
+                echo $todo_class->get_transaction_log_inner_list($report_id);
                 ?>
             </div>
 
