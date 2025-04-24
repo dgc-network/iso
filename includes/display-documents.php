@@ -1165,11 +1165,13 @@ if (!class_exists('display_documents')) {
                     ?>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
+<?php /*
                         <input type="button" id="action-log-button" value="<?php echo __('Sign-off Record', 'textdomain')?>" style="margin:3px;" />
+*/?>
                         <?php if ($is_embedded_doc) {?>
                             <input type="button" id="transaction-button" value="<?php echo __('Transactions', 'textdomain')?>" style="margin:3px;" />
                         <?php }?>
-<?php /*                        
+<?php /*
                         <input type="button" id="notification-button" value="<?php echo __('Notifications', 'textdomain')?>" style="margin:3px;" />
                         <input type="button" id="duplicate-doc-report-<?php echo $report_id;?>" value="<?php echo __( 'Duplicate', 'textdomain' );?>" style="margin:3px;" />
 */?>
