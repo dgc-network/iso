@@ -234,6 +234,7 @@ jQuery(document).ready(function($) {
                     $(".ui-dialog-buttonpane button:contains('Authorization')").show();
 
                 } else {
+                    let job_id = $("#job-id").val();
                     $.ajax({
                         type: 'POST',
                         url: ajax_object.ajax_url,
@@ -242,11 +243,11 @@ jQuery(document).ready(function($) {
                             'action': 'set_my_job_dialog_data',
                             '_context': context,
                             '_mode': 'set',
-                            '_job_id': $("#job-id").val(),
+                            '_job_id': job_id,
                             '_interval_setting': $("#interval-setting").val(),
                         },
                         success: function (response) {
-                            console.log("job_id: ", job_id);                        
+                            console.log("job_id: ", job_id);                 
                         },
                         error: function (error) {
                             console.error(error);
