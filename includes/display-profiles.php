@@ -494,6 +494,13 @@ if (!class_exists('display_profiles')) {
                     $meta_key = 'interval_setting_' . $job_id;
                     update_user_meta($user_id, $meta_key, $interval);
 
+                    // Prepare iCalendar URL with job ID and interval
+                    $ical_url = add_query_arg([
+                        'generate_ics' => 1,
+                        'job_id' => $job_id,
+                        'interval' => $interval, // Pass interval setting to .ics file
+                    ], home_url('/generate-icalendar'));
+
                     // Check if an event with the same hook and args is already scheduled
                     if (!wp_next_scheduled($hook_name, array($args))) {
                         switch ($interval) {
@@ -533,7 +540,7 @@ if (!class_exists('display_profiles')) {
                         }
                     }
                     // Store the hook name in options for later use
-                    update_option('schedule_event_hook_name', $hook_name);
+                    update_option('schedule_event_hook_name', $hook_name);                
 
                 } else {
                     $meta_key = 'interval_setting_' . $job_id;

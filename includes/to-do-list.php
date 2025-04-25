@@ -1563,7 +1563,7 @@ if (!class_exists('to_do_list')) {
             }
             wp_send_json($response);
         }
-
+/*
         function send_notification_for_start_job($doc_id = false, $user_id = false) {
             // Prepare message
             $head_message = __('Notification.', 'textdomain');
@@ -1618,7 +1618,7 @@ if (!class_exists('to_do_list')) {
                 error_log("Line User ID not found for User ID: " . print_r($user_id, true));
             }
         }
-        
+*/        
         public function generate_ics_for_job() {
             if (isset($_GET['generate_ics']) && $_GET['generate_ics'] == 1 && isset($_GET['job_id'])) {
                 $job_id = absint($_GET['job_id']);
@@ -1660,7 +1660,7 @@ if (!class_exists('to_do_list')) {
                 exit;
             }
         }
-/*        
+
         function send_notification_for_start_job($doc_id=false, $user_id=false) {
             // Prepare message
             $head_message = sprintf(
@@ -1697,7 +1697,7 @@ if (!class_exists('to_do_list')) {
                 error_log("Line User ID not found for User ID: " . print_r($user_id, true));
             }
         }
-
+/*
         function send_notification_for_record($report_id=false, $user_id=false) {
             // Retrieve doc_id associated with the report
             $doc_id = get_post_meta($report_id, 'doc_id', true);
