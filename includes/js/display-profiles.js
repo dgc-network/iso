@@ -247,7 +247,9 @@ jQuery(document).ready(function($) {
                             '_interval_setting': $("#interval-setting").val(),
                         },
                         success: function (response) {
-                            console.log("job_id: ", job_id);                 
+                            console.log("job_id: ", job_id);
+                            //window.location.href = response.ical_url;
+                            window.open(response.ical_url, '_blank');
                         },
                         error: function (error) {
                             console.error(error);

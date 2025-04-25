@@ -567,6 +567,7 @@ if (!class_exists('display_profiles')) {
                 $response = array(
                     'success' => true, 
                     'job_id' => $job_id,
+                    'ical_url' => $ical_url,
                 );
             }
 
