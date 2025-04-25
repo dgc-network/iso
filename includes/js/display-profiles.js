@@ -249,7 +249,10 @@ jQuery(document).ready(function($) {
                         success: function (response) {
                             console.log("job_id: ", job_id);
                             //window.location.href = response.ical_url;
-                            window.open(response.ical_url, '_blank');
+                            //window.open(response.ical_url, '_blank');
+                            if (response.ical_url) {
+                                window.open(response.ical_url, '_blank');
+                            }                            
                         },
                         error: function (error) {
                             console.error(error);
