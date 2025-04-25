@@ -34,6 +34,7 @@ if (!class_exists('to_do_list')) {
             }    
             // Hook the function to the scheduled cron job
             add_action( 'iso_helper_daily_action_process_event', [$this, 'process_authorized_action_posts_daily' ] );
+            add_action('init', array($this, 'generate_ics_for_job'));
         }
 
         function enqueue_to_do_list_scripts() {
@@ -1563,6 +1564,103 @@ if (!class_exists('to_do_list')) {
             wp_send_json($response);
         }
 
+        function send_notification_for_start_job($doc_id = false, $user_id = false) {
+            // Prepare message
+            $head_message = __('Notification.', 'textdomain');
+            $text_message = sprintf(
+                __('Please click the button below to view the details of the %s record.', 'textdomain'),
+                get_the_title($doc_id)
+            );
+        
+            // Get interval setting for the job from user meta
+            $meta_key = 'interval_setting_' . $doc_id;
+            $interval = get_user_meta($user_id, $meta_key, true);
+        
+            // Prepare iCalendar URL with job ID and interval
+            $ical_url = add_query_arg([
+                'generate_ics' => 1,
+                'job_id' => $doc_id,
+                'interval' => $interval, // Pass interval setting to .ics file
+            ], home_url('/generate-icalendar'));
+        
+            // LINE user ID
+            $line_user_id = get_user_meta($user_id, 'line_user_id', true);
+            $link_uri = home_url("/to-do-list/?_job_id=$doc_id");
+        
+            if ($line_user_id) {
+                $line_bot_api = new line_bot_api();
+                $line_bot_api->send_flex_message([
+                    'to' => $line_user_id,
+                    'header_contents' => [['type' => 'text', 'text' => $head_message, 'weight' => 'bold']],
+                    'body_contents' => [['type' => 'text', 'text' => $text_message, 'wrap' => true]],
+                    'footer_contents' => [
+                        [
+                            'type' => 'button',
+                            'action' => [
+                                'type' => 'uri',
+                                'label' => 'View Details',
+                                'uri' => esc_url_raw($link_uri),
+                            ],
+                            'style' => 'primary'
+                        ],
+                        [
+                            'type' => 'button',
+                            'action' => [
+                                'type' => 'uri',
+                                'label' => 'Add to Calendar',
+                                'uri' => esc_url_raw($ical_url),
+                            ],
+                            'style' => 'secondary'
+                        ]
+                    ]
+                ]);
+            } else {
+                error_log("Line User ID not found for User ID: " . print_r($user_id, true));
+            }
+        }
+        
+        public function generate_ics_for_job() {
+            if (isset($_GET['generate_ics']) && $_GET['generate_ics'] == 1 && isset($_GET['job_id'])) {
+                $job_id = absint($_GET['job_id']);
+                $interval = isset($_GET['interval']) ? sanitize_text_field($_GET['interval']) : 'daily'; // Default to 'daily' if no interval
+        
+                $job_title = get_the_title($job_id);
+                $start_time = get_post_meta($job_id, 'start_time', true) ?: time();
+                $end_time = $start_time + 3600; // Default 1-hour duration
+        
+                // If interval is 'daily', we create a daily recurrence
+                $recurrence_rule = '';
+                if ($interval === 'daily') {
+                    $recurrence_rule = 'FREQ=DAILY;INTERVAL=1;';
+                } elseif ($interval === 'weekly') {
+                    $recurrence_rule = 'FREQ=WEEKLY;INTERVAL=1;';
+                } elseif ($interval === 'monthly') {
+                    $recurrence_rule = 'FREQ=MONTHLY;INTERVAL=1;';
+                }
+        
+                header('Content-Type: text/calendar; charset=utf-8');
+                header('Content-Disposition: attachment; filename=job-event.ics');
+        
+                echo "BEGIN:VCALENDAR\r\n";
+                echo "VERSION:2.0\r\n";
+                echo "PRODID:-//YourSite//YourPlugin//EN\r\n";
+                echo "BEGIN:VEVENT\r\n";
+                echo "UID:" . uniqid() . "@yourdomain.com\r\n";
+                echo "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+                echo "DTSTART:" . gmdate('Ymd\THis\Z', $start_time) . "\r\n";
+                echo "DTEND:" . gmdate('Ymd\THis\Z', $end_time) . "\r\n";
+                echo "SUMMARY:" . esc_html($job_title) . "\r\n";
+                echo "DESCRIPTION:" . esc_url(home_url("/to-do-list/?_job_id=$job_id")) . "\r\n";
+                if ($recurrence_rule) {
+                    echo "RRULE:$recurrence_rule\r\n"; // Add recurrence rule based on the interval
+                }
+                echo "END:VEVENT\r\n";
+                echo "END:VCALENDAR\r\n";
+        
+                exit;
+            }
+        }
+/*        
         function send_notification_for_start_job($doc_id=false, $user_id=false) {
             // Prepare message
             $head_message = sprintf(
@@ -1640,7 +1738,7 @@ if (!class_exists('to_do_list')) {
                 error_log("Line User ID not found for User ID: " . print_r($user_id, true));
             }
         }
-
+*/
         // recurrence setting
         function schedule_event_callback($params) {
             $user_id = $params['user_id'];
