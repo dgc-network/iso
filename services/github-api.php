@@ -62,6 +62,36 @@ if (!class_exists('github_api')) {
         function fetch_github_doc($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
+            $path = 'docs/' . $doc_id . '.html';
+            $token = $this->github_api_token;
+        
+            $url = "https://api.github.com/repos/$owner/$repo/contents/$path";
+            $response = wp_remote_get($url, [
+                'headers' => [
+                    'User-Agent' => 'WP-GitHub',
+                    'Authorization' => "token $token"
+                ]
+            ]);
+        
+            if (is_wp_error($response)) {
+                error_log("GitHub fetch error: " . $response->get_error_message());
+                return null;
+            }
+        
+            $code = wp_remote_retrieve_response_code($response);
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+        
+            if ($code === 200 && isset($body['content'])) {
+                return base64_decode($body['content']);
+            } else {
+                error_log("GitHub fetch failed: HTTP $code - " . print_r($body, true));
+                return null;
+            }
+        }
+/*        
+        function fetch_github_doc($doc_id) {
+            $owner = 'iso-helper';
+            $repo = 'docs-repo';
             //$path = 'docs/'.$doc_id.'.md';
             $path = 'docs/'.$doc_id.'.html';
             $token = $this->github_api_token;
@@ -76,7 +106,7 @@ if (!class_exists('github_api')) {
             $body = json_decode(wp_remote_retrieve_body($response), true);
             return base64_decode($body['content']);
         }
-
+*/
         function update_github_doc($new_content, $doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
@@ -127,101 +157,8 @@ if (!class_exists('github_api')) {
                 error_log("GitHub PUT Failed: $response_code - $response_body");
                 return false;
             }
-/*            
-            $put_response = wp_remote_request($get_url, [
-                'method' => 'PUT',
-                'headers' => array_merge($headers, ['Content-Type' => 'application/json']),
-                'body' => json_encode($data)
-            ]);
-        
-            // Check result
-            return !is_wp_error($put_response) && wp_remote_retrieve_response_code($put_response) < 300;
-*/
         }
-/*
-        function update_github_doc($new_content, $doc_id) {
-            $owner = 'iso-helper';
-            $repo = 'docs-repo';
-            $path = 'docs/' . $doc_id . '.html';
-            $token = $this->github_api_token;
-        
-            $get_url = "https://api.github.com/repos/$owner/$repo/contents/$path";
-            $headers = [
-                'User-Agent' => 'WP-GitHub',
-                'Authorization' => "token $token"
-            ];
-        
-            $sha = null;
-            $get_response = wp_remote_get($get_url, ['headers' => $headers]);
-            if (!is_wp_error($get_response)) {
-                $response_data = json_decode(wp_remote_retrieve_body($get_response), true);
-                if (isset($response_data['sha'])) {
-                    $sha = $response_data['sha'];
-                }
-            }
-        
-            $data = [
-                'message' => 'Update from WordPress',
-                'content' => base64_encode($new_content),
-            ];
-            if ($sha) {
-                $data['sha'] = $sha; // only needed for updates
-            }
-        
-            $put_response = wp_remote_request($get_url, [
-                'method' => 'PUT',
-                'headers' => array_merge($headers, ['Content-Type' => 'application/json']),
-                'body' => json_encode($data)
-            ]);
-        
-            if (is_wp_error($put_response)) {
-                error_log('GitHub PUT error: ' . $put_response->get_error_message());
-                return false;
-            }
-        
-            return wp_remote_retrieve_response_code($put_response) === 200 || wp_remote_retrieve_response_code($put_response) === 201;
-        }
-/*        
-        function update_github_doc($new_content, $doc_id) {
-            $owner = 'iso-helper';
-            $repo = 'docs-repo';
-            //$path = 'docs/'.$doc_id.'.md';
-            $path = 'docs/'.$doc_id.'.html';
-            $token = $this->github_api_token;
-        
-            $get_url = "https://api.github.com/repos/$owner/$repo/contents/$path";
-            $headers = [
-                'User-Agent' => 'WP-GitHub',
-                'Authorization' => "token $token"
-            ];
-        
-            // Get current file SHA
-            $get_response = wp_remote_get($get_url, ['headers' => $headers]);
-            if (is_wp_error($get_response)) return false;
-            $response_data = json_decode(wp_remote_retrieve_body($get_response), true);
-        
-            if (isset($response_data['sha'])) {
-                $sha = $response_data['sha'];
-            } else {
-                error_log("GitHub API: 'sha' not found in response. Full response: " . print_r($response_data, true));
-                // Optionally handle the error or return early
-            }
-            
-            $data = [
-                'message' => 'Update from WordPress',
-                'content' => base64_encode($new_content),
-                'sha' => $response_data['sha']
-            ];
-        
-            $put_response = wp_remote_request($get_url, [
-                'method' => 'PUT',
-                'headers' => array_merge($headers, ['Content-Type' => 'application/json']),
-                'body' => json_encode($data)
-            ]);
-        
-            return !is_wp_error($put_response) && wp_remote_retrieve_response_code($put_response) === 200;
-        }
-*/        
+
         function get_github_file_revision($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
