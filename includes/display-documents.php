@@ -2490,7 +2490,14 @@ if (!class_exists('display_documents')) {
 
                 $github_api = new github_api();
                 $result = $github_api->update_github_doc($draft_content, $draft_id);
-                error_log('Update GitHub document: '.$result);
+
+                if ($result === true) {
+                    error_log('✅ Update GitHub document: Success');
+                } elseif ($result === false) {
+                    error_log('❌ Update GitHub document: Failed');
+                } else {
+                    error_log('❓ Unexpected result from update_github_doc: ' . print_r($result, true));
+                }
 
                 $params = array(
                     'log_message' => sprintf( __( 'Draft %s has been created.', 'textdomain' ), esc_html( $draft_title ) ),

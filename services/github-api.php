@@ -112,9 +112,31 @@ if (!class_exists('github_api')) {
                 'headers' => array_merge($headers, ['Content-Type' => 'application/json']),
                 'body' => json_encode($data)
             ]);
+            
+            if (is_wp_error($put_response)) {
+                error_log('GitHub PUT Error: ' . $put_response->get_error_message());
+                return false;
+            }
+            
+            $response_code = wp_remote_retrieve_response_code($put_response);
+            $response_body = wp_remote_retrieve_body($put_response);
+            
+            if ($response_code >= 200 && $response_code < 300) {
+                return true;
+            } else {
+                error_log("GitHub PUT Failed: $response_code - $response_body");
+                return false;
+            }
+/*            
+            $put_response = wp_remote_request($get_url, [
+                'method' => 'PUT',
+                'headers' => array_merge($headers, ['Content-Type' => 'application/json']),
+                'body' => json_encode($data)
+            ]);
         
             // Check result
             return !is_wp_error($put_response) && wp_remote_retrieve_response_code($put_response) < 300;
+*/
         }
 /*
         function update_github_doc($new_content, $doc_id) {
