@@ -66,6 +66,37 @@ if (!class_exists('github_api')) {
             $token = $this->github_api_token;
         
             $url = "https://api.github.com/repos/$owner/$repo/contents/$path";
+            error_log("GitHub fetch URL: $url"); // Debug log
+        
+            $response = wp_remote_get($url, [
+                'headers' => [
+                    'User-Agent' => 'WP-GitHub',
+                    'Authorization' => "token $token"
+                ]
+            ]);
+        
+            $code = wp_remote_retrieve_response_code($response);
+            if ($code !== 200) {
+                error_log("GitHub fetch failed: HTTP $code - " . print_r(json_decode(wp_remote_retrieve_body($response), true), true));
+                return false;
+            }
+        
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+            if (!isset($body['content'])) {
+                error_log("GitHub fetch error: 'content' key missing. Body: " . print_r($body, true));
+                return false;
+            }
+        
+            return base64_decode($body['content']);
+        }
+/*        
+        function fetch_github_doc($doc_id) {
+            $owner = 'iso-helper';
+            $repo = 'docs-repo';
+            $path = 'docs/' . $doc_id . '.html';
+            $token = $this->github_api_token;
+        
+            $url = "https://api.github.com/repos/$owner/$repo/contents/$path";
             $response = wp_remote_get($url, [
                 'headers' => [
                     'User-Agent' => 'WP-GitHub',
