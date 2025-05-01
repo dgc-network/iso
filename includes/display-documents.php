@@ -183,9 +183,9 @@ if (!class_exists('display_documents')) {
                             $doc_id = get_the_ID();
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_the_title();
-                            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-                            //$doc_category = get_post_meta($doc_id, 'doc_category', true);
-                            $doc_category = $github_api->get_github_file_revision($doc_id);
+                            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                            //$doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+                            $doc_revision = $github_api->get_github_file_revision($doc_id);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
 
