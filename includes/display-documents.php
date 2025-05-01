@@ -526,9 +526,10 @@ if (!class_exists('display_documents')) {
                     </div>
 
                     <div id="job-setting-div" style="display:none;">
+<?php /*                        
                         <label for="job-content"><?php echo __( 'Job Content', 'textdomain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
-
+*/?>
                         <div class="content">
                             <?php echo $content;?>
                             <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
@@ -2297,7 +2298,7 @@ if (!class_exists('display_documents')) {
                     <?php
                     if ($paged==1) {
                         $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( 'The file list conforms to the High-Level Structure (HLS)', 'textdomain' );
-                        $content = generate_content($iso_category_title.' '.$prompt);
+                        $content = generate_content('Please list the documents explicitly required by '.$iso_category_title.' '.$prompt);
 
                         // Suppress warnings for invalid HTML
                         libxml_use_internal_errors(true);
