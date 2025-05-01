@@ -89,5 +89,6 @@ function isURL($str) {
     return preg_match($pattern, $str) === 1;
 }
 
+
 require_once plugin_dir_path( __FILE__ ) . 'services/services.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/iso-helper.php';
