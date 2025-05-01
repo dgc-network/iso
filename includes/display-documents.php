@@ -526,6 +526,14 @@ if (!class_exists('display_documents')) {
                     <div id="job-setting-div" style="display:none;">
                         <label for="job-content"><?php echo __( 'Job Content', 'textdomain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
+
+                        <div class="content">
+                            <?php echo $content;?>
+                            <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
+                                <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
+                            </div>
+                        </div>
+
                         <label for="action-list"><?php echo __( 'Action List', 'textdomain' );?></label>
                         <div id="site-action-list">
                             <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
@@ -558,14 +566,14 @@ if (!class_exists('display_documents')) {
                     $this->display_transaction_report_for_master(['_document' => $doc_id]);
                 ?>
 
-                <br><br>
 <?php /*                
+                <br><br>
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
                         <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                     </div>
-                </div>            
+                </div>
 */?>
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
