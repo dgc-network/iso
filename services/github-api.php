@@ -57,7 +57,92 @@ if (!class_exists('github_api')) {
             $value = get_option('github_api_token');
             echo '<input type="text" id="github_api_token" name="github_api_token" style="width:100%;" value="' . esc_attr($value) . '" />';
         }
-                
+
+        // Fetch GitHub document
+        function fetch_github_doc($doc_id) {
+            $owner = 'iso-helper';
+            $repo = 'docs-repo';
+            $path = 'docs/'.$doc_id.'.md';
+            $token = $this->github_api_token;
+
+            $url = "https://api.github.com/repos/$owner/$repo/contents/$path";
+            $response = wp_remote_get($url, [
+                'headers' => [
+                    'User-Agent' => 'WP-GitHub',
+                    'Authorization' => "token $token"
+                ]
+            ]);
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+            return base64_decode($body['content']);
+        }
+        
+        function update_github_doc($new_content, $doc_id) {
+            $owner = 'iso-helper';
+            $repo = 'docs-repo';
+            $path = 'docs/'.$doc_id.'.md';
+            $token = $this->github_api_token;
+        
+            $get_url = "https://api.github.com/repos/$owner/$repo/contents/$path";
+            $headers = [
+                'User-Agent' => 'WP-GitHub',
+                'Authorization' => "token $token"
+            ];
+        
+            // Get current file SHA
+            $get_response = wp_remote_get($get_url, ['headers' => $headers]);
+            if (is_wp_error($get_response)) return false;
+            $current = json_decode(wp_remote_retrieve_body($get_response), true);
+        
+            $data = [
+                'message' => 'Update from WordPress',
+                'content' => base64_encode($new_content),
+                'sha' => $current['sha']
+            ];
+        
+            $put_response = wp_remote_request($get_url, [
+                'method' => 'PUT',
+                'headers' => array_merge($headers, ['Content-Type' => 'application/json']),
+                'body' => json_encode($data)
+            ]);
+        
+            return !is_wp_error($put_response) && wp_remote_retrieve_response_code($put_response) === 200;
+        }
+        
+        function get_github_file_revision($doc_id) {
+            $owner = 'iso-helper';
+            $repo = 'docs-repo';
+            $path = 'docs/'.$doc_id.'.md';
+            $branch = 'main';
+            $token = $this->github_api_token;
+        
+            $url = "https://api.github.com/repos/$owner/$repo/commits?path=$path&sha=$branch&per_page=1";
+        
+            $args = [
+                'headers' => [
+                    'Accept' => 'application/vnd.github+json',
+                    'User-Agent' => 'WordPress-GitHub-Integration',
+                ]
+            ];
+        
+            if (!empty($token)) {
+                $args['headers']['Authorization'] = 'token ' . $token;
+            }
+        
+            $response = wp_remote_get($url, $args);
+        
+            if (is_wp_error($response)) {
+                return false;
+            }
+        
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+        
+            if (!empty($body[0]['sha'])) {
+                return $body[0]['sha']; // Latest commit SHA
+            }
+        
+            return false;
+        }
+        
     }
     $github_api = new github_api();
 }
