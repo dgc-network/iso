@@ -89,6 +89,46 @@ if (!class_exists('github_api')) {
                 'Authorization' => "token $token"
             ];
         
+            // Try to get current file SHA
+            $get_response = wp_remote_get($get_url, ['headers' => $headers]);
+            $response_data = json_decode(wp_remote_retrieve_body($get_response), true);
+        
+            // Check for existing SHA (file exists)
+            $is_existing_file = isset($response_data['sha']);
+            $sha = $is_existing_file ? $response_data['sha'] : null;
+        
+            // Prepare data for PUT request
+            $data = [
+                'message' => $is_existing_file ? 'Update from WordPress' : 'Create new file from WordPress',
+                'content' => base64_encode($new_content),
+            ];
+            if ($sha) {
+                $data['sha'] = $sha; // Only include SHA if updating
+            }
+        
+            // PUT request to create/update the file
+            $put_response = wp_remote_request($get_url, [
+                'method' => 'PUT',
+                'headers' => array_merge($headers, ['Content-Type' => 'application/json']),
+                'body' => json_encode($data)
+            ]);
+        
+            // Check result
+            return !is_wp_error($put_response) && wp_remote_retrieve_response_code($put_response) < 300;
+        }
+/*
+        function update_github_doc($new_content, $doc_id) {
+            $owner = 'iso-helper';
+            $repo = 'docs-repo';
+            $path = 'docs/' . $doc_id . '.html';
+            $token = $this->github_api_token;
+        
+            $get_url = "https://api.github.com/repos/$owner/$repo/contents/$path";
+            $headers = [
+                'User-Agent' => 'WP-GitHub',
+                'Authorization' => "token $token"
+            ];
+        
             $sha = null;
             $get_response = wp_remote_get($get_url, ['headers' => $headers]);
             if (!is_wp_error($get_response)) {
