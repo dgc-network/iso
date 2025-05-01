@@ -2298,7 +2298,7 @@ if (!class_exists('display_documents')) {
                     <?php
                     if ($paged==1) {
                         $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( 'The file list conforms to the High-Level Structure (HLS)', 'textdomain' );
-                        $content = generate_content('Please list the documents explicitly required by '.$iso_category_title.' '.$prompt);
+                        $content = generate_content(sprintf( __( 'Please list the documents explicitly required by %s.', 'textdomain' ),$iso_category_title).' '.$prompt);
 
                         // Suppress warnings for invalid HTML
                         libxml_use_internal_errors(true);
