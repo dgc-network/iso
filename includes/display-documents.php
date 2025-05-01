@@ -469,8 +469,10 @@ if (!class_exists('display_documents')) {
                 <input type="text" id="doc-number" value="<?php echo esc_html($doc_number);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="doc-title"><?php echo __( 'Document Title', 'textdomain' );?></label>
                 <input type="text" id="doc-title" value="<?php echo esc_html($doc_title);?>" class="text ui-widget-content ui-corner-all" />
+<?php /*                
                 <label for="doc-revision"><?php echo __( 'Document Rev.', 'textdomain' );?></label>
                 <input type="text" id="doc-revision" value="<?php echo esc_html($doc_revision);?>" class="text ui-widget-content ui-corner-all" />
+*/?>                
                 <label for="doc-category"><?php echo __( 'Categories', 'textdomain' );?></label><br>
                 <select id="doc-category" class="select ui-widget-content ui-corner-all">
                     <?php echo $items_class->select_doc_category_options($doc_category);?>
@@ -483,7 +485,9 @@ if (!class_exists('display_documents')) {
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="doc-content-preview" value="<?php echo __( 'Preview', 'textdomain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
+<?php /*                    
                     <textarea id="doc-content" class="visual-editor"><?php echo $doc_content;?></textarea>
+*/?>
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
@@ -555,13 +559,14 @@ if (!class_exists('display_documents')) {
                 ?>
 
                 <br><br>
+<?php /*                
                 <div class="content">
                     <?php echo $content;?>
                     <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
                         <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
                     </div>
                 </div>            
-
+*/?>
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
