@@ -146,6 +146,7 @@ if (!class_exists('display_documents')) {
             }
             $doc_category = isset($_GET['_category']) ? sanitize_text_field($_GET['_category']) : 0;
             $items_class = new embedded_items();
+            $github_api = new github_api();
             ?>
             <div class="ui-widget" id="result-container">
                 <?php echo display_iso_helper_logo();?>
@@ -183,7 +184,8 @@ if (!class_exists('display_documents')) {
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_the_title();
                             $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-                            $doc_category = get_post_meta($doc_id, 'doc_category', true);
+                            //$doc_category = get_post_meta($doc_id, 'doc_category', true);
+                            $doc_category = $github_api->get_github_file_revision($doc_id);
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
 
