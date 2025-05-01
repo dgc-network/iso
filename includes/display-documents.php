@@ -681,10 +681,13 @@ if (!class_exists('display_documents')) {
         // doc-content
         function display_doc_content($doc_id=false) {
             ob_start();
+            $github_api = new github_api();
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            $doc_content = get_post_field('post_content', $doc_id);
+            //$doc_revision = get_post_meta($doc_id, 'doc_revision', true);
+            //$doc_content = get_post_field('post_content', $doc_id);
+            $doc_revision = $github_api->get_github_file_revision($doc_id);
+            $doc_content = $github_api->fetch_github_doc($doc_id);
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">
