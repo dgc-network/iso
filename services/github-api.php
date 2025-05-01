@@ -62,7 +62,8 @@ if (!class_exists('github_api')) {
         function fetch_github_doc($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
-            $path = 'docs/'.$doc_id.'.md';
+            //$path = 'docs/'.$doc_id.'.md';
+            $path = 'docs/'.$doc_id.'.html';
             $token = $this->github_api_token;
 
             $url = "https://api.github.com/repos/$owner/$repo/contents/$path";
@@ -79,7 +80,8 @@ if (!class_exists('github_api')) {
         function update_github_doc($new_content, $doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
-            $path = 'docs/'.$doc_id.'.md';
+            //$path = 'docs/'.$doc_id.'.md';
+            $path = 'docs/'.$doc_id.'.html';
             $token = $this->github_api_token;
         
             $get_url = "https://api.github.com/repos/$owner/$repo/contents/$path";
@@ -91,12 +93,19 @@ if (!class_exists('github_api')) {
             // Get current file SHA
             $get_response = wp_remote_get($get_url, ['headers' => $headers]);
             if (is_wp_error($get_response)) return false;
-            $current = json_decode(wp_remote_retrieve_body($get_response), true);
+            $response_data = json_decode(wp_remote_retrieve_body($get_response), true);
         
+            if (isset($response_data['sha'])) {
+                $sha = $response_data['sha'];
+            } else {
+                error_log("GitHub API: 'sha' not found in response. Full response: " . print_r($response_data, true));
+                // Optionally handle the error or return early
+            }
+            
             $data = [
                 'message' => 'Update from WordPress',
                 'content' => base64_encode($new_content),
-                'sha' => $current['sha']
+                'sha' => $response_data['sha']
             ];
         
             $put_response = wp_remote_request($get_url, [
@@ -111,7 +120,8 @@ if (!class_exists('github_api')) {
         function get_github_file_revision($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
-            $path = 'docs/'.$doc_id.'.md';
+            //$path = 'docs/'.$doc_id.'.md';
+            $path = 'docs/'.$doc_id.'.html';
             $branch = 'main';
             $token = $this->github_api_token;
         
