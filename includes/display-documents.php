@@ -2425,6 +2425,7 @@ if (!class_exists('display_documents')) {
                     }
                     ?>
                 </fieldset>
+<?php /*                
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <?php if ($paged==1) {?>
                         <div>
@@ -2442,6 +2443,7 @@ if (!class_exists('display_documents')) {
                         </div>
                     <?php }?>
                 </div>
+*/ ?>
             </div>
             <?php
         }
@@ -2485,6 +2487,9 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_number', '-');
                 update_post_meta($draft_id, 'doc_revision', __( 'draft', 'textdomain' ));
                 update_post_meta($draft_id, 'doc_category', $draft_category);
+
+                $github_api = new github_api();
+                $github_api->update_github_doc($draft_content, $draft_id);
 
                 $params = array(
                     'log_message' => sprintf( __( 'Draft %s has been created.', 'textdomain' ), esc_html( $draft_title ) ),
