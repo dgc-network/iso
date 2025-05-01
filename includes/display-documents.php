@@ -2489,7 +2489,8 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_category', $draft_category);
 
                 $github_api = new github_api();
-                $github_api->update_github_doc($draft_content, $draft_id);
+                $result = $github_api->update_github_doc($draft_content, $draft_id);
+                error_log('Update GitHub document: '.$result);
 
                 $params = array(
                     'log_message' => sprintf( __( 'Draft %s has been created.', 'textdomain' ), esc_html( $draft_title ) ),
