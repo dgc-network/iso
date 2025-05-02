@@ -2138,7 +2138,7 @@ if (!class_exists('display_documents')) {
                         if ($field_type=='_visual_editor'){
                             $doc_id = get_post_meta($report_id, '_document', true);
                             $github_api = new github_api();
-                            $github_api->update_github_doc($field_value, $doc_id)
+                            $github_api->update_github_doc($field_value, $doc_id);
                         }
 /*            
                         if ($field_type=='_department'){
