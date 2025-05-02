@@ -89,55 +89,7 @@ if (!class_exists('github_api')) {
         
             return base64_decode($body['content']);
         }
-/*        
-        function fetch_github_doc($doc_id) {
-            $owner = 'iso-helper';
-            $repo = 'docs-repo';
-            $path = 'docs/' . $doc_id . '.html';
-            $token = $this->github_api_token;
-        
-            $url = "https://api.github.com/repos/$owner/$repo/contents/$path";
-            $response = wp_remote_get($url, [
-                'headers' => [
-                    'User-Agent' => 'WP-GitHub',
-                    'Authorization' => "token $token"
-                ]
-            ]);
-        
-            if (is_wp_error($response)) {
-                error_log("GitHub fetch error: " . $response->get_error_message());
-                return null;
-            }
-        
-            $code = wp_remote_retrieve_response_code($response);
-            $body = json_decode(wp_remote_retrieve_body($response), true);
-        
-            if ($code === 200 && isset($body['content'])) {
-                return base64_decode($body['content']);
-            } else {
-                error_log("GitHub fetch failed: HTTP $code - " . print_r($body, true));
-                return null;
-            }
-        }
-/*        
-        function fetch_github_doc($doc_id) {
-            $owner = 'iso-helper';
-            $repo = 'docs-repo';
-            //$path = 'docs/'.$doc_id.'.md';
-            $path = 'docs/'.$doc_id.'.html';
-            $token = $this->github_api_token;
 
-            $url = "https://api.github.com/repos/$owner/$repo/contents/$path";
-            $response = wp_remote_get($url, [
-                'headers' => [
-                    'User-Agent' => 'WP-GitHub',
-                    'Authorization' => "token $token"
-                ]
-            ]);
-            $body = json_decode(wp_remote_retrieve_body($response), true);
-            return base64_decode($body['content']);
-        }
-*/
         function update_github_doc($new_content, $doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
