@@ -378,10 +378,11 @@ jQuery(document).ready(function($) {
     $(".doc-selection").on( "change", function() {
         const selectedVal = $(this).val();
         if (selectedVal) {
-            $(".visual-editor").val(selectedVal);
+            //$(".visual-editor").val(selectedVal);
+            //$(".mce-content-body").val(selectedVal);
+            $("#tiny-mce").val(selectedVal);
         } else {
             alert("Please select a valid document.");
-            $(".visual-editor").val("Please select a valid document.");
         }
     });
 
