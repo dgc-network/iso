@@ -805,7 +805,8 @@ if (!class_exists('to_do_list')) {
                 $documents_class = new display_documents();
                 $documents_class->get_doc_field_contains(array('doc_id' => $doc_id));
                 $doc_title = get_the_title($doc_id);
-                $content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
+                //$content = (isset($_GET['_prompt'])) ? generate_content($doc_title.' '.$_GET['_prompt']) : '';
+                $content = (isset($_GET['_prompt'])) ? generate_content($_GET['_prompt']) : '';
                 ?>
                 <br><br>
                 <div class="content">
