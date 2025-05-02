@@ -375,6 +375,10 @@ jQuery(document).ready(function($) {
     })
 
     // document
+    $(".doc-selection").on( "change", function() {
+        $(".visual-editor").val($(this).val());
+    });
+
     $("#select-category").on( "change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
