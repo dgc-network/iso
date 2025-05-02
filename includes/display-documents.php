@@ -186,7 +186,7 @@ if (!class_exists('display_documents')) {
                             $doc_category = get_post_meta($doc_id, 'doc_category', true);
                             //$doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $doc_revision = $github_api->get_github_file_revision($doc_id);
-                            if ($doc_revision) $doc_revision = substr($doc_revision, 0, 3) . '..';
+                            if ($doc_revision) $doc_revision = substr($doc_revision, 0, 3) . '...';
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
                             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
 
@@ -1606,7 +1606,7 @@ if (!class_exists('display_documents')) {
                 '_embedded' => __('Embedded', 'textdomain'),
                 '_line_list' => __('Line List', 'textdomain'),
                 '_select' => __('Select', 'textdomain'),
-                //'_iot_device' => __('IoT devices', 'textdomain'),
+                '_visual_editor' => __('Visual Editor', 'textdomain'),
                 '_document' => __('Document', 'textdomain'),
                 '_doc_report' => __('Report', 'textdomain'),
                 //'_department' => __('Department', 'textdomain'),
@@ -1961,6 +1961,7 @@ if (!class_exists('display_documents')) {
                             <select id="<?php echo esc_attr($field_id);?>" class="select ui-widget-content ui-corner-all"><?php echo $iot_messages->select_iot_device_options($field_value);?></select>
                             <?php
                             break;
+
                         case ($field_type=='video'):
                             echo '<label class="video-button button" for="'.esc_attr($field_id).'">'.esc_html($field_title).'</label>';
                             $field_value = ($field_value) ? $field_value : get_option('default_video_url');
@@ -2002,6 +2003,13 @@ if (!class_exists('display_documents')) {
                             <?php
                             break;
 
+                        case ($field_type=='_visual_editor'):
+                            ?>
+                            <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
+                            <textarea id="<?php echo esc_attr($field_id);?>" class="visual-editor" style="width:100%;"><?php echo $field_value;?></textarea>
+                            <?php    
+                            break;
+    
                         case ($field_type=='textarea'):
                             ?>
                             <label for="<?php echo esc_attr($field_id);?>"><?php echo esc_html($field_title);?></label>
