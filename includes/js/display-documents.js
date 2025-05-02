@@ -381,10 +381,8 @@ jQuery(document).ready(function($) {
             $(".visual-editor").val(selectedVal);
         } else {
             alert("Please select a valid document.");
+            $(".visual-editor").val("Please select a valid document.");
         }
-        
-        //alert("Please select the document from the list");
-        //$(".visual-editor").val($(this).val());
     });
 
     $("#select-category").on( "change", function() {
