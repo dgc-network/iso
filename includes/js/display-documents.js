@@ -375,17 +375,24 @@ jQuery(document).ready(function($) {
     })
 
     // document
+    $(".doc-selection").on("change", function () {
+        let content = $(this).val(); // or use Ajax to fetch content
+        if (tinymce.activeEditor) {
+            tinymce.activeEditor.setContent(content);
+        }
+    });
+/*    
     $(".doc-selection").on( "change", function() {
         const selectedVal = $(this).val();
         if (selectedVal) {
             //$(".visual-editor").val(selectedVal);
-            //$(".mce-content-body").val(selectedVal);
-            $("#tiny-mce").val(selectedVal);
+            $(".mce-content-body").val(selectedVal);
+            //$("#tiny-mce").val(selectedVal);
         } else {
             alert("Please select a valid document.");
         }
     });
-
+*/
     $("#select-category").on( "change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
