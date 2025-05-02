@@ -142,6 +142,58 @@ if (!class_exists('github_api')) {
             }
         }
 
+        function delete_github_doc($doc_id) {
+            $owner = 'iso-helper';
+            $repo = 'docs-repo';
+            $path = 'docs/' . $doc_id . '.html';
+            $token = $this->github_api_token;
+        
+            $url = "https://api.github.com/repos/$owner/$repo/contents/$path";
+            $headers = [
+                'User-Agent' => 'WP-GitHub',
+                'Authorization' => "token $token"
+            ];
+        
+            // Get current SHA first
+            $get_response = wp_remote_get($url, ['headers' => $headers]);
+            $response_data = json_decode(wp_remote_retrieve_body($get_response), true);
+        
+            if (!isset($response_data['sha'])) {
+                error_log("GitHub DELETE Error: File SHA not found for $doc_id");
+                return false;
+            }
+        
+            $sha = $response_data['sha'];
+        
+            // Prepare DELETE data
+            $delete_data = [
+                'message' => "Delete $doc_id from WordPress",
+                'sha' => $sha
+            ];
+        
+            // Make DELETE request
+            $delete_response = wp_remote_request($url, [
+                'method' => 'DELETE',
+                'headers' => array_merge($headers, ['Content-Type' => 'application/json']),
+                'body' => json_encode($delete_data)
+            ]);
+        
+            if (is_wp_error($delete_response)) {
+                error_log('GitHub DELETE Error: ' . $delete_response->get_error_message());
+                return false;
+            }
+        
+            $code = wp_remote_retrieve_response_code($delete_response);
+            $body = wp_remote_retrieve_body($delete_response);
+        
+            if ($code >= 200 && $code < 300) {
+                return true;
+            } else {
+                error_log("GitHub DELETE Failed: $code - $body");
+                return false;
+            }
+        }
+
         function get_github_file_revision($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
