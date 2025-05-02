@@ -376,8 +376,15 @@ jQuery(document).ready(function($) {
 
     // document
     $(".doc-selection").on( "change", function() {
-        alert("Please select the document from the list");
-        $(".visual-editor").val($(this).val());
+        const selectedVal = $(this).val();
+        if (selectedVal) {
+            $(".visual-editor").val(selectedVal);
+        } else {
+            alert("Please select a valid document.");
+        }
+        
+        //alert("Please select the document from the list");
+        //$(".visual-editor").val($(this).val());
     });
 
     $("#select-category").on( "change", function() {
