@@ -376,20 +376,27 @@ jQuery(document).ready(function($) {
 
     // document
     $(".doc-selection").on("change", function () {
+        let docId = $(this).val();
+    
+        $.post(githubAjax.ajax_url, {
+            action: 'fetch_github_doc',
+            doc_id: docId,
+            _ajax_nonce: githubAjax.nonce
+        }, function (response) {
+            if (response.success) {
+                if (tinymce.activeEditor) {
+                    tinymce.activeEditor.setContent(response.data.content);
+                }
+            } else {
+                alert("Failed to load document: " + response.data);
+            }
+        });
+    });
+/*    
+    $(".doc-selection").on("change", function () {
         let content = $(this).val(); // or use Ajax to fetch content
         if (tinymce.activeEditor) {
             tinymce.activeEditor.setContent(content);
-        }
-    });
-/*    
-    $(".doc-selection").on( "change", function() {
-        const selectedVal = $(this).val();
-        if (selectedVal) {
-            //$(".visual-editor").val(selectedVal);
-            $(".mce-content-body").val(selectedVal);
-            //$("#tiny-mce").val(selectedVal);
-        } else {
-            alert("Please select a valid document.");
         }
     });
 */
