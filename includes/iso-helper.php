@@ -506,10 +506,14 @@ function record_saved_api_post_data(WP_REST_Request $request) {
     $params = $request->get_json_params(); // Get JSON payload
     $user_id = isset($params['user_id']) ? sanitize_text_field($params['user_id']) : 0;
     $todo_id = isset($params['todo_id']) ? sanitize_text_field($params['todo_id']) : 0;
+    $report_id = isset($params['report_id']) ? sanitize_text_field($params['report_id']) : 0;
     $site_id = get_user_meta($user_id, 'site_id', true);
-    $doc_id = get_post_meta($todo_id, '_document', true);
+    //$doc_id = get_post_meta($todo_id, '_document', true);
+    $doc_id = get_post_meta($report_id, '_document', true);
 
-    if (empty($user_id) || empty($todo_id)) {
+    //if (empty($user_id) || empty($todo_id)) {
+
+    if (empty($user_id) || empty($report_id)) {
         return new WP_REST_Response(['error' => 'Invalid or missing request data'], 400);
     }
 
@@ -518,7 +522,8 @@ function record_saved_api_post_data(WP_REST_Request $request) {
         get_the_title($doc_id),
         wp_date( get_option('date_format'), time() )
     );
-    $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$todo_id;
+    //$link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$todo_id;
+    $link_uri = home_url().'/display-documents/?_doc_id='.$doc_id.'&_report_id='.$report_id;
 
     // Notice the persons in site
     $todo_class = new to_do_list();
