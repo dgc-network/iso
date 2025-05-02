@@ -386,20 +386,14 @@ jQuery(document).ready(function($) {
             if (response.success) {
                 if (tinymce.activeEditor) {
                     tinymce.activeEditor.setContent(response.data.content);
+                    $(".visual-editor").val(response.data.content);
                 }
             } else {
                 alert("Failed to load document: " + response.data);
             }
         });
     });
-/*    
-    $(".doc-selection").on("change", function () {
-        let content = $(this).val(); // or use Ajax to fetch content
-        if (tinymce.activeEditor) {
-            tinymce.activeEditor.setContent(content);
-        }
-    });
-*/
+
     $("#select-category").on( "change", function() {
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
