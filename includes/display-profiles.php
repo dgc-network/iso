@@ -121,7 +121,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='sync_documents_to_github') echo $this->sync_documents_to_github();
             }
         }
-
+/*
         function sync_documents_to_github() {
             $args = [
                 'post_type' => 'document',
@@ -164,7 +164,7 @@ if (!class_exists('display_profiles')) {
                 error_log("No matching documents found to sync.");
             }
         }
-/*        
+*/        
         function sync_documents_to_github() {
             $args = [
                 'post_type' => 'document',
@@ -186,14 +186,17 @@ if (!class_exists('display_profiles')) {
                     $doc_id = $post->ID;
                     $new_content = $post->post_content;
         
-                    $result = $github->update_github_doc($new_content, $doc_id);
-                    error_log("Sync doc $doc_id result: " . var_export($result, true));
+                    $get_result = $github->fetch_github_doc($doc_id);
+                    if ($get_result === false) {
+                        $result = $github->update_github_doc($new_content, $doc_id);
+                        error_log("Sync doc $doc_id result: " . var_export($result, true));
+                    }
                 }
             } else {
                 error_log("No matching documents found to sync.");
             }
         }
-*/        
+
         function migrate_doc_report_to_todo() {
             global $wpdb;
         
