@@ -378,10 +378,10 @@ jQuery(document).ready(function($) {
     $(".doc-selection").on("change", function () {
         let docId = $(this).val();
     
-        $.post(githubAjax.ajax_url, {
+        $.post(ajax_object.ajax_url, {
             action: 'fetch_github_doc',
             doc_id: docId,
-            _ajax_nonce: githubAjax.nonce
+            //_ajax_nonce: githubAjax.nonce
         }, function (response) {
             if (response.success) {
                 if (tinymce.activeEditor) {
