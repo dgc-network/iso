@@ -376,6 +376,7 @@ jQuery(document).ready(function($) {
 
     // document
     $(".doc-selection").on( "change", function() {
+        alert("Please select the document from the list");
         $(".visual-editor").val($(this).val());
     });
 
