@@ -127,6 +127,49 @@ if (!class_exists('display_profiles')) {
                 'post_type' => 'document',
                 'post_status' => 'publish',
                 'meta_query' => [
+                    'relation' => 'AND',
+                    [
+                        'key' => 'is_doc_report',
+                        'value' => '0',
+                        'compare' => '='
+                    ],
+                    [
+                        'relation' => 'OR',
+                        [
+                            'key' => 'doc_revision',
+                            'value' => 'draft',
+                            'compare' => '='
+                        ],
+                        [
+                            'key' => 'doc_revision',
+                            'value' => '',
+                            'compare' => '='
+                        ]
+                    ]
+                ],
+                'posts_per_page' => -1
+            ];
+        
+            $query = new WP_Query($args);
+            if ($query->have_posts()) {
+                $github = new github_api();
+                foreach ($query->posts as $post) {
+                    $doc_id = $post->ID;
+                    $new_content = $post->post_content;
+        
+                    $result = $github->update_github_doc($new_content, $doc_id);
+                    error_log("Sync doc $doc_id result: " . var_export($result, true));
+                }
+            } else {
+                error_log("No matching documents found to sync.");
+            }
+        }
+/*        
+        function sync_documents_to_github() {
+            $args = [
+                'post_type' => 'document',
+                'post_status' => 'publish',
+                'meta_query' => [
                     [
                         'key' => 'is_doc_report',
                         'value' => '0',
@@ -150,7 +193,7 @@ if (!class_exists('display_profiles')) {
                 error_log("No matching documents found to sync.");
             }
         }
-        
+*/        
         function migrate_doc_report_to_todo() {
             global $wpdb;
         
