@@ -168,8 +168,8 @@ if (!class_exists('display_profiles')) {
                     }
         
                     $new_content = $post->post_content;
-                    //$result = $github->update_github_doc($new_content, $doc_id);
-                    $result = $github->fetch_github_doc($doc_id);
+                    $result = $github->update_github_doc($new_content, $doc_id);
+                    //$result = $github->fetch_github_doc($doc_id);
         
                     error_log("Sync doc $doc_id result: " . var_export($result, true));
         
