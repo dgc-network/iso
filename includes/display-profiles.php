@@ -174,7 +174,7 @@ if (!class_exists('display_profiles')) {
         
                     if ($result) {
                         // Prevent re-sync for 5 minutes
-                        set_transient("github_sync_{$doc_id}", true, 5 * MINUTE_IN_SECONDS);
+                        set_transient("github_sync_{$doc_id}", true, 0.5 * MINUTE_IN_SECONDS);
                     }
                 }
             } else {
