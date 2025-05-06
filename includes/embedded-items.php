@@ -1088,7 +1088,7 @@ if (!class_exists('embedded_items')) {
             if( isset($_POST['_category_id']) ) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $category_title = isset($_POST['_category_title']) ? sanitize_text_field($_POST['_category_title']) : '';
-                $category_url = isset($_POST['_category_url']) ? sanitize_text_field($_POST['_category_url']) : '';
+                //$category_url = isset($_POST['_category_url']) ? sanitize_text_field($_POST['_category_url']) : '';
                 $parent_category = isset($_POST['_parent_category']) ? sanitize_text_field($_POST['_parent_category']) : '';
                 $data = array(
                     'ID'           => $category_id,
@@ -1096,7 +1096,7 @@ if (!class_exists('embedded_items')) {
                     'post_content' => $_POST['_category_content'],
                 );
                 wp_update_post( $data );
-                update_post_meta($category_id, 'category_url', $category_url);
+                //update_post_meta($category_id, 'category_url', $category_url);
                 update_post_meta($category_id, 'parent_category', $parent_category);
             } else {
                 $current_user_id = get_current_user_id();
