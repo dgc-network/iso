@@ -44,14 +44,14 @@ if (!class_exists('embedded_items')) {
             add_action( 'wp_ajax_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_del_doc_category_dialog_data', array( $this, 'del_doc_category_dialog_data' ) );
 
-            add_action( 'wp_ajax_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_iso_category_dialog_data', array( $this, 'get_iso_category_dialog_data' ) );
-            add_action( 'wp_ajax_set_iso_category_dialog_data', array( $this, 'set_iso_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_iso_category_dialog_data', array( $this, 'set_iso_category_dialog_data' ) );
-            add_action( 'wp_ajax_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_del_iso_category_dialog_data', array( $this, 'del_iso_category_dialog_data' ) );
+            add_action( 'wp_ajax_get_iso_standard_dialog_data', array( $this, 'get_iso_standard_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_get_iso_standard_dialog_data', array( $this, 'get_iso_standard_dialog_data' ) );
+            add_action( 'wp_ajax_set_iso_standard_dialog_data', array( $this, 'set_iso_standard_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_set_iso_standard_dialog_data', array( $this, 'set_iso_standard_dialog_data' ) );
+            add_action( 'wp_ajax_del_iso_standard_dialog_data', array( $this, 'del_iso_standard_dialog_data' ) );
+            add_action( 'wp_ajax_nopriv_del_iso_standard_dialog_data', array( $this, 'del_iso_standard_dialog_data' ) );
 
-            add_shortcode('display-iso-category-contains', array( $this, 'display_iso_category_contains' ) );
+            add_shortcode('display-iso-standard-contains', array( $this, 'display_iso_standard_contains' ) );
 
             add_action( 'wp_ajax_get_department_card_dialog_data', array( $this, 'get_department_card_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_department_card_dialog_data', array( $this, 'get_department_card_dialog_data' ) );
@@ -732,8 +732,8 @@ if (!class_exists('embedded_items')) {
                             $category_id = get_the_ID();
                             $category_title = get_the_title();
                             $category_content = get_the_content();
-                            $iso_category = get_post_meta($category_id, 'iso_category', true);
-                            $iso_title = get_the_title($iso_category);
+                            $iso_standard = get_post_meta($category_id, 'iso_standard', true);
+                            $iso_title = get_the_title($iso_standard);
                             ?>
                             <tr id="edit-doc-category-<?php echo $category_id;?>">
                                 <td style="text-align:center;"><?php echo $category_title;?></td>
@@ -815,7 +815,7 @@ if (!class_exists('embedded_items')) {
             ob_start();
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
-            $iso_category = get_post_meta($category_id, 'iso_category', true);
+            $iso_standard = get_post_meta($category_id, 'iso_standard', true);
             $api_username = get_post_meta($category_id, 'api_username', true);
             $api_password = get_post_meta($category_id, 'api_password', true);
             ?>
@@ -826,8 +826,8 @@ if (!class_exists('embedded_items')) {
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description', 'textdomain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
-                <label for="iso-category"><?php echo __( 'ISO', 'textdomain' );?></label>
-                <select id="iso-category" class="select ui-widget-content ui-corner-all"><?php echo $this->select_iso_category_options($iso_category);?></select>
+                <label for="iso-standard"><?php echo __( 'ISO', 'textdomain' );?></label>
+                <select id="iso-standard" class="select ui-widget-content ui-corner-all"><?php echo $this->select_iso_standard_options($iso_standard);?></select>
                 <?php if (current_user_can('administrator')) {?>
                     <label for="api-username"><?php echo __( 'API username', 'textdomain' );?></label>
                     <input type="text" id="api-username" value="<?php echo esc_attr($api_username);?>" class="text ui-widget-content ui-corner-all" />
@@ -852,14 +852,14 @@ if (!class_exists('embedded_items')) {
                 $category_title = (isset($_POST['_category_title'])) ? sanitize_text_field($_POST['_category_title']) : '';
                 $api_username = (isset($_POST['_api_username'])) ? sanitize_text_field($_POST['_api_username']) : '';
                 $api_password = (isset($_POST['_api_password'])) ? sanitize_text_field($_POST['_api_password']) : '';
-                $iso_category = (isset($_POST['_iso_category'])) ? sanitize_text_field($_POST['_iso_category']) : 0;
+                $iso_standard = (isset($_POST['_iso_standard'])) ? sanitize_text_field($_POST['_iso_standard']) : 0;
                 $data = array(
                     'ID'           => $category_id,
                     'post_title'   => $category_title,
                     'post_content' => $_POST['_category_content'],
                 );
                 wp_update_post( $data );
-                update_post_meta($category_id, 'iso_category', $iso_category);
+                update_post_meta($category_id, 'iso_standard', $iso_standard);
                 update_post_meta($category_id, 'api_username', $api_username);
                 update_post_meta($category_id, 'api_password', $api_password);
 
@@ -926,19 +926,19 @@ if (!class_exists('embedded_items')) {
             return $options;
         }
         
-        // iso-category
-        function register_iso_category_post_type() {
+        // iso-standard
+        function register_iso_standard_post_type() {
             $labels = array(
-                'menu_name'     => _x('iso-category', 'admin menu', 'textdomain'),
+                'menu_name'     => _x('iso-standard', 'admin menu', 'textdomain'),
             );
             $args = array(
                 'labels'        => $labels,
                 'public'        => true,
             );
-            register_post_type( 'iso-category', $args );
+            register_post_type( 'iso-standard', $args );
         }
         
-        function display_iso_category_contains($atts) {
+        function display_iso_standard_contains($atts) {
             ob_start();
             // Extract and sanitize the shortcode attributes
             $atts = shortcode_atts(array(
@@ -959,7 +959,7 @@ if (!class_exists('embedded_items')) {
             }
         
             $args = array(
-                'post_type'      => 'iso-category',
+                'post_type'      => 'iso-standard',
                 'posts_per_page' => -1,
                 'meta_query'     => $meta_query,
             );
@@ -972,14 +972,19 @@ if (!class_exists('embedded_items')) {
                 $embedded = get_post_meta($category_id, 'embedded', true);
                 $start_ai_url = '/display-documents/?_start_ai=' . $category_id;
                 ?>
-                <div class="iso-category-content">
+                <div class="iso-standard-content">
                     <?php the_content(); ?>
                     <div class="wp-block-buttons">
+<?php /*                        
                         <div class="wp-block-button">
                             <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
                         </div>
                         <div class="wp-block-button">
                             <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'textdomain' ); ?></a>
+                        </div>
+*/ ?>                        
+                        <div class="wp-block-button">
+                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo sprintf(__( 'Launch %s AI Coaching', 'textdomain' ), get_the_title()); ?></a>
                         </div>
                     </div>
                     <!-- Spacer -->
@@ -991,7 +996,7 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
                 
-        function display_iso_category_list() {
+        function display_iso_standard_list() {
             ob_start();
             $profiles_class = new display_profiles();
             if (current_user_can('administrator')) {
@@ -1000,7 +1005,7 @@ if (!class_exists('embedded_items')) {
                 <h2 style="display:inline;"><?php echo 'ISO'.__( '類別', 'textdomain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
-                    <div><?php $profiles_class->display_select_profile('iso-category');?></div>
+                    <div><?php $profiles_class->display_select_profile('iso-standard');?></div>
                     <div style="text-align:right"></div>                        
                 </div>
 
@@ -1013,7 +1018,7 @@ if (!class_exists('embedded_items')) {
                         </thead>
                         <tbody>
                         <?php
-                        $query = $this->retrieve_iso_category_data();
+                        $query = $this->retrieve_iso_standard_data();
                         if ($query->have_posts()) :
                             while ($query->have_posts()) : $query->the_post();
                                 $category_id = get_the_ID();
@@ -1021,7 +1026,7 @@ if (!class_exists('embedded_items')) {
                                 $category_content = get_the_content();
                                 $parent_category = get_post_meta($category_id, 'parent_category', true);
                                 ?>
-                                <tr id="edit-iso-category-<?php echo $category_id;?>">
+                                <tr id="edit-iso-standard-<?php echo $category_id;?>">
                                     <td style="text-align:center;"><?php echo $category_title;?></td>
                                     <td><?php echo $category_content;?></td>
                                     <td style="text-align:center;"><?php echo $parent_category;?></td>
@@ -1033,9 +1038,9 @@ if (!class_exists('embedded_items')) {
                         ?>
                         </tbody>
                     </table>
-                    <div id="new-iso-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
+                    <div id="new-iso-standard" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 </fieldset>
-                <div id="iso-category-dialog" title="Category dialog"></div>
+                <div id="iso-standard-dialog" title="Category dialog"></div>
                 <?php
             } else {
                 ?>
@@ -1045,9 +1050,9 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_iso_category_data() {
+        function retrieve_iso_standard_data() {
             $args = array(
-                'post_type'      => 'iso-category',
+                'post_type'      => 'iso-standard',
                 'posts_per_page' => -1,        
                 'orderby'        => 'title',  // Order by post title
                 'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
@@ -1056,7 +1061,7 @@ if (!class_exists('embedded_items')) {
             return $query;
         }
 
-        function display_iso_category_dialog($category_id=false) {
+        function display_iso_standard_dialog($category_id=false) {
             $category_title = get_the_title($category_id);
             $category_content = get_post_field('post_content', $category_id);
             $category_url = get_post_meta($category_id, 'category_url', true);
@@ -1078,14 +1083,14 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function get_iso_category_dialog_data() {
+        function get_iso_standard_dialog_data() {
             $response = array();
             $category_id = sanitize_text_field($_POST['_category_id']);
-            $response['html_contain'] = $this->display_iso_category_dialog($category_id);
+            $response['html_contain'] = $this->display_iso_standard_dialog($category_id);
             wp_send_json($response);
         }
 
-        function set_iso_category_dialog_data() {
+        function set_iso_standard_dialog_data() {
             if( isset($_POST['_category_id']) ) {
                 $category_id = sanitize_text_field($_POST['_category_id']);
                 $category_title = isset($_POST['_category_title']) ? sanitize_text_field($_POST['_category_title']) : '';
@@ -1102,7 +1107,7 @@ if (!class_exists('embedded_items')) {
             } else {
                 $current_user_id = get_current_user_id();
                 $new_post = array(
-                    'post_type'     => 'iso-category',
+                    'post_type'     => 'iso-standard',
                     'post_title'    => '-',
                     'post_content'  => __( 'Your post content goes here.', 'textdomain' ),
                     'post_status'   => 'publish',
@@ -1110,18 +1115,18 @@ if (!class_exists('embedded_items')) {
                 );    
                 $post_id = wp_insert_post($new_post);
             }
-            $response = array('html_contain' => $this->display_iso_category_list());
+            $response = array('html_contain' => $this->display_iso_standard_list());
             wp_send_json($response);
         }
 
-        function del_iso_category_dialog_data() {
+        function del_iso_standard_dialog_data() {
             wp_delete_post($_POST['_category_id'], true);
-            $response = array('html_contain' => $this->display_iso_category_list());
+            $response = array('html_contain' => $this->display_iso_standard_list());
             wp_send_json($response);
         }
 
-        function select_iso_category_options($selected_option=0) {
-            $query = $this->retrieve_iso_category_data();
+        function select_iso_standard_options($selected_option=0) {
+            $query = $this->retrieve_iso_standard_data();
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
@@ -1144,12 +1149,12 @@ if (!class_exists('embedded_items')) {
             return $options;
         }
 
-        function get_iso_category_post_id_by_code($code) {
+        function get_iso_standard_post_id_by_code($code) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             // Define the query arguments
             $args = array(
-                'post_type'  => 'iso-category',
+                'post_type'  => 'iso-standard',
                 'meta_query' => array(
                     array(
                         'key'   => 'site_id',

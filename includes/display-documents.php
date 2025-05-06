@@ -92,12 +92,12 @@ if (!class_exists('display_documents')) {
                 
                 // Display ISO statement
                 if (isset($_GET['_start_ai'])) {
-                    $iso_category_id = sanitize_text_field($_GET['_start_ai']);
+                    $iso_standard_id = sanitize_text_field($_GET['_start_ai']);
                     $paged = 1;
                     if (isset($_GET['_paged'])) {
                         $paged = sanitize_text_field($_GET['_paged']);
                     }
-                    echo $this->display_iso_start_ai_content($iso_category_id, $paged);
+                    echo $this->display_iso_start_ai_content($iso_standard_id, $paged);
                 }
 
                 // Display document dialog if doc_id is existed
@@ -2230,7 +2230,7 @@ if (!class_exists('display_documents')) {
             return $options;
         }
 
-        function get_iso_helper_documents_by_iso_category($iso_category_id) {
+        function get_iso_helper_documents_by_iso_standard($iso_standard_id) {
             // Step 1: Get the 'site-profile' post with the title 'iso-helper.com'
             $args = array(
                 'post_type'   => 'site-profile',
@@ -2247,7 +2247,7 @@ if (!class_exists('display_documents')) {
                 return new WP_Query(); // Return an empty query if no 'site-profile' found
             }
 
-            // Step 2: Get the IDs from the 'doc-category' post type where 'iso_category' meta = $iso_category_id and 'site_id' = $site_id
+            // Step 2: Get the IDs from the 'doc-category' post type where 'iso_standard' meta = $iso_standard_id and 'site_id' = $site_id
             $doc_category_query = new WP_Query(array(
                 'post_type'  => 'doc-category',
                 'meta_query' => array(
@@ -2257,8 +2257,8 @@ if (!class_exists('display_documents')) {
                         'value'   => $site_id,
                     ),
                     array(
-                        'key'     => 'iso_category',
-                        'value'   => $iso_category_id,
+                        'key'     => 'iso_standard',
+                        'value'   => $iso_standard_id,
                     ),
                 ),
                 'posts_per_page' => -1, // Retrieve all matching posts from 'doc-category'
@@ -2293,26 +2293,26 @@ if (!class_exists('display_documents')) {
             }
         }
 
-        function display_iso_start_ai_content($iso_category_id=false, $paged=1) {
+        function display_iso_start_ai_content($iso_standard_id=false, $paged=1) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
-            $embedded_id = get_post_meta($iso_category_id, 'embedded', true);
-            $iso_category_title = get_the_title($iso_category_id);
+            $embedded_id = get_post_meta($iso_standard_id, 'embedded', true);
+            $iso_standard_title = get_the_title($iso_standard_id);
             ?>
             <div class="ui-widget" id="result-container">
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <?php echo display_iso_helper_logo();?>
-                        <h2 style="display:inline;"><?php echo esc_html($iso_category_title.' '.__( '啟動AI輔導', 'textdomain' ));?></h2>
+                        <h2 style="display:inline;"><?php echo esc_html($iso_standard_title.' '.__( '啟動AI輔導', 'textdomain' ));?></h2>
                     </div>
                 </div>
-                <input type="hidden" id="iso-category-title" value="<?php echo esc_attr($iso_category_title);?>" />
-                <input type="hidden" id="iso-category-id" value="<?php echo esc_attr($iso_category_id);?>" />            
+                <input type="hidden" id="iso-standard-title" value="<?php echo esc_attr($iso_standard_title);?>" />
+                <input type="hidden" id="iso-standard-id" value="<?php echo esc_attr($iso_standard_id);?>" />            
                 <fieldset>
                     <?php
                     if ($paged==1) {
                         $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( 'The file list conforms to the High-Level Structure (HLS)', 'textdomain' );
-                        $content = generate_content(sprintf( __( 'Please list the documents explicitly required by %s.', 'textdomain' ),$iso_category_title).' '.$prompt);
+                        $content = generate_content(sprintf( __( 'Please list the documents explicitly required by %s.', 'textdomain' ),$iso_standard_title).' '.$prompt);
 
                         // Suppress warnings for invalid HTML
                         libxml_use_internal_errors(true);
@@ -2381,7 +2381,7 @@ if (!class_exists('display_documents')) {
                                     } else {
                                         // Create a link for the string
                                         $prompt = urlencode($line); // URL-encode the prompt
-                                        $link = "/display-documents?_start_ai=$iso_category_id&_paged=2&_prompt=$prompt";
+                                        $link = "/display-documents?_start_ai=$iso_standard_id&_paged=2&_prompt=$prompt";
                                         $link = home_url($link);
                                         echo "<li><a href=\"$link\" target=\"_blank\">" . htmlspecialchars($line) . "</a></li>";
                                     }
@@ -2390,7 +2390,7 @@ if (!class_exists('display_documents')) {
                             ?>
                             <fieldset>
                                 <?php
-                                $query = $this->get_iso_helper_documents_by_iso_category($iso_category_id);
+                                $query = $this->get_iso_helper_documents_by_iso_standard($iso_standard_id);
                                 if ($query->have_posts()) :
                                     while ($query->have_posts()) : $query->the_post();
                                         $doc_id = get_the_ID();
@@ -2416,13 +2416,13 @@ if (!class_exists('display_documents')) {
                         <?php
                     } else {
                         $prompt = isset($_GET['_prompt']) ? $_GET['_prompt'] : __( '適用性聲明書', 'textdomain' );
-                        $content = generate_content($iso_category_title.' '.$prompt);
+                        $content = generate_content($iso_standard_title.' '.$prompt);
                         $items_class = new embedded_items();
                         ?>
                         <div class="content">
                             <fieldset>
                                 <label for="draft-title"><?php echo __( 'Title', 'textdomain' );?></label><br>
-                                <input type="text" id="draft-title" value="<?php echo $iso_category_title.' '.$prompt;?>" class="text ui-widget-content ui-corner-all" />
+                                <input type="text" id="draft-title" value="<?php echo $iso_standard_title.' '.$prompt;?>" class="text ui-widget-content ui-corner-all" />
                                 <label for="draft-category"><?php echo __( 'Category', 'textdomain' );?></label><br>
                                 <select id="draft-category" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_doc_category_options();?></select>
                                 <label for="draft-content"><?php echo __( 'Content', 'textdomain' );?></label><br>

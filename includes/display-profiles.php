@@ -110,18 +110,23 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(-1);
                 $items_class = new embedded_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
-                if ($_GET['_select_profile']=='iso-category') echo $items_class->display_iso_category_list();
+                if ($_GET['_select_profile']=='iso-standard') echo $items_class->display_iso_standard_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 //if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
                 if (!isset($_GET['_select_profile'])) echo $this->display_my_profile();
                 echo '</div>';
 
-                if ($_GET['_select_profile']=='migrate_doc_report_to_todo') echo $this->migrate_doc_report_to_todo();
-                if ($_GET['_select_profile']=='migrate_embedded_to_document') echo $this->migrate_embedded_to_document();
                 if ($_GET['_select_profile']=='sync_documents_to_github') echo $this->sync_documents_to_github();
+                if ($_GET['_select_profile']=='rename_iso_category_to_iso_standard') echo $this->rename_iso_category_to_iso_standard();
             }
         }
 
+        function rename_iso_category_to_iso_standard() {
+            global $wpdb;
+            $wpdb->query("UPDATE $wpdb->posts SET post_type = 'iso-standard' WHERE post_type = 'iso-category'");
+        }
+        //add_action('init', 'rename_iso_category_to_iso_standard');
+        
         function sync_documents_to_github() {
             $args = [
                 'post_type' => 'document',
@@ -175,222 +180,6 @@ if (!class_exists('display_profiles')) {
             } else {
                 error_log("No matching documents found to sync.");
             }
-        }
-        
-/*
-        function sync_documents_to_github() {
-            $args = [
-                'post_type' => 'document',
-                'post_status' => 'publish',
-                'meta_query' => [
-                    'relation' => 'AND',
-                    [
-                        'key' => 'is_doc_report',
-                        'value' => '0',
-                        'compare' => '='
-                    ],
-                    [
-                        'relation' => 'OR',
-                        [
-                            'key' => 'doc_revision',
-                            'value' => 'draft',
-                            'compare' => '='
-                        ],
-                        [
-                            'key' => 'doc_revision',
-                            'value' => '',
-                            'compare' => '='
-                        ]
-                    ]
-                ],
-                'posts_per_page' => -1
-            ];
-        
-            $query = new WP_Query($args);
-            if ($query->have_posts()) {
-                $github = new github_api();
-                foreach ($query->posts as $post) {
-                    $doc_id = $post->ID;
-                    $new_content = $post->post_content;
-        
-                    $result = $github->update_github_doc($new_content, $doc_id);
-                    error_log("Sync doc $doc_id result: " . var_export($result, true));
-                }
-            } else {
-                error_log("No matching documents found to sync.");
-            }
-        }
-
-        function sync_documents_to_github() {
-            $args = [
-                'post_type' => 'document',
-                'post_status' => 'publish',
-                'meta_query' => [
-                    [
-                        'key' => 'is_doc_report',
-                        'value' => '0',
-                        'compare' => '='
-                    ]
-                ],
-                'posts_per_page' => -1
-            ];
-        
-            $query = new WP_Query($args);
-            if ($query->have_posts()) {
-                $github = new github_api();
-                foreach ($query->posts as $post) {
-                    $doc_id = $post->ID;
-                    $new_content = $post->post_content;
-        
-                    $get_result = $github->fetch_github_doc($doc_id);
-                    if ($get_result === false) {
-                        $result = $github->update_github_doc($new_content, $doc_id);
-                        error_log("Sync doc $doc_id result: " . var_export($result, true));
-                    }
-                }
-            } else {
-                error_log("No matching documents found to sync.");
-            }
-        }
-*/
-        function migrate_doc_report_to_todo() {
-            global $wpdb;
-        
-            // Get all doc-report posts
-            $doc_reports = get_posts([
-                'post_type'      => 'doc-report',
-                'posts_per_page' => -1,
-                'post_status'    => 'any',
-            ]);
-        
-            if (empty($doc_reports)) {
-                error_log('No doc-report posts found.');
-                return;
-            }
-        
-            foreach ($doc_reports as $doc_report) {
-                $doc_report_id = $doc_report->ID;
-                $doc_report_title = $doc_report->post_title;
-                $doc_report_content = $doc_report->post_content;
-        
-                // Find todo posts that reference this doc-report
-                $todo_posts = get_posts([
-                    'post_type'      => 'todo',
-                    'posts_per_page' => -1,
-                    'post_status'    => 'any',
-                    'meta_query'     => [
-                        [
-                            'key'   => 'prev_report_id',
-                            'value' => $doc_report_id,
-                            'compare' => '=',
-                        ],
-                    ],
-                ]);
-        
-                foreach ($todo_posts as $todo) {
-                    $todo_id = $todo->ID;
-        
-                    // Update title and content of the todo post
-                    wp_update_post([
-                        'ID'           => $todo_id,
-                        'post_title'   => $doc_report_title,
-                        'post_content' => $doc_report_content,
-                    ]);
-        
-                    // Copy metadata from doc-report to todo
-                    $doc_report_meta = get_post_meta($doc_report_id);
-                    foreach ($doc_report_meta as $key => $values) {
-                        foreach ($values as $value) {
-                            update_post_meta($todo_id, $key, $value);
-                        }
-                    }
-        
-                    // Optionally, update meta to indicate migration
-                    update_post_meta($todo_id, 'migrated_from_doc_report', $doc_report_id);
-                }
-        
-                // Optionally, delete the doc-report after migration
-                wp_delete_post($doc_report_id, true);
-            }
-        
-            error_log('Migration from doc-report to todo completed.');
-        }
-
-        function migrate_embedded_to_document() {
-            global $wpdb;
-        
-            // Step 1: Migrate "embedded" posts to "document"
-            $embedded_posts = get_posts([
-                'post_type'      => 'embedded',
-                'posts_per_page' => -1,
-            ]);
-        
-            $embedded_map = []; // Store old ID -> new ID mapping
-        
-            foreach ($embedded_posts as $embedded) {
-                $new_doc_id = wp_insert_post([
-                    'post_title'   => $embedded->post_title,
-                    'post_content' => $embedded->post_content,
-                    'post_status'  => $embedded->post_status,
-                    'post_date'    => $embedded->post_date,
-                    'post_author'  => $embedded->post_author,
-                    'post_type'    => 'document',
-                ]);
-        
-                if ($new_doc_id) {
-                    $embedded_map[$embedded->ID] = $new_doc_id;
-        
-                    // Migrate all meta fields
-                    $meta_fields = get_post_meta($embedded->ID);
-                    foreach ($meta_fields as $key => $values) {
-                        foreach ($values as $value) {
-                            update_post_meta($new_doc_id, $key, $value);
-                        }
-                    }
-                    update_post_meta($new_doc_id, 'doc_number', '-');
-                    update_post_meta($new_doc_id, 'doc_revision', 'draft');
-                    update_post_meta($new_doc_id, 'is_doc_report', 1);
-                    update_post_meta($new_doc_id, 'is_embedded_doc', 1);
-                }
-            }
-        
-            // Step 2: Migrate "embedded-item" posts to "doc-field"
-            $embedded_items = get_posts([
-                'post_type'      => 'embedded-item',
-                'posts_per_page' => -1,
-            ]);
-        
-            foreach ($embedded_items as $item) {
-                // Retrieve the old embedded_id (which needs to map to a new doc_id)
-                $old_embedded_id = get_post_meta($item->ID, 'embedded_id', true);
-                $new_doc_id = $embedded_map[$old_embedded_id] ?? null;
-        
-                $new_field_id = wp_insert_post([
-                    'post_title'   => $item->post_title,
-                    'post_content' => $item->post_content,
-                    'post_status'  => $item->post_status,
-                    'post_date'    => $item->post_date,
-                    'post_author'  => $item->post_author,
-                    'post_type'    => 'doc-field',
-                ]);
-        
-                if ($new_field_id) {
-                    // Transfer metadata
-                    $meta_fields = get_post_meta($item->ID);
-                    foreach ($meta_fields as $key => $values) {
-                        foreach ($values as $value) {
-                            update_post_meta($new_field_id, $key, $value);
-                        }
-                    }
-        
-                    // Set the new "doc_id" referencing the migrated "document"
-                    if ($new_doc_id) {
-                        update_post_meta($new_field_id, 'doc_id', $new_doc_id);
-                    }
-                }
-            }
-        
-            echo "Migration Completed!";
         }
 
         // my-profile

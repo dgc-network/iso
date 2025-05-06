@@ -91,7 +91,7 @@ jQuery(document).ready(function($) {
                                         '_category_content': $("#category-content").val(),
                                         '_api_username': $("#api-username").val(),
                                         '_api_password': $("#api-password").val(),
-                                        '_iso_category': $("#iso-category").val(),
+                                        '_iso_standard': $("#iso-standard").val(),
                                     },
                                     success: function (response) {
                                         $("#doc-category-dialog").dialog('close');
@@ -216,7 +216,7 @@ jQuery(document).ready(function($) {
                     '_embedded_title': $("#embedded-title").val(),
                     '_embedded_number': $("#embedded-number").val(),
                     '_embedded_type': $("#embedded-type").val(),
-                    '_iso_category': $("#iso-category").val(),
+                    '_iso_standard': $("#iso-standard").val(),
                     '_is_public': $("#is-public").is(":checked") ? 1 : 0,
                 },
                 success: function (response) {
@@ -247,7 +247,7 @@ jQuery(document).ready(function($) {
                     '_embedded_id': $("#embedded-id").val(),
                     '_embedded_title': $("#embedded-title").val(),
                     '_embedded_number': $("#embedded-number").val(),
-                    '_iso_category': $("#iso-category").val(),
+                    '_iso_standard': $("#iso-standard").val(),
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
@@ -453,20 +453,20 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // iso-category
-    activate_iso_category_list_data();
-    function activate_iso_category_list_data(){
-        $("#new-iso-category").on("click", function() {
+    // iso-standard
+    activate_iso_standard_list_data();
+    function activate_iso_standard_list_data(){
+        $("#new-iso-standard").on("click", function() {
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'set_iso_category_dialog_data',
+                    'action': 'set_iso_standard_dialog_data',
                 },
                 success: function (response) {
                     $("#result-container").html(response.html_contain);
-                    activate_iso_category_list_data();
+                    activate_iso_standard_list_data();
                     },
                 error: function(error){
                     console.error(error);
@@ -475,27 +475,27 @@ jQuery(document).ready(function($) {
             });    
         });
     
-        $('[id^="edit-iso-category-"]').on("click", function () {
+        $('[id^="edit-iso-standard-"]').on("click", function () {
             const category_id = this.id.substring(18);
             $.ajax({
                 type: 'POST',
                 url: ajax_object.ajax_url,
                 dataType: "json",
                 data: {
-                    'action': 'get_iso_category_dialog_data',
+                    'action': 'get_iso_standard_dialog_data',
                     '_category_id': category_id,
                 },
                 success: function (response) {
-                    $("#iso-category-dialog").html(response.html_contain);
+                    $("#iso-standard-dialog").html(response.html_contain);
                     //if ($("#is-site-admin").val() === "1") {
-                        $("#iso-category-dialog").dialog("option", "buttons", {
+                        $("#iso-standard-dialog").dialog("option", "buttons", {
                             "Save": function () {
                                 $.ajax({
                                     type: 'POST',
                                     url: ajax_object.ajax_url,
                                     dataType: "json",
                                     data: {
-                                        'action': 'set_iso_category_dialog_data',
+                                        'action': 'set_iso_standard_dialog_data',
                                         '_category_id': $("#category-id").val(),
                                         '_category_title': $("#category-title").val(),
                                         '_category_content': $("#category-content").val(),
@@ -504,9 +504,9 @@ jQuery(document).ready(function($) {
                                         '_embedded': $("#embedded").val(),
                                     },
                                     success: function (response) {
-                                        $("#iso-category-dialog").dialog('close');
+                                        $("#iso-standard-dialog").dialog('close');
                                         $("#result-container").html(response.html_contain);
-                                        activate_iso_category_list_data();
+                                        activate_iso_standard_list_data();
                                     },
                                     error: function (error) {
                                         console.error(error);
@@ -521,13 +521,13 @@ jQuery(document).ready(function($) {
                                         url: ajax_object.ajax_url,
                                         dataType: "json",
                                         data: {
-                                            'action': 'del_iso_category_dialog_data',
+                                            'action': 'del_iso_standard_dialog_data',
                                             '_category_id': $("#category-id").val(),
                                         },
                                         success: function (response) {
-                                            $("#iso-category-dialog").dialog('close');
+                                            $("#iso-standard-dialog").dialog('close');
                                             $("#result-container").html(response.html_contain);
-                                            activate_iso_category_list_data();
+                                            activate_iso_standard_list_data();
                                         },
                                         error: function (error) {
                                             console.error(error);
@@ -538,7 +538,7 @@ jQuery(document).ready(function($) {
                             },
                         });
                     //}
-                    $("#iso-category-dialog").dialog('open');
+                    $("#iso-standard-dialog").dialog('open');
                 },
                 error: function (error) {
                     console.error(error);
@@ -547,7 +547,7 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#iso-category-dialog").dialog({
+        $("#iso-standard-dialog").dialog({
             width: 390,
             modal: true,
             autoOpen: false,

@@ -265,12 +265,12 @@ jQuery(document).ready(function($) {
             },
             success: function (response) {
                 console.log(response)
-                iso_category_id = $("#iso-category-id").val();
+                iso_standard_id = $("#iso-standard-id").val();
                 // Get existing URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 // Remove or Add the parameters
                 urlParams.set("_paged", 2);
-                urlParams.set("_start_ai", iso_category_id);
+                urlParams.set("_start_ai", iso_standard_id);
                 urlParams.delete("_prompt");
                 // Redirect to the updated URL
                 window.location.href = "?" + urlParams.toString();
@@ -283,12 +283,12 @@ jQuery(document).ready(function($) {
     })
 
     $("#statement-page2-prev-step").on("click", function () {
-        iso_category_id = $("#iso-category-id").val();
+        iso_standard_id = $("#iso-standard-id").val();
         // Get existing URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         // Remove or Add the parameters
         urlParams.set("_paged", 1);
-        urlParams.set("_start_ai", iso_category_id);
+        urlParams.set("_start_ai", iso_standard_id);
         urlParams.delete("_prompt");
         // Redirect to the updated URL
         window.location.href = "?" + urlParams.toString();
@@ -323,9 +323,9 @@ jQuery(document).ready(function($) {
         const countDuplicatedIds = duplicated_ids.length;
         console.log('Number of checked elements:', countDuplicatedIds);
 
-        iso_category_title = $("#iso-category-title").val();
+        iso_standard_title = $("#iso-standard-title").val();
 
-        if (window.confirm("Are you sure you want to have "+countDuplicatedIds+" new copies from "+ iso_category_title)) {
+        if (window.confirm("Are you sure you want to have "+countDuplicatedIds+" new copies from "+ iso_standard_title)) {
             // Show the custom alert message
             var alertBox = $("<div class='custom-alert'>Data processing...</div>");
             $("body").append(alertBox);
@@ -362,12 +362,12 @@ jQuery(document).ready(function($) {
             });
 
         } else {
-            iso_category_id = $("#iso-category-id").val();
+            iso_standard_id = $("#iso-standard-id").val();
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             // Remove or Add the parameters
             urlParams.set("_paged", 1);
-            urlParams.set("_start_ai", iso_category_id);
+            urlParams.set("_start_ai", iso_standard_id);
             urlParams.delete("_prompt");
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
