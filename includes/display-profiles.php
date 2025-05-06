@@ -121,6 +121,62 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='sync_documents_to_github') echo $this->sync_documents_to_github();
             }
         }
+
+        function sync_documents_to_github() {
+            $args = [
+                'post_type' => 'document',
+                'post_status' => 'publish',
+                'meta_query' => [
+                    'relation' => 'AND',
+                    [
+                        'key' => 'is_doc_report',
+                        'value' => '0',
+                        'compare' => '='
+                    ],
+                    [
+                        'relation' => 'OR',
+                        [
+                            'key' => 'doc_revision',
+                            'value' => 'draft',
+                            'compare' => '='
+                        ],
+                        [
+                            'key' => 'doc_revision',
+                            'value' => '',
+                            'compare' => '='
+                        ]
+                    ]
+                ],
+                'posts_per_page' => -1
+            ];
+        
+            $query = new WP_Query($args);
+            if ($query->have_posts()) {
+                $github = new github_api();
+        
+                foreach ($query->posts as $post) {
+                    $doc_id = $post->ID;
+        
+                    // Use transient to cache update attempts and avoid redundant API calls
+                    if (get_transient("github_sync_{$doc_id}")) {
+                        continue; // Recently synced, skip
+                    }
+        
+                    $new_content = $post->post_content;
+                    $result = $github->update_github_doc($new_content, $doc_id);
+        
+                    error_log("Sync doc $doc_id result: " . var_export($result, true));
+        
+                    if ($result) {
+                        // Prevent re-sync for 5 minutes
+                        set_transient("github_sync_{$doc_id}", true, 5 * MINUTE_IN_SECONDS);
+                    }
+                }
+            } else {
+                error_log("No matching documents found to sync.");
+            }
+        }
+        
 /*
         function sync_documents_to_github() {
             $args = [
@@ -164,7 +220,7 @@ if (!class_exists('display_profiles')) {
                 error_log("No matching documents found to sync.");
             }
         }
-*/        
+
         function sync_documents_to_github() {
             $args = [
                 'post_type' => 'document',
@@ -196,7 +252,7 @@ if (!class_exists('display_profiles')) {
                 error_log("No matching documents found to sync.");
             }
         }
-
+*/
         function migrate_doc_report_to_todo() {
             global $wpdb;
         
