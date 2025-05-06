@@ -2303,7 +2303,7 @@ if (!class_exists('display_documents')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <?php echo display_iso_helper_logo();?>
-                        <h2 style="display:inline;"><?php echo esc_html($iso_standard_title.' '.__( '啟動AI輔導', 'textdomain' ));?></h2>
+                        <h2 style="display:inline;"><?php echo sprintf(__( 'Launch %s AI Coaching', 'textdomain' ), $iso_standard_title);?></h2>
                     </div>
                 </div>
                 <input type="hidden" id="iso-standard-title" value="<?php echo esc_attr($iso_standard_title);?>" />
