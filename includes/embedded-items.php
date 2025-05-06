@@ -975,14 +975,6 @@ if (!class_exists('embedded_items')) {
                 <div class="iso-standard-content">
                     <?php the_content(); ?>
                     <div class="wp-block-buttons">
-<?php /*                        
-                        <div class="wp-block-button">
-                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($category_url); ?>"><?php the_title(); ?></a>                                            
-                        </div>
-                        <div class="wp-block-button">
-                            <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo __( '啟動AI輔導', 'textdomain' ); ?></a>
-                        </div>
-*/ ?>                        
                         <div class="wp-block-button">
                             <a class="wp-block-button__link wp-element-button" href="<?php echo esc_url($start_ai_url); ?>"><?php echo sprintf(__( 'Launch %s AI Coaching', 'textdomain' ), get_the_title()); ?></a>
                         </div>
@@ -1002,7 +994,7 @@ if (!class_exists('embedded_items')) {
             if (current_user_can('administrator')) {
                 ?>
                 <?php echo display_iso_helper_logo();?>
-                <h2 style="display:inline;"><?php echo 'ISO'.__( '類別', 'textdomain' );?></h2>
+                <h2 style="display:inline;"><?php echo __( 'ISO standard', 'textdomain' );?></h2>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div><?php $profiles_class->display_select_profile('iso-standard');?></div>
@@ -1074,8 +1066,10 @@ if (!class_exists('embedded_items')) {
                 <input type="text" id="category-title" value="<?php echo esc_attr($category_title);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="category-content"><?php echo __( 'Description', 'textdomain' );?></label>
                 <textarea id="category-content" rows="5" style="width:100%;"><?php echo esc_html($category_content);?></textarea>
+<?php /*                
                 <label for="category-url"><?php echo __( 'URL', 'textdomain' );?></label>
                 <input type="text" id="category-url" value="<?php echo esc_attr($category_url);?>" class="text ui-widget-content ui-corner-all" />
+*/ ?>
                 <label for="parent-category"><?php echo __( 'Parent', 'textdomain' );?></label>
                 <select id="parent-category" class="select ui-widget-content ui-corner-all"><?php echo $this->select_parent_category_options($parent_category);?></select>
             </fieldset>

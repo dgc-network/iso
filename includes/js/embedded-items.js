@@ -515,7 +515,7 @@ jQuery(document).ready(function($) {
                                 });
                             },
                             "Delete": function () {
-                                if (window.confirm("Are you sure you want to delete this iso category?")) {
+                                if (window.confirm("Are you sure you want to delete this iso standard?")) {
                                     $.ajax({
                                         type: 'POST',
                                         url: ajax_object.ajax_url,
