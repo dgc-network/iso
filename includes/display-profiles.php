@@ -64,6 +64,10 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_get_site_list_data', array( $this, 'get_site_list_data' ) );
             add_action( 'wp_ajax_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
+
+            add_action('init', array( $this, 'schedule_github_sync_cron'));
+            add_action('sync_documents_to_github_event', array( $this, 'sync_documents_to_github'));
+
         }
 
         function enqueue_display_profile_scripts() {
@@ -127,6 +131,68 @@ if (!class_exists('display_profiles')) {
         }
         //add_action('init', 'rename_iso_category_to_iso_standard');
         
+        // Schedule the event (run once on plugin/theme load)
+        function schedule_github_sync_cron() {
+            if (!wp_next_scheduled('sync_documents_to_github_event')) {
+                wp_schedule_event(time(), 'hourly', 'sync_documents_to_github_event');
+            }
+        }
+        //add_action('init', 'schedule_github_sync_cron');
+        
+        // Hook to the event
+        //add_action('sync_documents_to_github_event', 'sync_documents_to_github');
+        
+        /**
+         * Cron-safe GitHub document sync
+         */
+        function sync_documents_to_github() {
+            $args = [
+                'post_type' => 'document',
+                'post_status' => 'publish',
+                'meta_query' => [
+                    'relation' => 'AND',
+                    [
+                        'key' => 'is_doc_report',
+                        'value' => '0',
+                        'compare' => '='
+                    ],
+                ],
+                'posts_per_page' => 10, // process only 10 per cron job
+                'orderby' => 'modified',
+                'order' => 'ASC',
+                'fields' => 'ids', // improves performance
+            ];
+        
+            $query = new WP_Query($args);
+            if (!empty($query->posts)) {
+                $github = new github_api();
+        
+                foreach ($query->posts as $doc_id) {
+                    // Throttle: avoid rapid reprocessing
+                    if (get_transient("github_sync_{$doc_id}")) {
+                        continue;
+                    }
+        
+                    $post = get_post($doc_id);
+                    $new_content = $post->post_content;
+        
+                    $existing_content = $github->fetch_github_doc($doc_id);
+        
+                    if (!$existing_content) {
+                        $result = $github->update_github_doc($new_content, $doc_id);
+                        error_log("Synced doc $doc_id result: " . var_export($result, true));
+                    } else {
+                        error_log("Doc $doc_id already exists on GitHub, skipping.");
+                    }
+        
+                    // Set transient to prevent reprocessing for 10 minutes
+                    set_transient("github_sync_{$doc_id}", true, 10 * MINUTE_IN_SECONDS);
+                }
+            } else {
+                error_log("No documents to sync.");
+            }
+        }
+/*        
         function sync_documents_to_github() {
             $args = [
                 'post_type' => 'document',
@@ -170,7 +236,7 @@ if (!class_exists('display_profiles')) {
                 error_log("No matching documents found to sync.");
             }
         }
-
+*/
         // my-profile
         function display_my_profile() {
             ob_start();
