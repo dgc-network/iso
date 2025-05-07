@@ -157,7 +157,7 @@ if (!class_exists('display_profiles')) {
                         'compare' => '='
                     ],
                 ],
-                'posts_per_page' => 10, // process only 10 per cron job
+                'posts_per_page' => -1, // process only 10 per cron job
                 'orderby' => 'modified',
                 'order' => 'ASC',
                 'fields' => 'ids', // improves performance
@@ -186,7 +186,7 @@ if (!class_exists('display_profiles')) {
                     }
         
                     // Set transient to prevent reprocessing for 10 minutes
-                    set_transient("github_sync_{$doc_id}", true, 10 * MINUTE_IN_SECONDS);
+                    //set_transient("github_sync_{$doc_id}", true, 10 * MINUTE_IN_SECONDS);
                 }
             } else {
                 error_log("No documents to sync.");
