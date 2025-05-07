@@ -689,6 +689,11 @@ if (!class_exists('display_documents')) {
             //$doc_content = get_post_field('post_content', $doc_id);
             $doc_revision = $github_api->get_github_file_revision($doc_id);
             $doc_content = $github_api->fetch_github_doc($doc_id);
+            if (!$doc_content) {
+                $doc_content = get_post_field('post_content', $doc_id);
+                $result = $github->update_github_doc($doc_content, $doc_id);
+                error_log("Synced doc $doc_id result: " . var_export($result, true));
+            }
             ?>
             <div class="ui-widget" id="result-container">
             <div style="display:flex; justify-content:space-between; margin:5px;">

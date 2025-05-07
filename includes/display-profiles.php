@@ -65,8 +65,8 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
 
-            add_action('init', array( $this, 'schedule_github_sync_cron'));
-            add_action('sync_documents_to_github_event', array( $this, 'sync_documents_to_github'));
+            //add_action('init', array( $this, 'schedule_github_sync_cron'));
+            //add_action('sync_documents_to_github_event', array( $this, 'sync_documents_to_github'));
 
         }
 
