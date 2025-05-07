@@ -332,7 +332,7 @@ jQuery(document).ready(function($) {
                 });
             }
         });
-
+/*
         $('[id^="edit-my-action-"]').on("click", function () {
             const action_id = this.id.substring(15);
             $.ajax({
@@ -387,7 +387,7 @@ jQuery(document).ready(function($) {
             autoOpen: false,
             buttons: {}
         });
-
+*/
         if ($("#interval-setting").val()) {
             $("#recurrence-start-time-div").show();
         }

@@ -14,10 +14,10 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
 
-            add_action( 'wp_ajax_get_my_action_dialog_data', array( $this, 'get_my_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_get_my_action_dialog_data', array( $this, 'get_my_action_dialog_data' ) );
-            add_action( 'wp_ajax_set_my_action_dialog_data', array( $this, 'set_my_action_dialog_data' ) );
-            add_action( 'wp_ajax_nopriv_set_my_action_dialog_data', array( $this, 'set_my_action_dialog_data' ) );
+            //add_action( 'wp_ajax_get_my_action_dialog_data', array( $this, 'get_my_action_dialog_data' ) );
+            //add_action( 'wp_ajax_nopriv_get_my_action_dialog_data', array( $this, 'get_my_action_dialog_data' ) );
+            //add_action( 'wp_ajax_set_my_action_dialog_data', array( $this, 'set_my_action_dialog_data' ) );
+            //add_action( 'wp_ajax_nopriv_set_my_action_dialog_data', array( $this, 'set_my_action_dialog_data' ) );
 
             add_action( 'wp_ajax_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
             add_action( 'wp_ajax_nopriv_get_my_job_list_data', array( $this, 'get_my_job_list_data' ) );
@@ -64,9 +64,6 @@ if (!class_exists('display_profiles')) {
             add_action( 'wp_ajax_nopriv_get_site_list_data', array( $this, 'get_site_list_data' ) );
             add_action( 'wp_ajax_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
             add_action( 'wp_ajax_nopriv_get_site_dialog_data', array( $this, 'get_site_dialog_data' ) );
-
-            //add_action('init', array( $this, 'schedule_github_sync_cron'));
-            //add_action('sync_documents_to_github_event', array( $this, 'sync_documents_to_github'));
 
         }
 
@@ -117,7 +114,9 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='iso-standard') echo $items_class->display_iso_standard_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 echo '</div>';
-                if ($_GET['_select_profile']=='sync_documents_to_github') echo $this->sync_documents_to_github();
+
+                if ($_GET['_select_profile']=='rename_iso_category_to_iso_standard') echo $this->rename_iso_category_to_iso_standard();
+
             } else {
                 echo '<div class="ui-widget" id="result-container">';
                 if (!isset($_GET['_select_profile'])) echo $this->display_my_profile();
@@ -129,115 +128,7 @@ if (!class_exists('display_profiles')) {
             global $wpdb;
             $wpdb->query("UPDATE $wpdb->posts SET post_type = 'iso-standard' WHERE post_type = 'iso-category'");
         }
-        //add_action('init', 'rename_iso_category_to_iso_standard');
-        
-        // Schedule the event (run once on plugin/theme load)
-        function schedule_github_sync_cron() {
-            if (!wp_next_scheduled('sync_documents_to_github_event')) {
-                wp_schedule_event(time(), 'hourly', 'sync_documents_to_github_event');
-            }
-        }
-        //add_action('init', 'schedule_github_sync_cron');
-        
-        // Hook to the event
-        //add_action('sync_documents_to_github_event', 'sync_documents_to_github');
-        
-        /**
-         * Cron-safe GitHub document sync
-         */
-        function sync_documents_to_github() {
-            $args = [
-                'post_type' => 'document',
-                'post_status' => 'publish',
-                'meta_query' => [
-                    'relation' => 'AND',
-                    [
-                        'key' => 'is_doc_report',
-                        'value' => '0',
-                        'compare' => '='
-                    ],
-                ],
-                'posts_per_page' => -1, // process only 10 per cron job
-                'orderby' => 'modified',
-                'order' => 'ASC',
-                'fields' => 'ids', // improves performance
-            ];
-        
-            $query = new WP_Query($args);
-            if (!empty($query->posts)) {
-                $github = new github_api();
-        
-                foreach ($query->posts as $doc_id) {
-                    // Throttle: avoid rapid reprocessing
-                    if (get_transient("github_sync_{$doc_id}")) {
-                        continue;
-                    }
-        
-                    $post = get_post($doc_id);
-                    $new_content = $post->post_content;
-        
-                    $existing_content = $github->fetch_github_doc($doc_id);
-        
-                    if (!$existing_content) {
-                        $result = $github->update_github_doc($new_content, $doc_id);
-                        error_log("Synced doc $doc_id result: " . var_export($result, true));
-                    } else {
-                        error_log("Doc $doc_id already exists on GitHub, skipping.");
-                    }
-        
-                    update_post_meta($doc_id, 'doc_revision', 'synced');
-                    // Set transient to prevent reprocessing for 10 minutes
-                    //set_transient("github_sync_{$doc_id}", true, 10 * MINUTE_IN_SECONDS);
-                }
-            } else {
-                error_log("No documents to sync.");
-            }
-        }
-/*        
-        function sync_documents_to_github() {
-            $args = [
-                'post_type' => 'document',
-                'post_status' => 'publish',
-                'meta_query' => [
-                    'relation' => 'AND',
-                    [
-                        'key' => 'is_doc_report',
-                        'value' => '0',
-                        'compare' => '='
-                    ],
-                ],
-                'posts_per_page' => -1
-            ];
-        
-            $query = new WP_Query($args);
-            if ($query->have_posts()) {
-                $github = new github_api();
-        
-                foreach ($query->posts as $post) {
-                    $doc_id = $post->ID;
-        
-                    // Use transient to cache update attempts and avoid redundant API calls
-                    if (get_transient("github_sync_{$doc_id}")) {
-                        continue; // Recently synced, skip
-                    }
-        
-                    $new_content = $post->post_content;
-                    $result = $github->fetch_github_doc($doc_id);
-        
-                    error_log("Sync doc $doc_id result: " . var_export($result, true));
-        
-                    if (!$result) {
-                        //update_post_meta($doc_id, 'doc_revision', 'sha');
-                        $github->update_github_doc($new_content, $doc_id);
-                        // Prevent re-sync for 5 minutes
-                        set_transient("github_sync_{$doc_id}", true, 1 * MINUTE_IN_SECONDS);
-                    }
-                }
-            } else {
-                error_log("No matching documents found to sync.");
-            }
-        }
-*/
+
         // my-profile
         function display_my_profile() {
             ob_start();
@@ -258,10 +149,6 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="display-name" value="<?php echo $current_user->display_name;?>" class="text ui-widget-content ui-corner-all" />
                 <label for="user-email"><?php echo __( 'Email', 'textdomain' );?></label>
                 <input type="text" id="user-email" value="<?php echo $current_user->user_email;?>" class="text ui-widget-content ui-corner-all" />
-<?php /*
-                <label for="my-action-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
-                <div id="my-action-list"><?php echo $this->display_my_action_list();?></div>
-*/?>                
                 <label for="my-job-list"><?php echo __( 'Jobs & Authorizations', 'textdomain' );?></label>
                 <div id="my-job-list"><?php echo $this->display_my_job_list();?></div>
                 <label for="gemini-api-key"><?php echo __( 'Gemini API key', 'textdomain' );?></label>
@@ -348,7 +235,6 @@ if (!class_exists('display_profiles')) {
                                 endwhile;
                                 wp_reset_postdata();                                    
                             }
-                            //$interval_setting = get_post_meta($action_id, 'interval_setting', true);
                             $interval_setting = get_user_meta($current_user_id, 'interval_setting_' . $doc_id, true);
                             ?>
                             <tr id="edit-my-job-<?php echo $doc_id; ?>">
@@ -581,8 +467,8 @@ if (!class_exists('display_profiles')) {
             wp_send_json($response);
         }
 
-
         // my-action
+/*        
         function display_my_action_list() {
             ob_start();
             $current_user_id = get_current_user_id();
@@ -769,7 +655,7 @@ if (!class_exists('display_profiles')) {
             }
             wp_send_json($response);
         }
-
+*/
         function is_action_authorized($action_id=false, $user_id=false) {
             if (!$action_id) return false;
             if (!$user_id) $user_id = get_current_user_id();
@@ -801,9 +687,6 @@ if (!class_exists('display_profiles')) {
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $image_url = get_post_meta($site_id, 'image_url', true);
             $site_content = get_post_field('post_content', $site_id);
-            //$unified_number = get_post_meta($site_id, 'unified_number', true);
-            //$company_phone = get_post_meta($site_id, 'company_phone', true);
-            //$company_address = get_post_meta($site_id, 'company_address', true);
             ?>
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'Site Configuration', 'textdomain' );?></h2>
@@ -838,14 +721,7 @@ if (!class_exists('display_profiles')) {
 
                 <label for="site-content"><?php echo __( 'Non-Disclosure Agreement', 'textdomain' );?></label>
                 <textarea id="site-content" rows="5" style="width:100%;"><?php echo esc_html($site_content);?></textarea>
-<?php /*                
-                <label for="company-phone"><?php echo __( 'Phone', 'textdomain' );?></label>
-                <input type="text" id="company-phone" value="<?php echo $company_phone;?>" class="text ui-widget-content ui-corner-all" />
-                <label for="company-address"><?php echo __( 'Company Address', 'textdomain' );?></label>
-                <textarea id="company-address" rows="2" style="width:100%;"><?php echo esc_html($company_address);?></textarea>
-                <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
-                <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" />
-*/?>
+
                 <?php if (is_site_admin()) {?>
                     <div style="display:flex; justify-content:space-between; margin:5px;">
                         <div><label for="site-jobs"><?php echo __( 'Job List', 'textdomain' );?></label></div>
@@ -876,9 +752,6 @@ if (!class_exists('display_profiles')) {
             if( isset($_POST['_site_id']) ) {
                 $site_id = isset($_POST['_site_id']) ? sanitize_text_field($_POST['_site_id']) : 0;
                 $site_title = isset($_POST['_site_title']) ? sanitize_text_field($_POST['_site_title']) : '';
-                //$company_phone = isset($_POST['_company_phone']) ? sanitize_text_field($_POST['_company_phone']) : '';
-                //$company_address = isset($_POST['_company_address']) ? sanitize_text_field($_POST['_company_address']) : '';
-                //$unified_number = isset($_POST['_unified_number']) ? sanitize_text_field($_POST['_unified_number']) : '';
                 // Update the post
                 $post_data = array(
                     'ID'           => $site_id,
@@ -887,9 +760,6 @@ if (!class_exists('display_profiles')) {
                 );        
                 wp_update_post($post_data);
                 update_post_meta($site_id, 'image_url', $_POST['_image_url'] );
-                //update_post_meta($site_id, 'company_phone', $company_phone);
-                //update_post_meta($site_id, 'company_address', $company_address);
-                //update_post_meta($site_id, 'unified_number', $unified_number);
                 $response = array('success' => true);
 
                 if (isset($_POST['_keyValuePairs']) && is_array($_POST['_keyValuePairs'])) {
@@ -1861,10 +1731,8 @@ if (!class_exists('display_profiles')) {
             if (!is_site_admin()) return;
             $site_id = get_user_meta($user_id, 'site_id', true);
             $site_title = get_the_title($site_id);
-            //$unified_number = get_post_meta($site_id, 'unified_number', true);
             $user = get_userdata($user_id);
             $display_name = $user->display_name;
-            //$identity_number = get_user_meta($user_id, 'identity_number', true);
             $nda_content = get_user_meta($user_id, 'nda_content', true);
             $nda_signature = get_user_meta($user_id, 'nda_signature', true);
             $submit_date = get_user_meta($user_id, 'submit_date', true);
@@ -1874,19 +1742,11 @@ if (!class_exists('display_profiles')) {
                 <div>
                     <label for="site-title"><b><?php echo __( 'Party A', 'textdomain' );?></b></label>
                     <input type="text" id="site-title" value="<?php echo $site_title;?>" class="text ui-widget-content ui-corner-all" disabled />
-<?php /*
-                    <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
-                    <input type="text" id="unified-number" value="<?php echo $unified_number;?>" class="text ui-widget-content ui-corner-all" disabled />
-*/?>                    
                     <input type="hidden" id="site-id" value="<?php echo $site_id;?>"/>
                 </div>
                 <div>
                     <label for="display-name"><b><?php echo __( 'Party B', 'textdomain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $display_name;?>" class="text ui-widget-content ui-corner-all" disabled />
-<?php /*                    
-                    <label for="identity-number"><?php echo __( 'ID Number', 'textdomain' );?></label>
-                    <input type="text" id="identity-number" value="<?php echo $identity_number;?>" class="text ui-widget-content ui-corner-all" disabled />
-*/?>
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
                 <div id="nda-content"><?php echo $nda_content;?></div>
@@ -1948,18 +1808,10 @@ if (!class_exists('display_profiles')) {
                             }
                         ?>
                     </select>
-<?php /*                    
-                    <label for="unified-number"><?php echo __( 'Unified Number', 'textdomain' );?></label>
-                    <input type="text" id="unified-number" class="text ui-widget-content ui-corner-all" disabled />
-*/?>                    
                 </div>
                 <div>
                     <label for="display-name"><b><?php echo __( 'Party B', 'textdomain' );?></b></label>
                     <input type="text" id="display-name" value="<?php echo $user->display_name;?>" class="text ui-widget-content ui-corner-all" />
-<?php /*                    
-                    <label for="identity-number"><?php echo __( 'ID Number', 'textdomain' );?></label>
-                    <input type="text" id="identity-number" class="text ui-widget-content ui-corner-all" />
-*/?>
                     <input type="hidden" id="user-id" value="<?php echo $user_id;?>"/>
                 </div>
                 <div id="site-content">
