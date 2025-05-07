@@ -139,6 +139,12 @@ if (!class_exists('display_profiles')) {
                         'compare' => '='
                     ],
                     [
+                        'key' => 'doc_revision',
+                        'value' => 'sha',
+                        'compare' => '!='
+                    ],
+/*
+                    [
                         'relation' => 'OR',
                         [
                             'key' => 'doc_revision',
@@ -151,6 +157,7 @@ if (!class_exists('display_profiles')) {
                             'compare' => '='
                         ]
                     ]
+*/                        
                 ],
                 'posts_per_page' => -1
             ];
