@@ -102,7 +102,7 @@ if (!class_exists('display_profiles')) {
             elseif (is_site_not_configured()) get_NDA_assignment();
             elseif (isset($_GET['_nda_user_id'])) echo $this->approve_NDA_assignment($_GET['_nda_user_id']);
             elseif (isset($_GET['_report_id'])) echo $documents_class->display_doc_report_dialog($_GET['_report_id']);
-            else {
+            elseif (isset($_GET['_select_profile'])) {
                 echo '<div class="ui-widget" id="result-container">';
                 if ($_GET['_select_profile']=='my-profile') echo $this->display_my_profile();
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
@@ -112,12 +112,11 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-standard') echo $items_class->display_iso_standard_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
-                //if (!isset($_GET['_select_profile'])) $_GET['_select_profile'] = 'my-profile';
+                echo '</div>';
+            } else {
+                echo '<div class="ui-widget" id="result-container">';
                 if (!isset($_GET['_select_profile'])) echo $this->display_my_profile();
                 echo '</div>';
-
-                if ($_GET['_select_profile']=='sync_documents_to_github') echo $this->sync_documents_to_github();
-                if ($_GET['_select_profile']=='rename_iso_category_to_iso_standard') echo $this->rename_iso_category_to_iso_standard();
             }
         }
 
