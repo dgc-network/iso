@@ -113,6 +113,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='iso-standard') echo $items_class->display_iso_standard_list();
                 if ($_GET['_select_profile']=='department-card') echo $items_class->display_department_card_list();
                 echo '</div>';
+                if ($_GET['_select_profile']=='sync_documents_to_github') echo $this->sync_documents_to_github();
             } else {
                 echo '<div class="ui-widget" id="result-container">';
                 if (!isset($_GET['_select_profile'])) echo $this->display_my_profile();
