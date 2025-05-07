@@ -138,27 +138,6 @@ if (!class_exists('display_profiles')) {
                         'value' => '0',
                         'compare' => '='
                     ],
-/*                    
-                    [
-                        'key' => 'doc_revision',
-                        'value' => 'sha',
-                        'compare' => '!='
-                    ],
-/*
-                    [
-                        'relation' => 'OR',
-                        [
-                            'key' => 'doc_revision',
-                            'value' => 'draft',
-                            'compare' => '='
-                        ],
-                        [
-                            'key' => 'doc_revision',
-                            'value' => '',
-                            'compare' => '='
-                        ]
-                    ]
-*/                        
                 ],
                 'posts_per_page' => -1
             ];
@@ -184,7 +163,7 @@ if (!class_exists('display_profiles')) {
                         //update_post_meta($doc_id, 'doc_revision', 'sha');
                         $github->update_github_doc($new_content, $doc_id);
                         // Prevent re-sync for 5 minutes
-                        set_transient("github_sync_{$doc_id}", true, 0.5 * MINUTE_IN_SECONDS);
+                        set_transient("github_sync_{$doc_id}", true, 1 * MINUTE_IN_SECONDS);
                     }
                 }
             } else {
