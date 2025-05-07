@@ -185,6 +185,7 @@ if (!class_exists('display_profiles')) {
                         error_log("Doc $doc_id already exists on GitHub, skipping.");
                     }
         
+                    update_post_meta($doc_id, 'doc_revision', 'synced');
                     // Set transient to prevent reprocessing for 10 minutes
                     //set_transient("github_sync_{$doc_id}", true, 10 * MINUTE_IN_SECONDS);
                 }
