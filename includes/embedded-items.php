@@ -919,13 +919,10 @@ if (!class_exists('embedded_items')) {
                 $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' >' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-            //if (!$is_action_connector) {
-                $selected = ($selected_option=="embedded") ? 'selected' : '';
-                $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
-            //}
-            ?>
-            <option value="doc-category" <?php echo ($selected_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
-            <?php
+            $selected = ($selected_option=="embedded") ? 'selected' : '';
+            $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
+            $selected = ($selected_option=="doc-category") ? 'selected' : '';
+            $options .= '<option value="doc-category" '.$selected.'>'.__( 'Categories', 'textdomain' ).'</option>';
             return $options;
         }
         
