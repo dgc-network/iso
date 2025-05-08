@@ -758,34 +758,37 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
-        function retrieve_doc_category_data() {
+        function retrieve_doc_category_data($is_connector=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
             $args = array(
                 'post_type'      => 'doc-category',
-                'posts_per_page' => -1,        
+                'posts_per_page' => -1,
                 'meta_query'     => array(
-                    'relation' => 'AND',
+                    'relation' => 'OR',
                     array(
-                        'key'   => 'api_username',
-                        'compare' => 'NOT EXISTS',
-                    ),
-                    array(
-                        'key'   => 'api_password',
-                        'compare' => 'NOT EXISTS',
-                    ),    
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
+                        'relation' => 'AND',
+                        array(
+                            'key'   => 'api_username',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key'   => 'api_password',
+                            'compare' => 'NOT EXISTS',
+                        ),    
+                        array(
+                            'key'   => 'site_id',
+                            'value' => $site_id,
+                        ),    
                     ),
                 ),
                 'orderby'        => 'title',  // Order by post title
                 'order'          => 'ASC',    // Order in ascending order (or use 'DESC' for descending)
             );
-/*
-            if (current_user_can('administrator')) {
+
+            if (current_user_can('administrator') || $is_connector) {
                 $args['meta_query'][] = array(
-                    'relation' => 'OR',
+                    'relation' => 'AND',
                     array(
                         'key'   => 'api_username',
                         'compare' => 'EXISTS',
@@ -794,20 +797,9 @@ if (!class_exists('embedded_items')) {
                         'key'   => 'api_password',
                         'compare' => 'EXISTS',
                     ),
-                    array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    ),
-                );
-            } else {
-                $args['meta_query'][] = array(
-                    //array(
-                        'key'   => 'site_id',
-                        'value' => $site_id,
-                    //),
                 );
             }
-*/                
+
             $query = new WP_Query($args);
             return $query;
         }
