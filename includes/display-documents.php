@@ -2390,11 +2390,11 @@ if (!class_exists('display_documents')) {
                                         $doc_id = get_the_ID();
                                         $doc_title = get_the_title();
                                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                                        if ($is_doc_report) $is_doc_report_color='style="color:blue;"';
+                                        if ($is_doc_report) $is_doc_report_color='color:blue;';
                                         ?>
                                         <div>
                                             <input type="checkbox" class="copy-document-class" id="<?php echo $doc_id;?>" checked />
-                                            <label for="<?php echo $doc_id;?>" <?php echo $is_doc_report_color;?>><?php echo $doc_title;?></label>
+                                            <label for="<?php echo $doc_id;?>" style="<?php echo $is_doc_report_color;?>"><?php echo $doc_title;?></label>
                                         </div>
                                         <?php
                                     endwhile;
