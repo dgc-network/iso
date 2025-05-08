@@ -532,10 +532,9 @@ if (!class_exists('display_documents')) {
                     </div>
 
                     <div id="job-setting-div" style="display:none;">
-<?php /*                        
                         <label for="job-content"><?php echo __( 'Job Content', 'textdomain' );?></label>
                         <textarea id="job-content" class="visual-editor"><?php echo $doc_content;?></textarea>
-*/?>
+
                         <div class="content">
                             <?php echo $content;?>
                             <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
@@ -547,10 +546,6 @@ if (!class_exists('display_documents')) {
                         <div id="site-action-list">
                             <?php echo $profiles_class->display_site_action_list(false, $doc_id);?>
                         </div>
-<?php /*                        
-                        <label for="department-id"><?php echo __( '部門', 'textdomain' );?></label>
-                        <select id="department-id" class="select ui-widget-content ui-corner-all"><?php echo $items_class->select_department_card_options($department_id);?></select>
-*/?>
                     </div>
 
                     <label id="system-doc-label" class="button"><?php echo __( 'System Document Settings', 'textdomain' );?></label>
@@ -570,15 +565,6 @@ if (!class_exists('display_documents')) {
                     </fieldset>
                 </div>
 
-<?php /*                
-                <br><br>
-                <div class="content">
-                    <?php echo $content;?>
-                    <div style="margin:1em; padding:10px; border:solid; border-radius:1.5rem;">
-                        <input type="text" id="ask-gemini" placeholder="<?php echo __( 'Ask Gemini', 'textdomain' );?>" class="text ui-widget-content ui-corner-all" />
-                    </div>
-                </div>
-*/?>
                 <hr>
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
