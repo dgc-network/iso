@@ -92,10 +92,10 @@ if (!class_exists('display_documents')) {
                 }
 
                 if (isset($_GET['_category']) && $_GET['_category'] === 'doc-category') {
-                    add_action('template_redirect', function () {
+                    //add_action('template_redirect', function () {
                         wp_redirect(home_url('/display-profiles/?_select_profile=doc-category'));
                         exit;
-                    });
+                    //});
                 }
 /*
                 add_action('template_redirect', function () {
