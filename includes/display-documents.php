@@ -76,7 +76,8 @@ if (!class_exists('display_documents')) {
             else {
                 // Display document list if no specific parameters are existed
                 if (
-                    (!isset($_GET['_category']) || $_GET['_category'] != 'embedded') &&
+                    //(!isset($_GET['_category']) || $_GET['_category'] != 'embedded') &&
+                    !isset($_GET['_category']) &&
                     !isset($_GET['_doc_id']) &&
                     !isset($_GET['_duplicate_document']) &&
                     !isset($_GET['_start_ai'])
@@ -89,7 +90,11 @@ if (!class_exists('display_documents')) {
                     if (isset($_GET['_embedded_id'])) echo $items_class->display_embedded_dialog($_GET['_embedded_id']);
                     else echo $items_class->display_embedded_list();
                 }
-                
+
+                if (isset($_GET['_category']) && $_GET['_category'] === 'doc-category') {
+                    echo $items_class->display_doc_category_list();
+                }
+
                 // Display ISO statement
                 if (isset($_GET['_start_ai'])) {
                     $iso_standard_id = sanitize_text_field($_GET['_start_ai']);
@@ -2655,7 +2660,7 @@ if (!class_exists('display_documents')) {
             }
             wp_send_json($response);
         }
-
+/*
         function update_document_revision($post_id) {
             if (get_post_type($post_id) !== 'document') {
                 return;
@@ -2693,6 +2698,7 @@ if (!class_exists('display_documents')) {
             // Log the update
             error_log("Updated doc_revision for post {$post_id}: {$current_revision} → {$new_revision}");
         }
+*/            
     }
     $documents_class = new display_documents();
 }

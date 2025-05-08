@@ -565,7 +565,7 @@ function record_deleted_api_post_data(WP_REST_Request $request) {
         'message' => 'Report Completed!',
     ], 200);
 }
-
+/*
 // Register the document-released API endpoint
 function document_released_register_post_api() {
     register_rest_route('api/v1', '/document-released/', [
@@ -730,7 +730,7 @@ function send_message_api_post_data(WP_REST_Request $request) {
         'alt_text' => $text_message,
     ], 200);
 }
-
+*/
 // ✅ Register the iot-message REST API endpoint
 function register_iot_endpoint() {
     register_rest_route('api/v1', '/iot-message/', [

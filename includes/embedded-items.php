@@ -923,6 +923,9 @@ if (!class_exists('embedded_items')) {
                 $selected = ($selected_option=="embedded") ? 'selected' : '';
                 $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
             //}
+            ?>
+            <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
+            <?php
             return $options;
         }
         
