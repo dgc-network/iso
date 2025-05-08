@@ -81,8 +81,8 @@ if (!class_exists('to_do_list')) {
                 }
 
                 if ($_GET['_select_todo']=='my-profile') {
-                    $profiles_class = new display_profiles();
-                    echo $profiles_class->display_my_profile();
+                    wp_redirect(home_url('/display-profiles/?_select_profile=my-profile'));
+                    exit;
                 }
 
                 if ($_GET['_select_todo']=='start-job') {

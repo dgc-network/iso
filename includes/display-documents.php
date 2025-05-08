@@ -92,23 +92,10 @@ if (!class_exists('display_documents')) {
                 }
 
                 if (isset($_GET['_category']) && $_GET['_category'] === 'doc-category') {
-                    //add_action('template_redirect', function () {
-                        wp_redirect(home_url('/display-profiles/?_select_profile=doc-category'));
-                        exit;
-                    //});
+                    wp_redirect(home_url('/display-profiles/?_select_profile=doc-category'));
+                    exit;
                 }
-/*
-                add_action('template_redirect', function () {
-                    if (isset($_GET['_category']) && $_GET['_category'] === 'doc-category') {
-                        wp_redirect(home_url('/display-profiles/?_select_profile=doc-category'));
-                        exit;
-                    }
-                });
-/*                
-                if (isset($_GET['_category']) && $_GET['_category'] === 'doc-category') {
-                    echo $items_class->display_doc_category_list();
-                }
-*/
+
                 // Display ISO statement
                 if (isset($_GET['_start_ai'])) {
                     $iso_standard_id = sanitize_text_field($_GET['_start_ai']);
