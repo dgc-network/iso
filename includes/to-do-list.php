@@ -54,7 +54,7 @@ if (!class_exists('to_do_list')) {
             ?>
             <select id="select-todo">
                 <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( 'Todo List', 'textdomain' );?></option>
-                <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( 'My profile', 'textdomain' );?></option>
+                <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( 'My Account', 'textdomain' );?></option>
                 <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( 'Start Job', 'textdomain' );?></option>
                 <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( 'Sign-off Record', 'textdomain' );?></option>
                 <?php if (current_user_can('administrator') || $iot_messages->is_site_with_iot_device()) {?>
