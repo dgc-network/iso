@@ -54,7 +54,8 @@ if (!class_exists('to_do_list')) {
             ?>
             <select id="select-todo">
                 <option value="todo-list" <?php echo ($select_option=="todo-list") ? 'selected' : ''?>><?php echo __( 'Todo List', 'textdomain' );?></option>
-                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( '啟動表單', 'textdomain' );?></option>
+                <option value="my-profile" <?php echo ($select_option=="my-profile") ? 'selected' : ''?>><?php echo __( 'My profile', 'textdomain' );?></option>
+                <option value="start-job" <?php echo ($select_option=="start-job") ? 'selected' : ''?>><?php echo __( 'Start Job', 'textdomain' );?></option>
                 <option value="action-log" <?php echo ($select_option=="action-log") ? 'selected' : ''?>><?php echo __( 'Sign-off Record', 'textdomain' );?></option>
                 <?php if (current_user_can('administrator') || $iot_messages->is_site_with_iot_device()) {?>
                     <option value="iot-devices" <?php echo ($select_option=="iot-devices") ? 'selected' : ''?>><?php echo __( 'IoT devices', 'textdomain' );?></option>
@@ -78,7 +79,11 @@ if (!class_exists('to_do_list')) {
                     if (isset($_GET['_todo_id'])) echo $this->display_todo_dialog($_GET['_todo_id']);
                     else echo $this->display_todo_list();
                 }
-                
+
+                if ($_GET['_select_todo']=='my-profile') {
+                    $profiles_class = new display_profiles();
+                    echo $profiles_class->display_my_profile();
+                }
 
                 if ($_GET['_select_todo']=='start-job') {
                     if (isset($_GET['_job_id'])) echo $this->display_start_job_dialog($_GET['_job_id']);
