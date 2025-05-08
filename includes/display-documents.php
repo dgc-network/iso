@@ -76,8 +76,8 @@ if (!class_exists('display_documents')) {
             else {
                 // Display document list if no specific parameters are existed
                 if (
-                    (!isset($_GET['_category']) || $_GET['_category'] != 'embedded' || $_GET['_category'] != 'doc-category') &&
-                    //!isset($_GET['_category']) &&
+                    (!isset($_GET['_category']) || $_GET['_category'] != 'embedded') &&
+                    (!isset($_GET['_category']) || $_GET['_category'] != 'doc-category') &&
                     !isset($_GET['_doc_id']) &&
                     !isset($_GET['_duplicate_document']) &&
                     !isset($_GET['_start_ai'])
