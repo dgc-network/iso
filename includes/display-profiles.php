@@ -1008,7 +1008,7 @@ if (!class_exists('display_profiles')) {
                 <input type="text" id="action-content" value="<?php echo esc_attr($action_content);?>" class="text ui-widget-content ui-corner-all" />
                 <label for="action-connector"><?php echo __( 'Connector', 'textdomain' );?></label>
                 <select id="action-connector" class="select ui-widget-content ui-corner-all" >
-                    <?php echo $items_class->select_doc_category_options($action_connector);?>
+                    <?php echo $items_class->select_doc_category_options($action_connector, true);?>
                 </select>
                 <label for="next-job"><?php echo __( 'Action', 'textdomain' );?></label>
                 <select id="next-job" class="select ui-widget-content ui-corner-all" ><?php echo $this->select_site_job_options($next_job, $action_connector);?></select>

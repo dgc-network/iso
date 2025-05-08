@@ -902,8 +902,8 @@ if (!class_exists('embedded_items')) {
             wp_send_json($response);
         }
 
-        function select_doc_category_options($selected_option=false) {
-            $query = $this->retrieve_doc_category_data();
+        function select_doc_category_options($selected_option=false, $is_connector=false) {
+            $query = $this->retrieve_doc_category_data($is_connector);
             $options = '<option value="">'.__( 'Select Option', 'textdomain' ).'</option>';
             while ($query->have_posts()) : $query->the_post();
                 $category_id = get_the_ID();
@@ -912,10 +912,12 @@ if (!class_exists('embedded_items')) {
                 $options .= '<option value="' . esc_attr($category_id) . '" '.$selected.' >' . esc_html($category_title) . '</option>';
             endwhile;
             wp_reset_postdata();
-            $selected = ($selected_option=="embedded") ? 'selected' : '';
-            $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
-            $selected = ($selected_option=="doc-category") ? 'selected' : '';
-            $options .= '<option value="doc-category" '.$selected.'>'.__( 'Categories', 'textdomain' ).'</option>';
+            if (!$is_connector) {
+                $selected = ($selected_option=="embedded") ? 'selected' : '';
+                $options .= '<option value="embedded" '.$selected.'>'.__( 'Embedded Items', 'textdomain' ).'</option>';
+                $selected = ($selected_option=="doc-category") ? 'selected' : '';
+                $options .= '<option value="doc-category" '.$selected.'>'.__( 'Categories', 'textdomain' ).'</option>';
+            }
             return $options;
         }
         
