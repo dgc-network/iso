@@ -709,6 +709,7 @@ if (!class_exists('embedded_items')) {
             ob_start();
             $profiles_class = new display_profiles();
             ?>
+            <div class="ui-widget" id="result-container">
             <?php echo display_iso_helper_logo();?>
             <h2 style="display:inline;"><?php echo __( 'Categories', 'textdomain' );?></h2>
 
@@ -751,6 +752,7 @@ if (!class_exists('embedded_items')) {
                     <div id="new-doc-category" class="button" style="border:solid; margin:3px; text-align:center; border-radius:5px; font-size:small;">+</div>
                 <?php }?>
             </fieldset>
+            </div>
             <div id="doc-category-dialog" title="Category dialog"></div>
             <?php
             return ob_get_clean();
@@ -763,16 +765,15 @@ if (!class_exists('embedded_items')) {
                 'post_type'      => 'doc-category',
                 'posts_per_page' => -1,        
                 'meta_query'     => array(
-                    //'relation' => 'AND',
-                    'relation' => 'OR',
+                    'relation' => 'AND',
                     array(
                         'key'   => 'api_username',
-                        'compare' => 'EXISTS',
+                        'compare' => 'NOT EXISTS',
                     ),
                     array(
                         'key'   => 'api_password',
-                        'compare' => 'EXISTS',
-                    ),
+                        'compare' => 'NOT EXISTS',
+                    ),    
                     array(
                         'key'   => 'site_id',
                         'value' => $site_id,

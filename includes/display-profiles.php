@@ -156,13 +156,13 @@ if (!class_exists('display_profiles')) {
             </div>
 
             <div id="transaction-data" style="display:none;">
-            <?php
+                <?php
                 // transaction data vs key/value
-                $key_value_pair = array(
-                    '_employee' => get_current_user_id(),
-                );
+                //$key_value_pair = array(
+                //    '_employee' => get_current_user_id(),
+                //);
                 $documents_class = new display_documents();
-                $documents_class->display_transaction_report_for_master($key_value_pair);
+                $documents_class->display_transaction_report_for_master(['_employee' => get_current_user_id()]);
                 ?>
             </div>
             <?php

@@ -592,10 +592,12 @@ if (!class_exists('display_documents')) {
                     </div>
                 </div>
             </fieldset>
-            <?php
-                // transaction data vs key/value
-                $this->display_transaction_report_for_master(['_document' => $doc_id]);
-            ?>
+            <div id="transaction-data" style="display:none;">
+                <?php
+                    // transaction data vs key/value
+                    $this->display_transaction_report_for_master(['_document' => $doc_id]);
+                ?>
+            </div>
             </div>
             <?php
             return ob_get_clean();
