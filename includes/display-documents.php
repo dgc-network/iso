@@ -683,13 +683,13 @@ if (!class_exists('display_documents')) {
             } else {
                 echo '<table style="width:100%; border-collapse:collapse;">';
                 //echo '<thead><tr><th>SHA</th><th>Author</th><th>Date</th><th>Message</th></tr></thead><tbody>';
-                echo '<thead><tr><th>SHA</th><th>Date</th><th>Message</th></tr></thead><tbody>';
+                echo '<thead><tr><th>Date</th><th>Message</th><th>SHA</th></tr></thead><tbody>';
                 foreach ($revisions as $rev) {
                     echo '<tr>';
-                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['sha']) . '</td>';
                     //echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['author']) . '</td>';
                     echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['date']) . '</td>';
                     echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['message']) . '</td>';
+                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['sha']) . '</td>';
                     echo '</tr>';
                 }
                 echo '</tbody></table>';
