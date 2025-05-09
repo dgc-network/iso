@@ -190,7 +190,6 @@ if (!class_exists('display_documents')) {
                             $doc_number = get_post_meta($doc_id, 'doc_number', true);
                             $doc_title = get_the_title();
                             $doc_category = get_post_meta($doc_id, 'doc_category', true);
-                            //$doc_revision = get_post_meta($doc_id, 'doc_revision', true);
                             $doc_revision = $github_api->get_github_file_revision($doc_id);
                             if ($doc_revision) $doc_revision = substr($doc_revision, 0, 3) . '...';
                             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
@@ -672,44 +671,34 @@ if (!class_exists('display_documents')) {
             $github_api = new github_api();
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            //$doc_revision = get_post_meta($doc_id, 'doc_revision', true);
-            //$doc_content = get_post_field('post_content', $doc_id);
             $doc_revision = $github_api->get_github_file_revision($doc_id);
+            if ($doc_revision) $doc_revision = substr($doc_revision, 0, 3) . '...';
             $doc_content = $github_api->fetch_github_doc($doc_id);
-/*            
-            if (!$doc_content) {
-                $doc_content = get_post_field('post_content', $doc_id);
-                $result = $github_api->update_github_doc($doc_content, $doc_id);
-                error_log("Synced doc $doc_id result: " . var_export($result, true));
-            }
-*/                
             ?>
             <div class="ui-widget" id="result-container">
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <?php echo display_iso_helper_logo();?>
-                    <span><?php echo esc_html($doc_number);?></span>
-                    <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                    <span><?php echo esc_html($doc_revision);?></span>
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <?php echo display_iso_helper_logo();?>
+                        <span><?php echo esc_html($doc_number);?></span>
+                        <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
+                        <span id="doc-revision"><?php echo esc_html($doc_revision);?></span>
+                    </div>
                 </div>
-                <div style="text-align:right; display:flex;">
-                </div>
-            </div>
 
-            <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
+                <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
 
-            <fieldset>
-                <?php echo $doc_content;?>
-            </fieldset>
+                <fieldset>
+                    <?php echo $doc_content;?>
+                </fieldset>
 
-            <div style="display:flex; justify-content:space-between; margin:5px;">
-                <div>
-                    <input type="button" id="share-document" value="<?php echo __( 'Share', 'textdomain' );?>" style="margin:3px;" />
+                <div style="display:flex; justify-content:space-between; margin:5px;">
+                    <div>
+                        <input type="button" id="share-document" value="<?php echo __( 'Share', 'textdomain' );?>" style="margin:3px;" />
+                    </div>
+                    <div style="text-align:right; display:flex;">
+                        <input type="button" id="exit-doc-content" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:3px;" />
+                    </div>
                 </div>
-                <div style="text-align:right; display:flex;">
-                    <input type="button" id="exit-doc-content" value="<?php echo __( 'Exit', 'textdomain' );?>" style="margin:3px;" />
-                </div>
-            </div>
             </div>
             <?php
             return ob_get_clean();
@@ -2133,11 +2122,7 @@ if (!class_exists('display_documents')) {
                             $github_api = new github_api();
                             $github_api->update_github_doc($field_value, $doc_id);
                         }
-/*            
-                        if ($field_type=='_department'){
-                            update_post_meta($report_id, '_department', $field_value);
-                        }
-*/            
+
                         if ($field_type=='_embedded'){
                             if ($embedded_doc) {
                                 $inner_query = $documents_class->retrieve_doc_field_data(array('doc_id' => $embedded_doc));
@@ -2390,7 +2375,6 @@ if (!class_exists('display_documents')) {
                                         $doc_id = get_the_ID();
                                         $doc_title = get_the_title();
                                         $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
-                                        //if ($is_doc_report) $is_doc_report_color='color:blue;';
                                         $is_doc_report_color = $is_doc_report ? 'color:blue;' : 'color:none;';
                                         ?>
                                         <div>

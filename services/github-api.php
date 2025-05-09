@@ -194,10 +194,52 @@ if (!class_exists('github_api')) {
             }
         }
 
+        function get_github_file_revisions($doc_id) {
+            $owner = 'iso-helper';
+            $repo = 'docs-repo';
+            $path = 'docs/' . $doc_id . '.html';
+            $branch = 'main';
+            $token = $this->github_api_token;
+        
+            $url = "https://api.github.com/repos/$owner/$repo/commits?path=$path&sha=$branch";
+        
+            $args = [
+                'headers' => [
+                    'Accept' => 'application/vnd.github+json',
+                    'User-Agent' => 'WordPress-GitHub-Integration',
+                ]
+            ];
+        
+            if (!empty($token)) {
+                $args['headers']['Authorization'] = 'token ' . $token;
+            }
+        
+            $response = wp_remote_get($url, $args);
+        
+            if (is_wp_error($response)) {
+                return false;
+            }
+        
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+        
+            if (!empty($body) && is_array($body)) {
+                // Return all relevant revision data (commit SHA, message, author, date)
+                return array_map(function ($commit) {
+                    return [
+                        'sha' => $commit['sha'],
+                        'message' => $commit['commit']['message'],
+                        'author' => $commit['commit']['author']['name'] ?? '',
+                        'date' => $commit['commit']['author']['date'] ?? '',
+                    ];
+                }, $body);
+            }
+        
+            return false;
+        }
+        
         function get_github_file_revision($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
-            //$path = 'docs/'.$doc_id.'.md';
             $path = 'docs/'.$doc_id.'.html';
             $branch = 'main';
             $token = $this->github_api_token;
