@@ -437,6 +437,7 @@ if (!class_exists('display_documents')) {
             $todo_class = new to_do_list();
             $items_class = new embedded_items();
             $profiles_class = new display_profiles();
+            $github_api = new github_api();
 
             $prev_doc_id = $this->get_previous_doc_id($doc_id); // Fetch the previous ID
             $next_doc_id = $this->get_next_doc_id($doc_id);     // Fetch the next ID
@@ -449,7 +450,6 @@ if (!class_exists('display_documents')) {
             $is_doc_report = get_post_meta($doc_id, 'is_doc_report', true);
             $is_report_display = ($is_doc_report==1) ? '' : 'display:none;';
             $is_content_display = ($is_doc_report==1) ? 'display:none;' : '';
-            //$department_id = get_post_meta($doc_id, 'department_id', true);
             $api_endpoint = get_post_meta($doc_id, 'api_endpoint', true);
             $is_embedded_doc = get_post_meta($doc_id, 'is_embedded_doc', true);
             $is_embedded_doc_checked = ($is_embedded_doc==1) ? 'checked' : '';
@@ -489,6 +489,7 @@ if (!class_exists('display_documents')) {
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="doc-content-preview" value="<?php echo __( 'Preview', 'textdomain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
+                    <?php echo $github_api->display_github_doc_revisions($doc_id);?>
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
@@ -672,7 +673,7 @@ if (!class_exists('display_documents')) {
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = $github_api->get_github_file_revision($doc_id);
-            if ($doc_revision) $doc_revision = substr($doc_revision, 0, 3) . '...';
+            //if ($doc_revision) $doc_revision = substr($doc_revision, 0, 3) . '...';
             $doc_content = $github_api->fetch_github_doc($doc_id);
             ?>
             <div class="ui-widget" id="result-container">
