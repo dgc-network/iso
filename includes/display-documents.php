@@ -704,17 +704,15 @@ if (!class_exists('display_documents')) {
             $github_api = new github_api();
             $doc_title = get_the_title($doc_id);
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
-            $doc_revision = $github_api->get_github_file_revision($doc_id);
-            //if ($doc_revision) $doc_revision = substr($doc_revision, 0, 3) . '...';
+            $doc_revision = $github_api->get_github_file_latest_revision($doc_id);
+            $doc_date = $github_api->get_github_file_latest_released_date($doc_id);
             $doc_content = $github_api->fetch_github_file_content($doc_id);
             ?>
             <div class="ui-widget" id="result-container">
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <?php echo display_iso_helper_logo();?>
-                        <span><?php //echo esc_html($doc_number);?></span>
                         <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                        <span id="doc-revision" class="button"><?php //echo esc_html($doc_revision);?></span>
                     </div>
                 </div>
 
@@ -723,7 +721,8 @@ if (!class_exists('display_documents')) {
                 <fieldset>
                     <div><?php echo __( 'Document Number', 'textdomain' ).': '.$doc_number;?></div>
                     <div><?php echo __( 'Document Title', 'textdomain' ).': '.$doc_title;?></div>
-                    <div><?php echo __( 'Document SHA', 'textdomain' ).': '.$doc_revision;?></div>
+                    <div><?php echo __( 'SHA', 'textdomain' ).': '.$doc_revision;?></div>
+                    <div><?php echo __( 'Released Date', 'textdomain' ).': '.$doc_date;?></div>
                     <div><?php echo $doc_content;?></div>
                 </fieldset>
 

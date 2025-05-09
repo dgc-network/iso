@@ -614,10 +614,6 @@ jQuery(document).ready(function($) {
             });
         });
 
-        $("#doc-revision").on("click", function () {
-            $("#doc-revision-dialog").dialog('open');
-        });
-
         $("#exit-doc-content").on("click", function () {
             // Get existing URL parameters
             const urlParams = new URLSearchParams(window.location.search);
@@ -628,14 +624,6 @@ jQuery(document).ready(function($) {
             // Redirect to the updated URL
             window.location.href = "?" + urlParams.toString();
         });
-
-        $("#doc-revision-dialog").dialog({
-            width: 390,
-            modal: true,
-            autoOpen: false,
-            buttons: {}
-        });    
-
     }
 
     // doc-field scripts

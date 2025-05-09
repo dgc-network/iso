@@ -237,6 +237,17 @@ if (!class_exists('github_api')) {
             return false;
         }
 
+        function get_github_file_latest_revision($doc_id) {
+            $revisions = $this->get_github_file_revisions($doc_id);
+            if (empty($revisions)) return null;
+            return $revisions[0]['sha'];
+        }
+        
+        function get_github_file_latest_released_date($doc_id) {
+            $revisions = $this->get_github_file_revisions($doc_id);
+            if (empty($revisions)) return null;
+            return $revisions[0]['date'];
+        }
 
         function get_github_file_revision($doc_id) {
             $owner = 'iso-helper';
