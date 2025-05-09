@@ -681,7 +681,7 @@ if (!class_exists('display_documents')) {
                         <?php echo display_iso_helper_logo();?>
                         <span><?php echo esc_html($doc_number);?></span>
                         <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                        <span id="doc-revision"><?php echo esc_html($doc_revision);?></span>
+                        <span id="doc-revision" class="button"><?php echo esc_html($doc_revision);?></span>
                     </div>
                 </div>
 
