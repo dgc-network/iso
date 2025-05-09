@@ -679,16 +679,19 @@ if (!class_exists('display_documents')) {
                 <div style="display:flex; justify-content:space-between; margin:5px;">
                     <div>
                         <?php echo display_iso_helper_logo();?>
-                        <span><?php echo esc_html($doc_number);?></span>
+                        <span><?php //echo esc_html($doc_number);?></span>
                         <h2 style="display:inline;"><?php echo esc_html($doc_title);?></h2>
-                        <span id="doc-revision" class="button"><?php echo esc_html($doc_revision);?></span>
+                        <span id="doc-revision" class="button"><?php //echo esc_html($doc_revision);?></span>
                     </div>
                 </div>
 
                 <input type="hidden" id="doc-id" value="<?php echo $doc_id;?>" />
 
                 <fieldset>
-                    <?php echo $doc_content;?>
+                    <div><?php echo __( 'Document Number', 'textdomain' ).': '.$doc_number;?></div>
+                    <div><?php echo __( 'Document Title', 'textdomain' ).': '.$doc_title;?></div>
+                    <div><?php echo __( 'Document Rev.', 'textdomain' ).': '.$doc_revision;?></div>
+                    <div><?php echo $doc_content;?></div>
                 </fieldset>
 
                 <div style="display:flex; justify-content:space-between; margin:5px;">
