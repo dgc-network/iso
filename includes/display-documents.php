@@ -489,7 +489,7 @@ if (!class_exists('display_documents')) {
                     <?php if (is_site_admin()) {?>
                         <input type="button" id="doc-content-preview" value="<?php echo __( 'Preview', 'textdomain' );?>" style="margin:3px;font-size:small;" />
                     <?php }?>
-                    <?php echo $github_api->display_github_doc_revisions($doc_id);?>
+                    <?php echo $this->display_github_doc_revisions($doc_id);?>
                 </div>
 
                 <div id="doc-report-div" style="<?php echo $is_report_display;?>">
@@ -666,6 +666,38 @@ if (!class_exists('display_documents')) {
             wp_send_json($response);
         }
 
+        function display_github_doc_revisions($doc_id=false, $type = 'table') {
+            $github = new github_api();
+            $revisions = $github->get_github_file_revisions($doc_id);
+            if (!$revisions) return 'No revisions found.';
+            
+            ob_start();
+
+            if ($type === 'dropdown') {
+                echo '<select>';
+                foreach ($revisions as $rev) {
+                    $label = esc_html("{$rev['sha']} - {$rev['author']} ({$rev['date']})");
+                    echo "<option value=\"{$rev['sha']}\">{$label}</option>";
+                }
+                echo '</select>';
+            } else {
+                echo '<table style="width:100%; border-collapse:collapse;">';
+                //echo '<thead><tr><th>SHA</th><th>Author</th><th>Date</th><th>Message</th></tr></thead><tbody>';
+                echo '<thead><tr><th>SHA</th><th>Date</th><th>Message</th></tr></thead><tbody>';
+                foreach ($revisions as $rev) {
+                    echo '<tr>';
+                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['sha']) . '</td>';
+                    //echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['author']) . '</td>';
+                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['date']) . '</td>';
+                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['message']) . '</td>';
+                    echo '</tr>';
+                }
+                echo '</tbody></table>';
+            }
+        
+            return ob_get_clean();
+        }
+
         // doc-content
         function display_doc_content($doc_id=false) {
             ob_start();
@@ -674,7 +706,7 @@ if (!class_exists('display_documents')) {
             $doc_number = get_post_meta($doc_id, 'doc_number', true);
             $doc_revision = $github_api->get_github_file_revision($doc_id);
             //if ($doc_revision) $doc_revision = substr($doc_revision, 0, 3) . '...';
-            $doc_content = $github_api->fetch_github_doc($doc_id);
+            $doc_content = $github_api->fetch_github_file_content($doc_id);
             ?>
             <div class="ui-widget" id="result-container">
                 <div style="display:flex; justify-content:space-between; margin:5px;">
@@ -691,7 +723,7 @@ if (!class_exists('display_documents')) {
                 <fieldset>
                     <div><?php echo __( 'Document Number', 'textdomain' ).': '.$doc_number;?></div>
                     <div><?php echo __( 'Document Title', 'textdomain' ).': '.$doc_title;?></div>
-                    <div><?php echo __( 'Document Rev.', 'textdomain' ).': '.$doc_revision;?></div>
+                    <div><?php echo __( 'Document SHA', 'textdomain' ).': '.$doc_revision;?></div>
                     <div><?php echo $doc_content;?></div>
                 </fieldset>
 
@@ -2124,7 +2156,7 @@ if (!class_exists('display_documents')) {
                         if ($field_type=='_visual_editor'){
                             $doc_id = get_post_meta($report_id, '_document', true);
                             $github_api = new github_api();
-                            $github_api->update_github_doc($field_value, $doc_id);
+                            $github_api->update_github_file_content($doc_id, $field_value);
                         }
 
                         if ($field_type=='_embedded'){
@@ -2488,14 +2520,14 @@ if (!class_exists('display_documents')) {
                 update_post_meta($draft_id, 'doc_category', $draft_category);
 
                 $github_api = new github_api();
-                $result = $github_api->update_github_doc($draft_content, $draft_id);
+                $result = $github_api->update_github_file_content($draft_id, $draft_content);
 
                 if ($result === true) {
                     error_log('✅ Update GitHub document: Success');
                 } elseif ($result === false) {
                     error_log('❌ Update GitHub document: Failed');
                 } else {
-                    error_log('❓ Unexpected result from update_github_doc: ' . print_r($result, true));
+                    error_log('❓ Unexpected result from update_github_file_content: ' . print_r($result, true));
                 }
 
                 $params = array(

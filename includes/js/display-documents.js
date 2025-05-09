@@ -379,7 +379,7 @@ jQuery(document).ready(function($) {
         let docId = $(this).val();
     
         $.post(ajax_object.ajax_url, {
-            action: 'fetch_github_doc',
+            action: 'fetch_github_file_content',
             doc_id: docId,
             //_ajax_nonce: githubAjax.nonce
         }, function (response) {

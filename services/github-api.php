@@ -59,7 +59,7 @@ if (!class_exists('github_api')) {
         }
 
         // Fetch GitHub document
-        function fetch_github_doc($doc_id) {
+        function fetch_github_file_content($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
             $path = 'docs/' . $doc_id . '.html';
@@ -90,7 +90,7 @@ if (!class_exists('github_api')) {
             return base64_decode($body['content']);
         }
 
-        function update_github_doc($new_content, $doc_id) {
+        function update_github_file_content($doc_id, $new_content) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
             $path = 'docs/' . $doc_id . '.html';
@@ -142,7 +142,7 @@ if (!class_exists('github_api')) {
             }
         }
 
-        function delete_github_doc($doc_id) {
+        function delete_github_file_content($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
             $path = 'docs/' . $doc_id . '.html';
@@ -237,52 +237,7 @@ if (!class_exists('github_api')) {
             return false;
         }
 
-        //function display_github_doc_revisions($atts) {
 
-        function display_github_doc_revisions($doc_id=false, $type = 'table') {
-/*            
-            $atts = shortcode_atts([
-                'doc_id' => 0,
-                'type' => 'table', // or 'dropdown'
-            ], $atts, 'github_doc_revisions');
-        
-            if (!$atts['doc_id']) return 'Invalid doc ID';
-        
-            $github = new github_api(); // adjust if you're using a singleton or global instance
-            $revisions = $github->get_github_file_revisions($atts['doc_id']);
-*/        
-            $revisions = $this->get_github_file_revisions($doc_id);
-            if (!$revisions) return 'No revisions found.';
-        
-            ob_start();
-
-            //if ($atts['type'] === 'dropdown') {
-
-            if ($type === 'dropdown') {
-                echo '<select>';
-                foreach ($revisions as $rev) {
-                    $label = esc_html("{$rev['sha']} - {$rev['author']} ({$rev['date']})");
-                    echo "<option value=\"{$rev['sha']}\">{$label}</option>";
-                }
-                echo '</select>';
-            } else {
-                echo '<table style="width:100%; border-collapse:collapse;">';
-                echo '<thead><tr><th>SHA</th><th>Author</th><th>Date</th><th>Message</th></tr></thead><tbody>';
-                foreach ($revisions as $rev) {
-                    echo '<tr>';
-                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['sha']) . '</td>';
-                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['author']) . '</td>';
-                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['date']) . '</td>';
-                    echo '<td style="border:1px solid #ccc; padding:4px;">' . esc_html($rev['message']) . '</td>';
-                    echo '</tr>';
-                }
-                echo '</tbody></table>';
-            }
-        
-            return ob_get_clean();
-        }
-        //add_shortcode('github_doc_revisions', 'display_github_doc_revisions');
-        
         function get_github_file_revision($doc_id) {
             $owner = 'iso-helper';
             $repo = 'docs-repo';
@@ -317,7 +272,6 @@ if (!class_exists('github_api')) {
         
             return false;
         }
-        
     }
     $github_api = new github_api();
 }

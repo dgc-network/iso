@@ -937,14 +937,14 @@ function iot_status_report_handler(WP_REST_Request $req) {
     return rest_ensure_response(['status' => 'ok']);
 }
 
-function handle_fetch_github_doc() {
+function handle_fetch_github_file_content() {
     if (!isset($_POST['doc_id'])) {
         wp_send_json_error('Missing doc_id');
     }
 
     $doc_id = sanitize_text_field($_POST['doc_id']);
     $github = new github_api();
-    $content = $github->fetch_github_doc($doc_id);
+    $content = $github->fetch_github_file_content($doc_id);
 
     if ($content === false) {
         wp_send_json_error('Document not found');
@@ -952,5 +952,5 @@ function handle_fetch_github_doc() {
         wp_send_json_success(['content' => $content]);
     }
 }
-add_action('wp_ajax_fetch_github_doc', 'handle_fetch_github_doc');
-add_action('wp_ajax_nopriv_fetch_github_doc', 'handle_fetch_github_doc');
+add_action('wp_ajax_fetch_github_file_content', 'handle_fetch_github_file_content');
+add_action('wp_ajax_nopriv_fetch_github_file_content', 'handle_fetch_github_file_content');
