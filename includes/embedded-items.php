@@ -766,6 +766,38 @@ if (!class_exists('embedded_items')) {
                 'relation' => 'OR',
                 array(
                     'relation' => 'AND',
+                    array( // username not set or empty
+                        'relation' => 'OR',
+                        array(
+                            'key'     => 'api_username',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key'     => 'api_username',
+                            'value'   => '',
+                            'compare' => '=',
+                        ),
+                    ),
+                    array( // password not set or empty
+                        'relation' => 'OR',
+                        array(
+                            'key'     => 'api_password',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key'     => 'api_password',
+                            'value'   => '',
+                            'compare' => '=',
+                        ),
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                    ),
+                ),
+/*                
+                array(
+                    'relation' => 'AND',
                     array(
                         'key'     => 'api_username',
                         'compare' => 'NOT EXISTS',
@@ -779,6 +811,7 @@ if (!class_exists('embedded_items')) {
                         'value'   => $site_id,
                     ),
                 ),
+*/                
             );
         
             if (current_user_can('administrator') || $is_connector) {
