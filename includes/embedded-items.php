@@ -758,6 +758,54 @@ if (!class_exists('embedded_items')) {
             return ob_get_clean();
         }
 
+        function retrieve_doc_category_data($is_connector = false) {
+            $current_user_id = get_current_user_id();
+            $site_id = get_user_meta($current_user_id, 'site_id', true);
+        
+            $meta_query = array(
+                'relation' => 'OR',
+                array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'api_username',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                    array(
+                        'key'     => 'api_password',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                    array(
+                        'key'     => 'site_id',
+                        'value'   => $site_id,
+                    ),
+                ),
+            );
+        
+            if (current_user_can('administrator') || $is_connector) {
+                $meta_query[] = array(
+                    'relation' => 'AND',
+                    array(
+                        'key'     => 'api_username',
+                        'compare' => 'EXISTS',
+                    ),
+                    array(
+                        'key'     => 'api_password',
+                        'compare' => 'EXISTS',
+                    ),
+                );
+            }
+        
+            $args = array(
+                'post_type'      => 'doc-category',
+                'posts_per_page' => -1,
+                'meta_query'     => $meta_query,
+                'orderby'        => 'title',
+                'order'          => 'ASC',
+            );
+        
+            return new WP_Query($args);
+        }
+/*        
         function retrieve_doc_category_data($is_connector=false) {
             $current_user_id = get_current_user_id();
             $site_id = get_user_meta($current_user_id, 'site_id', true);
@@ -803,7 +851,7 @@ if (!class_exists('embedded_items')) {
             $query = new WP_Query($args);
             return $query;
         }
-
+*/
         function display_doc_category_dialog($category_id=false) {
             ob_start();
             $category_title = get_the_title($category_id);
