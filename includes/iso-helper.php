@@ -120,7 +120,7 @@ function get_site_admin_ids_for_site($site_id=false) {
 
     $user_query = new WP_User_Query($args);
     $user_ids = $user_query->get_results();
-    $site_admin_ids = array_merge($site_admin_ids, $user_ids);
+    //$site_admin_ids = array_merge($site_admin_ids, $user_ids);
 
     // Step 1: Get all users who are linked to this site ID
     $args = array(

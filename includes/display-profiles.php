@@ -9,7 +9,7 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_profiles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
-            //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
+            add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -1651,34 +1651,43 @@ if (!class_exists('display_profiles')) {
                 update_user_meta( $user_id, 'submit_date', $_POST['_submit_date']);
         
                 $site_admin_ids = get_site_admin_ids_for_site($site_id);
-                foreach ($site_admin_ids as $site_admin_id) {
-                    $line_user_id = get_user_meta($site_admin_id, 'line_user_id', true);
-                    $line_bot_api->send_flex_message([
-                        'to' => $line_user_id,
-                        'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
-                        'body_contents' => [
-                            [
-                                'type' => 'text',
-                                'text' => sprintf(
-                                    __('%s has signed the NDA of %s.', 'textdomain'),
-                                    $user->display_name,
-                                    get_the_title($site_id)
-                                ),
-                                'wrap' => true
-                            ]
-                        ],                        
-                        'footer_contents' => [
-                            [
-                                'type' => 'button', 
-                                'action' => [
-                                    'type' => 'uri', 
-                                    'label' =>  __( 'View Details', 'textdomain' ), 
-                                    'uri' => esc_url_raw(home_url("/display-profiles/?_nda_user_id=$user_id"))
-                                ], 
-                                'style' => 'primary'
-                            ]
-                        ],
-                    ]);
+                if (empty($site_admin_ids)) {
+                    $activated_site_users = get_post_meta($site_id, 'activated_site_users', true);
+                    if (!is_array($activated_site_users)) $activated_site_users = array();
+                    $activated_site_users[] = $user_id;
+                    update_user_meta( $user_id, 'approve_id', 1);
+                    update_user_meta( $user_id, 'approve_date', $_POST['_approve_date']);
+                    update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
+                } else {
+                    foreach ($site_admin_ids as $site_admin_id) {
+                        $line_user_id = get_user_meta($site_admin_id, 'line_user_id', true);
+                        $line_bot_api->send_flex_message([
+                            'to' => $line_user_id,
+                            'header_contents' => [['type' => 'text', 'text' => __( 'Notification', 'textdomain' ), 'weight' => 'bold']],
+                            'body_contents' => [
+                                [
+                                    'type' => 'text',
+                                    'text' => sprintf(
+                                        __('%s has signed the NDA of %s.', 'textdomain'),
+                                        $user->display_name,
+                                        get_the_title($site_id)
+                                    ),
+                                    'wrap' => true
+                                ]
+                            ],                        
+                            'footer_contents' => [
+                                [
+                                    'type' => 'button', 
+                                    'action' => [
+                                        'type' => 'uri', 
+                                        'label' =>  __( 'View Details', 'textdomain' ), 
+                                        'uri' => esc_url_raw(home_url("/display-profiles/?_nda_user_id=$user_id"))
+                                    ], 
+                                    'style' => 'primary'
+                                ]
+                            ],
+                        ]);
+                    }    
                 }
 
                 // Retrieve all administrators
@@ -1703,7 +1712,7 @@ if (!class_exists('display_profiles')) {
                     // Send email to all administrators
                     wp_mail($admin_emails, $subject, $message, $headers);
                 }
-                
+
                 $response = array('nda'=>'submitted');
             }
 
