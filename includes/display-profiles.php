@@ -9,7 +9,7 @@ if (!class_exists('display_profiles')) {
         public function __construct() {
             add_shortcode( 'display-profiles', array( $this, 'display_profiles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_display_profile_scripts' ) );
-            add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
+            //add_action( 'init', array( $this, 'register_site_profile_post_type' ) );
 
             add_action( 'wp_ajax_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
             add_action( 'wp_ajax_nopriv_set_my_profile_data', array( $this, 'set_my_profile_data' ) );
@@ -81,7 +81,8 @@ if (!class_exists('display_profiles')) {
                 <option value="site-profile" <?php echo ($select_option=="site-profile") ? 'selected' : ''?>><?php echo __( 'Site Configuration', 'textdomain' );?></option>
                 <option value="doc-category" <?php echo ($select_option=="doc-category") ? 'selected' : ''?>><?php echo __( 'Categories', 'textdomain' );?></option>
                 <?php if (current_user_can('administrator')) {?>                
-                    <option value="user-list" <?php echo ($select_option=="user-list") ? 'selected' : ''?>><?php echo __( 'User Configuration', 'textdomain' );?></option>
+                    <option value="user-list" <?php echo ($select_option=="user-list") ? 'selected' : ''?>><?php echo __( 'User List', 'textdomain' );?></option>
+                    <option value="site-list" <?php echo ($select_option=="site-list") ? 'selected' : ''?>><?php echo __( 'Site List', 'textdomain' );?></option>
                 <?php }?>
             </select>
             <?php
@@ -101,6 +102,7 @@ if (!class_exists('display_profiles')) {
                 if ($_GET['_select_profile']=='site-profile') echo $this->display_site_profile();
                 if ($_GET['_select_profile']=='site-job') echo $this->display_site_job_list();
                 if ($_GET['_select_profile']=='user-list') echo $this->display_site_user_list(-1);
+                if ($_GET['_select_profile']=='site-list') echo $this->display_site_list();
                 $items_class = new embedded_items();
                 if ($_GET['_select_profile']=='doc-category') echo $items_class->display_doc_category_list();
                 if ($_GET['_select_profile']=='iso-standard') echo $items_class->display_iso_standard_list();
@@ -1472,6 +1474,45 @@ if (!class_exists('display_profiles')) {
         }
 
         // site-profile
+        function display_site_list() {
+            ob_start();
+            ?>
+            <fieldset style="margin-top:5px;">
+                <table class="ui-widget" style="width:100%;">
+                    <thead>
+                        <th><?php echo __( 'Title', 'textdomain' );?></th>
+                        <th><?php echo __( 'Content', 'textdomain' );?></th>
+                    </thead>
+                    <tbody>
+                    <?php        
+                    $args = array(
+                        'post_type'      => 'site-profile',
+                        'posts_per_page' => -1,
+                    );
+                    $query = new WP_Query($args);
+                    if ($query->have_posts()) {
+                        while ($query->have_posts()) : $query->the_post();
+                            $site_id = get_the_ID();
+                            $site_title = get_the_title();
+                            $site_content = get_the_content();
+                            ?>
+                            <tr id="edit-site-<?php echo $site_id; ?>">
+                                <td style="text-align:center;"><?php echo $site_title; ?></td>
+                                <td style="text-align:center;"><?php echo $site_content; ?></td>
+                            </tr>
+                            <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </fieldset>
+            <div id="site-dialog" title="Site dialog"></div>
+            <?php
+            return ob_get_clean();
+        }
+
         function get_site_list_data() {
             $search_query = sanitize_text_field($_POST['_site_title']);
             $args = array(
@@ -1658,6 +1699,17 @@ if (!class_exists('display_profiles')) {
                     update_user_meta( $user_id, 'approve_id', 1);
                     update_user_meta( $user_id, 'approve_date', $_POST['_approve_date']);
                     update_post_meta( $site_id, 'activated_site_users', $activated_site_users);
+
+                    $site_admin_ids = get_user_meta($user_id, 'site_admin_ids', true);
+                    if (empty($site_admin_ids)) {
+                        $site_admin_ids = array($site_id);
+                    } else {
+                        if (!in_array($site_id, $site_admin_ids)) {
+                            $site_admin_ids[] = $site_id;
+                        }
+                    }                    
+                    update_user_meta($user_id, 'site_admin_ids', $site_admin_ids);
+
                 } else {
                     foreach ($site_admin_ids as $site_admin_id) {
                         $line_user_id = get_user_meta($site_admin_id, 'line_user_id', true);
